@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Isabel de Villena Cine</title>
+    <viewport content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+
+    <!-- 1. MENÚ INICIAL -->
+    <div id="menu-inicial">
+        <ul>
+            <li><a href="#">Cartelera</a></li>
+            <li><a href="#">Estrenos</a></li>
+            <li><a href="#">Precios</a></li>
+        </ul>
+    </div>
+
+    <!-- 2. TÍTULO DEL CINE -->
+    <div id="cabecera">
+        <h1>Isabel de Villena Cine</h1>
+    </div>
+
+    <!-- 3. CARTELERA -->
+    <div id="cartelera">
+
+        <div class="pelicula">
+            <img src="media/ancora.jpg" alt="Ancora">
+            <p class="titulo-pelicula">Ancora</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/oppenheimer.jpeg" alt="Oppenheimer">
+            <p class="titulo-pelicula">Oppenheimer</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/todoalavez.jpeg" alt="Todo a la vez en todas partes">
+            <p class="titulo-pelicula">Todo a la vez en todas partes</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/coda.jpeg" alt="CODA">
+            <p class="titulo-pelicula">CODA</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/nomadland.jpg" alt="Nomadland">
+            <p class="titulo-pelicula">Nomadland</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/parasitos.jpg" alt="Parásitos">
+            <p class="titulo-pelicula">Parásitos</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/greenbook.jpeg" alt="Green Book">
+            <p class="titulo-pelicula">Green Book</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/laformadelagua.jpeg" alt="La forma del agua">
+            <p class="titulo-pelicula">La forma del agua</p>
+        </div>
+
+        <div class="pelicula">
+            <img src="media/moonlight.jpg" alt="Moonlight">
+            <p class="titulo-pelicula">Moonlight</p>
+        </div>
+
+    </div>
+
+    <!-- 4. FORMULARIO DE RESERVA -->
+    <div id="reserva">
+        <h2>Reserva tus entradas</h2>
+
+        <form>
+
+            <label>Nombre:</label>
+            <input type="text" name="nombre">
+
+            <label>Número de entradas:</label>
+            <input type="number" name="entradas">
+
+            <label>Horario:</label>
+            <select name="horario">
+                <option>18:00</option>
+                <option>20:00</option>
+                <option>22:00</option>
+            </select>
+
+            <label>Comentarios:</label>
+            <textarea name="comentarios"></textarea>
+
+            <div class="check">
+                <input type="checkbox" name="normas">
+                <label>Acepto las normas del cine</label>
+            </div>
+
+            <input type="submit" value="Enviar">
+
+        </form>
+    </div>
+
+    <!-- 5. NORMAS -->
+    <div id="normas">
+        <h3>Normas de la sala</h3>
+        <ul>
+            <li>Apagar el móvil antes de entrar.</li>
+            <li>No grabar la película.</li>
+            <li>No hacer ruido durante la sesión.</li>
+            <li>Mantener limpia la sala.</li>
+            <li>Respetar los asientos asignados.</li>
+        </ul>
+    </div>
+
+    <!-- 6. PRECIOS -->
+    <div id="precios">
+        <h3>Precios de las entradas</h3>
+
+        <table>
+            <tr>
+                <th>Tipo de entrada</th>
+                <th>Precio</th>
+            </tr>
+            <tr>
+                <td>General</td>
+                <td>7.50€</td>
+            </tr>
+            <tr>
+                <td>Reducida</td>
+                <td>5.50€</td>
+            </tr>
+            <tr>
+                <td>Día del espectador</td>
+                <td>4.00€</td>
+            </tr>
+        </table>
+
+        <p class="nota-precios">Consulta promociones en taquilla</p>
+    </div>
+
+    <!-- 7. INFORMACIÓN ADICIONAL -->
+    <footer>
+        <h4>Información adicional</h4>
+        <p>
+            Este sitio web es un ejemplo para el examen final. Aquí puedes practicar <strong>negritas</strong> y <em>cursivas</em>.
+        </p>
+
+        <h4>Enlaces útiles</h4>
+        <ul>
+            <li><a href="#">Aviso legal</a></li>
+            <li><a href="#">Política de privacidad</a></li>
+            <li><a href="#">Contacto</a></li>
+        </ul>
+
+        <p class="copyright">
+            © 2025 Isabel de Villena Cinema
+        </p>
+    </footer>
+
+</body>
+</html>
