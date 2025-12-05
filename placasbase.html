@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Índice – Formatos de Placas Base</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            overflow-x: hidden;
+            background: #05060a;
+            color: #e2e8f0;
+        }
+
+        /* -----------------------------------------------------------
+           ANIMACIÓN DE PARTÍCULAS EN EL FONDO
+        ----------------------------------------------------------- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle, rgba(0,255,255,0.4) 2px, transparent 2px),
+                radial-gradient(circle, rgba(0,128,255,0.3) 2px, transparent 2px);
+            background-size: 180px 180px, 240px 240px;
+            animation: particles 18s linear infinite;
+            opacity: 0.25;
+            z-index: -1;
+        }
+
+        @keyframes particles {
+            from { transform: translate(0px, 0px); }
+            to { transform: translate(200px, -200px); }
+        }
+
+        /* -----------------------------------------------------------
+           TÍTULO ANIMADO FUTURISTA
+        ----------------------------------------------------------- */
+        h1 {
+            font-size: 34px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: #7dccff;
+            text-shadow: 0 0 10px #00cfff, 0 0 20px #0051ff;
+            animation: glow-title 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes glow-title {
+            0% { text-shadow: 0 0 6px #00cfff; }
+            100% { text-shadow: 0 0 18px #00eaff, 0 0 40px #0077ff; }
+        }
+
+        /* Imagen principal */
+        .main-image {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto 25px auto;
+            border-radius: 14px;
+            box-shadow: 0 0 25px rgba(0,255,255,0.5);
+            border: 2px solid #00cfff;
+        }
+
+        /* Descripción */
+        .description {
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #c9d6e2;
+            text-align: justify;
+            background: rgba(10, 20, 40, 0.55);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 200, 255, 0.25);
+            box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
+        }
+
+        /* -----------------------------------------------------------
+           LÍNEA TEMPORAL FUTURISTA CON CIRCUITO ANIMADO
+        ----------------------------------------------------------- */
+        .timeline {
+            max-width: 900px;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00eaff, #007bff, #9b00ff);
+            box-shadow: 0 0 20px #00cfff;
+        }
+
+        /* LUZ QUE SE MUEVE POR LA LÍNEA */
+        .timeline::after {
+            content: "";
+            position: absolute;
+            top: calc(50% - 4px);
+            width: 70px;
+            height: 8px;
+            background: #ffffff;
+            filter: blur(6px);
+            animation: circuit-flow 3.5s linear infinite;
+        }
+
+        @keyframes circuit-flow {
+            from { left: -100px; opacity: 0; }
+            20% { opacity: 1; }
+            to { left: 100%; opacity: 0; }
+        }
+
+        .t-item {
+            position: relative;
+            background: #111828;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid #00c8ff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.35);
+            font-size: 15px;
+            color: #d7f6ff;
+            z-index: 2;
+            min-width: 140px;
+            font-weight: bold;
+        }
+
+        .t-item span {
+            display: block;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Iconos futuristas */
+        .t-item::before {
+            content: "⧉";
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #00eaff;
+            text-shadow: 0 0 6px #00eaff;
+        }
+
+        /* -----------------------------------------------------------
+           BOTONES CON ANIMACIÓN DE NEÓN + BORDE MÓVIL
+        ----------------------------------------------------------- */
+        .buttons {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #00baff;
+            color: #00121f;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: 0.25s;
+            border: 2px solid #00cfff;
+            box-shadow: 0 0 20px #00cfff;
+        }
+
+        /* borde animado */
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+            animation: btn-shine 3s infinite;
+        }
+
+        @keyframes btn-shine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .btn:hover {
+            background: #00d4ff;
+            box-shadow: 0 0 30px #00eaff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Índice de Placas Base</h1>
+
+    <img src="img/portada.png" class="main-image" alt="Diferentes formatos de placa base">
+
+    <div class="description">
+        Las placas base se fabrican en distintos formatos según el tamaño del chasis y la capacidad de expansión.<br><br>
+
+        • <b>E-ATX (Extended ATX)</b> – <b>330 × 305 mm</b>. Placas muy grandes para estaciones de trabajo y PCs extremos.<br>
+        • <b>ATX</b> – <b>305 × 244 mm</b>. El estándar más usado por ofrecer equilibrio entre tamaño y ranuras.<br>
+        • <b>Micro-ATX</b> – <b>244 × 244 mm</b>. Compacta, mantiene buena capacidad de ampliación.<br>
+        • <b>Mini-ITX</b> – <b>170 × 170 mm</b>. Muy pequeña, ideal para PCs compactos.
+    </div>
+
+    <!-- LÍNEA TEMPORAL -->
+    <div class="timeline">
+        <div class="t-item">E-ATX <span>330×305 mm</span></div>
+        <div class="t-item">ATX <span>305×244 mm</span></div>
+        <div class="t-item">Micro-ATX <span>244×244 mm</span></div>
+        <div class="t-item">Mini-ITX <span>170×170 mm</span></div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="buttons">
+        <a class="btn" href="eatx.html">Placa E-ATX</a>
+        <a class="btn" href="atx.html">Placa ATX</a> 
+        <a class="btn" href="microatx.html">Placa Micro-ATX</a>
+        <a class="btn" href="miniatx.html">Placa Mini-ITX</a>
+    </div>
+
+</body>
+</html>
