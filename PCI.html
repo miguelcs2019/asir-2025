@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividad 2 - Componentes PCIe (Glassmorphism)</title>
+    <style>
+        /* -------- FONDO CON DEGRADADO SUAVE -------- */
+        body {
+            font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #8fb3ff, #dbe7ff, #f7faff);
+            background-size: 400% 400%;
+            animation: fondo 14s ease infinite;
+            color: #1f2933;
+        }
+
+        @keyframes fondo {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: #102a43;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 0;
+            color: #16324f;
+        }
+
+        h3 {
+            color: #1f3b5c;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            text-align: justify;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* -------- CONTENEDOR GLASS -------- */
+        .section {
+            max-width: 1100px;
+            margin: 0 auto 30px auto;
+            padding: 22px 26px;
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow:
+                0 10px 30px rgba(15, 23, 42, 0.18),
+                inset 0 1px 1px rgba(255,255,255,0.6);
+        }
+
+        /* -------- GRID DE TARJETAS -------- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 15px;
+        }
+
+        .card {
+            border-radius: 16px;
+            padding: 14px 16px 16px 16px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.25);
+        }
+
+        .card h3 {
+            margin-top: 4px;
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+
+        /* -------- ETIQUETA -------- */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(0, 81, 255, 0.85);
+            color: #fff;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 6px;
+            box-shadow: 0 3px 8px rgba(0, 81, 255, 0.5);
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 20px 10px;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Actividad 2 – Componentes PCI Express (PCIe)</h1>
+
+    <div class="section">
+        <h2>1. Componentes por tamaño de ranura PCIe</h2>
+        <p>
+            A continuación se muestran ejemplos de componentes reales que se pueden encontrar en tiendas web,
+            clasificados por el tamaño de ranura PCIe que utilizan (<b>x1, x4, x8, x16</b>). Se incluyen varios
+            dispositivos en cada tamaño y una breve explicación de sus características más importantes.
+        </p>
+
+        <!-- x1 -->
+        <h3>Ranura PCIe x1</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe x1</span>
+                <h3>Tarjeta de sonido dedicada</h3>
+                <ul>
+                    <li>Ofrece mejor calidad de audio que el sonido integrado de la placa base.</li>
+                    <li>Suele incluir salidas 5.1 o 7.1 y entrada para micrófono.</li>
+                    <li>PCIe x1 es suficiente porque el ancho de banda que necesita el audio es bajo.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">PCIe x1</span>
+                <h3>Tarjeta de red WiFi + Bluetooth</h3>
+                <ul>
+                    <li>Añade conectividad WiFi 5/6 y Bluetooth a un PC de sobremesa.</li>
+                    <li>No requiere mucha velocidad, por eso se usa un conector pequeño x1.</li>
+                    <li>Ideal para equipos que no tienen WiFi integrado en la placa base.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- x4 -->
+        <h3>Ranura PCIe x4</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe x4</span>
+                <h3>Tarjeta adaptadora NVMe (M.2 a PCIe)</h3>
+                <ul>
+                    <li>Permite instalar un SSD M.2 NVMe en una ranura PCIe x4.</li>
+                    <li>Aprovecha velocidades muy altas (hasta varios GB/s).</li>
+                    <li>Se usa cuando la placa base tiene pocas ranuras M.2 integradas.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">PCIe x4</span>
+                <h3>Controladora RAID / almacenamiento</h3>
+                <ul>
+                    <li>Añade varios puertos SATA o incluso puertos SAS para discos profesionales.</li>
+                    <li>Necesita más ancho de banda que una tarjeta x1, por eso usa x4.</li>
+                    <li>Permite crear arreglos RAID para mejorar velocidad o seguridad de los datos.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- x8 -->
+        <h3>Ranura PCIe x8</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe x8</span>
+                <h3>Tarjeta HBA / Controladora de servidor</h3>
+                <ul>
+                    <li>Se usa en servidores para conectar muchos discos o cabinas de almacenamiento.</li>
+                    <li>Necesita mucho ancho de banda para mover datos de varios discos a la vez.</li>
+                    <li>PCIe x8 es un equilibrio entre rendimiento alto y número de ranuras disponibles.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">PCIe x8</span>
+                <h3>Tarjeta gráfica profesional de gama media</h3>
+                <ul>
+                    <li>Algunas GPUs profesionales funcionan en ranuras x8 sin perder mucho rendimiento.</li>
+                    <li>Se usan en estaciones de trabajo para CAD, diseño o edición de vídeo.</li>
+                    <li>Permite dejar otra ranura x8 libre para más tarjetas de expansión.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- x16 -->
+        <h3>Ranura PCIe x16</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe x16</span>
+                <h3>Tarjeta gráfica gaming de alta gama</h3>
+                <ul>
+                    <li>Necesita el máximo ancho de banda disponible para mover muchos datos de vídeo.</li>
+                    <li>Se utiliza para juegos 3D, realidad virtual y edición de vídeo 4K/8K.</li>
+                    <li>Por eso siempre se monta en la ranura principal PCIe x16 de la placa base.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">PCIe x16</span>
+                <h3>Tarjeta capturadora de vídeo 4K</h3>
+                <ul>
+                    <li>Permite capturar vídeo 4K/60 fps de consolas u otros PCs.</li>
+                    <li>El flujo de datos de vídeo es muy alto, por eso se usa x16.</li>
+                    <li>Se utiliza en streaming profesional, grabación y edición de contenido.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- POR GENERACIÓN -->
+    <div class="section">
+        <h2>2. Componentes por generación de PCIe</h2>
+        <p>
+            Aquí se recogen ejemplos de dispositivos que aprovechan distintas generaciones de PCIe
+            (<b>Gen3, Gen4, Gen5</b>). Cada generación duplica aproximadamente el ancho de banda de la anterior,
+            lo que permite crear dispositivos más rápidos.
+        </p>
+
+        <h3>PCIe Gen3</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe 3.0</span>
+                <h3>SSD NVMe PCIe 3.0</h3>
+                <ul>
+                    <li>Velocidades típicas: 3.000–3.500 MB/s de lectura.</li>
+                    <li>Supuso un salto enorme frente a los SSD SATA (≈550 MB/s).</li>
+                    <li>Sigue siendo suficiente para muchos PCs de uso general.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <span class="badge">PCIe 3.0</span>
+                <h3>Tarjeta gráfica PCIe 3.0</h3>
+                <ul>
+                    <li>Muchas GPUs de hace unos años funcionan en PCIe 3.0 x16.</li>
+                    <li>Ofrecen buen rendimiento en juegos 1080p y 1440p.</li>
+                    <li>La interfaz no es el cuello de botella, lo es la propia GPU.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>PCIe Gen4</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe 4.0</span>
+                <h3>SSD NVMe PCIe 4.0</h3>
+                <ul>
+                    <li>Velocidades típicas: 5.000–7.000 MB/s de lectura.</li>
+                    <li>Reduce muchísimo los tiempos de carga en juegos y aplicaciones.</li>
+                    <li>Ideal para edición de vídeo 4K y trabajo con archivos muy pesados.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <span class="badge">PCIe 4.0</span>
+                <h3>Tarjeta gráfica moderna PCIe 4.0</h3>
+                <ul>
+                    <li>Las GPUs actuales de gama alta ya usan PCIe 4.0.</li>
+                    <li>Permite mover más datos entre GPU y CPU, útil en resoluciones altas.</li>
+                    <li>Está muy extendido en placas base de última generación.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>PCIe Gen5</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">PCIe 5.0</span>
+                <h3>SSD NVMe PCIe 5.0</h3>
+                <ul>
+                    <li>Velocidades que superan los 10.000 MB/s de lectura.</li>
+                    <li>Se utilizan disipadores grandes porque generan bastante calor.</li>
+                    <li>Muy orientados a PCs de gama muy alta y estaciones de trabajo.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <span class="badge">PCIe 5.0</span>
+                <h3>Tarjeta gráfica preparada para PCIe 5.0</h3>
+                <ul>
+                    <li>Algunas GPUs nuevas están empezando a usar PCIe 5.0.</li>
+                    <li>El ancho de banda extra será útil en aplicaciones profesionales y 8K.</li>
+                    <li>Requiere placas base y procesadores compatibles con esta generación.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPLICACIÓN FINAL -->
+    <div class="section">
+        <h2>3. ¿Por qué PCIe sigue evolucionando?</h2>
+        <p>
+            PCIe continúa evolucionando porque cada vez necesitamos mover más datos entre los componentes
+            del ordenador. Los <b>procesadores</b> tienen más núcleos, las <b>tarjetas gráficas</b> procesan más
+            información para juegos y trabajos en 4K/8K, y los <b>SSD NVMe</b> son cada vez más rápidos.
+            Si la interfaz PCIe se quedara estancada, se convertiría en un cuello de botella.
+        </p>
+        <p>
+            Cada nueva generación de PCIe (Gen3, Gen4, Gen5...) mejora el ancho de banda disponible. Esto permite:
+        </p>
+        <ul>
+            <li>Cargar juegos y programas mucho más rápido.</li>
+            <li>Trabajar con vídeo y modelos 3D muy pesados sin tantos tiempos de espera.</li>
+            <li>Conectar más dispositivos al mismo tiempo sin perder rendimiento.</li>
+            <li>Preparar los PCs para futuras tarjetas gráficas y SSD aún más potentes.</li>
+        </ul>
+        <p>
+            PCIe sigue evolucionando porque el hardware no deja de mejorar y
+            la interfaz debe ser capaz de seguir el ritmo para que todo el sistema funcione
+            sin cuellos de botella.
+        </p>
+    </div>
+
+</body>
+</html>
