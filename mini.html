@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini-ITX Elprico7mfz3g8rko - Infografía</title>
+
+    <style>
+        /* ===== ESTILO BLACK CARBON ITX ===== */
+
+        :root {
+            --bg-main: #050608;
+            --bg-card: #111318;
+            --bg-card-alt: #171a21;
+            --accent: #22d3ee;  /* cian */
+            --accent-soft: #38bdf8;
+            --text-main: #f5f5f5;
+            --text-muted: #c7ced9;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top, #1e293b 0, #020617 50%),
+                repeating-linear-gradient(
+                    45deg,
+                    #020617 0,
+                    #020617 4px,
+                    #030712 4px,
+                    #030712 8px
+                );
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 32px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            text-shadow: 0 0 14px rgba(34,211,238,0.7);
+        }
+
+        h1 span {
+            display: block;
+            font-size: 13px;
+            text-transform: none;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: radial-gradient(circle at top left, #1f2933 0, var(--bg-card) 55%);
+            border-radius: 12px;
+            border: 1px solid rgba(148,163,184,0.6);
+            box-shadow:
+                0 0 16px rgba(15,23,42,0.8),
+                0 0 24px rgba(34,211,238,0.15);
+            padding: 14px 14px 18px 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg,
+                    transparent 0,
+                    rgba(56,189,248,0.16) 35%,
+                    transparent 80%);
+            pointer-events: none;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(148,163,184,0.7);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            margin: 4px 0 6px 0;
+            color: var(--accent-soft);
+            text-transform: uppercase;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: justify;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ===== GLOSARIO ===== */
+
+        .glosario {
+            max-width: 1100px;
+            margin: 42px auto 0 auto;
+            background: linear-gradient(145deg, var(--bg-card-alt), #020617);
+            border-radius: 14px;
+            border: 1px solid rgba(148,163,184,0.7);
+            padding: 22px;
+            box-shadow:
+                0 0 18px rgba(15,23,42,0.9),
+                0 0 26px rgba(34,211,238,0.2);
+        }
+
+        .glosario h2 {
+            text-align: center;
+            margin: 0 0 16px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-soft);
+        }
+
+        .glosario h3 {
+            margin-top: 16px;
+            margin-bottom: 4px;
+            font-size: 15px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .glosario p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: justify;
+        }
+
+        /* ===== TABLA ===== */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 26px;
+            font-size: 14px;
+            background: #020617;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        th {
+            background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+            color: #020617;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #02081a;
+        }
+
+        tr:nth-child(odd) td {
+            background-color: #020617;
+        }
+
+        td {
+            color: var(--text-main);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>
+        Placa Base Mini-ITX Elprico7mfz3g8rko
+        <span>Socket LGA1150 · Chipset Intel H81 · DDR3 hasta 16 GB</span>
+    </h1>
+
+    <div class="grid">
+
+        <!-- 1. Vista general -->
+        <div class="card">
+            <img src="img/miniatx.PNG" alt="Vista general placa Mini-ITX Elprico">
+            <h2>1. Vista general Mini-ITX</h2>
+            <p>
+                La placa base Elprico en formato Mini-ITX ofrece un diseño muy compacto con
+                socket LGA1150, dos ranuras de memoria DDR3 y todos los conectores agrupados
+                en un espacio reducido. Es ideal para montar ordenadores pequeños tipo HTPC
+                o equipos de oficina de tamaño reducido.
+            </p>
+        </div>
+
+        <!-- 2. Especificaciones y panel trasero (imagen tipo ficha) -->
+        <div class="card">
+            <img src="img/miniatx2.PNG" alt="Especificaciones y panel trasero">
+            <h2>2. Especificaciones principales</h2>
+            <p>
+                La ficha técnica indica compatibilidad con procesadores Intel Core de 4ª y 5ª
+                generación, dos ranuras DDR3, un conector M.2 NVMe, tres puertos SATA 3.0 y
+                salidas de vídeo modernas (HDMI, DisplayPort) junto con varios puertos USB y
+                audio analógico.
+            </p>
+        </div>
+
+        <!-- 3. Vista inclinada -->
+        <div class="card">
+            <img src="img/miniatx3.PNG" alt="Vista inclinada de la placa base">
+            <h2>3. Componentes principales</h2>
+            <p>
+                En esta vista se aprecia el socket LGA1150, el pequeño disipador del chipset,
+                las ranuras de memoria y los conectores de alimentación. También se ve la
+                ranura M.2 y la zona de puertos traseros, donde se concentran USB, vídeo y
+                audio.
+            </p>
+        </div>
+
+        <!-- 4. Vista cenital detallada -->
+        <div class="card">
+            <img src="img/miniatx4.PNG" alt="Vista superior de la Mini-ITX">
+            <h2>4. Distribución de la placa</h2>
+            <p>
+                Desde arriba se ve claramente la organización interna: las dos ranuras DDR3
+                situadas junto al borde, el socket del procesador en la parte inferior derecha,
+                el chipset con disipador en el centro y los conectores SATA y M.2 distribuidos
+                alrededor para aprovechar al máximo el espacio disponible.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- GLOSARIO + TABLA -->
+    <section class="glosario">
+        <h2>Glosario de componentes de la Mini-ITX</h2>
+
+        <h3>Socket LGA1150</h3>
+        <p>
+            Zócalo donde se instala el procesador Intel Core i3, i5 o i7 de 4ª y 5ª generación.
+            Permite la conexión física y eléctrica entre CPU y placa base.
+        </p>
+
+        <h3>Ranuras DDR3</h3>
+        <p>
+            Conectores para la memoria RAM del sistema. Esta placa admite hasta 16 GB en total,
+            repartidos en dos módulos.
+        </p>
+
+        <h3>Chipset Intel H81</h3>
+        <p>
+            Es el controlador principal de la placa. Gestiona la comunicación entre la CPU,
+            la memoria, los puertos SATA, USB y la ranura PCIe.
+        </p>
+
+        <h3>Ranura PCIe x16</h3>
+        <p>
+            Ranura de expansión donde se puede instalar una tarjeta gráfica o una tarjeta de
+            alto rendimiento, como capturadoras o controladoras adicionales.
+        </p>
+
+        <h3>Conectores SATA 3.0</h3>
+        <p>
+            Puertos para conectar discos duros y SSD de 2,5&quot; o 3,5&quot; con una
+            velocidad de hasta 6 Gb/s.
+        </p>
+
+        <h3>Conector M.2 NVMe</h3>
+        <p>
+            Conector para un SSD M.2 de alta velocidad, ideal para instalar el sistema operativo
+            y los programas que más se usan.
+        </p>
+
+        <h3>Puertos USB, vídeo y audio</h3>
+        <p>
+            La parte trasera incluye varios puertos USB, salidas de vídeo (HDMI/DP y, según la
+            versión, VGA) y conectores de audio para altavoces y micrófono.
+        </p>
+
+        <h3>Conectores de alimentación</h3>
+        <p>
+            El conector ATX de 24 pines alimenta la placa base, mientras que el conector EPS
+            de 4 u 8 pines suministra energía adicional al procesador.
+        </p>
+
+        <!-- TABLA DE ESPECIFICACIONES -->
+        <table>
+            <tr>
+                <th>Componente</th>
+                <th>Cantidad / dato</th>
+            </tr>
+            <tr><td>Socket CPU</td><td>1 × LGA1150</td></tr>
+            <tr><td>Chipset</td><td>Intel H81</td></tr>
+            <tr><td>Ranuras RAM DDR3</td><td>2 (hasta 16 GB)</td></tr>
+            <tr><td>Ranuras SATA 3.0</td><td>3</td></tr>
+            <tr><td>Ranura M.2 NVMe</td><td>1</td></tr>
+            <tr><td>Ranura PCIe x16</td><td>1</td></tr>
+            <tr><td>Puertos USB traseros</td><td>varios USB 2.0 / 3.0</td></tr>
+            <tr><td>Salidas de vídeo</td><td>HDMI, DP (y según modelo, VGA)</td></tr>
+            <tr><td>Conectores de audio</td><td>entradas/salidas analógicas</td></tr>
+            <tr><td>Red</td><td>1 × Ethernet RJ45</td></tr>
+            <tr><td>Conector ATX 24 pines</td><td>1</td></tr>
+            <tr><td>Conector EPS CPU</td><td>1 (4/8 pines)</td></tr>
+        </table>
+
+    </section>
+
+</body>
+</html>
