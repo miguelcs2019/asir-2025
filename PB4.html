@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividad 4 – ASUS PRIME Z270-P</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f7fc;
+            color: #1f2933;
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #1d4ed8;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 18px;
+            color: #1e40af;
+            margin-bottom: 6px;
+        }
+
+        p {
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .hero-text {
+            padding: 18px 20px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            box-shadow: 0 8px 20px rgba(148, 163, 184, 0.25);
+        }
+
+        .hero-text p {
+            margin-top: 8px;
+        }
+
+        .hero img {
+            width: 100%;
+            border-radius: 18px;
+            border: 3px solid #93c5fd;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+        }
+
+        .pill {
+            display: inline-block;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #1d4ed8;
+            color: #e5f0ff;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 14px 16px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            box-shadow: 0 6px 16px rgba(148, 163, 184, 0.3);
+        }
+
+        ul {
+            margin: 6px 0 0 18px;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #4b5563;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 850px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="hero">
+        <div class="hero-text">
+            <span class="pill">Actividad 4</span>
+            <h1>ASUS PRIME Z270-P</h1>
+            <h2>Ficha técnica y análisis</h2>
+            <p>
+                En esta actividad estudiamos la placa base <b>ASUS PRIME Z270-P</b> y
+                completamos sus características más importantes: procesadores compatibles,
+                memoria RAM, formato físico, ranuras PCI Express y conectores USB, con los
+                datos que aparecen en las especificaciones oficiales.
+            </p>
+        </div>
+
+        <!-- Sustituye la ruta por tu imagen real -->
+        <img src="img/asus_prime_z270_p.png" alt="Placa base ASUS PRIME Z270-P">
+    </div>
+
+    <!-- Procesador + RAM -->
+    <div class="grid-2">
+        <div class="card">
+            <h3>Procesadores que soporta</h3>
+            <ul>
+                <li>Socket: <b>LGA 1151</b>.</li>
+                <li>Chipset: <b>Intel Z270</b>.</li>
+                <li>Compatible con:
+                    <ul>
+                        <li>Intel <b>Core i3</b> 6ª y 7ª gen.</li>
+                        <li>Intel <b>Core i5</b> 6ª y 7ª gen.</li>
+                        <li>Intel <b>Core i7</b> 6ª y 7ª gen.</li>
+                        <li>Intel <b>Pentium</b> y <b>Celeron</b> (6ª/7ª gen).</li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="note">
+                Es una placa pensada para procesadores Intel “Skylake” y “Kaby Lake”
+                de sobremesa.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Memoria RAM y formato físico</h3>
+            <ul>
+                <li><b>Tipo de RAM</b>: DDR4.</li>
+                <li><b>Nº de módulos</b>: 4 ranuras DIMM.</li>
+                <li><b>Capacidad máxima</b>: 64&nbsp;GB (4×16&nbsp;GB).</li>
+                <li><b>Canales</b>: Doble canal (dual channel).</li>
+                <li><b>Frecuencia soportada</b>:
+                    hasta DDR4-3866 MHz (OC).</li>
+                <li><b>Formato físico de la placa</b>: ATX.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PCIe -->
+    <div class="card">
+        <h2>Conectores PCI Express</h2>
+        <p>
+            La ASUS PRIME Z270-P dispone de varias ranuras PCIe 3.0 pensadas para
+            tarjetas gráficas y tarjetas de expansión (red, sonido, capturadoras…).
+        </p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Ranura</th>
+                <th>Tipo / Tamaño</th>
+                <th>Versión PCIe</th>
+                <th>Uso típico</th>
+                <th>Velocidad aprox. (GB/s)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>PCIe_1 (gris)</td>
+                <td>x16</td>
+                <td>PCIe 3.0/2.0</td>
+                <td>Tarjeta gráfica principal</td>
+                <td>≈ 16&nbsp;GB/s</td>
+            </tr>
+            <tr>
+                <td>PCIe_2 (negra)</td>
+                <td>x16 físico (x4 eléctrico)</td>
+                <td>PCIe 3.0/2.0</td>
+                <td>2ª gráfica, SSD PCIe, capturadora…</td>
+                <td>≈ 4&nbsp;GB/s</td>
+            </tr>
+            <tr>
+                <td>PCIe x1 (×4 ranuras)</td>
+                <td>x1</td>
+                <td>PCIe 3.0/2.0</td>
+                <td>Tarjeta de sonido, WiFi, red extra…</td>
+                <td>≈ 1&nbsp;GB/s por ranura</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p class="note">
+            Los valores de velocidad son aproximados. PCIe 3.0 ofrece ~1&nbsp;GB/s por
+            línea (x1). Al multiplicar por el tamaño (x4, x16…) obtenemos el ancho de
+            banda máximo teórico de cada ranura.
+        </p>
+    </div>
+
+    <!-- USB -->
+    <div class="card">
+        <h2>Conectores USB</h2>
+        <p>
+            La placa combina puertos USB traseros y conectores internos para el frontal
+            de la caja, con diferentes versiones y velocidades.
+        </p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Tipo de USB</th>
+                <th>Cantidad aproximada</th>
+                <th>Ubicación</th>
+                <th>Velocidad teórica</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>USB 2.0</td>
+                <td>6 puertos (2 traseros + 4 frontales)</td>
+                <td>Panel trasero + conectores internos</td>
+                <td>480&nbsp;Mbit/s (0,48&nbsp;Gbit/s)</td>
+            </tr>
+            <tr>
+                <td>USB 3.0 / 3.2 Gen1</td>
+                <td>8 puertos (4 traseros + 4 frontales)</td>
+                <td>Panel trasero + conectores internos</td>
+                <td>5&nbsp;Gbit/s (≈ 5.000&nbsp;Mbit/s)</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p class="note">
+            Estos valores son suficientes para discos externos, memorias USB rápidas
+            y otros periféricos modernos.
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>
