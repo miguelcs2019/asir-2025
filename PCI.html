@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -115,44 +115,6 @@
             font-size: 14px;
         }
 
-        /* -------- LINEA TEMPORAL TIPO GRAFICAS -------- */
-        .timeline {
-            max-width: 900px;
-            margin: 40px auto 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 20px;
-            padding: 10px 0;
-        }
-
-        .t-item {
-            flex: 1;
-            text-align: center;
-            color: #0f172a;
-            font-size: 14px;
-        }
-
-        .bar {
-            width: 26px;
-            margin: 0 auto 8px auto;
-            border-radius: 8px 8px 0 0;
-            background: linear-gradient(180deg, #2563eb, #38bdf8);
-            box-shadow: 0 0 12px rgba(37,99,235,0.7);
-            height: var(--h);
-        }
-
-        .t-item strong {
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .t-item span {
-            display: block;
-            font-size: 12px;
-            opacity: 0.85;
-        }
-
         @media (max-width: 800px) {
             body {
                 padding: 20px 10px;
@@ -160,23 +122,12 @@
             .grid {
                 grid-template-columns: 1fr;
             }
-            .timeline {
-                flex-direction: column;
-                align-items: center;
-            }
-            .t-item {
-                width: 60%;
-            }
         }
     </style>
 </head>
 <body>
 
     <h1>Actividad 2 – Componentes PCI Express (PCIe)</h1>
-
-    <!-- ========================== -->
-    <!-- 1. POR TAMAÑO DE RANURA   -->
-    <!-- ========================== -->
 
     <div class="section">
         <h2>1. Componentes por tamaño de ranura PCIe</h2>
@@ -283,15 +234,12 @@
         </div>
     </div>
 
-    <!-- ============================== -->
-    <!-- 2. POR GENERACIÓN DE PCIe     -->
-    <!-- ============================== -->
-
+    <!-- POR GENERACIÓN -->
     <div class="section">
         <h2>2. Componentes por generación de PCIe</h2>
         <p>
             Aquí se recogen ejemplos de dispositivos que aprovechan distintas generaciones de PCIe
-            (<b>Gen3, Gen4, Gen5, Gen6</b>). Cada generación duplica aproximadamente el ancho de banda de la anterior,
+            (<b>Gen3, Gen4, Gen5</b>). Cada generación duplica aproximadamente el ancho de banda de la anterior,
             lo que permite crear dispositivos más rápidos.
         </p>
 
@@ -360,111 +308,134 @@
                 </ul>
             </div>
         </div>
-
-        <!-- Gen6 -->
-        <h3>PCIe Gen6</h3>
-        <div class="grid">
-            <div class="card">
-                <span class="badge">PCIe 6.0</span>
-                <h3>SSD NVMe PCIe 6.0 (futuro cercano)</h3>
-                <ul>
-                    <li>Duplicará de nuevo el rendimiento respecto a PCIe 5.0.</li>
-                    <li>Permitirá velocidades extremas orientadas a centros de datos y servidores.</li>
-                    <li>Está pensado para mover cantidades enormes de datos en muy poco tiempo.</li>
-                </ul>
-            </div>
-            <div class="card">
-                <span class="badge">PCIe 6.0</span>
-                <h3>Aceleradoras y tarjetas de red PCIe 6.0</h3>
-                <ul>
-                    <li>Se usarán en servidores, cloud e inteligencia artificial.</li>
-                    <li>Aprovecharán el gran ancho de banda para IA, bases de datos y virtualización.</li>
-                    <li>Requerirán placas base, procesadores y chipsets específicos compatibles.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Línea temporal tipo gráfico de barras -->
-        <h2 style="margin-top:40px;">Línea temporal de generaciones PCIe</h2>
-        <p style="text-align:center;">
-            Representación gráfica de la evolución del ancho de banda a x16.
-        </p>
-
-        <div class="timeline">
-            <div class="t-item">
-                <div class="bar" style="--h:40px;"></div>
-                <strong>PCIe 1.0</strong>
-                <span>2003</span>
-                <span>~4 GB/s</span>
-            </div>
-            <div class="t-item">
-                <div class="bar" style="--h:60px;"></div>
-                <strong>PCIe 2.0</strong>
-                <span>2007</span>
-                <span>~8 GB/s</span>
-            </div>
-            <div class="t-item">
-                <div class="bar" style="--h:90px;"></div>
-                <strong>PCIe 3.0</strong>
-                <span>2010</span>
-                <span>~16 GB/s</span>
-            </div>
-            <div class="t-item">
-                <div class="bar" style="--h:130px;"></div>
-                <strong>PCIe 4.0</strong>
-                <span>2017</span>
-                <span>~32 GB/s</span>
-            </div>
-            <div class="t-item">
-                <div class="bar" style="--h:180px;"></div>
-                <strong>PCIe 5.0</strong>
-                <span>2019</span>
-                <span>~64 GB/s</span>
-            </div>
-            <div class="t-item">
-                <div class="bar" style="--h:230px;"></div>
-                <strong>PCIe 6.0</strong>
-                <span>2022</span>
-                <span>~128 GB/s</span>
-            </div>
-        </div>
     </div>
 
-    <!-- ============================== -->
-    <!-- 3. ¿POR QUÉ EVOLUCIONA PCIe?  -->
-    <!-- ============================== -->
-
+    <!-- EXPLICACIÓN FINAL -->
     <div class="section">
         <h2>3. ¿Por qué PCIe sigue evolucionando?</h2>
-
         <p>
-            PCIe continúa avanzando porque los componentes modernos requieren mover cantidades enormes de datos.
-            Las tarjetas gráficas, procesadores y SSD NVMe generan cada vez más tráfico, y si la interfaz PCIe
-            no evolucionara, se convertiría en un cuello de botella.
+            PCIe continúa evolucionando porque cada vez necesitamos mover más datos entre los componentes
+            del ordenador. Los <b>procesadores</b> tienen más núcleos, las <b>tarjetas gráficas</b> procesan más
+            información para juegos y trabajos en 4K/8K, y los <b>SSD NVMe</b> son cada vez más rápidos.
+            Si la interfaz PCIe se quedara estancada, se convertiría en un cuello de botella.
         </p>
-
         <p>
-            Gracias a las nuevas generaciones de PCIe es posible:
+            Cada nueva generación de PCIe (Gen3, Gen4, Gen5...) mejora el ancho de banda disponible. Esto permite:
         </p>
-
         <ul>
-            <li>Cargar juegos y programas más rápido.</li>
-            <li>Trabajar con vídeo 4K/8K sin esperas interminables.</li>
-            <li>Conectar más dispositivos simultáneamente sin pérdida de rendimiento.</li>
-            <li>Preparar el hardware para futuras generaciones de GPU y SSD.</li>
+            <li>Cargar juegos y programas mucho más rápido.</li>
+            <li>Trabajar con vídeo y modelos 3D muy pesados sin tantos tiempos de espera.</li>
+            <li>Conectar más dispositivos al mismo tiempo sin perder rendimiento.</li>
+            <li>Preparar los PCs para futuras tarjetas gráficas y SSD aún más potentes.</li>
         </ul>
-
         <p>
-            De esta manera, PCIe asegura que los equipos puedan seguir creciendo en potencia sin limitar
-            el rendimiento de los componentes más exigentes.
+            PCIe sigue evolucionando porque el hardware no deja de mejorar y
+            la interfaz debe ser capaz de seguir el ritmo para que todo el sistema funcione
+            sin cuellos de botella.
+        </p>
+    </div>
+
+    <!-- ================= PUNTO 4 ================= -->
+
+    <div class="section">
+        <h2>4. Comparación de componentes reales por tipo de ranura PCIe</h2>
+        <p>
+            En este apartado se comparan <b>dos dispositivos reales de fabricantes distintos</b>
+            para cada tipo de ranura PCIe. Así se puede ver que, aunque usen el mismo conector,
+            pueden estar orientados a usos diferentes.
         </p>
 
-        <p>
-            Además, con la llegada de <b>PCIe 6.0</b>, que utiliza tecnologías como <b>PAM4</b> y sistemas avanzados de
-            corrección de errores, el ancho de banda vuelve a duplicarse. Esto abre la puerta a nuevas aplicaciones
-            en inteligencia artificial, servidores, centros de datos y almacenamiento de ultra alta velocidad,
-            garantizando que la interfaz PCIe siga siendo válida durante la próxima década.
-        </p>
+        <h3>PCIe x1 – Tarjetas de sonido</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">Creative</span>
+                <h3>Sound Blaster Audigy FX</h3>
+                <ul>
+                    <li>Tarjeta de sonido PCIe x1.</li>
+                    <li>Mejora clara frente al audio integrado.</li>
+                    <li>Enfocada a usuarios domésticos y gaming.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">ASUS</span>
+                <h3>Xonar SE</h3>
+                <ul>
+                    <li>Tarjeta de sonido PCIe x1.</li>
+                    <li>Mejor aislamiento y calidad de audio.</li>
+                    <li>Muy usada para música y multimedia.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>PCIe x4 – Almacenamiento NVMe</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">Samsung</span>
+                <h3>Samsung 980 PRO</h3>
+                <ul>
+                    <li>SSD NVMe PCIe 4.0 x4.</li>
+                    <li>Velocidades muy altas de lectura y escritura.</li>
+                    <li>Ideal para gaming y edición.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">WD</span>
+                <h3>WD Black SN850</h3>
+                <ul>
+                    <li>SSD NVMe PCIe 4.0 x4.</li>
+                    <li>Rendimiento similar al Samsung.</li>
+                    <li>Muy popular en PCs de alto rendimiento.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>PCIe x8 – Tarjetas de red profesionales</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">Intel</span>
+                <h3>Intel X550-T2</h3>
+                <ul>
+                    <li>Tarjeta de red PCIe x8.</li>
+                    <li>Conectividad 10 Gb Ethernet.</li>
+                    <li>Muy usada en servidores.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">Broadcom</span>
+                <h3>NetXtreme BCM57412</h3>
+                <ul>
+                    <li>Tarjeta de red PCIe x8.</li>
+                    <li>Enfoque profesional y empresarial.</li>
+                    <li>Alta fiabilidad y rendimiento.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>PCIe x16 – Tarjetas gráficas</h3>
+        <div class="grid">
+            <div class="card">
+                <span class="badge">NVIDIA</span>
+                <h3>GeForce RTX 4070</h3>
+                <ul>
+                    <li>Tarjeta gráfica PCIe x16.</li>
+                    <li>Muy orientada a juegos y creación de contenido.</li>
+                    <li>Uso doméstico y gaming avanzado.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="badge">AMD</span>
+                <h3>Radeon RX 7800 XT</h3>
+                <ul>
+                    <li>Tarjeta gráfica PCIe x16.</li>
+                    <li>Alternativa directa a NVIDIA.</li>
+                    <li>Muy buen rendimiento en juegos modernos.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
 </body>
