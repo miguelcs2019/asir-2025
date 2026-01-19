@@ -1,0 +1,92 @@
+<section>
+    <div class="etiqueta-ejercicio">Ejercicio 2</div>
+    <h2>Búsqueda de un PPA y comprobación de paquetes disponibles</h2>
+
+    <p>
+        Para este ejercicio se seleccionó el PPA oficial de LibreOffice como repositorio alternativo.
+        El objetivo era identificar un PPA, consultarlo y verificar qué paquetes están disponibles en él.
+        En este caso se utilizó Linux Mint como entorno de trabajo.
+    </p>
+
+    <h3>1. Acceso al PPA desde Launchpad</h3>
+    <p>
+        En primer lugar, se accedió al siguiente enlace donde se encuentra alojado el PPA de LibreOffice:
+    </p>
+
+    <div class="cajita">
+        <p><span class="resaltado">URL:</span> https://launchpad.net/~libreoffice/+archive/ubuntu/ppa</p>
+    </div>
+
+    <p>
+        En la página se puede observar el contenido del repositorio, incluyendo los paquetes y las
+        distribuciones soportadas.
+    </p>
+
+    <div class="captura">
+        <img src="media/captura3.png" alt="Visualización del PPA en Launchpad" style="width:100%; border:1px solid #00ff88; border-radius:6px;">
+        <p class="pie">Captura 1: Visualización del PPA en Launchpad.</p>
+    </div>
+
+    <h3>2. Añadir el PPA al sistema</h3>
+    <p>
+        En Linux Mint es posible añadir un PPA mediante el comando <span class="resaltado">add-apt-repository</span>.
+        Para añadir el repositorio se ejecutó el siguiente comando:
+    </p>
+
+    <div class="cajita">
+        <code>sudo add-apt-repository ppa:libreoffice/ppa</code>
+    </div>
+
+    <p>
+        Tras su ejecución, el sistema incorpora el repositorio al listado de orígenes de software.
+    </p>
+
+    <div class="captura">
+        <img src="media/captura4.png" alt="Añadiendo PPA desde terminal" style="width:100%; border:1px solid #00ff88; border-radius:6px;">
+        <p class="pie">Captura 2: Añadiendo el PPA desde la terminal.</p>
+    </div>
+
+    <h3>3. Actualización de la caché de paquetes</h3>
+    <p>
+        Para que el sistema reconozca los paquetes ofrecidos por el PPA es necesario actualizar la caché
+        de apt mediante el comando:
+    </p>
+
+    <div class="cajita">
+        <code>sudo apt update</code>
+    </div>
+
+    <p>
+        Este comando descarga la información de los paquetes desde el repositorio recién añadido.
+    </p>
+
+    <div class="captura">
+        <img src="media/captura5.png" alt="Actualizando caché de paquetes" style="width:100%; border:1px solid #00ff88; border-radius:6px;">
+        <p class="pie">Captura 3: Actualización de la caché de APT.</p>
+    </div>
+
+    <h3>4. Comprobación de paquetes disponibles</h3>
+    <p>
+        Finalmente, se realizó una búsqueda para listar los paquetes relacionados con LibreOffice
+        disponibles desde el repositorio:
+    </p>
+
+    <div class="cajita">
+        <code>apt search libreoffice</code>
+    </div>
+
+    <p>
+        La salida muestra múltiples paquetes como <span class="resaltado">writer, calc, impress, help</span> y otros módulos.
+    </p>
+
+    <div class="captura">
+        <img src="media/captura6.png" alt="Listado de paquetes LibreOffice" style="width:100%; border:1px solid #00ff88; border-radius:6px;">
+        <p class="pie">Captura 4: Listado de paquetes proporcionados por el PPA.</p>
+    </div>
+
+    <h3>Conclusión</h3>
+    <p>
+        Se ha ubicado un PPA válido, se ha añadido al sistema y se ha comprobado que ofrece múltiples paquetes
+        relacionados con LibreOffice. Con ello se cumple el objetivo del ejercicio.
+    </p>
+</section>
