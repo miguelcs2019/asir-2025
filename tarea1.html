@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tarea 1 – Conceptos de Software</title>
+
+    <style>
+        :root {
+            --c-bg: #0c0c0c;
+            --c-panel: #111;
+            --c-text: #00ff88;
+            --c-accent: #00ff88;
+            --c-soft: #0aff66;
+            --c-border: #0aff66;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--c-bg);
+            color: var(--c-text);
+            font-family: Consolas, "Courier New", monospace;
+            line-height: 1.5;
+        }
+
+        .contenedor {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .tarjeta {
+            background: var(--c-panel);
+            border: 1px solid var(--c-border);
+            border-radius: 10px;
+            padding: 32px;
+            box-shadow: 0 0 18px rgba(0,255,120,0.25);
+        }
+
+        header.titulo {
+            border-bottom: 1px solid var(--c-border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        header.titulo h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.8rem;
+            color: var(--c-accent);
+            text-shadow: 0 0 8px var(--c-accent);
+            text-transform: uppercase;
+        }
+
+        header.titulo p {
+            margin: 4px 0;
+            color: var(--c-text);
+            opacity: 0.85;
+        }
+
+        .datos-alumno {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px 30px;
+            font-size: 0.9rem;
+        }
+
+        .datos-alumno span {
+            min-width: 240px;
+            border-bottom: 1px dashed var(--c-text);
+            padding-bottom: 3px;
+        }
+
+        h2 {
+            margin-top: 26px;
+            font-size: 1.25rem;
+            border-left: 4px solid var(--c-accent);
+            padding-left: 10px;
+            color: var(--c-accent);
+            text-shadow: 0 0 6px var(--c-accent);
+            text-transform: uppercase;
+        }
+
+        h3 {
+            margin-top: 14px;
+            color: var(--c-soft);
+        }
+
+        p {
+            margin: 8px 0;
+            text-align: justify;
+        }
+
+        ul {
+            margin: 8px 0 8px 22px;
+        }
+
+        .etiqueta-ejercicio {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--c-border);
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            color: var(--c-accent);
+            text-shadow: 0 0 6px var(--c-accent);
+        }
+
+        .cajita {
+            border: 1px solid var(--c-border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            background: rgba(0,255,120,0.05);
+            margin: 8px 0 14px 0;
+        }
+
+        .resaltado {
+            color: var(--c-accent);
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+                font-family: Arial, sans-serif;
+            }
+            .tarjeta {
+                border: none;
+                box-shadow: none;
+            }
+            h1, h2, h3 {
+                text-shadow: none;
+                color: black;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="contenedor">
+        <div class="tarjeta">
+            <header class="titulo">
+                <h1>Tarea: Conceptos de Software</h1>
+                <p>Unidad 7 – Software y actualizaciones</p>
+                <div class="datos-alumno">
+                    <span>Alumno: Miguel</span>
+                    <span>Fecha: 16/01/2026</span>
+                    <span>Módulo: Sistemes Operatius</span>
+                </div>
+            </header>
+
+            <!-- EJERCICIO 1 -->
+            <section>
+                <div class="etiqueta-ejercicio">Ejercicio 1</div>
+                <h2>Cambios entre las dos últimas versiones de NGiNX</h2>
+
+                <p>
+                    En la página oficial del proyecto NGiNX (nginx.org) se indican las versiones más recientes del servidor web.
+                    A fecha de consulta, las dos últimas versiones publicadas son:
+                </p>
+
+                <div class="cajita">
+                    <p><span class="resaltado">nginx-1.29.4 (mainline)</span></p>
+                    <ul>
+                        <li>Introducción de <span class="resaltado">HTTP/2 hacia el backend</span>.</li>
+                        <li>Soporte para <span class="resaltado">Encrypted ClientHello (ECH)</span> para mejorar la privacidad.</li>
+                        <li>Correcciones de errores y mejoras internas.</li>
+                    </ul>
+                </div>
+
+                <div class="cajita">
+                    <p><span class="resaltado">nginx-1.28.1 (stable)</span></p>
+                    <ul>
+                        <li>Versión estable derivada de mainline.</li>
+                        <li>Correcciones y ajustes orientados a producción.</li>
+                    </ul>
+                </div>
+
+                <p>
+                    En resumen, las mejoras se centran en <span class="resaltado">protocolo, seguridad y estabilidad</span>.
+                </p>
+            </section>
+
+            <!-- EJERCICIO 2 -->
+            <section>
+                <div class="etiqueta-ejercicio">Ejercicio 2</div>
+                <h2>Última actualización de seguridad para Windows 10</h2>
+
+                <p>
+                    Microsoft indica que Windows 10 finalizó soporte estándar el <span class="resaltado">14 de octubre de 2025</span>.
+                    Las actualizaciones posteriores requieren inscripción en el programa <span class="resaltado">ESU</span>.
+                </p>
+
+                <div class="cajita">
+                    <ul>
+                        <li><span class="resaltado">KB5068781</span> – 11/11/2025</li>
+                        <li>Actualización de seguridad acumulativa para la versión 22H2.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- EJERCICIO 3 -->
+            <section>
+                <div class="etiqueta-ejercicio">Ejercicio 3</div>
+                <h2>Cracker y keygen: riesgos</h2>
+
+                <h3>Cracker</h3>
+                <p>Individuo que vulnera protecciones de software para eliminar restricciones o activar funciones ilegales.</p>
+
+                <h3>Keygen</h3>
+                <p>Programa que genera claves o licencias falsas.</p>
+
+                <h3>Por qué no usarlos</h3>
+                <ul>
+                    <li>Malware y puertas traseras.</li>
+                    <li>Incumplimiento legal.</li>
+                    <li>Sin soporte ni actualizaciones.</li>
+                    <li>Riesgo operativo y reputacional.</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+</body>
+</html>
 
