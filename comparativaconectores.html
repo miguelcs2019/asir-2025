@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interfaces de Almacenamiento: IDE/PATA, SATA, SCSI y SAS</title>
+
+  <style>
+    :root{
+      --bg: #f6f4ef;
+      --paper: #ffffff;
+      --ink: #1f2937;
+      --muted: #4b5563;
+      --accent: #b45309;   /* tono sobrio (sin azules) */
+      --accent2:#7c2d12;
+      --line: #e5e7eb;
+      --soft: #faf7f0;
+    }
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Montserrat", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    header{
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      color: #fff;
+      padding: 34px 18px;
+      text-align: center;
+    }
+
+    header h1{
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: .4px;
+      font-weight: 800;
+    }
+
+    header p{
+      margin: 10px auto 0;
+      max-width: 960px;
+      font-size: 14.5px;
+      opacity: .95;
+    }
+
+    main{
+      width: 92%;
+      max-width: 1040px;
+      margin: 26px auto 46px;
+    }
+
+    .card{
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px 22px;
+      margin: 18px 0;
+      box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    }
+
+    h2{
+      margin: 0 0 14px;
+      font-size: 22px;
+      color: var(--accent2);
+      border-left: 6px solid var(--accent);
+      padding-left: 12px;
+      font-weight: 800;
+    }
+
+    h3{
+      margin: 18px 0 10px;
+      font-size: 18px;
+      color: var(--accent2);
+      font-weight: 800;
+    }
+
+    h4{
+      margin: 14px 0 8px;
+      font-size: 15.5px;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    p{ margin: 10px 0; text-align: justify; }
+
+    .note{
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--accent);
+      border-radius: 12px;
+      padding: 14px 14px;
+      margin: 14px 0;
+    }
+
+    .grid-2{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 860px){
+      .grid-2{ grid-template-columns: 1fr; }
+      header h1{ font-size: 24px; }
+    }
+
+    ul{ margin: 8px 0 8px 20px; }
+    li{ margin: 6px 0; text-align: justify; }
+
+    .tag{
+      display: inline-block;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      margin: 6px 6px 0 0;
+      white-space: nowrap;
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    thead th{
+      background: #fff3e6;
+      color: var(--ink);
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 800;
+    }
+
+    tbody td{
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: justify;
+    }
+
+    tbody tr:nth-child(even){
+      background: #fcfbf8;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 13px;
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    footer{
+      text-align: center;
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-top: 18px;
+    }
+
+    .divider{
+      height: 1px;
+      background: var(--line);
+      margin: 16px 0;
+    }
+
+    .mini{
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Interfaces de Almacenamiento: IDE/PATA, SATA, SCSI y SAS</h1>
+    <p>
+      Documento tecnico de estudio: fundamentos historicos, analisis por interfaz y comparativa final.
+      Enfoque orientado a comprender el paso de buses paralelos a buses serie y sus implicaciones
+      en rendimiento, cableado y operacion.
+    </p>
+  </header>
+
+  <main>
+
+    <!-- 1. Fundamentos y Evolución -->
+    <section class="card" id="fundamentos">
+      <h2>1. Fundamentos y evolucion (contexto historico)</h2>
+
+      <p>
+        La historia de las interfaces de almacenamiento en PC y servidor refleja un cambio de paradigma:
+        el paso de la <strong>transmision paralela</strong> (PATA e historicamente SCSI paralelo) a la
+        <strong>transmision serie</strong> (SATA y SAS). Este cambio no fue estetico: respondio a limites
+        fisicos del cableado paralelo cuando aumentaron las frecuencias de trabajo y las exigencias de integridad de senal.
+      </p>
+
+      <h3>1.1 Paralelo vs serie: por que se produjo el cambio</h3>
+
+      <div class="grid-2">
+        <div class="note">
+          <h4>Limitaciones del paralelo (PATA / SCSI paralelo)</h4>
+          <ul>
+            <li><strong>Desincronizacion (skew)</strong>: al enviar varios bits simultaneamente por hilos distintos, a altas frecuencias algunos llegan antes que otros.</li>
+            <li><strong>Interferencias y crosstalk</strong>: muchos conductores proximos aumentan el ruido y los errores.</li>
+            <li><strong>Cables voluminosos</strong>: dificultan el flujo de aire interno y empeoran la refrigeracion.</li>
+            <li><strong>Longitud limitada</strong>: a mas velocidad, menos tolerancia a reflexiones y degradacion de senal.</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <h4>Ventajas del serie (SATA / SAS)</h4>
+          <ul>
+            <li><strong>Mejor integridad de senal</strong>: menos lineas, transmision diferencial y mejor control del ruido.</li>
+            <li><strong>Mayor escalabilidad</strong>: subir velocidad es mas viable sin multiplicar problemas de sincronizacion.</li>
+            <li><strong>Cables finos</strong>: mejora flujo de aire y facilita montaje.</li>
+            <li><strong>Mayor longitud util</strong>: especialmente relevante en entornos de servidor y backplanes.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="mini">
+        Nota tecnica: aunque “SCSI” existe en variantes paralelas y serie, en este temario se contrasta el
+        SCSI clasico (paralelo) con SAS (serie), que es su evolucion en entorno profesional.
+      </p>
+
+      <div class="divider"></div>
+
+      <h3>1.2 Conceptos clave</h3>
+      <ul>
+        <li>
+          <strong>Bus</strong>:
+          conjunto de lineas y reglas de comunicacion que permiten intercambiar datos y senales de control entre dispositivos.
+          En SCSI paralelo, el bus es compartido por varios equipos; en SATA tipicamente es punto a punto.
+        </li>
+        <li>
+          <strong>Ancho de banda</strong>:
+          capacidad maxima teorica de transferencia por unidad de tiempo. Depende del ancho del canal (bits), frecuencia, codificacion y eficiencia del protocolo.
+        </li>
+        <li>
+          <strong>Hot-swap (conexion en caliente)</strong>:
+          capacidad de conectar o desconectar un dispositivo sin apagar el sistema, siempre que el hardware y el modo de control lo soporten.
+          En entornos de servidor es clave para mantenimiento sin parada.
+        </li>
+      </ul>
+
+      <div class="note">
+        <span class="tag">Idea clave</span>
+        <p>
+          El paso a interfaces serie (SATA/SAS) se explica por: <strong>menos problemas fisicos a alta velocidad</strong>,
+          <strong>cables mas manejables</strong> y <strong>mayor potencial de evolucion</strong>.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Análisis Detallado por Interfaz -->
+    <section class="card" id="analisis">
+      <h2>2. Analisis detallado por interfaz</h2>
+      <p>
+        A continuacion se presenta una ficha tecnica para cada estandar. Se priorizan criterios de examen:
+        cableado, configuracion, limites operativos y elementos diferenciales (modo de control, topologia y compatibilidades).
+      </p>
+
+      <!-- A. IDE / PATA -->
+      <h3>A. IDE / PATA (Integrated Drive Electronics)</h3>
+
+      <h4>El cable: 40 hilos vs 80 hilos</h4>
+      <p>
+        IDE/PATA emplea transmision <strong>paralela</strong>. Historicamente existieron dos cables muy conocidos:
+        el de <strong>40 hilos</strong> (40 conductores) y el de <strong>80 hilos</strong> (80 conductores), ambos con
+        <strong>40 pines</strong> en el conector.
+      </p>
+      <ul>
+        <li><strong>40 hilos</strong>: suficiente para modos antiguos (por ejemplo, ATA/33). Mayor susceptibilidad a interferencias.</li>
+        <li><strong>80 hilos</strong>: se anaden conductores extra como referencia/masa entre lineas para reducir crosstalk e interferencias, permitiendo modos mas rapidos (ATA/66, ATA/100, ATA/133).</li>
+      </ul>
+
+      <h4>Configuracion: Maestro y Esclavo (jumpers)</h4>
+      <p>
+        Un canal IDE permite dos dispositivos compartiendo el bus. Se definen roles mediante <strong>jumpers</strong>:
+        <strong>Master</strong> (maestro) y <strong>Slave</strong> (esclavo). Alternativamente puede usarse
+        <strong>Cable Select (CS)</strong>, donde la posicion en el cable determina el rol.
+      </p>
+      <div class="note">
+        <p>
+          Problema habitual: si ambos dispositivos quedan configurados como Master o ambos como Slave, pueden aparecer fallos de deteccion o inestabilidad.
+        </p>
+      </div>
+
+      <h4>Limitaciones: maximo de dispositivos por canal</h4>
+      <ul>
+        <li><strong>Maximo</strong>: 2 dispositivos por canal (un bus compartido).</li>
+        <li><strong>Impacto</strong>: ambos comparten el canal; en cargas mixtas se puede degradar el rendimiento.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <!-- B. SATA -->
+      <h3>B. SATA (Serial ATA)</h3>
+
+      <h4>Versiones: velocidades teoricas</h4>
+      <ul>
+        <li><strong>SATA I</strong>: 1.5 Gb/s (aprox. 150 MB/s teoricos)</li>
+        <li><strong>SATA II</strong>: 3.0 Gb/s (aprox. 300 MB/s teoricos)</li>
+        <li><strong>SATA III</strong>: 6.0 Gb/s (aprox. 600 MB/s teoricos)</li>
+      </ul>
+      <p class="mini">
+        Nota: el rendimiento real depende del dispositivo (HDD/SSD), controladora, colas de comandos y carga del sistema.
+      </p>
+
+      <h4>Conectores: datos vs alimentacion</h4>
+      <ul>
+        <li><strong>Datos</strong>: conector de 7 pines, pequeno y estrecho.</li>
+        <li><strong>Alimentacion</strong>: conector de 15 pines, con lineas para 3.3 V, 5 V y 12 V (segun implementacion).</li>
+      </ul>
+
+      <h4>AHCI vs IDE Mode (BIOS/UEFI)</h4>
+      <p>
+        La controladora SATA puede funcionar en modo <strong>IDE</strong> (compatibilidad) o <strong>AHCI</strong>
+        (modo nativo). AHCI habilita funciones relevantes como <strong>NCQ</strong> (reordenacion de comandos)
+        y soporte de hot-swap en escenarios compatibles. Configurarlo correctamente en BIOS/UEFI es importante,
+        especialmente antes de instalar el sistema operativo, para evitar problemas de drivers o arranque.
+      </p>
+
+      <div class="divider"></div>
+
+      <!-- C. SCSI -->
+      <h3>C. SCSI (Small Computer System Interface) - SCSI paralelo clasico</h3>
+
+      <h4>La “cadena”: IDs y terminacion</h4>
+      <p>
+        En SCSI paralelo, la topologia habitual es un <strong>bus compartido</strong> donde varios dispositivos se conectan
+        a la misma linea (cadena). Para que el sistema funcione correctamente, se requieren dos elementos criticos:
+        <strong>IDs unicos</strong> y <strong>terminacion correcta del bus</strong>.
+      </p>
+
+      <div class="grid-2">
+        <div class="note">
+          <h4>IDs (identificadores)</h4>
+          <ul>
+            <li>Cada dispositivo tiene un <strong>ID SCSI</strong> unico dentro del bus.</li>
+            <li>En <strong>Narrow (8 bits)</strong> hay IDs 0-7; en <strong>Wide (16 bits)</strong> IDs 0-15.</li>
+            <li>El ID influye en el <strong>arbitraje</strong> del bus (prioridad): IDs mas altos suelen tener prioridad.</li>
+            <li>En servidores, el host adapter frecuentemente usa un ID alto (ejemplo tipico: <span class="kbd">7</span>).</li>
+          </ul>
+        </div>
+
+        <div class="note">
+          <h4>Terminador (por que es necesario)</h4>
+          <ul>
+            <li>El bus SCSI es una <strong>linea de transmision</strong>: sin terminacion aparecen <strong>reflexiones</strong> de senal.</li>
+            <li>Las reflexiones causan errores, reintentos, perdida de rendimiento y fallos intermitentes.</li>
+            <li>Regla: el bus debe estar <strong>terminado en ambos extremos</strong> (no mas, no menos).</li>
+            <li>Tipos comunes: <strong>pasivo</strong> (resistivo) y <strong>activo</strong> (referencia regulada; mas estable en modos rapidos).</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4>Variedad: conectores y uso empresarial</h4>
+      <p>
+        SCSI paralelo tuvo una gran diversidad de conectores y formatos, reflejo de su evolucion y de la coexistencia de
+        versiones internas/externas y narrow/wide. Tres referencias clasicas en entornos de almacenamiento:
+      </p>
+      <ul>
+        <li><strong>50 pines</strong>: comun en SCSI narrow (8 bits) y generaciones mas antiguas.</li>
+        <li><strong>68 pines</strong>: tipico en SCSI wide (16 bits), muy habitual en servidores y cabinas.</li>
+        <li><strong>80 pines SCA</strong> (Single Connector Attachment): orientado a backplanes y bahias hot-swap; integra datos, alimentacion y senales de control en un unico conector.</li>
+      </ul>
+
+      <div class="note">
+        <span class="tag">Contexto historico empresarial</span>
+        <p>
+          Antes de SAS, SCSI (paralelo) fue el estandar empresarial por su ecosistema de controladoras, discos orientados a servicio 24/7,
+          configuraciones multi-dispositivo y compatibilidad con backplanes. Su limite fue la escalabilidad fisica del paralelo a altas velocidades,
+          lo que impulso la transicion a <strong>SAS</strong> (serie) en entornos profesionales.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- D. SAS -->
+      <h3>D. SAS (Serial Attached SCSI)</h3>
+
+      <h4>Entorno de uso: servidores (fiabilidad 24/7)</h4>
+      <p>
+        SAS es la evolucion profesional de SCSI hacia transmision serie, disenada para alta disponibilidad y cargas sostenidas.
+        Se usa principalmente en servidores por su robustez, opciones de redundancia, tolerancia a fallos y escalabilidad con expulsores (expanders).
+      </p>
+
+      <h4>Compatibilidad: regla de oro</h4>
+      <ul>
+        <li><strong>Un disco SATA funciona en una controladora SAS</strong> (compatibilidad hacia abajo).</li>
+        <li><strong>Un disco SAS no funciona en una controladora SATA</strong> (SATA no entiende SAS).</li>
+      </ul>
+
+      <h4>Full duplex</h4>
+      <p>
+        SAS puede operar en <strong>full duplex</strong>, es decir, transmitir y recibir simultaneamente. En terminos practicos,
+        esto permite lectura y escritura concurrentes con mayor eficiencia en entornos con carga mixta.
+        SATA, por su naturaleza, opera de forma equivalente a <strong>half duplex</strong> (una direccion efectiva por ciclo de comunicacion).
+      </p>
+
+      <div class="note">
+        <span class="tag">Idea clave</span>
+        <p>
+          SAS combina la filosofia de SCSI (fiabilidad, comando/protocolo y ecosistema empresarial) con las ventajas electricas del serie
+          (mejor integridad de senal y escalabilidad).
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. Tabla comparativa -->
+    <section class="card" id="comparativa">
+      <h2>3. Comparativa visual y tecnica (tabla)</h2>
+
+      <p>
+        La siguiente tabla sintetiza los aspectos mas relevantes para comparar las interfaces desde el punto de vista de transmision,
+        capacidad teorica, cableado, escalabilidad y soporte de hot-swap.
+      </p>
+
+      <table aria-label="Tabla comparativa de interfaces de almacenamiento">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo de transmision</th>
+            <th>Velocidad maxima teorica</th>
+            <th>Longitud maxima del cable</th>
+            <th>Dispositivos maximos por puerto/bus</th>
+            <th>Soporte hot-swap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IDE / PATA</strong></td>
+            <td>Paralelo</td>
+            <td>Hasta 133 MB/s (ATA/133)</td>
+            <td>Aprox. 46 cm</td>
+            <td>2 por canal (Master/Slave)</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td><strong>SATA</strong></td>
+            <td>Serie</td>
+            <td>SATA III: 6.0 Gb/s (aprox. 600 MB/s)</td>
+            <td>Aprox. 1 m</td>
+            <td>1 por puerto (punto a punto)</td>
+            <td>Si (segun controladora y AHCI)</td>
+          </tr>
+          <tr>
+            <td><strong>SCSI (paralelo)</strong></td>
+            <td>Paralelo</td>
+            <td>Dependiente de generacion (hasta Ultra320 en escenarios clasicos)</td>
+            <td>Variable segun modo y velocidad (limitado por integridad de senal)</td>
+            <td>Hasta 8 (narrow) o 16 (wide) incluyendo el host</td>
+            <td>Limitado (habitual en backplanes; depende de implementacion)</td>
+          </tr>
+          <tr>
+            <td><strong>SAS</strong></td>
+            <td>Serie</td>
+            <td>12/24 Gb/s (segun generacion)</td>
+            <td>Aprox. hasta 10 m (segun implementacion)</td>
+            <td>Alta escalabilidad (128+ con expulsores/expanders)</td>
+            <td>Si</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <p>
+          Observacion importante: las cifras de velocidad son teoricas. En la practica, el rendimiento real depende del dispositivo
+          (HDD vs SSD), colas, controladora y carga. La tabla se centra en criterios de comparacion de interfaz y topologia.
+        </p>
+      </div>
+
+      <footer>
+        Documento de estudio: Interfaces de almacenamiento (IDE/PATA, SATA, SCSI, SAS)
+      </footer>
+    </section>
+
+  </main>
+</body>
+</html>
