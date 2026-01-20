@@ -143,77 +143,217 @@
                 </div>
             </header>
 
-            <!-- EJERCICIO 2 -->
-            <section>
-                <div class="etiqueta-ejercicio">Ejercicio 2</div>
-                <h2>Búsqueda de un PPA y revisión de paquetes</h2>
+<!-- EJERCICIO 1 -->
+<section>
+    <div class="etiqueta-ejercicio">Ejercicio 1</div>
+    <h2>Activación de un repositorio externo y comprobación del paquete</h2>
 
-                <p>
-                    En este ejercicio se trabajó con el PPA oficial de LibreOffice, que distribuye versiones 
-                    actualizadas para sistemas basados en Ubuntu, incluyendo Linux Mint.
-                </p>
+    <p>
+        El objetivo de este ejercicio consistió en activar un repositorio externo en el sistema,
+        actualizar la caché de APT y comprobar que el paquete proporcionado por dicho origen
+        estaba disponible para su instalación.
+    </p>
 
-                <h3>1. Acceso al PPA en Launchpad</h3>
-                <p>
-                    Se accedió al PPA mediante navegador para consultar su contenido:
-                </p>
+    <p>
+        Dado que en las versiones actuales de Linux Mint el repositorio <span class="resaltado">Partner</span>
+        y el antiguo plugin de <span class="resaltado">Flash</span> han quedado obsoletos,
+        se utilizó un repositorio equivalente para cumplir el objetivo técnico del ejercicio:
+        el repositorio oficial de Google Chrome, el cual proporciona el paquete
+        <span class="resaltado">google-chrome-stable</span>.
+    </p>
 
-                <div class="cajita">
-                    <code>https://launchpad.net/~libreoffice/+archive/ubuntu/ppa</code>
-                </div>
+    <h3>1 y 2. Añadir la clave GPG y el repositorio</h3>
 
-                <div class="captura">
-                    <img src="media/captura3.PNG" alt="PPA LibreOffice en Launchpad">
-                    <p class="pie">Captura 1: Visualización del PPA en Launchpad.</p>
-                </div>
+    <div class="cajita">
+        <code>wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -</code><br>
+        <code>echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list</code>
+    </div>
 
-                <h3>2. Añadir el PPA desde terminal</h3>
-                <p>
-                    A continuación, se añadió el repositorio al sistema mediante el comando:
-                </p>
+    <div class="captura">
+        <img src="media/captura11.PNG" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Adición de la clave GPG del repositorio y registro del fichero en <code>sources.list.d</code>.</p>
+    </div>
 
-                <div class="cajita">
-                    <code>sudo add-apt-repository ppa:libreoffice/ppa</code>
-                </div>
+    <h3>3. Actualización de la caché</h3>
 
-                <div class="captura">
-                    <img src="media/captura4.PNG" alt="Añadiendo PPA desde terminal">
-                    <p class="pie">Captura 2: Incorporación del PPA a Linux Mint.</p>
-                </div>
+    <p>Una vez añadido el repositorio se actualizó la caché del gestor de paquetes:</p>
 
-                <h3>3. Actualizar la caché del sistema</h3>
-                <p>
-                    Para que el sistema reconozca los nuevos paquetes, se ejecutó:
-                </p>
+    <div class="cajita">
+        <code>sudo apt update</code>
+    </div>
 
-                <div class="cajita">
-                    <code>sudo apt update</code>
-                </div>
+    <h3>4. Comprobación del paquete proporcionado</h3>
 
-                <div class="captura">
-                    <img src="media/captura5.PNG" alt="Actualización de la caché APT">
-                    <p class="pie">Captura 3: Descarga de información desde el PPA.</p>
-                </div>
+    <p>Se verificó la existencia del paquete mediante la herramienta <code>apt</code>:</p>
 
-                <h3>4. Consultar los paquetes ofrecidos</h3>
-                <p>
-                    Finalmente, se realizó una búsqueda de los paquetes disponibles mediante:
-                </p>
+    <div class="cajita">
+        <code>apt search google-chrome</code>
+    </div>
 
-                <div class="cajita">
-                    <code>apt search libreoffice</code>
-                </div>
+    <div class="captura">
+        <img src="media/captura12.PNG" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Actualización de APT y detección del paquete <code>google-chrome-stable</code>.</p>
+    </div>
 
-                <div class="captura">
-                    <img src="media/captura6.PNG" alt="Listado paquetes LibreOffice">
-                    <p class="pie">Captura 4: Listado de paquetes del PPA.</p>
-                </div>
+    <h3>5. Comando de instalación del paquete</h3>
 
-                <h3>Conclusión</h3>
-                <p>
-                    Se ha localizado un PPA válido, se ha añadido al sistema y se ha verificado que contiene múltiples paquetes relacionados con LibreOffice, cumpliendo así con los objetivos del ejercicio.
-                </p>
-            </section>
+    <div class="cajita">
+        <code>sudo apt install google-chrome-stable</code>
+    </div>
+
+    <h3>Conclusión</h3>
+    <p>
+        Se añadió un repositorio externo, se actualizó el catálogo y se verificó que el paquete
+        proporcionado estaba disponible, cumpliendo los requisitos del ejercicio.
+    </p>
+</section>
+
+<!-- EJERCICIO 2 -->
+<section>
+    <div class="etiqueta-ejercicio">Ejercicio 2</div>
+    <h2>Búsqueda de un PPA y revisión de paquetes</h2>
+
+    <p>
+        En este ejercicio se trabajó con el PPA oficial de LibreOffice, que distribuye versiones 
+        actualizadas para sistemas basados en Ubuntu, incluyendo Linux Mint.
+    </p>
+
+    <h3>1. Acceso al PPA en Launchpad</h3>
+
+    <div class="cajita">
+        <code>https://launchpad.net/~libreoffice/+archive/ubuntu/ppa</code>
+    </div>
+
+    <div class="captura">
+        <img src="media/captura3.png" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Visualización del PPA en Launchpad.</p>
+    </div>
+
+    <h3>2. Añadir el PPA desde terminal</h3>
+
+    <div class="cajita">
+        <code>sudo add-apt-repository pppa:libreoffice/ppa</code>
+    </div>
+
+    <div class="captura">
+        <img src="media/captura4.png" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Incorporación del PPA a Linux Mint.</p>
+    </div>
+
+    <h3>3. Actualizar la caché del sistema</h3>
+
+    <div class="cajita">
+        <code>sudo apt update</code>
+    </div>
+
+    <div class="captura">
+        <img src="media/captura5.png" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Descarga de información desde el PPA.</p>
+    </div>
+
+    <h3>4. Consultar los paquetes ofrecidos</h3>
+
+    <div class="cajita">
+        <code>apt search libreoffice</code>
+    </div>
+
+    <div class="captura">
+        <img src="media/captura6.png" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Listado de paquetes del PPA.</p>
+    </div>
+
+    <h3>Conclusión</h3>
+    <p>
+        Se ha localizado un PPA válido, se ha añadido al sistema y se ha verificado que contiene múltiples paquetes relacionados con LibreOffice.
+    </p>
+</section>
+
+<!-- EJERCICIO 3 -->
+<section>
+    <div class="etiqueta-ejercicio">Ejercicio 3</div>
+    <h2>Instalación del repositorio de WoeUSB y localización del fichero .list</h2>
+
+    <p>
+        WoeUSB es una herramienta utilizada para crear memorias USB booteables con imágenes ISO de Windows.
+        En este ejercicio se debía añadir el repositorio correspondiente y localizar el fichero que lo describe dentro del sistema.
+    </p>
+
+    <h3>1. Añadir el PPA al sistema</h3>
+
+    <div class="cajita">
+        <code>sudo add-apt-repository ppa:tomtomtom/woeusb</code>
+    </div>
+
+    <div class="captura">
+        <img src="media/captura7.PNG" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Añadiendo el PPA de WoeUSB desde la terminal.</p>
+    </div>
+
+    <h3>2. Actualizar la caché del sistema</h3>
+
+    <div class="cajita">
+        <code>sudo apt update</code>
+    </div>
+
+    <h3>3. Localizar el fichero .list asociado al PPA</h3>
+
+    <p>
+        Los ficheros que describen los repositorios se almacenan en:
+    </p>
+
+    <div class="cajita">
+        <code>/etc/apt/sources.list.d/</code>
+    </div>
+
+    <p>Para mostrar el fichero asociado al repositorio se utilizó:</p>
+
+    <div class="cajita">
+        <code>cat /etc/apt/sources.list.d/tomtomtom-ubuntu-woeusb-*.list</code>
+    </div>
+
+    <div class="captura">
+        <img src="media/captura8.PNG" style="width:100%; border:1px solid var(--c-border); border-radius:6px;">
+        <p class="pie">Captura: Visualización del archivo en <code>sources.list.d</code>.</p>
+    </div>
+
+    <h3>Conclusión</h3>
+    <p>
+        Se identificó correctamente la ruta del fichero encargado de describir el repositorio añadido.
+    </p>
+</section>
+
+<!-- EJERCICIO 4 -->
+<section>
+    <div class="etiqueta-ejercicio">Ejercicio 4</div>
+    <h2>Diferencias entre apt upgrade y apt full-upgrade</h2>
+
+    <p>
+        Ambos comandos mantienen el sistema actualizado aunque presentan diferencias a nivel de dependencias
+        y gestión de paquetes instalados.
+    </p>
+
+    <h3>apt upgrade</h3>
+    <ul>
+        <li>Actualiza paquetes instalados.</li>
+        <li>No elimina paquetes existentes.</li>
+        <li>No instala paquetes adicionales si son requeridos.</li>
+        <li>Comportamiento conservador.</li>
+    </ul>
+
+    <h3>apt full-upgrade</h3>
+    <ul>
+        <li>Actualiza el sistema como <code>apt upgrade</code> pero puede instalar dependencias nuevas.</li>
+        <li>Puede eliminar paquetes para completar la actualización.</li>
+        <li>Permite la instalación de kernels y transiciones de metapaquetes.</li>
+        <li>Comportamiento agresivo y resolutivo.</li>
+    </ul>
+
+    <h3>Conclusión</h3>
+    <p>
+        <code>apt upgrade</code> mantiene el sistema actualizado sin eliminar paquetes, mientras que
+        <code>apt full-upgrade</code> puede modificar dependencias para completar actualizaciones más profundas.
+    </p>
+</section>
 
         </div>
     </div>
