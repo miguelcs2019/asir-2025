@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD08 – Tarea 6 – Copias de seguridad</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0d0d0d;
+            color: #00ff88;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            font-size: 34px;
+            font-weight: bold;
+            background: black;
+            border-bottom: 2px solid #00ff88;
+            text-shadow: 0 0 8px #00ff88;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            border-left: 6px solid #00ff88;
+            padding-left: 12px;
+            margin-top: 40px;
+            text-shadow: 0 0 4px #00ff88;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .paso {
+            background: rgba(0,255,80,0.06);
+            border: 1px solid #0aff66;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 12px rgba(0,255,120,0.15);
+        }
+
+        img {
+            width: 100%;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .pie {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>UD08 – Tarea 6: Copias de seguridad en Windows Server</header>
+
+<div class="contenedor">
+
+    <!-- ================= EJERCICIO 1 ================= -->
+    <h2>Ejercicio 1 – Configuración de copias de seguridad</h2>
+
+    <p>
+        En este ejercicio se ha configurado un sistema de copias de seguridad
+        en Windows Server, utilizando un disco dedicado como destino y
+        programando la ejecución periódica de las copias.
+    </p>
+
+    <div class="paso">
+        <h3>Instalación de la característica de copias de seguridad</h3>
+        <img src="media/2026-02-03_16-29.png">
+        <p class="pie">Captura: Instalación de la característica Copias de seguridad de Windows Server.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Configuración del destino de la copia</h3>
+        <img src="media/2026-02-03_16-46.png">
+        <p class="pie">Captura: Selección del disco dedicado como destino de las copias.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Programación de la copia de seguridad</h3>
+        <img src="media/2026-02-03_16-46_1.png">
+        <p class="pie">Captura: Programación de la ejecución automática de la copia.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Ejecución de la copia de seguridad</h3>
+        <img src="media/2026-02-03_16-52.png">
+        <p class="pie">Captura: Progreso de la copia de seguridad en ejecución.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Resumen de la copia finalizada</h3>
+        <img src="media/2026-02-03_16-55.png">
+        <p class="pie">Captura: Resumen indicando que la copia se ha realizado correctamente.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Confirmación del estado correcto</h3>
+        <img src="media/2026-02-03_16-55_1.png">
+        <p class="pie">Captura: Estado correcto de la copia de seguridad configurada.</p>
+    </div>
+
+    <!-- ================= EJERCICIO 2 ================= -->
+    <h2>Ejercicio 2 – Restauración de ficheros</h2>
+
+    <p>
+        Para comprobar el funcionamiento del sistema de copias de seguridad,
+        se ha eliminado una imagen almacenada en una carpeta del sistema y,
+        posteriormente, se ha restaurado utilizando la herramienta de recuperación.
+    </p>
+
+    <div class="paso">
+        <h3>Inicio del asistente de recuperación</h3>
+        <img src="media/2026-02-03_18-18.png">
+        <p class="pie">Captura: Inicio del proceso de recuperación desde la copia.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Selección del archivo a restaurar</h3>
+        <img src="media/2026-02-03_18-20.png">
+        <p class="pie">Captura: Selección del archivo eliminado para su restauración.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Restauración completada</h3>
+        <img src="media/2026-02-03_18-22.png">
+        <p class="pie">Captura: Archivo restaurado correctamente desde la copia de seguridad.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Comprobación final</h3>
+        <img src="media/2026-02-03_18-25.png">
+        <p class="pie">Captura: Verificación de que el archivo restaurado vuelve a estar disponible.</p>
+    </div>
+
+    <!-- ================= EJERCICIO 3 ================= -->
+    <h2>Ejercicio 3 – Sistema de archivos ReFS</h2>
+
+    <p>
+        ReFS (Resilient File System) es un sistema de archivos diseñado por
+        Microsoft para entornos de servidor, enfocado en la integridad y
+        fiabilidad de los datos.
+    </p>
+
+    <p>
+        Su uso como destino de copias de seguridad es recomendable debido a
+        su capacidad para detectar errores, su escalabilidad y su resistencia
+        frente a la corrupción de datos.
+    </p>
+
+    <!-- ================= EJERCICIO 4 ================= -->
+    <h2>Ejercicio 4 – Recuperación de versiones de archivos</h2>
+
+    <p>
+        En este ejercicio se ha creado un archivo llamado <code>claves.txt</code>,
+        se ha realizado una copia de seguridad y posteriormente se ha modificado
+        su contenido.
+    </p>
+
+    <p>
+        Utilizando la herramienta de recuperación, se ha restaurado una versión
+        anterior del archivo, comprobando las diferencias entre la versión
+        modificada y la versión recuperada desde la copia de seguridad.
+    </p>
+
+    <p>
+        Este proceso demuestra que las copias de seguridad permiten recuperar
+        versiones anteriores de archivos, incluso después de haber sido
+        modificados o sobrescritos.
+    </p>
+
+    <!-- ================= ACTIVIDAD EXTRA ================= -->
+    <h2>Actividad de ampliación – Cliente NFS en Windows</h2>
+
+    <p>
+        El comando <code>Install-WindowsFeature NFS-Client</code> permite instalar
+        en Windows Server la funcionalidad de cliente NFS, haciendo posible el
+        acceso a carpetas compartidas desde servidores Linux.
+    </p>
+
+    <p>
+        Una vez instalado el cliente NFS, es posible montar una carpeta remota
+        como una unidad de red (por ejemplo, la unidad L:), facilitando la
+        interoperabilidad entre sistemas Windows y Linux.
+    </p>
+
+    <p>
+        Esta funcionalidad resulta especialmente útil en entornos empresariales
+        mixtos, donde conviven servidores con distintos sistemas operativos.
+    </p>
+
+</div>
+
+</body>
+</html>
