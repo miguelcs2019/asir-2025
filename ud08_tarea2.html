@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD08 – Tarea 2 – Volumen reflejado (RAID 1)</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0d0d0d;
+            color: #00ff88;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            font-size: 34px;
+            font-weight: bold;
+            background: black;
+            border-bottom: 2px solid #00ff88;
+            text-shadow: 0 0 8px #00ff88;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            border-left: 6px solid #00ff88;
+            padding-left: 12px;
+            margin-top: 40px;
+            text-shadow: 0 0 4px #00ff88;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .paso {
+            background: rgba(0,255,80,0.06);
+            border: 1px solid #0aff66;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 12px rgba(0,255,120,0.15);
+        }
+
+        img {
+            width: 100%;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .pie {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>UD08 – Tarea 2: Volumen reflejado (RAID 1)</header>
+
+<div class="contenedor">
+
+    <!-- ================= EJERCICIO 1 ================= -->
+    <h2>Ejercicio 1 – Creación de un volumen reflejado</h2>
+
+    <p>
+        En esta práctica se ha configurado un volumen reflejado (RAID 1) en
+        Windows Server, con el objetivo de proporcionar tolerancia a fallos
+        mediante la duplicación de los datos en dos discos distintos.
+    </p>
+
+    <div class="paso">
+        <h3>Paso 1: Discos disponibles en el sistema</h3>
+        <p>
+            Se comprueba en el Administrador de discos que existen dos discos
+            disponibles y sin datos, preparados para crear el volumen reflejado.
+        </p>
+        <img src="media/2026-02-03_16-02.png">
+        <p class="pie">Captura: Discos disponibles en el Administrador de discos.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 2: Creación del volumen reflejado</h3>
+        <p>
+            Se inicia el asistente de nuevo volumen reflejado y se seleccionan
+            ambos discos para formar el RAID 1.
+        </p>
+        <img src="media/2026-02-03_16-08.png">
+        <p class="pie">Captura: Selección de los discos para el volumen reflejado.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 3: Confirmación de conversión a discos dinámicos</h3>
+        <p>
+            Windows Server muestra una advertencia indicando que los discos
+            básicos se convertirán en discos dinámicos para poder crear el
+            volumen reflejado.
+        </p>
+        <img src="media/2026-02-03_16-08_1.png">
+        <p class="pie">Captura: Advertencia de conversión a discos dinámicos.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 4: Formato del volumen reflejado</h3>
+        <p>
+            Se formatea el volumen reflejado en NTFS y se asigna una letra de
+            unidad para su uso.
+        </p>
+        <img src="media/2026-02-03_16-10.png">
+        <p class="pie">Captura: Formato y asignación de letra al volumen reflejado.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 5: Sincronización del espejo</h3>
+        <p>
+            Una vez creado el volumen, el sistema comienza la sincronización
+            de los datos entre ambos discos que forman el RAID 1.
+        </p>
+        <img src="media/2026-02-03_16-15.png">
+        <p class="pie">Captura: Proceso de sincronización del volumen reflejado.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 6: Volumen reflejado operativo</h3>
+        <p>
+            Finalizado el proceso, el volumen reflejado aparece como correcto
+            y operativo en el Administrador de discos.
+        </p>
+        <img src="media/2026-02-03_16-16.png">
+        <p class="pie">Captura: Volumen reflejado funcionando correctamente.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 7: Comprobación de tolerancia a fallos</h3>
+        <p>
+            Se simula el fallo de uno de los discos y se comprueba que el sistema
+            sigue permitiendo el acceso a los datos, demostrando la tolerancia
+            a fallos del RAID 1.
+        </p>
+        <img src="media/2026-02-03_16-23.png">
+        <p class="pie">Captura: Acceso a los datos con uno de los discos fallando.</p>
+    </div>
+
+    <!-- ================= EJERCICIO 2 ================= -->
+    <h2>Ejercicio 2 – Uso del volumen reflejado en una empresa</h2>
+
+    <p>
+        Un volumen reflejado es especialmente útil en servidores de archivos
+        empresariales, ya que garantiza la disponibilidad de los datos incluso
+        cuando uno de los discos falla.
+    </p>
+
+    <p>
+        También se utiliza en sistemas críticos como servidores de contabilidad
+        o bases de datos internas, donde la pérdida de información o el tiempo
+        de inactividad puede tener un alto impacto.
+    </p>
+
+    <p>
+        Además, el RAID 1 mejora el uptime del sistema, permitiendo sustituir
+        discos defectuosos sin necesidad de detener el servicio.
+    </p>
+
+    <!-- ================= EJERCICIO 3 ================= -->
+    <h2>Ejercicio 3 – RAID y copias de seguridad</h2>
+
+    <p>
+        Un sistema RAID no sustituye a una copia de seguridad, ya que cualquier
+        borrado accidental, corrupción de datos o ataque de malware se replica
+        automáticamente en todos los discos.
+    </p>
+
+    <p>
+        Sin embargo, el RAID 1 mejora la disponibilidad del sistema al permitir
+        que este siga funcionando ante el fallo de un disco, aumentando así el
+        tiempo de actividad del servicio.
+    </p>
+
+</div>
+
+</body>
+</html>
