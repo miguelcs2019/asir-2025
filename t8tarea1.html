@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD08 – Tarea 1 – Volumen distribuido</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0d0d0d;
+            color: #00ff88;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            font-size: 34px;
+            font-weight: bold;
+            background: black;
+            border-bottom: 2px solid #00ff88;
+            text-shadow: 0 0 8px #00ff88;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            border-left: 6px solid #00ff88;
+            padding-left: 12px;
+            margin-top: 40px;
+            text-shadow: 0 0 4px #00ff88;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .paso {
+            background: rgba(0,255,80,0.06);
+            border: 1px solid #0aff66;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 12px rgba(0,255,120,0.15);
+        }
+
+        img {
+            width: 100%;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .pie {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>UD08 – Tarea 1: Volumen distribuido (Windows Server)</header>
+
+<div class="contenedor">
+
+    <!-- ================= EJERCICIO 1 ================= -->
+    <h2>Ejercicio 1 – Creación de un volumen distribuido</h2>
+
+    <p>
+        En esta práctica se ha creado un volumen distribuido en Windows Server
+        utilizando dos discos dinámicos, con el objetivo de ampliar la capacidad
+        de almacenamiento del sistema.
+    </p>
+
+    <div class="paso">
+        <h3>Paso 1: Añadir los discos a la máquina virtual</h3>
+        <p>
+            Se añaden dos discos duros virtuales de 4 GB a la máquina de
+            Windows Server desde la configuración de almacenamiento.
+        </p>
+        <img src="media/2026-02-03_15-34.png">
+        <p class="pie">Captura: Adición de los discos duros virtuales en VirtualBox.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 2: Acceso al Administrador de discos</h3>
+        <p>
+            Se accede al Administrador de discos, donde el sistema detecta
+            automáticamente los nuevos discos como no inicializados.
+        </p>
+        <img src="media/2026-02-03_15-39.png">
+        <p class="pie">Captura: Detección de los nuevos discos en el Administrador de discos.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 3: Inicialización de los discos</h3>
+        <p>
+            Los discos se inicializan utilizando el estilo de partición GPT
+            para permitir su uso por el sistema.
+        </p>
+        <img src="media/2026-02-03_15-40.png">
+        <p class="pie">Captura: Inicialización de los discos seleccionando GPT.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 4: Discos sin asignar</h3>
+        <p>
+            Tras la inicialización, los discos aparecen como espacio sin asignar,
+            listos para ser utilizados en la creación del volumen.
+        </p>
+        <img src="media/2026-02-03_15-42.png">
+        <p class="pie">Captura: Discos correctamente inicializados y sin asignar.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 5: Creación del volumen distribuido</h3>
+        <p>
+            Se utiliza el asistente de nuevo volumen distribuido y se seleccionan
+            ambos discos para formar una única unidad lógica.
+        </p>
+        <img src="media/2026-02-03_15-48.png">
+        <p class="pie">Captura: Selección de los discos para el volumen distribuido.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 6: Conversión a discos dinámicos</h3>
+        <p>
+            Windows Server solicita confirmación para convertir los discos
+            básicos en discos dinámicos, requisito necesario para este tipo de volumen.
+        </p>
+        <img src="media/2026-02-03_15-49.png">
+        <p class="pie">Captura: Advertencia de conversión a discos dinámicos.</p>
+    </div>
+
+    <div class="paso">
+        <h3>Paso 7: Volumen creado y comprobación</h3>
+        <p>
+            Una vez finalizado el proceso, se comprueba que el volumen distribuido
+            se ha creado correctamente y que la capacidad corresponde a la suma
+            de ambos discos.
+        </p>
+        <img src="media/2026-02-03_15-53.png">
+        <p class="pie">Captura: Volumen distribuido creado y funcionando correctamente.</p>
+    </div>
+
+    <!-- ================= EJERCICIO 2 ================= -->
+    <h2>Ejercicio 2 – Uso de un volumen distribuido en una empresa</h2>
+
+    <p>
+        Un volumen distribuido puede utilizarse en una empresa para ampliar
+        rápidamente la capacidad de almacenamiento sin necesidad de sustituir
+        discos existentes.
+    </p>
+
+    <p>
+        Es especialmente adecuado para almacenar datos no críticos, como
+        archivos temporales, material de formación o información que puede
+        regenerarse fácilmente.
+    </p>
+
+    <p>
+        También resulta útil en entornos de pruebas o laboratorio, donde se
+        prioriza el bajo coste y la disponibilidad de espacio frente a la
+        tolerancia a fallos.
+    </p>
+
+</div>
+
+</body>
+</html>
