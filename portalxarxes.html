@@ -22,6 +22,7 @@
         opacity: 0.15;
         color: #4aa3ff;
         animation: fly 18s linear infinite;
+        pointer-events: none;
     }
 
     .bat:nth-child(1) { top: 10%; left: -50px; animation-delay: 0s; }
@@ -60,18 +61,25 @@
         padding: 0 20px;
     }
 
+    .intro {
+        max-width: 800px;
+        margin: 0 auto 40px;
+        line-height: 1.6;
+        color: #e0e0e0;
+    }
+
     .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 30px;
-        margin-top: 50px;
+        margin-top: 40px;
     }
 
     .card {
         background: #111;
         border: 2px solid #ff7a00;
         border-radius: 18px;
-        padding: 30px 20px;
+        padding: 30px 22px;
         text-decoration: none;
         color: white;
         transition: .35s;
@@ -99,7 +107,7 @@
     .volver {
         display: inline-block;
         margin-top: 60px;
-        padding: 16px 30px;
+        padding: 16px 32px;
         border-radius: 14px;
         border: 2px solid #4aa3ff;
         color: #4aa3ff;
@@ -127,7 +135,7 @@
 
 <body>
 
-<!-- Murciélagos -->
+<!-- Murciélagos decorativos -->
 <div class="bat">🦇</div>
 <div class="bat">🦇</div>
 <div class="bat">🦇</div>
@@ -139,11 +147,12 @@
 
 <div class="contenedor">
 
-    <p>
-        En este apartado se presentan las prácticas relacionadas con la
-        administración de redes, configuración de sistemas Linux y análisis
-        de conectividad y seguridad.
-    </p>
+    <div class="intro">
+        En este apartado se recogen las prácticas relacionadas con la
+        administración de redes, configuración de sistemas Linux,
+        segmentación de redes, análisis de conectividad y modelos
+        de referencia en redes de datos.
+    </div>
 
     <div class="grid">
 
@@ -157,14 +166,23 @@
             </p>
         </a>
 
-        <!-- FUTURAS PRÁCTICAS -->
-        <div class="card">
-            <h2>Próximas prácticas</h2>
+        <!-- PRÁCTICA 8.2 -->
+        <a class="card" href="vlan.html">
+            <h2>Práctica 8.2 – VLAN</h2>
             <p>
-                Espacio reservado para futuras prácticas de
-                administración de redes y servicios.
+                Segmentación lógica de redes mediante VLANs,
+                funcionamiento, ventajas y configuración básica.
             </p>
-        </div>
+        </a>
+
+        <!-- PRÁCTICA 8.3 -->
+        <a class="card" href="osi.html">
+            <h2>Práctica 8.3 – Modelo OSI</h2>
+            <p>
+                Estudio del modelo OSI y análisis detallado
+                de las siete capas que lo componen.
+            </p>
+        </a>
 
     </div>
 
@@ -178,3 +196,5 @@
 
 </body>
 </html>
+
+
