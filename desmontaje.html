@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Actividad 14 – Desmontaje de un disco duro</title>
+
+  <style>
+    :root{
+      --bg0:#050814;
+      --bg1:#07102a;
+      --panel: rgba(255,255,255,.06);
+      --line: rgba(148,163,184,.18);
+      --text: #e5e7eb;
+      --muted:#9aa6bd;
+      --a:#60a5fa;
+      --b:#22c55e;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      color:var(--text);
+      padding:28px 14px;
+      background:
+        radial-gradient(1200px 700px at 10% 15%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(1000px 600px at 85% 25%, rgba(34,197,94,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    .wrap{max-width:1100px;margin:0 auto}
+
+    header{
+      border-radius:22px;
+      padding:22px;
+      background: linear-gradient(135deg, rgba(96,165,250,.14), rgba(34,197,94,.10));
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 46px rgba(0,0,0,.35);
+      margin-bottom:20px;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(6,10,24,.55);
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:#dbeafe;
+      margin-bottom:10px;
+    }
+
+    .kdot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--a);
+      box-shadow: 0 0 0 6px rgba(96,165,250,.15);
+    }
+
+    h1{margin:0 0 8px 0;font-size:32px}
+    .sub{margin:0;color:var(--muted);line-height:1.6;text-align:justify}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      box-shadow: 0 16px 38px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:18px;
+      color:#eaf2ff;
+    }
+
+    p{margin:8px 0;line-height:1.65;text-align:justify}
+
+    img{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.25);
+      margin-top:12px;
+    }
+
+    .warning{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      background: rgba(255,165,0,.12);
+      border:1px solid rgba(255,165,0,.35);
+      color:#ffd9a0;
+      font-size:14px;
+    }
+
+    .foot{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker"><span class="kdot"></span>Actividad 14 · Maquinaria</div>
+  <h1>Desmontaje de un disco duro físico</h1>
+  <p class="sub">
+    Práctica realizada en el taller con el objetivo de desmontar un disco duro
+    mecánico, identificar sus componentes internos y aprender el procedimiento
+    correcto de manipulación.
+  </p>
+</header>
+
+<div class="grid">
+
+  <section class="card">
+    <h2>Paso 1 – Estado inicial del disco duro</h2>
+    <p>
+      Se observa el disco duro completamente cerrado, identificando la carcasa
+      metálica y verificando que no esté conectado a ningún equipo.
+    </p>
+    <img src="1.jpg" alt="Disco duro cerrado">
+    <div class="foot">Imagen 1: Disco duro antes del desmontaje.</div>
+  </section>
+
+  <section class="card">
+    <h2>Paso 2 – Localización y retirada de tornillos</h2>
+    <p>
+      Se procede a retirar los tornillos visibles de la carcasa. Es importante
+      revisar cuidadosamente toda la superficie del disco.
+    </p>
+
+    <div class="warning">
+      ⚠️ <b>Importante:</b> algunos discos duros tienen tornillos ocultos bajo
+      pegatinas o etiquetas. Si no se retiran, la tapa no puede abrirse
+      correctamente y se puede dañar el dispositivo.
+    </div>
+
+    <img src="2.jpg" alt="Tornillos y placa electrónica">
+    <div class="foot">Imagen 2: Tornillos y placa electrónica del disco.</div>
+  </section>
+
+  <section class="card">
+    <h2>Paso 3 – Apertura del disco duro</h2>
+    <p>
+      Una vez retirados todos los tornillos, se levanta la tapa superior,
+      accediendo al interior del disco duro y dejando visibles los platos
+      magnéticos y el brazo lector.
+    </p>
+    <img src="3.jpg" alt="Interior del disco duro">
+    <div class="foot">Imagen 3: Interior del disco duro con platos y brazo lector.</div>
+  </section>
+
+  <section class="card">
+    <h2>Paso 4 – Extracción del brazo lector</h2>
+    <p>
+      Se desmonta el conjunto del brazo lector con cuidado, ya que es una de las
+      piezas más delicadas del disco duro y se puede romper o doblar fácilmente.
+    </p>
+    <img src="4.jpg" alt="Brazo lector desmontado">
+    <div class="foot">Imagen 4: Brazo lector desmontado.</div>
+  </section>
+
+  <section class="card">
+    <h2>Paso 5 – Componentes internos adicionales</h2>
+    <p>
+      Se extraen otros elementos internos como anillos, soportes y piezas
+      mecánicas, quedando el disco completamente desmontado.
+    </p>
+    <img src="5.jpg" alt="Componentes internos del disco duro">
+    <div class="foot">Imagen 5: Componentes internos del disco duro.</div>
+  </section>
+
+  <section class="card">
+    <h2>Autores del trabajo</h2>
+    <p>
+      Esta práctica ha sido realizada por:
+      <b>Jaime, Héctor, Raúl y Miguel</b>.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Conclusión</h2>
+    <p>
+      A pesar de que el desmontaje no se realizó de forma perfecta, ya que se
+      rompió alguna pieza y se dobló ligeramente la tapa de acceso al disco,
+      la práctica resultó muy útil para aprender qué errores no se deben cometer.
+    </p>
+    <p>
+      Esta experiencia servirá para que en futuras ocasiones se trabaje con
+      mayor cuidado y precisión. En líneas generales, fue una práctica que nos
+      gustó mucho, ya que aprendimos de forma práctica muchos conceptos
+      explicados en clase.
+    </p>
+  </section>
+
+</div>
+
+</div>
+</body>
+</html>
