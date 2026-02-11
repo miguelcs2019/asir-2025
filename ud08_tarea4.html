@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD08 – Tarea 4 – RAID 0 por Software</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0d0d0d;
+            color: #00ff88;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            font-size: 34px;
+            font-weight: bold;
+            background: black;
+            border-bottom: 2px solid #00ff88;
+            text-shadow: 0 0 8px #00ff88;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            border-left: 6px solid #00ff88;
+            padding-left: 12px;
+            margin-top: 40px;
+            text-shadow: 0 0 4px #00ff88;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul {
+            line-height: 1.7;
+        }
+
+        code {
+            color: #b6ffda;
+        }
+
+        .paso {
+            background: rgba(0,255,80,0.06);
+            border: 1px solid #0aff66;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 12px rgba(0,255,120,0.15);
+        }
+
+        img {
+            width: 100%;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .pie {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>UD08 – Tarea 4: Configuración de RAID 0 por Software</header>
+
+<div class="contenedor">
+
+    <h2>Objetivo de la práctica</h2>
+
+    <p>
+        En esta práctica se configura un RAID 0 por software utilizando <code>mdadm</code>.
+        El objetivo es combinar dos discos en un único volumen lógico, aumentando el
+        rendimiento mediante distribución de bloques (striping).
+    </p>
+
+    <p>
+        El volumen final se montará en <code>/srv/datosExtendidos</code> y deberá
+        configurarse para montarse automáticamente tras el reinicio del sistema.
+    </p>
+
+    <!-- 2.0 -->
+    <div class="paso">
+        <h3>2.0 – Añadido de discos en Proxmox</h3>
+        <p>
+            Se añaden dos discos virtuales adicionales de 10GB a la máquina virtual.
+            Estos discos serán utilizados para crear el RAID 0.
+        </p>
+        <img src="media/2.0.PNG">
+        <p class="pie">Captura 2.0: Discos añadidos en el entorno Proxmox.</p>
+    </div>
+
+    <!-- 2.1 -->
+    <div class="paso">
+        <h3>2.1 – Verificación de detección en Linux</h3>
+        <p>
+            Mediante el comando <code>lsblk</code> se verifica que el sistema detecta
+            correctamente los nuevos discos (por ejemplo <code>/dev/sdb</code> y <code>/dev/sdc</code>).
+        </p>
+        <img src="media/2.1.PNG">
+        <p class="pie">Captura 2.1: Detección de discos adicionales en Linux.</p>
+    </div>
+
+    <!-- 2.2 -->
+    <div class="paso">
+        <h3>2.2 – Particionado de los discos</h3>
+        <p>
+            Se crea una partición primaria en cada disco ocupando todo el espacio disponible.
+            Posteriormente se asigna el tipo <strong>Linux raid autodetect (fd)</strong>.
+        </p>
+        <img src="media/2.2.PNG">
+        <p class="pie">Captura 2.2: Particiones preparadas para RAID.</p>
+    </div>
+
+    <!-- 2.3 -->
+    <div class="paso">
+        <h3>2.3 – Creación del RAID 0</h3>
+        <p>
+            Se crea el array RAID 0 mediante el comando:
+            <code>mdadm --create /dev/md0 --level=raid0 --raid-devices=2 /dev/sdb1 /dev/sdc1</code>.
+        </p>
+        <p>
+            El comando <code>cat /proc/mdstat</code> confirma que el array se encuentra activo.
+        </p>
+        <img src="media/2.3.PNG">
+        <p class="pie">Captura 2.3: RAID 0 activo en /dev/md0.</p>
+    </div>
+
+    <!-- 2.4 -->
+    <div class="paso">
+        <h3>2.4 – Creación del sistema de archivos</h3>
+        <p>
+            Se crea un sistema de archivos <code>ext4</code> sobre el dispositivo
+            <code>/dev/md0</code> utilizando <code>mkfs.ext4</code>.
+        </p>
+        <p>
+            Posteriormente se verifica con <code>lsblk -f</code> que el volumen tiene
+            el sistema de archivos correctamente asignado.
+        </p>
+        <img src="media/2.4.PNG">
+        <p class="pie">Captura 2.4: Sistema de archivos ext4 creado en RAID 0.</p>
+    </div>
+
+    <!-- 2.5 -->
+    <div class="paso">
+        <h3>2.5 – Montaje del RAID 0</h3>
+        <p>
+            Se crea el punto de montaje <code>/srv/datosExtendidos</code> y se monta
+            manualmente el volumen.
+        </p>
+        <p>
+            El comando <code>df -h</code> confirma que el volumen aparece montado
+            correctamente y muestra un tamaño aproximado de 20GB, resultado de la
+            suma de ambos discos.
+        </p>
+        <img src="media/2.5.PNG">
+        <p class="pie">Captura 2.5: RAID 0 montado en /srv/datosExtendidos.</p>
+    </div>
+
+    <!-- 2.6 -->
+    <div class="paso">
+        <h3>2.6 – Configuración automática y verificación tras reinicio</h3>
+        <p>
+            Se añade la definición del array en <code>/etc/mdadm/mdadm.conf</code>,
+            se actualiza el initramfs y se configura el montaje automático en
+            <code>/etc/fstab</code> utilizando el UUID del volumen.
+        </p>
+        <p>
+            Tras reiniciar el sistema, el comando <code>df -h</code> confirma que
+            <code>/dev/md0</code> se monta automáticamente en
+            <code>/srv/datosExtendidos</code>.
+        </p>
+        <img src="media/2.6.PNG">
+        <p class="pie">Captura 2.6: Verificación del montaje automático tras reinicio.</p>
+    </div>
+
+    <h2>Conclusión</h2>
+
+    <p>
+        El RAID 0 ha sido configurado correctamente. Se ha comprobado su
+        funcionamiento y su montaje automático tras reinicio. El volumen final
+        presenta un tamaño equivalente a la suma de los discos utilizados,
+        lo que confirma el comportamiento característico del RAID 0.
+    </p>
+
+    <p>
+        A diferencia del RAID 1, el RAID 0 mejora el rendimiento pero no ofrece
+        tolerancia a fallos, ya que la pérdida de uno de los discos implica la
+        pérdida total de los datos.
+    </p>
+
+</div>
+
+</body>
+</html>
