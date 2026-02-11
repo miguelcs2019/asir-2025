@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UD08 – Tarea 5 – Cuotas de Disco</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #0d0d0d;
+            color: #00ff88;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        header {
+            padding: 30px 0;
+            text-align: center;
+            font-size: 34px;
+            font-weight: bold;
+            background: black;
+            border-bottom: 2px solid #00ff88;
+            text-shadow: 0 0 8px #00ff88;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            border-left: 6px solid #00ff88;
+            padding-left: 12px;
+            margin-top: 40px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .paso {
+            background: rgba(0,255,80,0.06);
+            border: 1px solid #0aff66;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 12px rgba(0,255,120,0.15);
+        }
+
+        img {
+            width: 100%;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .pie {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>UD08 – Tarea 5: Configuración de Cuotas de Disco en Linux</header>
+
+<div class="contenedor">
+
+<h2>Objetivo de la práctica</h2>
+
+<p>
+En esta práctica se configura un sistema de cuotas de disco para limitar el espacio
+que pueden utilizar los usuarios dentro de un sistema de archivos específico.
+El sistema se monta en <code>/srv/cuotas</code> con soporte para cuotas de usuario y grupo.
+</p>
+
+<!-- 3.0 -->
+<div class="paso">
+<h3>3.0 – Añadido del disco para cuotas</h3>
+<p>Se añade un nuevo disco virtual desde Proxmox para dedicarlo exclusivamente a la gestión de cuotas.</p>
+<img src="media/3.0.PNG">
+<p class="pie">Captura 3.0 – Disco añadido en Proxmox.</p>
+</div>
+
+<!-- 3.1 -->
+<div class="paso">
+<h3>3.1 – Verificación del disco en Linux</h3>
+<p>Se comprueba con <code>lsblk</code> que el sistema detecta correctamente el nuevo disco.</p>
+<img src="media/3.1.PNG">
+<p class="pie">Captura 3.1 – Disco detectado en el sistema.</p>
+</div>
+
+<!-- 3.2 -->
+<div class="paso">
+<h3>3.2 – Particionado y formateo</h3>
+<p>Se crea una partición primaria y se formatea en <code>ext4</code>.</p>
+<img src="media/3.2.PNG">
+<p class="pie">Captura 3.2 – Partición creada y sistema de archivos generado.</p>
+</div>
+
+<!-- 3.3 -->
+<div class="paso">
+<h3>3.3 – Verificación del sistema de archivos</h3>
+<p>Se confirma mediante <code>lsblk -f</code> que la partición tiene asignado sistema de archivos ext4.</p>
+<img src="media/3.3.PNG">
+<p class="pie">Captura 3.3 – Confirmación del sistema de archivos.</p>
+</div>
+
+<!-- 3.4 -->
+<div class="paso">
+<h3>3.4 – Montaje con soporte para cuotas</h3>
+<p>
+Se añade en <code>/etc/fstab</code> la opción:
+<code>defaults,usrquota,grpquota</code>.
+Posteriormente se monta el sistema y se verifica que aparece activo.
+</p>
+<img src="media/3.4.PNG">
+<p class="pie">Captura 3.4 – Sistema montado con usrquota y grpquota.</p>
+</div>
+
+<!-- 3.5 -->
+<div class="paso">
+<h3>3.5 – Activación del sistema de cuotas</h3>
+<p>
+Se generan los archivos de control con <code>quotacheck</code> y se activan las cuotas mediante <code>quotaon</code>.
+El comando <code>repquota</code> permite visualizar el estado del sistema.
+</p>
+<img src="media/3.5.PNG">
+<p class="pie">Captura 3.5 – Sistema de cuotas activado correctamente.</p>
+</div>
+
+<!-- 3.6 -->
+<div class="paso">
+<h3>3.6 – Asignación de límite al usuario</h3>
+
+<p>
+Se crea el usuario <strong>miguelcuotas</strong> y se le asigna un límite utilizando
+el comando <code>setquota</code>, que resulta más estable que <code>edquota</code>.
+</p>
+
+<p>
+Comando utilizado:
+</p>
+
+<pre>
+sudo setquota -u miguelcuotas 50000 60000 0 0 /srv/cuotas
+</pre>
+
+<p>
+Interpretación de los valores:
+</p>
+
+<ul>
+<li><strong>50000</strong> → Límite blando (soft limit) ≈ 50 MB</li>
+<li><strong>60000</strong> → Límite duro (hard limit) ≈ 60 MB</li>
+<li><strong>0 0</strong> → No se limitan inodos</li>
+</ul>
+
+<p>
+Inicialmente el usuario no aparecía en el reporte porque no tenía archivos en el sistema
+de archivos con cuotas activas. Tras crear un archivo de prueba dentro de
+<code>/srv/cuotas</code>, el usuario comenzó a mostrarse en <code>repquota</code>.
+</p>
+
+<img src="media/3.6.PNG">
+<p class="pie">Captura 3.6 – Usuario con límites de cuota correctamente asignados.</p>
+</div>
+
+<!-- 3.7 -->
+<div class="paso">
+<h3>3.7 – Comprobación práctica del límite</h3>
+
+<p>
+Para verificar el funcionamiento del sistema de cuotas, se accede con el usuario
+<code>miguelcuotas</code> e intenta crear un archivo de 70 MB mediante el comando:
+</p>
+
+<pre>
+dd if=/dev/zero of=archivo_grande bs=1M count=70
+</pre>
+
+<p>
+El sistema permite la escritura hasta aproximadamente 60 MB (límite duro) y posteriormente
+muestra el mensaje:
+</p>
+
+<pre>
+Disk quota exceeded
+</pre>
+
+<p>
+Esto confirma que el límite duro impide superar el espacio asignado, validando el correcto
+funcionamiento del sistema de cuotas.
+</p>
+
+<img src="media/3.7.PNG">
+<p class="pie">Captura 3.7 – Error Disk quota exceeded al superar el límite duro.</p>
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+El sistema de cuotas ha sido configurado correctamente sobre el sistema de archivos
+<code>/srv/cuotas</code>. Se han aplicado límites a un usuario específico y se ha
+verificado mediante prueba práctica que el sistema impide superar el espacio asignado.
+</p>
+
+<p>
+Este mecanismo resulta esencial en entornos multiusuario para controlar el consumo
+de almacenamiento y garantizar una distribución equitativa de recursos.
+</p>
+
+</div>
+</body>
+</html>
