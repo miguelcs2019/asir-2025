@@ -212,6 +212,71 @@ verificado mediante prueba práctica que el sistema impide superar el espacio as
 Este mecanismo resulta esencial en entornos multiusuario para controlar el consumo
 de almacenamiento y garantizar una distribución equitativa de recursos.
 </p>
+<!-- 3.8 -->
+<div class="paso">
+<h3>3.8 – Explicación de los 4 valores al establecer cuotas</h3>
+
+<p>
+Al asignar una cuota mediante el comando:
+</p>
+
+<pre>
+sudo setquota -u miguelcuotas 50000 60000 0 0 /srv/cuotas
+</pre>
+
+<p>
+Se han indicado cuatro valores numéricos. Cada uno tiene el siguiente significado:
+</p>
+
+<ul>
+<li><strong>Primer valor (50000)</strong>: Límite blando de bloques (soft limit).  
+Es la cantidad de espacio que el usuario puede superar temporalmente durante el periodo de gracia.</li>
+
+<li><strong>Segundo valor (60000)</strong>: Límite duro de bloques (hard limit).  
+Es el máximo absoluto que el usuario no puede superar bajo ningún concepto.</li>
+
+<li><strong>Tercer valor (0)</strong>: Límite blando de inodos.  
+Indica el número máximo de archivos permitidos de forma temporal.</li>
+
+<li><strong>Cuarto valor (0)</strong>: Límite duro de inodos.  
+Es el número máximo absoluto de archivos que el usuario puede crear.</li>
+</ul>
+
+<p>
+En esta práctica solo se han limitado bloques (espacio en disco), dejando sin
+restricción el número de archivos.
+</p>
+</div>
+
+
+<!-- 3.9 -->
+<div class="paso">
+<h3>3.9 – Periodo de gracia de la cuota blanda</h3>
+
+<p>
+Por defecto, el periodo de gracia para superar el límite blando es de
+<strong>7 días</strong>.
+</p>
+
+<p>
+Esto significa que el usuario puede superar el límite blando durante ese
+tiempo. Si transcurren los 7 días sin reducir el uso por debajo del límite,
+el sistema aplicará automáticamente el límite duro.
+</p>
+
+<p>
+El periodo de gracia puede modificarse mediante el comando:
+</p>
+
+<pre>
+sudo edquota -t
+</pre>
+
+<p>
+Este comando permite configurar el tiempo de gracia tanto para bloques como
+para inodos, ajustándolo según las necesidades del sistema.
+</p>
+</div>
 
 </div>
 </body>
