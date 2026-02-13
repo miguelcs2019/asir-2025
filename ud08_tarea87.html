@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD08 – Tarea 7 – Copias de Seguridad</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+}
+header {
+    padding: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    background: black;
+    border-bottom: 2px solid #00ff88;
+}
+.contenedor {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+.paso {
+    background: rgba(0,255,80,0.06);
+    border: 1px solid #00ff88;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+img {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #00ff88;
+}
+pre {
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>UD08 – Tarea 7: Copias de Seguridad en Linux</header>
+
+<div class="contenedor">
+
+<!-- 25.1 -->
+<div class="paso">
+<h3>25.1 – Creacion del entorno inicial</h3>
+<p>Se crea la estructura <code>DatosBackupsLinuX</code> dentro del directorio personal y varios archivos de prueba.</p>
+<img src="media/25.1.PNG">
+</div>
+
+<!-- 25.2 -->
+<div class="paso">
+<h3>25.2 – Primer backup incremental</h3>
+<pre>
+tar --create \
+--file=datosBackup.1.tar \
+--listed-incremental=datos.log \
+/home/miguel/DatosBackupsLinuX
+</pre>
+<p>
+--create crea el archivo tar.  
+--file define el nombre del archivo.  
+--listed-incremental activa el modo incremental usando el fichero datos.log.  
+</p>
+<img src="media/25.2.PNG">
+</div>
+
+<!-- 25.3 -->
+<div class="paso">
+<h3>25.3 – Analisis del fichero datos.log</h3>
+<p>
+El archivo datos.log almacena metadatos del backup (snapshot) para permitir
+copias incrementales posteriores.
+</p>
+<img src="media/25.3.PNG">
+</div>
+
+<!-- 25.4 -->
+<div class="paso">
+<h3>25.4 – Comprobacion del tamaño del backup</h3>
+<pre>
+ls -lh datosBackup.1.tar
+</pre>
+<p>La opcion -h muestra el tamaño en formato legible.</p>
+<img src="media/25.4.PNG">
+</div>
+
+<!-- 25.5 -->
+<div class="paso">
+<h3>25.5 – Segundo backup incremental</h3>
+<p>Se añade nueva carpeta y se ejecuta nuevamente el comando tar usando el mismo datos.log.</p>
+<img src="media/25.5.PNG">
+</div>
+
+<!-- 25.6 -->
+<div class="paso">
+<h3>25.6 – Listado del segundo backup</h3>
+<pre>
+tar -tf datosBackup.2.tar
+</pre>
+<p>Solo aparecen los archivos nuevos o modificados.</p>
+<img src="media/25.6.PNG">
+</div>
+
+<!-- 25.7 -->
+<div class="paso">
+<h3>25.7 – Script automatico incremental</h3>
+<pre>
+#!/bin/bash
+FECHA=$(date +%Y%m%d)
+tar --create \
+--file=datosBackup.$FECHA.tar \
+--listed-incremental=datos.log \
+/home/miguel/DatosBackupsLinuX
+</pre>
+<img src="media/25.7.PNG">
+</div>
+
+<!-- 25.8 -->
+<div class="paso">
+<h3>25.8 – Script con compresion gzip</h3>
+<pre>
+#!/bin/bash
+FECHA=$(date +%Y%m%d)
+tar --create \
+--gzip \
+--file=datosBackup.$FECHA.tar.gz \
+--listed-incremental=datos.log \
+/home/miguel/DatosBackupsLinuX
+</pre>
+<p>Se utiliza gzip por ser eficiente para texto plano.</p>
+<img src="media/25.8.PNG">
+</div>
+
+<!-- 25.9 -->
+<div class="paso">
+<h3>25.9 – Automatizacion con systemd</h3>
+
+<p>Servicio:</p>
+<pre>
+[Unit]
+Description=Backup incremental comprimido
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /home/miguel/backup_incremental_gzip.sh
+</pre>
+
+<p>Timer:</p>
+<pre>
+[Unit]
+Description=Ejecucion diaria del backup
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+</pre>
+
+<p>Se habilita y verifica con:</p>
+<pre>
+sudo systemctl enable backup_miguel.timer
+systemctl list-timers
+</pre>
+
+<img src="media/25.9.PNG">
+</div>
+
+<h2>Conclusión</h2>
+<p>
+Se ha implementado un sistema completo de copias incrementales en Linux,
+incluyendo automatizacion diaria mediante systemd, garantizando la proteccion
+de los datos y su ejecucion periodica.
+</p>
+
+</div>
+</body>
+</html>
