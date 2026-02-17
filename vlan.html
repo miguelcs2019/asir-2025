@@ -3,46 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VLAN – MiguelCS</title>
+<title>Práctica VLAN – Packet Tracer</title>
 
 <style>
     body {
         margin: 0;
-        background: #000;
-        color: white;
+        background: #0e0e0e;
+        color: #e6e6e6;
         font-family: "Segoe UI", Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
     }
 
-    h1 {
+    header {
+        background: #000;
+        padding: 30px 10px;
+        text-align: center;
+        border-bottom: 3px solid #ff7a00;
+    }
+
+    header h1 {
+        margin: 0;
         color: #ff7a00;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        color: #4aa3ff;
+        font-size: 16px;
+    }
+
+    .contenedor {
+        width: 92%;
+        max-width: 1100px;
+        margin: 40px auto;
+    }
+
+    h2 {
+        margin-top: 50px;
+        color: #ff7a00;
+        border-left: 6px solid #ff7a00;
+        padding-left: 14px;
     }
 
     p {
-        color: #4aa3ff;
+        line-height: 1.6;
     }
 
-    a {
-        display: inline-block;
-        margin-top: 30px;
+    .bloque {
+        background: #151515;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 25px 0;
+        box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    .bloque h3 {
         color: #4aa3ff;
-        text-decoration: none;
-        font-weight: bold;
+        margin-top: 0;
+    }
+
+    img {
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 6px;
+        border: 1px solid #333;
+    }
+
+    .pie {
+        font-size: 13px;
+        color: #aaa;
+        margin-top: 6px;
+    }
+
+    footer {
+        margin-top: 60px;
+        padding: 20px;
+        text-align: center;
+        color: #888;
+        font-size: 14px;
+        border-top: 1px solid #333;
     }
 </style>
 </head>
 
 <body>
 
-<div>
-    <h1>Práctica 8.2 – VLAN</h1>
-    <p>Contenido pendiente de desarrollo</p>
-    <a href="portalxarxes.html">← Volver a Administració de Xarxes</a>
+<header>
+    <h1>Práctica VLAN, Trunk 802.1Q y Router-on-a-Stick</h1>
+    <p>MiguelCS · ASIR · Sistemas y Redes</p>
+</header>
+
+<div class="contenedor">
+
+<h2>Introducción</h2>
+<div class="bloque">
+    <p>En esta práctica se construye una red conmutada segmentada mediante VLAN (Virtual LAN) con switches Cisco y se habilita comunicación entre redes virtuales mediante enrutamiento inter-VLAN. Se trabaja en tres fases principales: (1) segmentación por VLAN, (2) transporte de VLAN entre switches mediante enlaces troncales IEEE 802.1Q y (3) enrutamiento inter-VLAN mediante router-on-a-stick.</p>
+    <p>La segmentación por VLAN reduce dominios de broadcast y mejora seguridad y organización. Los enlaces trunk permiten que varias VLAN compartan un mismo enlace físico mediante etiquetado 802.1Q. Finalmente, router-on-a-stick centraliza el enrutamiento de varias VLAN en un único enlace físico creando subinterfaces etiquetadas.</p>
 </div>
+
+<!-- ================= 26.0 ================= -->
+<h2>26.0 Creación de la topología</h2>
+<div class="bloque">
+    <p>Se crea la topología base en Packet Tracer con tres switches interconectados y seis hosts (dos por switch). En esta fase se valida únicamente la conectividad física (cableado correcto, enlaces activos) antes de introducir segmentación lógica.</p>
+    <p><strong>Objetivo técnico:</strong> disponer de una infraestructura de capa 2 funcional sobre la que aplicar VLAN y trunk sin mezclar problemas físicos con problemas de configuración.</p>
+    <img src="media/26.0.PNG">
+    <p class="pie">Topología inicial con switches y hosts.</p>
+</div>
+
+<!-- ================= 26.1 ================= -->
+<h2>26.1 Verificación de conectividad inicial (red plana)</h2>
+<div class="bloque">
+    <p>Se asignan direcciones IP a todos los hosts dentro de una misma red lógica y se verifica conectividad con <strong>ping</strong>. En una red plana, todos los puertos de acceso pertenecen a VLAN 1 (por defecto), por lo que existe un único dominio de broadcast.</p>
+    <p><strong>Qué se comprueba:</strong> que la conectividad L2/L3 funciona antes de segmentar. Si aquí fallase, no se debería continuar con VLAN.</p>
+    <img src="media/26.1.PNG">
+    <p class="pie">Pings correctos en red sin VLAN (misma red lógica).</p>
+</div>
+
+<!-- ================= 26.2 ================= -->
+<h2>26.2 Creación de VLAN en los switches</h2>
+<div class="bloque">
+    <p>Se crean VLAN 2 y VLAN 3 en los switches. Ejemplo de comandos:</p>
+    <p><strong>enable<br>configure terminal<br>vlan 2<br>name grup2<br>vlan 3<br>name grup3</strong></p>
+    <p>Se verifica la existencia de VLAN con <strong>show vlan brief</strong>, comprobando que aparecen en la base de datos del switch.</p>
+    <p><strong>Importante:</strong> el identificador real es el número de VLAN; el nombre es descriptivo.</p>
+    <img src="media/26.2.PNG">
+    <p class="pie">Creación y verificación de VLAN mediante show vlan brief.</p>
+</div>
+
+<!-- ================= 26.3 ================= -->
+<h2>26.3 Asignación de puertos de acceso a cada VLAN</h2>
+<div class="bloque">
+    <p>Se asignan puertos en modo <strong>access</strong> a VLAN 2 y VLAN 3. Ejemplo:</p>
+    <p><strong>interface fa0/1<br>switchport mode access<br>switchport access vlan 2<br>interface fa0/2<br>switchport mode access<br>switchport access vlan 3</strong></p>
+    <p>Se verifica nuevamente con <strong>show vlan brief</strong> observando qué puertos quedan asociados a cada VLAN.</p>
+    <p><strong>Qué se consigue:</strong> separación de tráfico en capa 2. Cada VLAN es un dominio de broadcast independiente.</p>
+    <img src="media/26.3.PNG">
+    <p class="pie">Puertos asignados a VLAN 2 y VLAN 3.</p>
+</div>
+
+<!-- ================= 26.4 ================= -->
+<h2>26.4 Pruebas de aislamiento tras asignación de VLAN</h2>
+<div class="bloque">
+    <p>Se realizan pings entre hosts que pertenecen a VLAN distintas. El resultado es fallo, ya que un switch de capa 2 no enruta entre VLAN. Aunque físicamente estén en el mismo switch, lógicamente pertenecen a redes separadas.</p>
+    <p><strong>Conclusión técnica:</strong> la segmentación por VLAN está funcionando; el tráfico no atraviesa límites de VLAN sin un dispositivo de capa 3.</p>
+    <img src="media/26.4.PNG">
+    <p class="pie">Pings fallidos entre VLAN distintas (aislamiento correcto).</p>
+</div>
+
+<!-- ================= 26.5 ================= -->
+<h2>26.5 Configuración equivalente en SWITCH2</h2>
+<div class="bloque">
+    <p>Se replica la creación de VLAN y la asignación de puertos en SWITCH2 para mantener consistencia en toda la infraestructura. La verificación con <strong>show vlan brief</strong> confirma que Fa0/1 pertenece a VLAN 2 y Fa0/2 a VLAN 3.</p>
+    <p><strong>Buenas prácticas:</strong> misma numeración de VLAN y misma política de asignación de puertos en todos los switches.</p>
+    <img src="media/26.5.PNG">
+    <p class="pie">VLAN y puertos en SWITCH2.</p>
+</div>
+
+<!-- ================= 26.6 ================= -->
+<h2>26.6 Configuración equivalente en SWITCH3</h2>
+<div class="bloque">
+    <p>Se aplica la misma configuración en SWITCH3. Se valida con <strong>show vlan brief</strong> que las VLAN existen y que los puertos de acceso están correctamente asociados.</p>
+    <img src="media/26.6.PNG">
+    <p class="pie">VLAN y puertos en SWITCH3.</p>
+</div>
+
+<!-- ================= 26.7 ================= -->
+<h2>26.7 Verificación antes de trunk (VLAN aisladas por switch)</h2>
+<div class="bloque">
+    <p>En este punto, aunque todos los switches tienen VLAN 2 y 3 creadas, los hosts de la misma VLAN en switches diferentes aún no se comunican si el enlace entre switches no es trunk. Sin trunk, un enlace inter-switch transporta únicamente la VLAN nativa (habitualmente VLAN 1) o se comporta como enlace de acceso.</p>
+    <p><strong>Qué se demuestra:</strong> la VLAN no “viaja” entre switches si no se configura trunk 802.1Q.</p>
+    <img src="media/26.7.PNG">
+    <p class="pie">Pings fallidos entre switches por ausencia de trunk.</p>
+</div>
+
+<!-- ================= 26.8 ================= -->
+<h2>26.8 Configuración trunk en SWITCH1</h2>
+<div class="bloque">
+    <p>Se configura el puerto que conecta SWITCH1 con SWITCH2 en modo trunk, habilitando etiquetado 802.1Q. Comandos típicos:</p>
+    <p><strong>interface fa0/x<br>switchport mode trunk</strong></p>
+    <p>Se verifica con <strong>show interface trunk</strong>, observando estado <em>trunking</em>, VLAN permitidas y VLAN activas.</p>
+    <img src="media/26.8.PNG">
+    <p class="pie">Verificación de trunk en SWITCH1.</p>
+</div>
+
+<!-- ================= 26.9 ================= -->
+<h2>26.9 Configuración trunk en SWITCH2</h2>
+<div class="bloque">
+    <p>En SWITCH2 (switch intermedio) se configuran en trunk los puertos que conectan con SWITCH1 y SWITCH3. Se verifica con <strong>show interface trunk</strong> que ambos enlaces están trunking y que transportan VLAN 2 y 3.</p>
+    <p><strong>Nota técnica:</strong> en Packet Tracer puede aparecer “auto” en algún puerto si DTP negocia; en prácticas ASIR se recomienda fijar explícitamente <strong>switchport mode trunk</strong>.</p>
+    <img src="media/26.9.PNG">
+    <p class="pie">Trunk en SWITCH2 (enlaces hacia SW1 y SW3).</p>
+</div>
+
+<!-- ================= 26.10 ================= -->
+<h2>26.10 Configuración trunk en SWITCH3</h2>
+<div class="bloque">
+    <p>Se configura el enlace entre SWITCH3 y SWITCH2 en modo trunk y se verifica con <strong>show interface trunk</strong>. A partir de aquí las VLAN pueden propagarse a través de toda la red conmutada.</p>
+    <img src="media/26.10.PNG">
+    <p class="pie">Trunk activo en SWITCH3.</p>
+</div>
+
+<!-- ================= 26.11 ================= -->
+<h2>26.11 Prueba tras trunk (misma VLAN entre switches)</h2>
+<div class="bloque">
+    <p>Se repiten los pings entre hosts de la misma VLAN ubicados en diferentes switches. Ahora funcionan porque los enlaces trunk transportan las VLAN mediante etiquetas 802.1Q. Sin embargo, entre VLAN distintas sigue fallando porque aún no hay enrutamiento L3.</p>
+    <p><strong>Qué se demuestra:</strong> trunk correcto + VLAN extendidas por toda la infraestructura.</p>
+    <img src="media/26.11.PNG">
+    <p class="pie">Pings correctos dentro de la misma VLAN entre switches.</p>
+</div>
+
+<!-- ================= 26.12 ================= -->
+<h2>26.12 Router con dos interfaces (enrutamiento inter-VLAN clásico)</h2>
+<div class="bloque">
+    <p>Se añade un router y se configuran dos interfaces físicas como puertas de enlace para cada VLAN/red. Verificación con:</p>
+    <p><strong>show ip interface brief</strong></p>
+    <p>Este enfoque requiere una interfaz física por VLAN, útil para comprender el enrutamiento inter-VLAN pero menos eficiente en entornos con muchas VLAN.</p>
+    <img src="media/26.12.PNG">
+    <p class="pie">Interfaces del router configuradas y en estado up/up.</p>
+</div>
+
+<!-- ================= 26.13 ================= -->
+<h2>26.13 Prueba de comunicación entre VLAN (con router)</h2>
+<div class="bloque">
+    <p>Se comprueba que hosts de VLAN distintas ya se comunican mediante <strong>ping</strong>, validando que el router está enrutando tráfico entre redes. Este punto confirma el funcionamiento de puerta de enlace en cada VLAN.</p>
+    <img src="media/26.13.PNG">
+    <p class="pie">Inter-VLAN funcionando con router (dos interfaces).</p>
+</div>
+
+<!-- ================= 26.14 ================= -->
+<h2>26.14 Topología con router (dos enlaces)</h2>
+<div class="bloque">
+    <p>Captura de la topología con el router integrado mediante dos enlaces físicos hacia el switch, representando el esquema clásico de enrutamiento inter-VLAN con interfaces dedicadas.</p>
+    <img src="media/26.14.PNG">
+    <p class="pie">Topología con router conectado mediante dos interfaces.</p>
+</div>
+
+<!-- ================= 26.15 ================= -->
+<h2>26.15 Preparación router-on-a-stick (un solo enlace físico)</h2>
+<div class="bloque">
+    <p>Se elimina uno de los enlaces router-switch y se deja un único enlace físico. A partir de este punto, el router enruta varias VLAN por un solo enlace utilizando subinterfaces etiquetadas (802.1Q).</p>
+    <p><strong>Ventaja:</strong> escalable: permite muchas VLAN con un solo puerto físico en el router.</p>
+    <img src="media/26.15.PNG">
+    <p class="pie">Topología con un solo enlace router-switch (preparación RoaS).</p>
+</div>
+
+<!-- ================= 26.16 ================= -->
+<h2>26.16 Configuración de subinterfaces (router-on-a-stick)</h2>
+<div class="bloque">
+    <p>Se crean subinterfaces en el router asociadas a cada VLAN con encapsulación dot1Q. Ejemplo:</p>
+    <p><strong>interface g0/0.2<br>encapsulation dot1Q 2<br>ip address 192.168.0.1 255.255.255.0<br><br>
+interface g0/0.3<br>encapsulation dot1Q 3<br>ip address 192.168.1.1 255.255.255.0</strong></p>
+    <p>Se valida con <strong>show ip interface brief</strong> que g0/0.2 y g0/0.3 están up/up.</p>
+    <img src="media/26.16.PNG">
+    <p class="pie">Subinterfaces configuradas para VLAN 2 y VLAN 3.</p>
+</div>
+
+<!-- ================= 26.17 ================= -->
+<h2>26.17 Trunk entre switch y router</h2>
+<div class="bloque">
+    <p>El puerto del switch conectado al router se configura en modo trunk para transportar las VLAN hacia el router. Verificación con:</p>
+    <p><strong>show interface trunk</strong></p>
+    <p><strong>Punto crítico:</strong> sin trunk en el puerto hacia el router, el router no recibirá tramas etiquetadas y no habrá inter-VLAN.</p>
+    <img src="media/26.17.PNG">
+    <p class="pie">Trunk activo entre switch y router.</p>
+</div>
+
+<!-- ================= 26.18 ================= -->
+<h2>26.18 Prueba final (router-on-a-stick operativo)</h2>
+<div class="bloque">
+    <p>Se realizan pings entre hosts de VLAN distintas comprobando comunicación completa a través del router-on-a-stick. Este resultado valida: enlaces trunk correctos, subinterfaces configuradas y enrutamiento inter-VLAN funcional.</p>
+    <p><strong>Comprobación adicional recomendada (opcional):</strong> <strong>show ip route</strong> para ver rutas conectadas a las redes de las VLAN.</p>
+    <img src="media/26.18.PNG">
+    <p class="pie">Conectividad final entre VLAN mediante router-on-a-stick.</p>
+</div>
+
+<h2>Conclusión</h2>
+<div class="bloque">
+    <p>La práctica ha permitido implementar una infraestructura con segmentación mediante VLAN, verificando el aislamiento de tráfico en capa 2 y la reducción de dominios de broadcast. Se ha configurado trunk 802.1Q entre switches, permitiendo la extensión de VLAN por toda la red conmutada.</p>
+    <p>Posteriormente se ha habilitado enrutamiento inter-VLAN primero con dos interfaces físicas (enfoque clásico) y finalmente mediante router-on-a-stick, utilizando subinterfaces y un único enlace trunk hacia el switch. Esta última solución es la más utilizada en entornos reales por su escalabilidad y eficiencia cuando se trabaja con múltiples VLAN.</p>
+    <p>Las pruebas ICMP finales confirman conectividad completa entre hosts de distintas VLAN, validando que la segmentación y el enrutamiento inter-VLAN están correctamente implementados.</p>
+</div>
+
+</div>
+
+<footer>
+    Práctica de Redes · VLAN, Trunk 802.1Q y Router-on-a-Stick · ASIR
+</footer>
 
 </body>
 </html>
