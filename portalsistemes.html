@@ -12,23 +12,12 @@ body{
     background:black;
     color:#00ff88;
     font-family:'Consolas','Courier New',monospace;
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
     cursor:crosshair;
 }
 
-/* CURSOR HACKER */
-body::after{
-    content:"";
-    position:fixed;
-    width:6px;
-    height:6px;
-    background:#00ff88;
-    border-radius:50%;
-    pointer-events:none;
-    transform:translate(-50%,-50%);
-    z-index:9999;
-}
-
+/* CANVAS MATRIX */
 canvas{
     position:fixed;
     top:0;
@@ -54,6 +43,7 @@ canvas{
     to{opacity:0;visibility:hidden;}
 }
 
+/* HEADER */
 header{
     padding:60px 0;
     text-align:center;
@@ -74,6 +64,7 @@ header{
     margin:60px auto;
 }
 
+/* BLOQUE UNIDAD */
 .unidad{
     background:rgba(0,0,0,0.8);
     border:2px solid #00ff88;
@@ -191,7 +182,6 @@ header{
 /* SONIDO DIGITAL */
 const beep=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-interface-click-1126.mp3");
 
-/* DESPLEGABLE */
 document.querySelectorAll(".unidad").forEach(u=>{
     u.addEventListener("click",()=>{
         u.classList.toggle("activa");
@@ -199,22 +189,21 @@ document.querySelectorAll(".unidad").forEach(u=>{
     });
 });
 
-/* CURSOR HACKER */
-document.addEventListener("mousemove",e=>{
-    document.body.style.setProperty('--x', e.clientX+'px');
-    document.body.style.setProperty('--y', e.clientY+'px');
-});
-
 /* MATRIX RAIN */
 const canvas=document.getElementById("matrix");
 const ctx=canvas.getContext("2d");
-canvas.height=window.innerHeight;
-canvas.width=window.innerWidth;
+
+function resizeCanvas(){
+    canvas.height=window.innerHeight;
+    canvas.width=window.innerWidth;
+}
+resizeCanvas();
+window.addEventListener("resize",resizeCanvas);
 
 const letters="アイウエオ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const fontSize=16;
-const columns=canvas.width/fontSize;
-const drops=[];
+let columns=canvas.width/fontSize;
+let drops=[];
 for(let x=0;x<columns;x++) drops[x]=1;
 
 function draw(){
@@ -222,11 +211,14 @@ function draw(){
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle="#00ff88";
     ctx.font=fontSize+"px monospace";
+
     for(let i=0;i<drops.length;i++){
         const text=letters.charAt(Math.floor(Math.random()*letters.length));
         ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
         if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
             drops[i]=0;
+
         drops[i]++;
     }
 }
@@ -236,3 +228,4 @@ setInterval(draw,33);
 
 </body>
 </html>
+
