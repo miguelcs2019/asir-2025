@@ -12,16 +12,46 @@ body{
     background:#000;
     color:#00ff88;
     font-family:'Consolas','Courier New',monospace;
+    overflow-x:hidden;
 }
 
+/* EFECTO SCANLINE */
+body::before{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(0,255,120,0.03),
+        rgba(0,255,120,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events:none;
+    z-index:999;
+}
+
+/* HEADER GLITCH */
 header{
-    padding:50px 0;
+    padding:60px 0;
     text-align:center;
-    font-size:40px;
+    font-size:42px;
     font-weight:bold;
     letter-spacing:3px;
     border-bottom:2px solid #00ff88;
-    text-shadow:0 0 10px #00ff88;
+    position:relative;
+    animation:glitch 2s infinite;
+}
+
+@keyframes glitch{
+    0%{text-shadow:2px 0 #00ff88,-2px 0 #009955;}
+    25%{text-shadow:-2px 0 #00ff88,2px 0 #009955;}
+    50%{text-shadow:2px 0 #00ff88,-2px 0 #009955;}
+    75%{text-shadow:-2px 0 #00ff88,2px 0 #009955;}
+    100%{text-shadow:2px 0 #00ff88,-2px 0 #009955;}
 }
 
 .contenedor{
@@ -42,7 +72,7 @@ header{
 }
 
 .unidad:hover{
-    box-shadow:0 0 35px rgba(0,255,120,0.6);
+    box-shadow:0 0 45px rgba(0,255,120,0.8);
 }
 
 .unidad h2{
@@ -57,6 +87,7 @@ header{
     opacity:0.7;
 }
 
+/* TAREAS */
 .tareas{
     max-height:0;
     overflow:hidden;
@@ -68,6 +99,12 @@ header{
     padding:15px;
     border-top:1px solid #00ff88;
     margin-top:15px;
+    animation:fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
 }
 
 .tarea a{
@@ -77,11 +114,11 @@ header{
 }
 
 .tarea a:hover{
-    text-shadow:0 0 6px #00ff88;
+    text-shadow:0 0 8px #00ff88;
 }
 
 .unidad.activa .tareas{
-    max-height:900px;
+    max-height:1000px;
 }
 
 </style>
@@ -89,11 +126,10 @@ header{
 
 <body>
 
-<header>Sistemes Operatius – MATRIX PORTAL</header>
+<header>SISTEMES OPERATIUS – MATRIX PORTAL</header>
 
 <div class="contenedor">
 
-    <!-- UNIDAD 7 -->
     <div class="unidad">
         <h2>UNIDAD 7</h2>
         <p>Software y Accesibilidad</p>
@@ -107,7 +143,6 @@ header{
         </div>
     </div>
 
-    <!-- UNIDAD 8 -->
     <div class="unidad">
         <h2>UNIDAD 8</h2>
         <p>Almacenamiento y Seguridad</p>
@@ -124,7 +159,6 @@ header{
         </div>
     </div>
 
-    <!-- UNIDAD 9 -->
     <div class="unidad">
         <h2>UNIDAD 9</h2>
         <p>Monitorización y Registros del Sistema</p>
@@ -140,8 +174,7 @@ header{
 </div>
 
 <script>
-const unidades = document.querySelectorAll(".unidad");
-
+const unidades=document.querySelectorAll(".unidad");
 unidades.forEach(unidad=>{
     unidad.addEventListener("click",()=>{
         unidad.classList.toggle("activa");
