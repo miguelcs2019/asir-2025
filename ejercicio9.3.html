@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD09 – Tarea 3 – Monitorizacion de Red en Linux</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+}
+header {
+    padding: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    background: black;
+    border-bottom: 2px solid #00ff88;
+}
+.contenedor {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+.paso {
+    background: rgba(0,255,80,0.06);
+    border: 1px solid #00ff88;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+img {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #00ff88;
+}
+pre {
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>UD09 – Tarea 3: Monitorizacion de Red en Linux</header>
+
+<div class="contenedor">
+
+<div class="paso">
+<h3>27.16 – Version de herramientas instaladas</h3>
+
+<pre>
+bmon --version
+wireshark --version
+</pre>
+
+<p>
+Se verifica la correcta instalacion de las herramientas de monitorizacion.
+Esto garantiza que el entorno de analisis esta correctamente preparado.
+</p>
+
+<img src="media/27.16.PNG">
+</div>
+
+<div class="paso">
+<h3>27.17 – Monitorizacion en tiempo real con bmon</h3>
+
+<pre>bmon</pre>
+
+<p>
+bmon permite visualizar en tiempo real:
+</p>
+
+<ul>
+<li>Interfaz de red activa.</li>
+<li>Tráfico entrante (RX).</li>
+<li>Tráfico saliente (TX).</li>
+<li>Velocidad de transferencia.</li>
+</ul>
+
+<p>
+Se genera trafico mediante ping para observar variacion en tiempo real.
+</p>
+
+<img src="media/27.17.PNG">
+</div>
+
+<div class="paso">
+<h3>27.18 – Estadisticas de red del sistema</h3>
+
+<pre>
+ss -s
+netstat -s
+</pre>
+
+<p>
+Estos comandos muestran:
+</p>
+
+<ul>
+<li>Total de conexiones TCP.</li>
+<li>Conexiones establecidas.</li>
+<li>Retransmisiones.</li>
+<li>Estadisticas UDP.</li>
+</ul>
+
+<p>
+Son herramientas esenciales para diagnostico de problemas de red.
+</p>
+
+<img src="media/27.18.PNG">
+</div>
+
+<div class="paso">
+<h3>27.19 – Puertos abiertos y procesos asociados</h3>
+
+<pre>ss -tulnp</pre>
+
+<p>
+Se identifican:
+</p>
+
+<ul>
+<li>Puertos en escucha.</li>
+<li>Servicios activos.</li>
+<li>PID del proceso asociado.</li>
+</ul>
+
+<p>
+Este analisis es fundamental para auditorias de seguridad y deteccion
+de servicios no autorizados.
+</p>
+
+<img src="media/27.19.PNG">
+</div>
+
+<div class="paso">
+<h3>27.20 – Captura de paquetes ICMP con Wireshark</h3>
+
+<p>
+Se inicia captura sobre la interfaz activa y se aplica el filtro:
+</p>
+
+<pre>icmp</pre>
+
+<p>
+Se observan paquetes Echo Request y Echo Reply generados mediante ping.
+</p>
+
+<img src="media/27.20.PNG">
+</div>
+
+<div class="paso">
+<h3>27.21 – Analisis detallado de un paquete</h3>
+
+<p>
+Al seleccionar un paquete se visualiza:
+</p>
+
+<ul>
+<li>Frame completo.</li>
+<li>Encapsulado Ethernet II.</li>
+<li>Cabecera IPv4.</li>
+<li>Protocolo ICMP.</li>
+</ul>
+
+<p>
+Wireshark permite desglosar cada capa del modelo OSI,
+facilitando el analisis forense y el estudio del trafico.
+</p>
+
+<img src="media/27.21.PNG">
+</div>
+
+<h2>Manual basico de Wireshark</h2>
+
+<div class="paso">
+
+<h3>1. Inicio de captura</h3>
+<ul>
+<li>Seleccionar interfaz activa.</li>
+<li>Iniciar captura.</li>
+</ul>
+
+<h3>2. Uso de filtros</h3>
+<ul>
+<li>icmp → Paquetes ICMP.</li>
+<li>tcp → Trafico TCP.</li>
+<li>udp → Trafico UDP.</li>
+<li>ip.addr == 8.8.8.8 → Filtrado por IP concreta.</li>
+</ul>
+
+<h3>3. Analisis de paquetes</h3>
+<ul>
+<li>Desglose por capas.</li>
+<li>Analisis de cabeceras.</li>
+<li>Identificacion de errores.</li>
+</ul>
+
+<h3>4. Aplicacion en administracion</h3>
+<ul>
+<li>Diagnostico de problemas de red.</li>
+<li>Deteccion de trafico sospechoso.</li>
+<li>Analisis de latencia.</li>
+<li>Auditoria de comunicaciones.</li>
+</ul>
+
+</div>
+
+<h2>Conclusion</h2>
+
+<p>
+Se han utilizado herramientas de monitorizacion en tiempo real y
+analisis profundo de paquetes para estudiar el comportamiento
+de la red en un sistema GNU/Linux.
+Estas tecnicas son fundamentales en administracion de sistemas,
+seguridad y analisis forense.
+</p>
+
+</div>
+
+</body>
+</html>
