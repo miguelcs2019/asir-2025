@@ -1,166 +1,95 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Tareas – Sistemes Operatius</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemes Operatius – MATRIX Portal</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: #0d0d0d;
-            color: #00ff88;
-            font-family: 'Consolas', 'Courier New', monospace;
-        }
+<style>
 
-        header {
-            padding: 40px 0;
-            text-align: center;
-            font-size: 38px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            background: black;
-            border-bottom: 2px solid #00ff88;
-            text-shadow: 0 0 8px #00ff88;
-        }
+body{
+    margin:0;
+    background:#000;
+    color:#00ff88;
+    font-family: 'Consolas','Courier New',monospace;
+}
 
-        .contenedor {
-            width: 90%;
-            max-width: 900px;
-            margin: 40px auto;
-        }
+/* HEADER */
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:40px;
+    font-weight:bold;
+    letter-spacing:3px;
+    border-bottom:2px solid #00ff88;
+    text-shadow:0 0 10px #00ff88;
+    background:black;
+}
 
-        .section-title {
-            font-size: 26px;
-            margin: 40px 0 20px;
-            border-left: 6px solid #00ff88;
-            padding-left: 12px;
-            text-shadow: 0 0 4px #00ff88;
-        }
+/* CONTENEDOR */
+.contenedor{
+    width:90%;
+    max-width:1000px;
+    margin:60px auto;
+}
 
-        .tarea {
-            background: rgba(0,255,80,0.06);
-            border: 1px solid #0aff66;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 22px;
-            box-shadow: 0 0 12px rgba(0,255,120,0.15);
-            transition: 0.25s;
-        }
+/* BLOQUES UNIDAD */
+.unidad{
+    background:rgba(0,255,100,0.05);
+    border:2px solid #00ff88;
+    padding:40px;
+    margin-bottom:40px;
+    border-radius:15px;
+    text-align:center;
+    transition:0.3s;
+    box-shadow:0 0 15px rgba(0,255,120,0.2);
+}
 
-        .tarea:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0 18px rgba(0,255,120,0.4);
-        }
+.unidad:hover{
+    transform:translateY(-6px);
+    box-shadow:0 0 35px rgba(0,255,120,0.6);
+}
 
-        .tarea h3 {
-            margin-top: 0;
-            font-size: 20px;
-        }
+.unidad h2{
+    margin:0;
+    font-size:32px;
+    letter-spacing:2px;
+    text-shadow:0 0 12px #00ff88;
+}
 
-        .btn {
-            display: inline-block;
-            margin-top: 14px;
-            padding: 10px 18px;
-            background: #00ff88;
-            color: #000;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
+.unidad p{
+    margin-top:15px;
+    opacity:0.8;
+}
 
-        .btn:hover {
-            background: #00cc66;
-        }
-    </style>
+</style>
 </head>
 
 <body>
 
-    <header>Sistemes Operatius – Portal de Tareas</header>
+<header>Sistemes Operatius – MATRIX PORTAL</header>
 
-    <div class="contenedor">
+<div class="contenedor">
 
-        <!-- ================= UNIDAD 7 ================= -->
-        <div class="section-title">Unidad 7 – Software y Accesibilidad</div>
-
-        <div class="tarea">
-            <h3>Tarea 1: Conceptos de Software</h3>
-            <p>Versiones, actualizaciones, NGiNX, Windows Update y conceptos básicos.</p>
-            <a class="btn" href="tarea1.html">Abrir Tarea 1</a>
-        </div>
-
-        <div class="tarea">
-            <h3>Tarea 2: Tipos de Software</h3>
-            <p>Clasificación del software según su propósito y licencia.</p>
-            <a class="btn" href="tarea2.html">Abrir Tarea 2</a>
-        </div>
-
-        <div class="tarea">
-            <h3>Tarea 3: Mantenimiento de Software</h3>
-            <p>Actualización de Windows 10.</p>
-            <a class="btn" href="tarea3.html">Abrir Tarea 3</a>
-        </div>
-
-        <div class="tarea">
-            <h3>Tarea 4: AppImage</h3>
-            <p>Instalación de programas mediante AppImage.</p>
-            <a class="btn" href="tarea4.html">Abrir Tarea 4</a>
-        </div>
-
-        <div class="tarea">
-            <h3>Tarea 5: Accesibilidad</h3>
-            <p>Aplicaciones de accesibilidad, teclado y comunicadores.</p>
-            <a class="btn" href="tarea5.html">Abrir Tarea 5</a>
-        </div>
-
-        <!-- ================= UNIDAD 8 ================= -->
-        <div class="section-title">Unidad 8 – Almacenamiento y Seguridad</div>
-
-        <div class="tarea">
-            <h3>Tarea 1: Volumen distribuido (Windows Server)</h3>
-            <p>Creación y uso de volúmenes distribuidos.</p>
-            <a class="btn" href="ud08_tarea1.html">Abrir Tarea 1</a>
-        </div>
-
-        <div class="tarea">
-            <h3>Tarea 2: Volumen reflejado (RAID 1)</h3>
-            <p>Configuración de RAID 1 y tolerancia a fallos.</p>
-            <a class="btn" href="ud08_tarea2.html">Abrir Tarea 2</a>
-        </div>
-
-        <div class="tarea">
-            <h3>Tarea 6: Copias de seguridad (Windows Server)</h3>
-            <p>Copias programadas, restauración  versiones de archivos y TAREA 8 Nfs.</p>
-            <a class="btn" href="ud08_tarea6.html">Abrir Tarea 6</a>
-        </div>
-        <div class="tarea">
-            <h3>Tarea 3: Crear Raid 1 con LINUX </h3>
-            <p>Configuración de RAID 1 y tolerancia a fallos.</p>
-            <a class="btn" href="ud08_tarea3.html">Abrir Tarea 3</a>
-        </div>
-        <div class="tarea">
-            <h3>Tarea 4: Crear Raid 0 con LINUX </h3>
-            <p>Configuración de RAID.</p>
-            <a class="btn" href="ud08_tarea4.html">Abrir Tarea 4</a>
-        </div>
-        <div class="tarea">
-            <h3>Tarea 5: Crear Cuotas </h3>
-            <p>Configuración de Cuotas y aplicacion.</p>
-            <a class="btn" href="ud08_tarea5.html">Abrir Tarea 5</a>
-        </div>
-         <div class="tarea">
-            <h3>Tarea 8: NFS </h3>
-            <p>Configuración NFS</p>
-            <a class="btn" href="ud08_tarea8.html">Abrir Tarea 8</a>
-        </div>
-         <div class="tarea">
-            <h3>Tarea 7: Copias de Seguridad Linux </h3>
-            <p>Configuración Copias Seguridad</p>
-            <a class="btn" href="ud08_tarea7.html">Abrir Tarea 7</a>
-        </div>
+    <!-- UNIDAD 7 -->
+    <div class="unidad">
+        <h2>UNIDAD 7</h2>
+        <p>Software y Accesibilidad</p>
     </div>
+
+    <!-- UNIDAD 8 -->
+    <div class="unidad">
+        <h2>UNIDAD 8</h2>
+        <p>Almacenamiento y Seguridad</p>
+    </div>
+
+    <!-- UNIDAD 9 -->
+    <div class="unidad">
+        <h2>UNIDAD 9</h2>
+        <p>Monitorización y Registros del Sistema</p>
+    </div>
+
+</div>
 
 </body>
 </html>
