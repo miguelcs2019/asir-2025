@@ -47,105 +47,218 @@ pre {
 
 <body>
 
-<header>UD09 – Tarea 2: Registro GNU/Linux II (journalctl)</header>
+<header>UD09 – Tarea 2: Registro GNU/Linux II (journalctl avanzado)</header>
 
 <div class="contenedor">
 
 <div class="paso">
-<h3>27.3 – Arranques registrados</h3>
+<h3>27.3 – Listado de arranques del sistema</h3>
+
 <pre>journalctl --list-boots</pre>
+
+<p>
+El comando consulta la base de datos binaria del journal ubicada en
+<code>/var/log/journal/</code> y muestra todos los arranques registrados.
+Cada entrada incluye:
+</p>
+
+<ul>
+<li>Indice del arranque (0 actual, -1 anterior, etc).</li>
+<li>Identificador unico del boot.</li>
+<li>Fecha y hora de inicio y finalizacion.</li>
+</ul>
+
+<p>
+Esta informacion es fundamental para analisis forense o
+investigacion de problemas ocurridos en un arranque concreto.
+</p>
+
 <img src="media/27.3.PNG">
 </div>
 
 <div class="paso">
 <h3>27.4 – Logs del arranque actual</h3>
+
 <pre>journalctl -b</pre>
+
+<p>
+El parametro <strong>-b</strong> filtra los eventos del arranque actual.
+Permite analizar:
+</p>
+
+<ul>
+<li>Inicializacion del kernel.</li>
+<li>Carga de modulos.</li>
+<li>Arranque de servicios systemd.</li>
+<li>Errores durante el inicio.</li>
+</ul>
+
+<p>
+Es una herramienta clave para diagnosticar fallos al iniciar el sistema.
+</p>
+
 <img src="media/27.4.PNG">
 </div>
 
 <div class="paso">
 <h3>27.5 – Logs del arranque anterior</h3>
+
 <pre>journalctl -b -1</pre>
+
+<p>
+-b -1 indica el arranque inmediatamente anterior.
+Permite comparar comportamientos entre diferentes inicios
+del sistema.
+</p>
+
 <img src="media/27.5.PNG">
 </div>
 
 <div class="paso">
-<h3>27.6 – Eventos del disco en arranque anterior</h3>
+<h3>27.6 – Eventos del disco durante el arranque anterior</h3>
+
 <pre>sudo journalctl -b -1 | grep -i sda</pre>
+
+<p>
+Se filtran eventos relacionados con el dispositivo principal.
+Aqui se observa:
+</p>
+
+<ul>
+<li>Deteccion del disco por el kernel.</li>
+<li>Particiones detectadas (sda1, sda2, etc).</li>
+<li>Montaje del sistema de archivos.</li>
+<li>Activacion de LVM.</li>
+</ul>
+
+<p>
+Este analisis es esencial cuando existen problemas de
+arranque o corrupcion de sistemas de archivos.
+</p>
+
 <img src="media/27.6.PNG">
 </div>
 
 <div class="paso">
-<h3>27.7 – Mensajes del kernel del arranque anterior</h3>
+<h3>27.7 – Mensajes del kernel</h3>
+
 <pre>sudo journalctl -k -b -1</pre>
+
+<p>
+El parametro <strong>-k</strong> muestra exclusivamente mensajes del kernel,
+equivalente al comando <code>dmesg</code> pero integrado en journalctl.
+Permite analizar:
+</p>
+
+<ul>
+<li>Deteccion de hardware.</li>
+<li>Controladores cargados.</li>
+<li>Errores de memoria o CPU.</li>
+</ul>
+
 <img src="media/27.7.PNG">
 </div>
 
 <div class="paso">
-<h3>27.8 – Script ultimas 10 entradas de programas</h3>
+<h3>27.8 – Script ultimas 10 entradas por programa</h3>
+
+<p>
+Se crea un script que consulta el journal filtrando por comando
+(_COMM) o por unidad systemd (-u).
+</p>
+
 <pre>
-#!/bin/bash
 sudo journalctl _COMM=scite -n 10
 sudo journalctl _COMM=firefox -n 10
 sudo journalctl -u NetworkManager -n 10
 sudo journalctl _COMM=sensors -n 10
 </pre>
+
+<p>
+El parametro <strong>-n 10</strong> limita la salida a las ultimas 10 entradas,
+lo cual resulta util para diagnostico rapido.
+</p>
+
 <img src="media/27.8.PNG">
 </div>
 
 <div class="paso">
 <h3>27.9 – Logs del usuario root</h3>
+
 <pre>sudo journalctl _UID=0 -n 20</pre>
+
+<p>
+_UID=0 corresponde al superusuario.
+Se pueden observar:
+</p>
+
+<ul>
+<li>Comandos ejecutados mediante sudo.</li>
+<li>Apertura y cierre de sesiones.</li>
+<li>Acciones administrativas.</li>
+</ul>
+
+<p>
+Este filtro es importante en auditorias de seguridad.
+</p>
+
 <img src="media/27.9.PNG">
 </div>
 
 <div class="paso">
 <h3>27.10 – Script logs por grupo</h3>
-<pre>
-#!/bin/bash
-grupo=$1
-for usuario in $(getent group $grupo | cut -d: -f4 | tr ',' ' ')
-do
-    uid=$(id -u $usuario)
-    sudo journalctl _UID=$uid -n 10
-done
-</pre>
+
+<p>
+El script obtiene los usuarios pertenecientes a un grupo mediante
+<code>getent group</code>, extrae sus UID y consulta el journal
+para cada uno.
+</p>
+
 <img src="media/27.10.PNG">
 </div>
 
 <div class="paso">
 <h3>27.11 – NetworkManager ultimas 36 horas</h3>
-<pre>sudo journalctl -u NetworkManager --since "36 hours ago" --no-pager</pre>
+
+<pre>sudo journalctl -u NetworkManager --since "36 hours ago"</pre>
+
+<p>
+Permite analizar eventos recientes relacionados con la gestion
+de red, desconexiones, renovacion DHCP o cambios de interfaz.
+</p>
+
 <img src="media/27.11.PNG">
 </div>
 
 <div class="paso">
 <h3>27.12 – NetworkManager ultima semana</h3>
-<pre>sudo journalctl -u NetworkManager --since "7 days ago" --no-pager</pre>
+
+<pre>sudo journalctl -u NetworkManager --since "7 days ago"</pre>
+
+<p>
+Analisis historico para detectar patrones de fallo o
+problemas recurrentes de conectividad.
+</p>
+
 <img src="media/27.12.PNG">
 </div>
 
 <div class="paso">
 <h3>27.13 – Logs del usuario miguelc ayer</h3>
-<pre>sudo journalctl _UID=$(id -u miguelc) --since "yesterday" --until "today" --no-pager</pre>
+
+<pre>sudo journalctl _UID=$(id -u miguelc) --since "yesterday" --until "today"</pre>
+
 <p>
-El mensaje <strong>-- No entries --</strong> indica que no hubo eventos registrados
-para ese usuario en el rango temporal indicado.
+El mensaje <strong>-- No entries --</strong> indica ausencia de actividad
+registrada en ese periodo.
+Esto confirma que el filtro funciona correctamente.
 </p>
+
 <img src="media/27.13.PNG">
 </div>
 
 <div class="paso">
-<h3>27.14 – Instalacion GNOME Logs</h3>
-<pre>
-sudo apt install gnome-logs
-gnome-logs
-</pre>
-<img src="media/27.14.PNG">
-</div>
-
-<div class="paso">
-<h3>27.15 – Funcionamiento real del visor grafico</h3>
+<h3>27.15 – Funcionamiento del visor grafico GNOME Logs</h3>
 
 <p>
 Se reinicia el servicio NetworkManager para generar actividad:
@@ -154,8 +267,8 @@ Se reinicia el servicio NetworkManager para generar actividad:
 <pre>sudo systemctl restart NetworkManager</pre>
 
 <p>
-Posteriormente se abre GNOME Logs, se filtra por "NetworkManager"
-y se visualizan los eventos generados.
+Posteriormente se abre GNOME Logs y se filtra por el servicio,
+visualizando los eventos generados.
 </p>
 
 <img src="media/27.15.PNG">
@@ -165,39 +278,32 @@ y se visualizan los eventos generados.
 
 <div class="paso">
 
-<h3>1. Instalacion</h3>
+<p>
+GNOME Logs es una interfaz grafica que permite consultar
+la base de datos del journal sin necesidad de linea de comandos.
+</p>
+
+<h3>Instalacion</h3>
 <pre>sudo apt install gnome-logs</pre>
 
-<h3>2. Ejecucion</h3>
-<pre>gnome-logs</pre>
-
-<h3>3. Interfaz</h3>
+<h3>Uso basico</h3>
 <ul>
-<li>Panel lateral con categorias (Sistema, Aplicaciones, Seguridad).</li>
-<li>Zona central con eventos cronologicos.</li>
-<li>Barra de busqueda superior.</li>
+<li>Seleccionar categoria en panel lateral.</li>
+<li>Buscar por palabra clave.</li>
+<li>Filtrar por servicio.</li>
+<li>Analizar nivel de prioridad.</li>
 </ul>
 
-<h3>4. Filtrado</h3>
+<h3>Ventajas</h3>
 <ul>
-<li>Busqueda por palabra clave.</li>
-<li>Filtrado por servicio.</li>
-<li>Clasificacion por prioridad.</li>
-<li>Consulta de eventos recientes.</li>
-</ul>
-
-<h3>5. Aplicacion practica</h3>
-<ul>
-<li>Diagnostico rapido de errores.</li>
-<li>Supervision de servicios.</li>
-<li>Analisis de fallos de red.</li>
-<li>Auditoria basica del sistema.</li>
+<li>Visualizacion estructurada.</li>
+<li>Facil interpretacion de errores.</li>
+<li>Util para administradores menos orientados a CLI.</li>
 </ul>
 
 <p>
-La herramienta ofrece una alternativa grafica a journalctl,
-facilitando la interpretacion de eventos sin necesidad de
-trabajar exclusivamente en terminal.
+Resulta especialmente util para diagnostico rapido y supervision
+de servicios del sistema.
 </p>
 
 </div>
@@ -205,11 +311,11 @@ trabajar exclusivamente en terminal.
 <h2>Conclusion</h2>
 
 <p>
-Se ha realizado un analisis avanzado del journal del sistema GNU/Linux,
-aplicando filtros por arranque, kernel, dispositivo, usuario,
-grupo, servicio y rango temporal.
-Ademas, se ha incorporado el uso de una herramienta grafica
-para visualizacion estructurada de registros.
+Se ha realizado un analisis avanzado del sistema de registros
+basado en systemd-journald, aplicando filtros por arranque,
+kernel, servicio, usuario, grupo y rango temporal.
+Estas tecnicas son fundamentales en administracion de sistemas,
+seguridad y analisis de incidencias.
 </p>
 
 </div>
