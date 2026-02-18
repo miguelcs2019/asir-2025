@@ -77,7 +77,7 @@ investigacion de problemas ocurridos en un arranque concreto.
 </div>
 
 <div class="paso">
-<h3>27.4 – Logs del arranque actual</h3>
+<h3>Ejercicio 1 – Logs del arranque actual</h3>
 
 <pre>journalctl -b</pre>
 
@@ -101,7 +101,7 @@ Es una herramienta clave para diagnosticar fallos al iniciar el sistema.
 </div>
 
 <div class="paso">
-<h3>27.5 – Logs del arranque anterior</h3>
+<h3>Ejercicio 2 – Logs del arranque anterior</h3>
 
 <pre>journalctl -b -1</pre>
 
@@ -140,7 +140,7 @@ arranque o corrupcion de sistemas de archivos.
 </div>
 
 <div class="paso">
-<h3>27.7 – Mensajes del kernel</h3>
+<h3>Ejercicio 3 – Mensajes del kernel</h3>
 
 <pre>sudo journalctl -k -b -1</pre>
 
@@ -160,7 +160,7 @@ Permite analizar:
 </div>
 
 <div class="paso">
-<h3>27.8 – Script ultimas 10 entradas por programa</h3>
+<h3>Ejercicio 4 – Script ultimas 10 entradas por programa</h3>
 
 <p>
 Se crea un script que consulta el journal filtrando por comando
@@ -183,7 +183,7 @@ lo cual resulta util para diagnostico rapido.
 </div>
 
 <div class="paso">
-<h3>27.9 – Logs del usuario root</h3>
+<h3>Ejercicio 5 – Logs del usuario root</h3>
 
 <pre>sudo journalctl _UID=0 -n 20</pre>
 
@@ -206,7 +206,7 @@ Este filtro es importante en auditorias de seguridad.
 </div>
 
 <div class="paso">
-<h3>27.10 – Script logs por grupo</h3>
+<h3>Ejercio 6.1 – Script logs por grupo</h3>
 
 <p>
 El script obtiene los usuarios pertenecientes a un grupo mediante
@@ -218,7 +218,7 @@ para cada uno.
 </div>
 
 <div class="paso">
-<h3>27.11 – NetworkManager ultimas 36 horas</h3>
+<h3>Ejercicio 6 – NetworkManager ultimas 36 horas</h3>
 
 <pre>sudo journalctl -u NetworkManager --since "36 hours ago"</pre>
 
@@ -231,7 +231,7 @@ de red, desconexiones, renovacion DHCP o cambios de interfaz.
 </div>
 
 <div class="paso">
-<h3>27.12 – NetworkManager ultima semana</h3>
+<h3>Ejercicio 7 – NetworkManager ultima semana</h3>
 
 <pre>sudo journalctl -u NetworkManager --since "7 days ago"</pre>
 
@@ -244,7 +244,7 @@ problemas recurrentes de conectividad.
 </div>
 
 <div class="paso">
-<h3>27.13 – Logs del usuario miguelc ayer</h3>
+<h3>Ejercicio 8 – Logs del usuario miguelc ayer</h3>
 
 <pre>sudo journalctl _UID=$(id -u miguelc) --since "yesterday" --until "today"</pre>
 
@@ -258,7 +258,7 @@ Esto confirma que el filtro funciona correctamente.
 </div>
 
 <div class="paso">
-<h3>27.15 – Funcionamiento del visor grafico GNOME Logs</h3>
+<h3>Ejercicio 9 – Funcionamiento del visor grafico GNOME Logs</h3>
 
 <p>
 Se reinicia el servicio NetworkManager para generar actividad:
