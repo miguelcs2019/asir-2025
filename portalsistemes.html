@@ -9,49 +9,34 @@
 
 body{
     margin:0;
-    background:#000;
+    background:black;
     color:#00ff88;
     font-family:'Consolas','Courier New',monospace;
     overflow-x:hidden;
 }
 
-/* EFECTO SCANLINE */
-body::before{
-    content:"";
+/* CANVAS MATRIX */
+canvas{
     position:fixed;
     top:0;
     left:0;
-    width:100%;
-    height:100%;
-    background:repeating-linear-gradient(
-        0deg,
-        rgba(0,255,120,0.03),
-        rgba(0,255,120,0.03) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-    pointer-events:none;
-    z-index:999;
+    z-index:-1;
 }
 
-/* HEADER GLITCH */
+/* HEADER */
 header{
     padding:60px 0;
     text-align:center;
     font-size:42px;
     font-weight:bold;
     letter-spacing:3px;
-    border-bottom:2px solid #00ff88;
-    position:relative;
-    animation:glitch 2s infinite;
+    text-shadow:0 0 15px #00ff88;
+    animation:glow 2s infinite alternate;
 }
 
-@keyframes glitch{
-    0%{text-shadow:2px 0 #00ff88,-2px 0 #009955;}
-    25%{text-shadow:-2px 0 #00ff88,2px 0 #009955;}
-    50%{text-shadow:2px 0 #00ff88,-2px 0 #009955;}
-    75%{text-shadow:-2px 0 #00ff88,2px 0 #009955;}
-    100%{text-shadow:2px 0 #00ff88,-2px 0 #009955;}
+@keyframes glow{
+    from{ text-shadow:0 0 10px #00ff88; }
+    to{ text-shadow:0 0 25px #00ff88; }
 }
 
 .contenedor{
@@ -60,26 +45,25 @@ header{
     margin:60px auto;
 }
 
+/* BLOQUE UNIDAD */
 .unidad{
-    background:rgba(0,255,100,0.05);
+    background:rgba(0,0,0,0.7);
     border:2px solid #00ff88;
     padding:40px;
     margin-bottom:30px;
     border-radius:15px;
     cursor:pointer;
     transition:0.3s;
-    box-shadow:0 0 15px rgba(0,255,120,0.2);
+    box-shadow:0 0 20px rgba(0,255,120,0.4);
 }
 
 .unidad:hover{
-    box-shadow:0 0 45px rgba(0,255,120,0.8);
+    box-shadow:0 0 50px rgba(0,255,120,0.9);
 }
 
 .unidad h2{
     margin:0;
     font-size:32px;
-    letter-spacing:2px;
-    text-shadow:0 0 12px #00ff88;
 }
 
 .unidad p{
@@ -99,12 +83,6 @@ header{
     padding:15px;
     border-top:1px solid #00ff88;
     margin-top:15px;
-    animation:fadeIn 0.6s ease forwards;
-}
-
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
 }
 
 .tarea a{
@@ -114,17 +92,19 @@ header{
 }
 
 .tarea a:hover{
-    text-shadow:0 0 8px #00ff88;
+    text-shadow:0 0 10px #00ff88;
 }
 
 .unidad.activa .tareas{
-    max-height:1000px;
+    max-height:1200px;
 }
 
 </style>
 </head>
 
 <body>
+
+<canvas id="matrix"></canvas>
 
 <header>SISTEMES OPERATIUS – MATRIX PORTAL</header>
 
@@ -133,11 +113,10 @@ header{
     <div class="unidad">
         <h2>UNIDAD 7</h2>
         <p>Software y Accesibilidad</p>
-
         <div class="tareas">
             <div class="tarea"><a href="tarea1.html">Tarea 1 – Conceptos de Software</a></div>
             <div class="tarea"><a href="tarea2.html">Tarea 2 – Tipos de Software</a></div>
-            <div class="tarea"><a href="tarea3.html">Tarea 3 – Mantenimiento de Software</a></div>
+            <div class="tarea"><a href="tarea3.html">Tarea 3 – Mantenimiento</a></div>
             <div class="tarea"><a href="tarea4.html">Tarea 4 – AppImage</a></div>
             <div class="tarea"><a href="tarea5.html">Tarea 5 – Accesibilidad</a></div>
         </div>
@@ -146,40 +125,73 @@ header{
     <div class="unidad">
         <h2>UNIDAD 8</h2>
         <p>Almacenamiento y Seguridad</p>
-
         <div class="tareas">
-            <div class="tarea"><a href="ud08_tarea1.html">Tarea 1 – Volumen distribuido (Windows Server)</a></div>
-            <div class="tarea"><a href="ud08_tarea2.html">Tarea 2 – Volumen reflejado (RAID 1)</a></div>
-            <div class="tarea"><a href="ud08_tarea3.html">Tarea 3 – RAID 1 con Linux</a></div>
-            <div class="tarea"><a href="ud08_tarea4.html">Tarea 4 – RAID 0 con Linux</a></div>
+            <div class="tarea"><a href="ud08_tarea1.html">Tarea 1 – Volumen distribuido</a></div>
+            <div class="tarea"><a href="ud08_tarea2.html">Tarea 2 – RAID 1</a></div>
+            <div class="tarea"><a href="ud08_tarea3.html">Tarea 3 – RAID Linux</a></div>
+            <div class="tarea"><a href="ud08_tarea4.html">Tarea 4 – RAID 0</a></div>
             <div class="tarea"><a href="ud08_tarea5.html">Tarea 5 – Cuotas</a></div>
-            <div class="tarea"><a href="ud08_tarea6.html">Tarea 6 – Copias de Seguridad Windows</a></div>
-            <div class="tarea"><a href="ud08_tarea7.html">Tarea 7 – Copias de Seguridad Linux</a></div>
+            <div class="tarea"><a href="ud08_tarea6.html">Tarea 6 – Copias Windows</a></div>
+            <div class="tarea"><a href="ud08_tarea7.html">Tarea 7 – Copias Linux</a></div>
             <div class="tarea"><a href="ud08_tarea8.html">Tarea 8 – NFS</a></div>
         </div>
     </div>
 
     <div class="unidad">
         <h2>UNIDAD 9</h2>
-        <p>Monitorización y Registros del Sistema</p>
-
+        <p>Monitorización y Registros</p>
         <div class="tareas">
             <div class="tarea"><a href="ejercicio9.1.html">Registro GNU/Linux I</a></div>
             <div class="tarea"><a href="#">Registro GNU/Linux II</a></div>
-            <div class="tarea"><a href="#">Monitor de Rendimiento Windows</a></div>
-            <div class="tarea"><a href="#">Recopiladores Windows</a></div>
+            <div class="tarea"><a href="#">Monitor Windows</a></div>
+            <div class="tarea"><a href="#">Recopiladores</a></div>
         </div>
     </div>
 
 </div>
 
 <script>
-const unidades=document.querySelectorAll(".unidad");
-unidades.forEach(unidad=>{
-    unidad.addEventListener("click",()=>{
-        unidad.classList.toggle("activa");
+
+/* DESPLEGABLE */
+document.querySelectorAll(".unidad").forEach(u=>{
+    u.addEventListener("click",()=>{
+        u.classList.toggle("activa");
     });
 });
+
+/* MATRIX RAIN */
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+
+const letters="アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize=16;
+const columns=canvas.width/fontSize;
+const drops=[];
+
+for(let x=0;x<columns;x++) drops[x]=1;
+
+function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#00ff88";
+    ctx.font=fontSize+"px monospace";
+
+    for(let i=0;i<drops.length;i++){
+        const text=letters.charAt(Math.floor(Math.random()*letters.length));
+        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+        if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+            drops[i]=0;
+
+        drops[i]++;
+    }
+}
+
+setInterval(draw,33);
+
 </script>
 
 </body>
