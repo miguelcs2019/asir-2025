@@ -12,10 +12,23 @@ body{
     background:black;
     color:#00ff88;
     font-family:'Consolas','Courier New',monospace;
-    overflow-x:hidden;
+    overflow:hidden;
+    cursor:crosshair;
 }
 
-/* CANVAS MATRIX */
+/* CURSOR HACKER */
+body::after{
+    content:"";
+    position:fixed;
+    width:6px;
+    height:6px;
+    background:#00ff88;
+    border-radius:50%;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    z-index:9999;
+}
+
 canvas{
     position:fixed;
     top:0;
@@ -23,20 +36,36 @@ canvas{
     z-index:-1;
 }
 
-/* HEADER */
+/* PANTALLA CARGA */
+#loading{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    z-index:10000;
+    animation:fadeOut 2s forwards 2s;
+}
+
+@keyframes fadeOut{
+    to{opacity:0;visibility:hidden;}
+}
+
 header{
     padding:60px 0;
     text-align:center;
     font-size:42px;
-    font-weight:bold;
     letter-spacing:3px;
-    text-shadow:0 0 15px #00ff88;
+    text-shadow:0 0 20px #00ff88;
     animation:glow 2s infinite alternate;
 }
 
 @keyframes glow{
-    from{ text-shadow:0 0 10px #00ff88; }
-    to{ text-shadow:0 0 25px #00ff88; }
+    from{text-shadow:0 0 15px #00ff88;}
+    to{text-shadow:0 0 35px #00ff88;}
 }
 
 .contenedor{
@@ -45,20 +74,26 @@ header{
     margin:60px auto;
 }
 
-/* BLOQUE UNIDAD */
 .unidad{
-    background:rgba(0,0,0,0.7);
+    background:rgba(0,0,0,0.8);
     border:2px solid #00ff88;
     padding:40px;
     margin-bottom:30px;
     border-radius:15px;
     cursor:pointer;
     transition:0.3s;
-    box-shadow:0 0 20px rgba(0,255,120,0.4);
+    box-shadow:0 0 25px rgba(0,255,120,0.4);
+    animation:pulse 3s infinite;
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 20px rgba(0,255,120,0.4);}
+    50%{box-shadow:0 0 50px rgba(0,255,120,0.8);}
+    100%{box-shadow:0 0 20px rgba(0,255,120,0.4);}
 }
 
 .unidad:hover{
-    box-shadow:0 0 50px rgba(0,255,120,0.9);
+    transform:scale(1.02);
 }
 
 .unidad h2{
@@ -71,7 +106,6 @@ header{
     opacity:0.7;
 }
 
-/* TAREAS */
 .tareas{
     max-height:0;
     overflow:hidden;
@@ -92,11 +126,11 @@ header{
 }
 
 .tarea a:hover{
-    text-shadow:0 0 10px #00ff88;
+    text-shadow:0 0 15px #00ff88;
 }
 
 .unidad.activa .tareas{
-    max-height:1200px;
+    max-height:1500px;
 }
 
 </style>
@@ -104,73 +138,83 @@ header{
 
 <body>
 
+<div id="loading">ACCESSING SYSTEM...</div>
+
 <canvas id="matrix"></canvas>
 
 <header>SISTEMES OPERATIUS – MATRIX PORTAL</header>
 
 <div class="contenedor">
 
-    <div class="unidad">
-        <h2>UNIDAD 7</h2>
-        <p>Software y Accesibilidad</p>
-        <div class="tareas">
-            <div class="tarea"><a href="tarea1.html">Tarea 1 – Conceptos de Software</a></div>
-            <div class="tarea"><a href="tarea2.html">Tarea 2 – Tipos de Software</a></div>
-            <div class="tarea"><a href="tarea3.html">Tarea 3 – Mantenimiento</a></div>
-            <div class="tarea"><a href="tarea4.html">Tarea 4 – AppImage</a></div>
-            <div class="tarea"><a href="tarea5.html">Tarea 5 – Accesibilidad</a></div>
-        </div>
-    </div>
+<div class="unidad">
+<h2>UNIDAD 7</h2>
+<p>Software y Accesibilidad</p>
+<div class="tareas">
+<div class="tarea"><a href="tarea1.html">Tarea 1 – Conceptos de Software</a></div>
+<div class="tarea"><a href="tarea2.html">Tarea 2 – Tipos de Software</a></div>
+<div class="tarea"><a href="tarea3.html">Tarea 3 – Mantenimiento</a></div>
+<div class="tarea"><a href="tarea4.html">Tarea 4 – AppImage</a></div>
+<div class="tarea"><a href="tarea5.html">Tarea 5 – Accesibilidad</a></div>
+</div>
+</div>
 
-    <div class="unidad">
-        <h2>UNIDAD 8</h2>
-        <p>Almacenamiento y Seguridad</p>
-        <div class="tareas">
-            <div class="tarea"><a href="ud08_tarea1.html">Tarea 1 – Volumen distribuido</a></div>
-            <div class="tarea"><a href="ud08_tarea2.html">Tarea 2 – RAID 1</a></div>
-            <div class="tarea"><a href="ud08_tarea3.html">Tarea 3 – RAID Linux</a></div>
-            <div class="tarea"><a href="ud08_tarea4.html">Tarea 4 – RAID 0</a></div>
-            <div class="tarea"><a href="ud08_tarea5.html">Tarea 5 – Cuotas</a></div>
-            <div class="tarea"><a href="ud08_tarea6.html">Tarea 6 – Copias Windows</a></div>
-            <div class="tarea"><a href="ud08_tarea7.html">Tarea 7 – Copias Linux</a></div>
-            <div class="tarea"><a href="ud08_tarea8.html">Tarea 8 – NFS</a></div>
-        </div>
-    </div>
+<div class="unidad">
+<h2>UNIDAD 8</h2>
+<p>Almacenamiento y Seguridad</p>
+<div class="tareas">
+<div class="tarea"><a href="ud08_tarea1.html">Tarea 1 – Volumen distribuido</a></div>
+<div class="tarea"><a href="ud08_tarea2.html">Tarea 2 – RAID 1</a></div>
+<div class="tarea"><a href="ud08_tarea3.html">Tarea 3 – RAID Linux</a></div>
+<div class="tarea"><a href="ud08_tarea4.html">Tarea 4 – RAID 0</a></div>
+<div class="tarea"><a href="ud08_tarea5.html">Tarea 5 – Cuotas</a></div>
+<div class="tarea"><a href="ud08_tarea6.html">Tarea 6 – Copias Windows</a></div>
+<div class="tarea"><a href="ud08_tarea7.html">Tarea 7 – Copias Linux</a></div>
+<div class="tarea"><a href="ud08_tarea8.html">Tarea 8 – NFS</a></div>
+</div>
+</div>
 
-    <div class="unidad">
-        <h2>UNIDAD 9</h2>
-        <p>Monitorización y Registros</p>
-        <div class="tareas">
-            <div class="tarea"><a href="ejercicio9.1.html">Registro GNU/Linux I</a></div>
-            <div class="tarea"><a href="#">Registro GNU/Linux II</a></div>
-            <div class="tarea"><a href="#">Monitor Windows</a></div>
-            <div class="tarea"><a href="#">Recopiladores</a></div>
-        </div>
-    </div>
+<div class="unidad">
+<h2>UNIDAD 9</h2>
+<p>Monitorización y Registros</p>
+<div class="tareas">
+<div class="tarea"><a href="ejercicio9.1.html">Registro GNU/Linux I</a></div>
+<div class="tarea"><a href="#">Registro GNU/Linux II</a></div>
+<div class="tarea"><a href="#">Monitor Windows</a></div>
+<div class="tarea"><a href="#">Recopiladores</a></div>
+</div>
+</div>
 
 </div>
 
 <script>
 
+/* SONIDO DIGITAL */
+const beep=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-interface-click-1126.mp3");
+
 /* DESPLEGABLE */
 document.querySelectorAll(".unidad").forEach(u=>{
     u.addEventListener("click",()=>{
         u.classList.toggle("activa");
+        beep.play();
     });
+});
+
+/* CURSOR HACKER */
+document.addEventListener("mousemove",e=>{
+    document.body.style.setProperty('--x', e.clientX+'px');
+    document.body.style.setProperty('--y', e.clientY+'px');
 });
 
 /* MATRIX RAIN */
 const canvas=document.getElementById("matrix");
 const ctx=canvas.getContext("2d");
-
 canvas.height=window.innerHeight;
 canvas.width=window.innerWidth;
 
-const letters="アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const letters="アイウエオ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const fontSize=16;
 const columns=canvas.width/fontSize;
 const drops=[];
-
 for(let x=0;x<columns;x++) drops[x]=1;
 
 function draw(){
@@ -178,18 +222,14 @@ function draw(){
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle="#00ff88";
     ctx.font=fontSize+"px monospace";
-
     for(let i=0;i<drops.length;i++){
         const text=letters.charAt(Math.floor(Math.random()*letters.length));
         ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-
         if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
             drops[i]=0;
-
         drops[i]++;
     }
 }
-
 setInterval(draw,33);
 
 </script>
