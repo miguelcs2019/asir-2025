@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD09 – Tarea 2 – Registro GNU/Linux II</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+}
+header {
+    padding: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    background: black;
+    border-bottom: 2px solid #00ff88;
+}
+.contenedor {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+.paso {
+    background: rgba(0,255,80,0.06);
+    border: 1px solid #00ff88;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+img {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #00ff88;
+}
+pre {
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>UD09 – Tarea 2: Registro GNU/Linux II (journalctl)</header>
+
+<div class="contenedor">
+
+<div class="paso">
+<h3>27.3 – Arranques registrados</h3>
+<pre>journalctl --list-boots</pre>
+<img src="media/27.3.PNG">
+</div>
+
+<div class="paso">
+<h3>27.4 – Logs del arranque actual</h3>
+<pre>journalctl -b</pre>
+<img src="media/27.4.PNG">
+</div>
+
+<div class="paso">
+<h3>27.5 – Logs del arranque anterior</h3>
+<pre>journalctl -b -1</pre>
+<img src="media/27.5.PNG">
+</div>
+
+<div class="paso">
+<h3>27.6 – Eventos del disco en arranque anterior</h3>
+<pre>sudo journalctl -b -1 | grep -i sda</pre>
+<img src="media/27.6.PNG">
+</div>
+
+<div class="paso">
+<h3>27.7 – Mensajes del kernel del arranque anterior</h3>
+<pre>sudo journalctl -k -b -1</pre>
+<img src="media/27.7.PNG">
+</div>
+
+<div class="paso">
+<h3>27.8 – Script ultimas 10 entradas de programas</h3>
+<pre>
+#!/bin/bash
+sudo journalctl _COMM=scite -n 10
+sudo journalctl _COMM=firefox -n 10
+sudo journalctl -u NetworkManager -n 10
+sudo journalctl _COMM=sensors -n 10
+</pre>
+<img src="media/27.8.PNG">
+</div>
+
+<div class="paso">
+<h3>27.9 – Logs del usuario root</h3>
+<pre>sudo journalctl _UID=0 -n 20</pre>
+<img src="media/27.9.PNG">
+</div>
+
+<div class="paso">
+<h3>27.10 – Script logs por grupo</h3>
+<pre>
+#!/bin/bash
+grupo=$1
+for usuario in $(getent group $grupo | cut -d: -f4 | tr ',' ' ')
+do
+    uid=$(id -u $usuario)
+    sudo journalctl _UID=$uid -n 10
+done
+</pre>
+<img src="media/27.10.PNG">
+</div>
+
+<div class="paso">
+<h3>27.11 – NetworkManager ultimas 36 horas</h3>
+<pre>sudo journalctl -u NetworkManager --since "36 hours ago" --no-pager</pre>
+<img src="media/27.11.PNG">
+</div>
+
+<div class="paso">
+<h3>27.12 – NetworkManager ultima semana</h3>
+<pre>sudo journalctl -u NetworkManager --since "7 days ago" --no-pager</pre>
+<img src="media/27.12.PNG">
+</div>
+
+<div class="paso">
+<h3>27.13 – Logs del usuario miguelc ayer</h3>
+<pre>sudo journalctl _UID=$(id -u miguelc) --since "yesterday" --until "today" --no-pager</pre>
+<p>
+El mensaje <strong>-- No entries --</strong> indica que no hubo eventos registrados
+para ese usuario en el rango temporal indicado.
+</p>
+<img src="media/27.13.PNG">
+</div>
+
+<div class="paso">
+<h3>27.14 – Instalacion GNOME Logs</h3>
+<pre>
+sudo apt install gnome-logs
+gnome-logs
+</pre>
+<img src="media/27.14.PNG">
+</div>
+
+<div class="paso">
+<h3>27.15 – Funcionamiento real del visor grafico</h3>
+
+<p>
+Se reinicia el servicio NetworkManager para generar actividad:
+</p>
+
+<pre>sudo systemctl restart NetworkManager</pre>
+
+<p>
+Posteriormente se abre GNOME Logs, se filtra por "NetworkManager"
+y se visualizan los eventos generados.
+</p>
+
+<img src="media/27.15.PNG">
+</div>
+
+<h2>Manual de uso – GNOME Logs</h2>
+
+<div class="paso">
+
+<h3>1. Instalacion</h3>
+<pre>sudo apt install gnome-logs</pre>
+
+<h3>2. Ejecucion</h3>
+<pre>gnome-logs</pre>
+
+<h3>3. Interfaz</h3>
+<ul>
+<li>Panel lateral con categorias (Sistema, Aplicaciones, Seguridad).</li>
+<li>Zona central con eventos cronologicos.</li>
+<li>Barra de busqueda superior.</li>
+</ul>
+
+<h3>4. Filtrado</h3>
+<ul>
+<li>Busqueda por palabra clave.</li>
+<li>Filtrado por servicio.</li>
+<li>Clasificacion por prioridad.</li>
+<li>Consulta de eventos recientes.</li>
+</ul>
+
+<h3>5. Aplicacion practica</h3>
+<ul>
+<li>Diagnostico rapido de errores.</li>
+<li>Supervision de servicios.</li>
+<li>Analisis de fallos de red.</li>
+<li>Auditoria basica del sistema.</li>
+</ul>
+
+<p>
+La herramienta ofrece una alternativa grafica a journalctl,
+facilitando la interpretacion de eventos sin necesidad de
+trabajar exclusivamente en terminal.
+</p>
+
+</div>
+
+<h2>Conclusion</h2>
+
+<p>
+Se ha realizado un analisis avanzado del journal del sistema GNU/Linux,
+aplicando filtros por arranque, kernel, dispositivo, usuario,
+grupo, servicio y rango temporal.
+Ademas, se ha incorporado el uso de una herramienta grafica
+para visualizacion estructurada de registros.
+</p>
+
+</div>
+
+</body>
+</html>
