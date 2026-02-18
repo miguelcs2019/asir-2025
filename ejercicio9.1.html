@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD09 – Tarea 1 – Registro GNU/Linux I</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+}
+header {
+    padding: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    background: black;
+    border-bottom: 2px solid #00ff88;
+}
+.contenedor {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+.paso {
+    background: rgba(0,255,80,0.06);
+    border: 1px solid #00ff88;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+img {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #00ff88;
+}
+pre {
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>UD09 – Tarea 1: Registro GNU/Linux I</header>
+
+<div class="contenedor">
+
+<!-- 27.0 -->
+<div class="paso">
+<h3>27.0 – Ultimo inicio de sesion de un usuario</h3>
+
+<p>
+Se desarrolla un script en BASH que recibe como argumento el nombre de un usuario
+y muestra su ultimo inicio de sesion registrado en el sistema mediante el comando
+<code>last</code>, que consulta el archivo <code>/var/log/wtmp</code>.
+</p>
+
+<pre>
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Uso: $0 usuario"
+    exit 1
+fi
+
+usuario=$1
+
+ultimo=$(last "$usuario" | grep -v "wtmp begins" | head -n 1)
+
+if [ -z "$ultimo" ]; then
+    echo "No se encontraron registros para el usuario $usuario"
+else
+    echo "Ultimo inicio de sesion de $usuario:"
+    echo "$ultimo"
+fi
+</pre>
+
+<ul>
+<li><strong>last</strong> → Muestra historial de accesos.</li>
+<li><strong>head -n 1</strong> → Devuelve el acceso mas reciente.</li>
+<li>Se controla si el usuario no tiene registros.</li>
+</ul>
+
+<img src="media/27.0.PNG">
+</div>
+
+<!-- 27.1 -->
+<div class="paso">
+<h3>27.1 – Conteo de palabra en el log</h3>
+
+<p>
+Se crea un script que recibe una palabra como argumento y contabiliza cuantas
+veces aparece en el archivo <code>/var/log/syslog</code>.
+Para ello se utilizan los comandos <code>grep</code> y <code>wc -l</code>.
+</p>
+
+<pre>
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Uso: $0 palabra"
+    exit 1
+fi
+
+palabra=$1
+
+sudo grep -i "$palabra" /var/log/syslog | wc -l
+</pre>
+
+<ul>
+<li><strong>-i</strong> → Ignora mayusculas y minusculas.</li>
+<li><strong>wc -l</strong> → Cuenta el numero de lineas coincidentes.</li>
+<li>Se utiliza sudo por permisos de acceso al log.</li>
+</ul>
+
+<img src="media/27.1.PNG">
+</div>
+
+<!-- 27.2 -->
+<div class="paso">
+<h3>27.2 – Visualizacion de consultas DNS</h3>
+
+<p>
+En sistemas Ubuntu modernos, las consultas DNS son gestionadas por
+<code>systemd-resolved</code>. Para visualizar los registros asociados
+se utiliza el comando <code>journalctl</code>.
+</p>
+
+<pre>
+#!/bin/bash
+
+echo "Consultas DNS registradas por systemd-resolved:"
+echo "----------------------------------------------"
+
+sudo journalctl -u systemd-resolved --no-pager | grep -i "query"
+</pre>
+
+<ul>
+<li><strong>-u systemd-resolved</strong> → Filtra por unidad del servicio DNS.</li>
+<li><strong>--no-pager</strong> → Muestra la salida completa sin paginacion.</li>
+<li><strong>grep "query"</strong> → Filtra consultas DNS reales.</li>
+</ul>
+
+<img src="media/27.2.PNG">
+</div>
+
+<h2>Conclusion</h2>
+
+<p>
+Mediante el uso de herramientas nativas de GNU/Linux como <code>last</code>,
+<code>grep</code> y <code>journalctl</code>, se ha realizado un analisis
+basico de registros del sistema.
+Estos procedimientos permiten auditar accesos, detectar eventos especificos
+y supervisar servicios como DNS, siendo fundamentales en administracion
+de sistemas y tareas de seguridad.
+</p>
+
+</div>
+
+</body>
+</html>
