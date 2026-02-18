@@ -11,7 +11,7 @@ body{
     margin:0;
     background:#000;
     color:#00ff88;
-    font-family: 'Consolas','Courier New',monospace;
+    font-family:'Consolas','Courier New',monospace;
 }
 
 /* HEADER */
@@ -23,7 +23,6 @@ header{
     letter-spacing:3px;
     border-bottom:2px solid #00ff88;
     text-shadow:0 0 10px #00ff88;
-    background:black;
 }
 
 /* CONTENEDOR */
@@ -33,20 +32,19 @@ header{
     margin:60px auto;
 }
 
-/* BLOQUES UNIDAD */
+/* BLOQUE UNIDAD */
 .unidad{
     background:rgba(0,255,100,0.05);
     border:2px solid #00ff88;
     padding:40px;
-    margin-bottom:40px;
+    margin-bottom:30px;
     border-radius:15px;
-    text-align:center;
+    cursor:pointer;
     transition:0.3s;
     box-shadow:0 0 15px rgba(0,255,120,0.2);
 }
 
 .unidad:hover{
-    transform:translateY(-6px);
     box-shadow:0 0 35px rgba(0,255,120,0.6);
 }
 
@@ -58,8 +56,36 @@ header{
 }
 
 .unidad p{
+    margin-top:10px;
+    opacity:0.7;
+}
+
+/* CONTENIDO DESPLEGABLE */
+.tareas{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.6s ease;
+    margin-top:20px;
+}
+
+.tarea{
+    padding:15px;
+    border-top:1px solid #00ff88;
     margin-top:15px;
-    opacity:0.8;
+}
+
+.tarea a{
+    color:#00ff88;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.tarea a:hover{
+    text-shadow:0 0 6px #00ff88;
+}
+
+.unidad.activa .tareas{
+    max-height:500px;
 }
 
 </style>
@@ -75,21 +101,57 @@ header{
     <div class="unidad">
         <h2>UNIDAD 7</h2>
         <p>Software y Accesibilidad</p>
+
+        <div class="tareas">
+            <div class="tarea"><a href="tarea1.html">Tarea 1</a></div>
+            <div class="tarea"><a href="tarea2.html">Tarea 2</a></div>
+            <div class="tarea"><a href="tarea3.html">Tarea 3</a></div>
+            <div class="tarea"><a href="tarea4.html">Tarea 4</a></div>
+            <div class="tarea"><a href="tarea5.html">Tarea 5</a></div>
+        </div>
     </div>
 
     <!-- UNIDAD 8 -->
     <div class="unidad">
         <h2>UNIDAD 8</h2>
         <p>Almacenamiento y Seguridad</p>
+
+        <div class="tareas">
+            <div class="tarea"><a href="ud08_tarea1.html">Tarea 1</a></div>
+            <div class="tarea"><a href="ud08_tarea2.html">Tarea 2</a></div>
+            <div class="tarea"><a href="ud08_tarea3.html">Tarea 3</a></div>
+            <div class="tarea"><a href="ud08_tarea4.html">Tarea 4</a></div>
+            <div class="tarea"><a href="ud08_tarea5.html">Tarea 5</a></div>
+            <div class="tarea"><a href="ud08_tarea6.html">Tarea 6</a></div>
+            <div class="tarea"><a href="ud08_tarea7.html">Tarea 7</a></div>
+            <div class="tarea"><a href="ud08_tarea8.html">Tarea 8</a></div>
+        </div>
     </div>
 
     <!-- UNIDAD 9 -->
     <div class="unidad">
         <h2>UNIDAD 9</h2>
         <p>Monitorización y Registros del Sistema</p>
+
+        <div class="tareas">
+            <div class="tarea"><a href="ejercicio9.1.html">Registro GNU/Linux I</a></div>
+            <div class="tarea"><a href="#">Registro GNU/Linux II</a></div>
+            <div class="tarea"><a href="#">Monitor Windows</a></div>
+            <div class="tarea"><a href="#">Recopiladores Windows</a></div>
+        </div>
     </div>
 
 </div>
+
+<script>
+const unidades = document.querySelectorAll(".unidad");
+
+unidades.forEach(unidad=>{
+    unidad.addEventListener("click",()=>{
+        unidad.classList.toggle("activa");
+    });
+});
+</script>
 
 </body>
 </html>
