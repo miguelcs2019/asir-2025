@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unidad – Memorias y Buses (Actividades 1 a 7)</title>
+
+  <!-- Si en tu proyecto ya usas /css/estilos1.css, déjalo así -->
+  <link rel="stylesheet" href="css/estilos1.css">
+
+  <!-- Estilo “fallback” (profesional, sin azules, texto justificado) -->
+  <style>
+    :root{
+      --fondo:#f4efe6;
+      --texto:#222;
+      --gris:#555;
+      --borde:#d9d2c7;
+      --caja:#ffffff;
+      --acento:#d8572a;   /* naranja estilo portal */
+      --acento2:#1f1f1f;
+    }
+
+    body{
+      margin:0;
+      background:var(--fondo);
+      font-family: "Montserrat", Arial, sans-serif;
+      color:var(--texto);
+      line-height:1.55;
+    }
+
+    header{
+      background:var(--acento);
+      color:#fff;
+      padding:28px 16px;
+      text-align:center;
+      font-weight:800;
+      letter-spacing:.3px;
+      text-shadow:0 0 4px rgba(0,0,0,.25);
+      font-size:28px;
+    }
+
+    .contenedor{
+      width:92%;
+      max-width:1100px;
+      margin:24px auto 56px auto;
+    }
+
+    .actividad{
+      background:var(--caja);
+      border:1px solid var(--borde);
+      border-radius:14px;
+      padding:18px 18px 12px 18px;
+      margin:18px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    .actividad h2{
+      margin:0 0 10px 0;
+      font-size:20px;
+      color:var(--acento2);
+    }
+
+    .actividad p, .actividad li{
+      text-align:justify;
+      color:var(--gris);
+      margin:8px 0;
+    }
+
+    .bloque{
+      border-left:6px solid rgba(216,87,42,.35);
+      background: rgba(216,87,42,.06);
+      padding:10px 12px;
+      border-radius:10px;
+      margin:10px 0 14px 0;
+      text-align:justify;
+      color:#333;
+    }
+
+    .nota{
+      font-size:13.5px;
+      color:#444;
+      background: #fff8f3;
+      border:1px solid #f0d3c6;
+      padding:10px 12px;
+      border-radius:10px;
+      margin:10px 0 14px 0;
+      text-align:justify;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:10px 0 14px 0;
+      font-size:14px;
+    }
+    th, td{
+      border:1px solid var(--borde);
+      padding:10px 8px;
+      vertical-align:top;
+    }
+    th{
+      background:#efe8de;
+      color:#222;
+      font-weight:800;
+      text-align:left;
+    }
+    td{
+      background:#fff;
+      color:#222;
+    }
+
+    .mini{
+      font-size:13px;
+      color:#444;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:3px 10px;
+      border-radius:999px;
+      background:#eee;
+      border:1px solid #ddd;
+      font-size:12px;
+      font-weight:700;
+      color:#222;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+
+    @media (max-width: 860px){
+      .grid-2{ grid-template-columns: 1fr; }
+    }
+
+    .canvas-wrap{
+      background:#fff;
+      border:1px solid var(--borde);
+      border-radius:14px;
+      padding:12px;
+      margin:10px 0 16px 0;
+    }
+
+    .footer{
+      margin-top:18px;
+      font-size:12.5px;
+      color:#666;
+      text-align:justify;
+    }
+
+    .strong{ font-weight:800; color:#111; }
+    code{ background:#f3f0ea; padding:2px 6px; border-radius:6px; }
+  </style>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<header>Memorias RAM, Infinity Fabric y PCIe – Actividades 1 a 7</header>
+
+<div class="contenedor">
+
+  <!-- ACTIVIDAD 1 -->
+  <section class="actividad" id="act1">
+    <h2>ACTIVIDAD 1 – Tabla de memorias DDR3</h2>
+
+    <div class="bloque">
+      <p><span class="strong">Memorias:</span></p>
+      <ul>
+        <li>Kingston HyperX Fury Blue DDR3 1600 PC3-12800 8GB CL10</li>
+        <li>Kingston ValueRAM DDR3 1333 PC3-10600 8GB CL9</li>
+      </ul>
+      <p class="mini">
+        Para DDR: <span class="strong">MT/s = “Frecuencia de datos”</span> y
+        <span class="strong">Reloj (MHz) = MT/s / 2</span>.
+        El ancho de banda teórico: <span class="strong">MB/s = MT/s × 8</span> (bus 64-bit = 8 bytes).
+        Latencia CAS aproximada: <span class="strong">tCL(ns) = CL / Reloj(MHz) × 1000</span>.
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Frecuencia (MHz)<br><span class="mini">Reloj</span></th>
+          <th>Tasa de transferencia (MT/s)<br><span class="mini">Datos</span></th>
+          <th>Velocidad de transferencia (MB/s)</th>
+          <th>CL</th>
+          <th>Latencia aprox. (ns)</th>
+          <th>Versión de DDR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pill">PC3-12800</span><br>HyperX Fury Blue 8GB</td>
+          <td>800 MHz</td>
+          <td>1600 MT/s</td>
+          <td>12800 MB/s</td>
+          <td>CL10</td>
+          <td>12,5 ns</td>
+          <td>DDR3</td>
+        </tr>
+        <tr>
+          <td><span class="pill">PC3-10600</span><br>ValueRAM 8GB</td>
+          <td>666,7 MHz</td>
+          <td>1333 MT/s</td>
+          <td>10600 MB/s</td>
+          <td>CL9</td>
+          <td>≈ 13,5 ns</td>
+          <td>DDR3</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="footer">
+      <span class="strong">Comentario técnico:</span> Aunque la DDR3-1600 tiene CL10 (más ciclos),
+      su reloj es más alto, por eso su latencia real puede quedar incluso mejor que una DDR3-1333 CL9.
+    </p>
+  </section>
+
+
+  <!-- ACTIVIDAD 2 -->
+  <section class="actividad" id="act2">
+    <h2>ACTIVIDAD 2 – Infinity Fabric (FCLK) según memoria y microarquitectura AMD</h2>
+
+    <div class="bloque">
+      <p>
+        Para DDR4: <span class="strong">MT/s = MB/s / 8</span> y
+        <span class="strong">MCLK (MHz) = MT/s / 2</span>.
+        En Ryzen, el ideal de rendimiento suele ser <span class="strong">FCLK ≈ MCLK (1:1)</span>.
+        Cuando MCLK es demasiado alto, se fuerza modo asíncrono (p.ej. 1:2), subiendo latencias.
+      </p>
+      <p class="mini">
+        Nota: Zen 3 suele “aprovechar mejor” frecuencias más altas y se menciona mejora hasta DDR4-4000 (contexto general). 
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>MT/s (estimado)</th>
+          <th>MCLK (MHz)</th>
+          <th>Zen 2 – FCLK recomendado (MHz)</th>
+          <th>Zen 3 – FCLK recomendado (MHz)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PC4-36800</td>
+          <td>4600 MT/s</td>
+          <td>2300 MHz</td>
+          <td>≈ 1800 (asíncrono)</td>
+          <td>≈ 1900 (asíncrono)</td>
+        </tr>
+        <tr>
+          <td>PC4-34128</td>
+          <td>4266 MT/s</td>
+          <td>2133 MHz</td>
+          <td>≈ 1800 (asíncrono)</td>
+          <td>≈ 1900 (asíncrono)</td>
+        </tr>
+        <tr>
+          <td>PC4-32000</td>
+          <td>4000 MT/s</td>
+          <td>2000 MHz</td>
+          <td>≈ 1800 (asíncrono)</td>
+          <td>≈ 1900–2000 (según silicio/placa)</td>
+        </tr>
+        <tr>
+          <td>PC4-30900</td>
+          <td>3866 MT/s</td>
+          <td>1933 MHz</td>
+          <td>≈ 1800 (asíncrono)</td>
+          <td>≈ 1900 (casi 1:1, depende)</td>
+        </tr>
+        <tr>
+          <td>PC4-30400</td>
+          <td>3800 MT/s</td>
+          <td>1900 MHz</td>
+          <td>≈ 1800 (asíncrono)</td>
+          <td>≈ 1900 (1:1 probable)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="footer">
+      <span class="strong">Conclusión (lo que suele pedir el profe):</span>
+      Si buscas “punto dulce” en Ryzen, normalmente interesa un ajuste donde <span class="strong">FCLK=MCLK (1:1)</span>.
+      Zen 3 suele tolerar algo más de FCLK que Zen 2, por eso puede acercarse más a 1900–2000 MHz en algunos equipos. :contentReference[oaicite:4]{index=4}
+    </p>
+  </section>
+
+
+  <!-- ACTIVIDAD 3 -->
+  <section class="actividad" id="act3">
+    <h2>ACTIVIDAD 3 – Comparativa de precios DIMM vs SO-DIMM (10 módulos) + Gráfica</h2>
+
+    <div class="nota">
+      <p>
+        <span class="strong">Criterio:</span> mismos parámetros para todos: <span class="strong">16GB DDR4-3200 CL22</span>.
+        5 módulos formato <span class="strong">DIMM (sobremesa)</span> y 5 formato <span class="strong">SO-DIMM (portátil)</span>.
+      </p>
+      <p class="mini">
+        ⚠️ Los precios cambian mucho según marketplace/stock. Si tú ya tienes los 10 enlaces,
+        me los pasas y te lo dejo con los importes exactos y la media perfecta.
+      </p>
+    </div>
+
+    <table id="tabla-precios">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Formato</th>
+          <th>Modelo (ejemplo)</th>
+          <th>Capacidad</th>
+          <th>Frecuencia</th>
+          <th>CL</th>
+          <th>Precio (€)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- DIMM (5) -->
+        <tr><td>1</td><td>DIMM</td><td>Crucial CT16G4DFRA32A</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="DIMM">156.95</td></tr>
+        <tr><td>2</td><td>DIMM</td><td>Kingston ValueRAM KVR32N22S8/16</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="DIMM">150.68</td></tr>
+        <tr><td>3</td><td>DIMM</td><td>Patriot Signature PSD416G320081</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="DIMM">162.72</td></tr>
+        <tr><td>4</td><td>DIMM</td><td>ADATA Premier 16GB DDR4-3200 CL22 (UDIMM)</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="DIMM">49.90</td></tr>
+        <tr><td>5</td><td>DIMM</td><td>Klevv 16GB 3200 CL22 (chips SK hynix)</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="DIMM">49.90</td></tr>
+
+        <!-- SO-DIMM (5) -->
+        <tr><td>6</td><td>SO-DIMM</td><td>Crucial CT16G4SFRA32A</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="SODIMM">142.95</td></tr>
+        <tr><td>7</td><td>SO-DIMM</td><td>Kingston KVR32S22S8 (16GB)</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="SODIMM">159.95</td></tr>
+        <tr><td>8</td><td>SO-DIMM</td><td>ADATA Premier AD4S320016G22-SGN</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="SODIMM">124.99</td></tr>
+        <tr><td>9</td><td>SO-DIMM</td><td>Transcend JetRam SO-DIMM 16GB 3200 CL22</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="SODIMM">163.87</td></tr>
+        <tr><td>10</td><td>SO-DIMM</td><td>Patriot Signature SO-DIMM 16GB 3200 CL22</td><td>16GB</td><td>3200</td><td>22</td><td class="precio" data-formato="SODIMM">121.52</td></tr>
+      </tbody>
+    </table>
+
+    <div class="canvas-wrap">
+      <canvas id="graficaAct3" height="120"></canvas>
+    </div>
+
+    <p class="footer">
+      <span class="strong">Interpretación esperada:</span> SO-DIMM a veces sale más caro por volumen de mercado y stock (portátiles),
+      y por depender más de distribuidores concretos. DIMM suele tener más oferta “gaming”, pero aquí controlamos CL/frecuencia/capacidad
+      para comparar “formato” y no rendimiento.
+    </p>
+  </section>
+
+
+  <!-- ACTIVIDAD 4 -->
+  <section class="actividad" id="act4">
+    <h2>ACTIVIDAD 4 – Tabla DDR por generación + Gráfica PCIe (2 líneas)</h2>
+
+    <div class="grid-2">
+      <div>
+        <h3 style="margin:0 0 8px 0; font-size:16px;">4.1 Tabla (resumen) de generaciones DDR</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Generación</th>
+              <th>Año aprox.</th>
+              <th>Voltaje</th>
+              <th>Prefetch</th>
+              <th>Rango típico (MT/s)</th>
+              <th>Capacidad típica por módulo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>DDR</td><td>~2000</td><td>2.5 V</td><td>2n</td><td>200–400</td><td>128MB–1GB</td></tr>
+            <tr><td>DDR2</td><td>~2003</td><td>1.8 V</td><td>4n</td><td>400–1066</td><td>256MB–4GB</td></tr>
+            <tr><td>DDR3</td><td>~2007</td><td>1.5 V</td><td>8n</td><td>800–2133</td><td>1GB–16GB</td></tr>
+            <tr><td>DDR4</td><td>~2014</td><td>1.2 V</td><td>8n</td><td>1600–3200+</td><td>4GB–64GB</td></tr>
+            <tr><td>DDR5</td><td>~2020</td><td>1.1 V</td><td>16n</td><td>4800–6400+</td><td>8GB–128GB+</td></tr>
+          </tbody>
+        </table>
+
+        <p class="mini" style="text-align:justify; color:#555;">
+          *Tabla simplificada para clase (valores “típicos”). En entornos servidor la capacidad por módulo puede ser mayor.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="margin:0 0 8px 0; font-size:16px;">4.2 Tabla PCIe por año + Gráfica (2 líneas)</h3>
+
+        <table id="tabla-pcie">
+          <thead>
+            <tr>
+              <th>Versión</th>
+              <th>Año publicación</th>
+              <th>Velocidad (GT/s)</th>
+              <th>Capacidad (GB/s por lane, unidireccional aprox.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>PCIe 1.0</td><td>2003</td><td>2.5</td><td>0.25</td></tr>
+            <tr><td>PCIe 2.0</td><td>2007</td><td>5.0</td><td>0.50</td></tr>
+            <tr><td>PCIe 3.0</td><td>2010</td><td>8.0</td><td>0.985</td></tr>
+            <tr><td>PCIe 4.0</td><td>2017</td><td>16.0</td><td>1.969</td></tr>
+            <tr><td>PCIe 5.0</td><td>2019</td><td>32.0</td><td>3.938</td></tr>
+            <tr><td>PCIe 6.0</td><td>2022</td><td>64.0</td><td>7.877</td></tr>
+            <tr><td>PCIe 7.0</td><td>2025</td><td>128.0</td><td>15.754</td></tr>
+          </tbody>
+        </table>
+
+        <div class="canvas-wrap">
+          <canvas id="graficaAct4" height="170"></canvas>
+        </div>
+
+        <p class="mini" style="text-align:justify; color:#555;">
+          En PCIe, “capacidad” aquí se entiende como <span class="strong">throughput por lane</span> aproximado (GB/s por dirección),
+          que crece al duplicarse la tasa por generación (con matices por codificación/FLIT).
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ACTIVIDAD 5 -->
+  <section class="actividad" id="act5">
+    <h2>ACTIVIDAD 5 – Estimación DDR6 y comparación DDR vs PCIe</h2>
+
+    <h3 style="margin:0 0 8px 0; font-size:16px;">5.a) Estimación DDR6 (sin mirar Internet; por tendencias)</h3>
+    <div class="bloque">
+      <p>
+        Observando la tabla DDR: saltos ~6–7 años y tendencia de subida de MT/s (aprox. “salto grande” cada generación).
+        Si tomamos DDR4 (~2014) → DDR5 (~2020), el siguiente ciclo podría situar <span class="strong">DDR6 alrededor de 2026–2028</span>.
+      </p>
+      <ul>
+        <li><span class="strong">Año estimado aparición DDR6:</span> 2027 (aprox.)</li>
+        <li><span class="strong">Velocidad máxima estimada:</span> 9600–12800 MT/s (orden de magnitud, siguiendo escalado)</li>
+        <li><span class="strong">Capacidad máxima por módulo (estimada):</span> 256GB (si DDR5 llega a 128GB+ en algunos módulos, el siguiente escalón suele doblar)</li>
+      </ul>
+      <p class="mini">
+        (Esto es una estimación “de clase”: no es predicción industrial, es extrapolación de la tendencia).
+      </p>
+    </div>
+
+    <h3 style="margin:10px 0 8px 0; font-size:16px;">5.b) Progresión porcentual DDR vs PCIe</h3>
+    <div class="bloque">
+      <p>
+        <span class="strong">PCIe</span> tiende a <span class="strong">duplicar</span> su throughput por generación (aprox. +100%),
+        con saltos bastante “agresivos” en ancho de banda por lane.
+      </p>
+      <p>
+        <span class="strong">DDR</span> también sube fuerte, pero su “rendimiento percibido” depende mucho de latencias (ns),
+        controladores, canales y configuración (XMP/EXPO), no solo de MT/s.
+      </p>
+      <p>
+        <span class="strong">Diferencia / posible problema:</span> el bus PCIe puede crecer más rápido en GB/s por enlace,
+        mientras que la RAM debe equilibrar frecuencia con latencia/estabilidad. Por eso, aunque MT/s suba, si sube latencia en ciclos o se rompe
+        el acoplamiento (ej. FCLK 1:1 en Ryzen), el beneficio real puede ser menor.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ACTIVIDAD 6 -->
+  <section class="actividad" id="act6">
+    <h2>ACTIVIDAD 6 – Definiciones tRCD, tRP, tRAS + Especificación KF560R32RBE-16</h2>
+
+    <h3 style="margin:0 0 8px 0; font-size:16px;">6.1 Definiciones</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Parámetro</th>
+          <th>Definición (clase)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="strong">tRCD</span> (Retraso RAS a CAS)</td>
+          <td>Tiempo entre activar la fila (RAS/ACT) y poder seleccionar la columna (CAS/READ/WRITE). Afecta al acceso inicial a una fila nueva.</td>
+        </tr>
+        <tr>
+          <td><span class="strong">tRP</span> (Precarga RAS)</td>
+          <td>Tiempo necesario para “cerrar” (precharge) una fila y dejar el banco listo para abrir otra fila distinta.</td>
+        </tr>
+        <tr>
+          <td><span class="strong">tRAS</span> (Tiempo de ciclo / Row Active Time)</td>
+          <td>Tiempo mínimo que una fila debe permanecer activa antes de poder precargarla. Es la “ventana” mínima de actividad de fila.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin:10px 0 8px 0; font-size:16px;">6.2 KF560R32RBE-16: perfiles y timings</h3>
+
+    <div class="nota">
+      <p>
+        Según el datasheet oficial, esta RAM tiene:
+        <span class="strong">Default JEDEC DDR5-4800 CL40-39-39</span> y perfiles
+        <span class="strong">EXPO/XMP</span> a <span class="strong">DDR5-6000 CL32-38-38</span> y <span class="strong">DDR5-5600 CL36-38-38</span>.
+      </p>
+      <p class="mini">
+        Para tRAS usamos el informe EXPO (da los valores exactos en ciclos): 80 nCK en EXPO1 y EXPO2.
+      </p>
+    </div>
+
+    <p class="mini">
+      <span class="strong">Valores pedidos:</span>
+      tRCD = segundo número del timing, tRP = tercero, tRAS = “Row Active” (en EXPO report aparece como 80 ciclos).
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Frecuencia (MHz)<br><span class="mini">Reloj</span></th>
+          <th>Velocidad de transferencia (MB/s)</th>
+          <th>Tasa de transferencia (MT/s)<br><span class="mini">Datos</span></th>
+          <th>CL</th>
+          <th>Latencia aprox. (ns)</th>
+          <th>tRCD</th>
+          <th>tRP</th>
+          <th>tRAS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Default (JEDEC)</td>
+          <td>2400</td>
+          <td>38400</td>
+          <td>4800</td>
+          <td>40</td>
+          <td>≈ 16,67</td>
+          <td>39</td>
+          <td>39</td>
+          <td>≈ 77 (estimado típico)</td>
+        </tr>
+        <tr>
+          <td>EXPO #1</td>
+          <td>3000</td>
+          <td>48000</td>
+          <td>6000</td>
+          <td>32</td>
+          <td>≈ 10,67</td>
+          <td>38</td>
+          <td>38</td>
+          <td>80</td>
+        </tr>
+        <tr>
+          <td>EXPO #2</td>
+          <td>2800</td>
+          <td>44800</td>
+          <td>5600</td>
+          <td>36</td>
+          <td>≈ 12,86</td>
+          <td>38</td>
+          <td>38</td>
+          <td>80</td>
+        </tr>
+        <tr>
+          <td>XMP #3</td>
+          <td>3000</td>
+          <td>48000</td>
+          <td>6000</td>
+          <td>32</td>
+          <td>≈ 10,67</td>
+          <td>38</td>
+          <td>38</td>
+          <td>80</td>
+        </tr>
+        <tr>
+          <td>XMP #4</td>
+          <td>2800</td>
+          <td>44800</td>
+          <td>5600</td>
+          <td>36</td>
+          <td>≈ 12,86</td>
+          <td>38</td>
+          <td>38</td>
+          <td>80</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="footer">
+      <span class="strong">Fuente técnica:</span> perfiles Default/EXPO/XMP del datasheet y tRAS exacto en el informe EXPO.  
+      (En JEDEC, tRAS puede variar por bin JEDEC; si tu profe exige el exacto, dime y lo ajustamos a lo que pida en clase).  
+    </p>
+  </section>
+
+
+  <!-- ACTIVIDAD 7 -->
+  <section class="actividad" id="act7">
+    <h2>ACTIVIDAD 7 – ¿Qué son XMP y EXPO? (explicación con tus palabras)</h2>
+
+    <div class="bloque">
+      <p>
+        <span class="strong">XMP (Intel Extreme Memory Profile)</span> y <span class="strong">EXPO (AMD Extended Profiles for Overclocking)</span>
+        son <span class="strong">perfiles de configuración</span> guardados en la EEPROM (SPD) del módulo RAM.
+      </p>
+      <p>
+        Su objetivo es que, en la BIOS/UEFI, puedas activar una configuración “rápida” de memoria
+        (frecuencia, latencias y voltaje) <span class="strong">sin tener que introducir los valores manualmente</span>.
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>XMP</th>
+          <th>EXPO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Quién lo impulsa</td>
+          <td>Intel</td>
+          <td>AMD</td>
+        </tr>
+        <tr>
+          <td>Para qué sirve</td>
+          <td colspan="2">Aplicar “OC/ajuste” de RAM con un clic: sube MT/s y ajusta timings/voltaje de forma predefinida.</td>
+        </tr>
+        <tr>
+          <td>Compatibilidad típica</td>
+          <td>Muy común en placas Intel; también suele funcionar en AMD si la placa lo soporta.</td>
+          <td>Orientado a plataformas AMD; busca perfiles optimizados para Ryzen/IMC.</td>
+        </tr>
+        <tr>
+          <td>Qué cambia al activarlo</td>
+          <td colspan="2">Frecuencia (MT/s), latencias (CL, tRCD, tRP, tRAS), voltajes (VDD/VDDQ), y a veces sub-timings.</td>
+        </tr>
+        <tr>
+          <td>Diferencia práctica “de clase”</td>
+          <td>Perfil “estándar” histórico en el mundo PC.</td>
+          <td>Perfil pensado para mejorar la experiencia/estabilidad en AMD con DDR5 y ajustes típicos.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="footer">
+      <span class="strong">Idea clave para tu explicación oral:</span>
+      “XMP/EXPO no es ‘otra RAM’: es un perfil almacenado en el módulo para que la BIOS configure automáticamente un modo más rápido que JEDEC.”
+    </p>
+  </section>
+
+</div>
+
+<script>
+  // ===== ACTIVIDAD 3: medias y gráfica de barras (precio medio por formato) =====
+  (function(){
+    const precios = Array.from(document.querySelectorAll(".precio")).map(td => ({
+      formato: td.dataset.formato,
+      valor: parseFloat(td.textContent.trim())
+    }));
+
+    const dimm = precios.filter(p => p.formato === "DIMM").map(p => p.valor);
+    const sodimm = precios.filter(p => p.formato === "SODIMM").map(p => p.valor);
+
+    const avg = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
+
+    const avgDIMM = avg(dimm);
+    const avgSODIMM = avg(sodimm);
+
+    const ctx = document.getElementById("graficaAct3").getContext("2d");
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['DIMM', 'SO-DIMM'],
+        datasets: [{
+          label: 'Precio medio (€)',
+          data: [avgDIMM, avgSODIMM]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  })();
+
+
+  // ===== ACTIVIDAD 4: gráfica PCIe con 2 líneas (GT/s y GB/s por lane) =====
+  (function(){
+    const rows = Array.from(document.querySelectorAll("#tabla-pcie tbody tr"));
+
+    const labels = rows.map(r => r.children[0].textContent.trim());
+    const years = rows.map(r => parseInt(r.children[1].textContent.trim(), 10));
+    const gts = rows.map(r => parseFloat(r.children[2].textContent.trim()));
+    const gbsLane = rows.map(r => parseFloat(r.children[3].textContent.trim()));
+
+    const ctx = document.getElementById("graficaAct4").getContext("2d");
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [
+          { label: 'Velocidad (GT/s)', data: gts, tension: 0.25 },
+          { label: 'Capacidad (GB/s por lane)', data: gbsLane, tension: 0.25 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Año de publicación (aprox.)' } },
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
