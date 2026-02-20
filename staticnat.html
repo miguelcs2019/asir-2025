@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica 8 – DNAT Estático</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #0e0e0e;
+        color: #e6e6e6;
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    header {
+        background: #000;
+        padding: 30px 10px;
+        text-align: center;
+        border-bottom: 3px solid #ff7a00;
+    }
+
+    header h1 {
+        margin: 0;
+        color: #ff7a00;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        color: #4aa3ff;
+        font-size: 16px;
+    }
+
+    .contenedor {
+        width: 92%;
+        max-width: 1100px;
+        margin: 40px auto;
+    }
+
+    h2 {
+        margin-top: 50px;
+        color: #ff7a00;
+        border-left: 6px solid #ff7a00;
+        padding-left: 14px;
+    }
+
+    p {
+        line-height: 1.6;
+    }
+
+    .bloque {
+        background: #151515;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 25px 0;
+        box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    img {
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 6px;
+        border: 1px solid #333;
+    }
+
+    .pie {
+        font-size: 13px;
+        color: #aaa;
+        margin-top: 6px;
+    }
+
+    footer {
+        margin-top: 60px;
+        padding: 20px;
+        text-align: center;
+        color: #888;
+        font-size: 14px;
+        border-top: 1px solid #333;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Práctica 8 – DNAT Estático en Router Cisco</h1>
+<p>MiguelCS · ASIR · NAT y Traducción de Direcciones</p>
+</header>
+
+<div class="contenedor">
+
+<h2>1. Topología de red</h2>
+<div class="bloque">
+<p>Se diseña una topología compuesta por una red externa simulada (Internet), un router Cisco 2911, un switch de acceso y un servidor interno en red privada 172.16.16.0/28.</p>
+<img src="media/pkt01.PNG">
+<p class="pie">Topología inicial del ejercicio.</p>
+</div>
+
+<h2>2. Verificación inicial (sin NAT)</h2>
+<div class="bloque">
+<p>Se comprueba que desde la red externa no es posible acceder directamente a la IP privada del servidor (172.16.16.1), ya que las direcciones privadas no son enroutables en Internet.</p>
+<img src="media/pkt02.PNG">
+<p class="pie">Ping fallando hacia la red privada.</p>
+
+<p>Se verifica que sí existe conectividad hasta la interfaz pública del router (209.165.201.2).</p>
+<img src="media/pkt03.PNG">
+<p class="pie">Ping correcto hacia el router.</p>
+</div>
+
+<h2>3. Estado NAT antes de configuración</h2>
+<div class="bloque">
+<p>Antes de aplicar NAT, se comprueba que no existen traducciones activas en el router mediante:</p>
+<p><strong>show ip nat translations</strong></p>
+<img src="media/pkt04.PNG">
+<p class="pie">Tabla NAT vacía.</p>
+</div>
+
+<h2>4. Configuración DNAT Estático</h2>
+<div class="bloque">
+<p>Se configura una traducción estática que asocia la IP privada del servidor con una IP pública accesible desde Internet:</p>
+
+<p><strong>ip nat inside source static 172.16.16.1 64.100.50.1</strong></p>
+
+<p>Posteriormente se define qué interfaces actúan como inside y outside:</p>
+
+<p><strong>
+interface g0/0<br>
+ip nat inside<br><br>
+interface s0/0/0<br>
+ip nat outside
+</strong></p>
+
+<img src="media/pkt05.PNG">
+<p class="pie">Configuración NAT aplicada correctamente.</p>
+</div>
+
+<h2>5. Verificación funcionamiento NAT</h2>
+<div class="bloque">
+<p>Tras la configuración, el acceso a la IP pública 64.100.50.1 redirige correctamente al servidor interno.</p>
+<img src="media/pkt06.PNG">
+<p class="pie">Ping a la IP pública funcionando.</p>
+
+<img src="media/pkt08.PNG">
+<p class="pie">Tabla NAT mostrando traducción activa.</p>
+</div>
+
+<h2>6. Análisis en modo Simulation</h2>
+<div class="bloque">
+<p>En modo Simulation se observa el proceso de traducción:</p>
+
+<ul>
+<li>El paquete llega al router con destino 64.100.50.1.</li>
+<li>El router modifica la cabecera IP (DNAT).</li>
+<li>El paquete sale con destino 172.16.16.1 hacia el servidor interno.</li>
+</ul>
+
+<img src="media/pkt09.PNG">
+<p class="pie">Traducción de IP en el router (antes y después de NAT).</p>
+
+<img src="media/pkt10.PNG">
+<p class="pie">Topología final completamente operativa.</p>
+</div>
+
+<h2>Conclusión Técnica</h2>
+<div class="bloque">
+<p>La práctica demuestra el funcionamiento del DNAT estático en routers Cisco, permitiendo publicar un servicio interno mediante la asignación de una IP pública fija. Este mecanismo es fundamental en entornos empresariales para la exposición controlada de servidores web, correo o aplicaciones internas.</p>
+
+<p>Se ha verificado el proceso completo mediante análisis de la tabla NAT y observación del tráfico en modo Simulation, confirmando la modificación de la cabecera IP en capa 3 del modelo OSI.</p>
+</div>
+
+</div>
+
+<footer>
+ASIR · NAT Estático · Packet Tracer
+</footer>
+
+</body>
+</html>
