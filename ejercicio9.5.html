@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD09 – Recopilación del Estado del Sistema (Windows Server)</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+}
+header {
+    padding: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    background: black;
+    border-bottom: 2px solid #00ff88;
+}
+.contenedor {
+    width: 90%;
+    max-width: 950px;
+    margin: 40px auto;
+}
+.paso {
+    background: rgba(0,255,80,0.06);
+    border: 1px solid #00ff88;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+img {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #00ff88;
+}
+pre {
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>UD09 – Recopilación del Estado del Sistema</header>
+
+<div class="contenedor">
+
+<div class="paso">
+<h3>31.0 – Ejecución del Diagnóstico del Sistema</h3>
+
+<p>
+Se accede a Perfmon y dentro de “Conjuntos de recopiladores de datos → Sistema”
+se ejecuta el “Diagnóstico del sistema”.
+Este proceso analiza configuración, servicios, red, disco y seguridad.
+</p>
+
+<img src="media/31.0.PNG">
+</div>
+
+<div class="paso">
+<h3>31.1 – Análisis del informe generado</h3>
+
+<p>
+Tras finalizar la recopilación se genera un informe completo que muestra:
+</p>
+
+<ul>
+<li>Advertencias del sistema.</li>
+<li>Estado de servicios.</li>
+<li>Configuración de red.</li>
+<li>Rendimiento de disco.</li>
+<li>Configuración de seguridad.</li>
+</ul>
+
+<img src="media/31.1.PNG">
+</div>
+
+<div class="paso">
+<h3>31.2 – Comprobación de controladores</h3>
+
+<p>
+Se revisa el Administrador de dispositivos para verificar posibles errores.
+No aparecen dispositivos con advertencias ni controladores sin instalar.
+El sistema se encuentra correctamente configurado a nivel de hardware.
+</p>
+
+<img src="media/31.2.PNG">
+</div>
+
+<div class="paso">
+<h3>31.3 – Comprobación de Antivirus</h3>
+
+<pre>Get-MpComputerStatus</pre>
+
+<p>
+Se comprueba mediante PowerShell que Microsoft Defender Antivirus está activo.
+La protección en tiempo real se encuentra habilitada y el sistema está protegido.
+</p>
+
+<img src="media/31.3.PNG">
+</div>
+
+<div class="paso">
+<h3>31.4 – Creación de conjunto de recopilador personalizado</h3>
+
+<p>
+Se crea un conjunto de recopiladores definido por el usuario denominado
+“Informe_Red_Personalizado”, configurado para monitorizar:
+</p>
+
+<ul>
+<li>Bytes totales por segundo.</li>
+<li>Paquetes enviados por segundo.</li>
+<li>Paquetes recibidos por segundo.</li>
+</ul>
+
+<p>
+El conjunto se ejecuta durante unos segundos para generar datos reales.
+</p>
+
+<img src="media/31.4.PNG">
+</div>
+
+<div class="paso">
+<h3>31.5 – Informe personalizado generado</h3>
+
+<p>
+Tras detener la recopilación, se accede a “Informes → Definido por el usuario”
+y se visualiza el informe generado.
+Este permite analizar el comportamiento de la interfaz de red en tiempo real.
+</p>
+
+<img src="media/31.5.PNG">
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+Se ha realizado una recopilación completa del estado del sistema en Windows Server,
+analizando rendimiento, controladores, seguridad y red.
+Además, se ha creado un informe personalizado que permite monitorizar
+de manera específica recursos críticos.
+Estas herramientas permiten detectar problemas antes de que afecten
+a la disponibilidad del servidor.
+</p>
+
+</div>
+
+</body>
+</html>
