@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD09 – Monitor de Rendimiento Windows Server</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-family: 'Consolas', monospace;
+}
+header {
+    padding: 30px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    background: black;
+    border-bottom: 2px solid #00ff88;
+}
+.contenedor {
+    width: 90%;
+    max-width: 950px;
+    margin: 40px auto;
+}
+.paso {
+    background: rgba(0,255,80,0.06);
+    border: 1px solid #00ff88;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+img {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #00ff88;
+}
+pre {
+    background: #111;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>UD09 – Monitor de Rendimiento en Windows Server</header>
+
+<div class="contenedor">
+
+<div class="paso">
+<h3>30.0 – Apertura de Perfmon</h3>
+<p>
+Se accede a la herramienta Monitor de rendimiento mediante el comando
+<code>perfmon</code>. Inicialmente se muestra el contador de CPU (% Processor Time).
+</p>
+<img src="media/30.0.PNG">
+</div>
+
+<div class="paso">
+<h3>30.1 – Configuración de contadores básicos</h3>
+<p>Se añaden los siguientes contadores obligatorios:</p>
+<ul>
+<li>IPv4 → Datagramas de salida sin enrutar.</li>
+<li>Interfaz de red → Total de bytes por segundo.</li>
+<li>Disco físico → % de tiempo de lectura.</li>
+</ul>
+<p>
+Estos indicadores permiten monitorizar red y almacenamiento en tiempo real.
+</p>
+<img src="media/30.1.PNG">
+</div>
+
+<div class="paso">
+<h3>30.2 – Generación de actividad en el sistema</h3>
+<p>
+Se genera tráfico de red mediante ping y actividad de lectura de disco.
+Se observa variación en la gráfica, confirmando el funcionamiento correcto del monitor.
+</p>
+<img src="media/30.2.PNG">
+</div>
+
+<div class="paso">
+<h3>30.3 – Instalación del rol DNS</h3>
+<pre>Install-WindowsFeature DNS -IncludeManagementTools</pre>
+<p>
+Se instala el rol DNS para disponer de contadores específicos del servicio.
+</p>
+<img src="media/30.3.PNG">
+</div>
+
+<div class="paso">
+<h3>30.4 – Monitorización del servicio DNS</h3>
+<p>Se añaden contadores como:</p>
+<ul>
+<li>Consultas recibidas por segundo.</li>
+<li>Respuestas enviadas por segundo.</li>
+</ul>
+<p>
+Se generan consultas con nslookup para visualizar actividad real.
+</p>
+<img src="media/30.4.PNG">
+</div>
+
+<div class="paso">
+<h3>30.5 – Monitor tipo servidor Hyper-V</h3>
+<p>
+Se configura un escenario de virtualización añadiendo contadores clave:
+</p>
+<ul>
+<li>CPU → % de tiempo de procesador.</li>
+<li>Memoria → Bytes disponibles y Páginas/seg.</li>
+<li>Disco → % tiempo de disco y Longitud de cola.</li>
+<li>Red → Bytes totales/segundo.</li>
+</ul>
+<p>
+Este conjunto permite detectar cuellos de botella típicos en entornos virtualizados.
+</p>
+<img src="media/30.5.PNG">
+</div>
+
+<div class="paso">
+<h3>30.6 – Monitorización iSCSI (no configurado)</h3>
+<p>
+Se comprueba la existencia de contadores iSCSI. Al tratarse de un servidor limpio,
+no aparecen contadores asociados ya que no existen volúmenes remotos configurados.
+</p>
+<p>
+En un entorno real se monitorizarían:
+</p>
+<ul>
+<li>Latencia de almacenamiento remoto.</li>
+<li>Bytes enviados y recibidos.</li>
+<li>Tiempo medio de respuesta.</li>
+<li>Errores de conexión.</li>
+</ul>
+<img src="media/30.6.PNG">
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+Se ha configurado un sistema completo de monitorización en Windows Server
+utilizando Performance Monitor. Se han analizado recursos críticos como CPU,
+memoria, disco y red, así como servicios específicos como DNS.
+Este tipo de herramientas permite detectar cuellos de botella,
+anticipar fallos y optimizar el rendimiento del servidor.
+</p>
+
+</div>
+
+</body>
+</html>
