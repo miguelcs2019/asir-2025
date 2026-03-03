@@ -1,1 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica 9 – SNAT Dinámico (Pool) – Packet Tracer</title>
 
+<style>
+    body {
+        margin: 0;
+        background: #0e0e0e;
+        color: #e6e6e6;
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    header {
+        background: #000;
+        padding: 30px 10px;
+        text-align: center;
+        border-bottom: 3px solid #ff7a00;
+    }
+
+    header h1 {
+        margin: 0;
+        color: #ff7a00;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        color: #4aa3ff;
+        font-size: 16px;
+    }
+
+    .contenedor {
+        width: 92%;
+        max-width: 1100px;
+        margin: 40px auto;
+    }
+
+    h2 {
+        margin-top: 50px;
+        color: #ff7a00;
+        border-left: 6px solid #ff7a00;
+        padding-left: 14px;
+    }
+
+    p {
+        line-height: 1.6;
+    }
+
+    .bloque {
+        background: #151515;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 25px 0;
+        box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    .bloque h3 {
+        color: #4aa3ff;
+        margin-top: 0;
+    }
+
+    img {
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 6px;
+        border: 1px solid #333;
+    }
+
+    .pie {
+        font-size: 13px;
+        color: #aaa;
+        margin-top: 6px;
+    }
+
+    code {
+        color: #e6e6e6;
+        background: #101010;
+        padding: 2px 6px;
+        border-radius: 6px;
+        border: 1px solid #2a2a2a;
+    }
+
+    footer {
+        margin-top: 60px;
+        padding: 20px;
+        text-align: center;
+        color: #888;
+        font-size: 14px;
+        border-top: 1px solid #333;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Práctica 9 – SNAT Dinámico con Pool (Cisco NAT)</h1>
+    <p>MiguelCS · ASIR · Sistemas y Redes</p>
+</header>
+
+<div class="contenedor">
+
+<h2>Introducción</h2>
+<div class="bloque">
+    <p>En esta práctica se configura <strong>SNAT dinámico</strong> (NAT dinámico con <em>pool</em> de direcciones públicas) para permitir que varias redes privadas accedan a un servidor externo. El router R2 actúa como frontera entre la red privada (172.16.0.0/16) y la red pública.</p>
+    <p>Se utiliza un <strong>pool de únicamente 2 IP públicas</strong>, por lo que se demuestra el comportamiento real del NAT cuando el pool se ocupa, y cómo se recupera tras limpiar la tabla NAT.</p>
+
+    <p><strong>Conceptos clave:</strong></p>
+    <ul>
+        <li><strong>Inside local:</strong> IP privada real del host interno (ej. 172.16.10.1 / 172.16.10.2 / 172.16.11.1).</li>
+        <li><strong>Inside global:</strong> IP pública asignada por el NAT desde el pool (ej. 209.165.200.229 / 209.165.200.230).</li>
+        <li><strong>SNAT:</strong> el router cambia la <strong>IP origen</strong> de los paquetes salientes (no el destino).</li>
+        <li><strong>Sesiones TCP múltiples:</strong> un navegador genera varias conexiones a la vez, por eso aparecen varias entradas con distintos puertos.</li>
+    </ul>
+</div>
+
+<h2>50.0 Topología base cargada</h2>
+<div class="bloque">
+    <p>Se carga el fichero base proporcionado en Packet Tracer y se verifica que la topología coincide con el escenario del ejercicio (R1 como router interno, R2 como router frontera con salida a red pública y un servidor externo).</p>
+    <img src="media/50.0.PNG">
+    <p class="pie">Topología inicial (escenario base del ejercicio).</p>
+</div>
+
+<h2>50.1 Prueba inicial sin NAT (fallo esperado)</h2>
+<div class="bloque">
+    <p>Antes de configurar NAT en R2, se prueba desde PC1 el acceso al servidor externo (<code>http://209.165.201.5</code>). El acceso falla porque los hosts internos no pueden traducir su IP privada a una IP pública y, por tanto, no existe conectividad válida hacia la red externa.</p>
+    <p><strong>Objetivo:</strong> demostrar el estado inicial “sin NAT” (requisito del ejercicio).</p>
+    <img src="media/50.1.PNG">
+    <p class="pie">Acceso web fallido antes de configurar SNAT.</p>
+</div>
+
+<h2>50.2 Verificación en R2 antes de configurar NAT</h2>
+<div class="bloque">
+    <p>Se comprueba que no existen traducciones activas y que la configuración NAT aún no está aplicada.</p>
+    <p>Comandos típicos de verificación:</p>
+    <ul>
+        <li><code>show ip nat translations</code></li>
+        <li><code>show ip nat statistics</code></li>
+        <li><code>show running-config | include nat</code></li>
+    </ul>
+    <img src="media/50.2.PNG">
+    <p class="pie">Tabla NAT y configuración NAT vacías antes de la configuración.</p>
+</div>
+
+<h2>50.3 Configuración de SNAT dinámico (ACL + Pool + Inside/Outside)</h2>
+<div class="bloque">
+    <p>Se configura NAT dinámico en R2 siguiendo el esquema:</p>
+    <ul>
+        <li>Crear ACL que identifica tráfico interno (172.16.0.0/16).</li>
+        <li>Crear un pool de 2 IP públicas.</li>
+        <li>Asociar la ACL al pool.</li>
+        <li>Definir interfaz <strong>inside</strong> (hacia R1) e interfaz <strong>outside</strong> (hacia la red pública).</li>
+    </ul>
+
+    <p><strong>Comandos aplicados (resumen):</strong></p>
+    <p>
+        <code>access-list 1 permit 172.16.0.0 0.0.255.255</code><br><br>
+        <code>ip nat pool NATPOOL 209.165.200.229 209.165.200.230 netmask 255.255.255.252</code><br><br>
+        <code>ip nat inside source list 1 pool NATPOOL</code><br><br>
+        <code>interface s0/0/1</code> → <code>ip nat inside</code><br>
+        <code>interface s0/0/0</code> → <code>ip nat outside</code>
+    </p>
+
+    <p><strong>Por qué es crítico:</strong> si las interfaces inside/outside están invertidas o no se marcan, el NAT no se aplicará aunque exista el pool.</p>
+
+    <img src="media/50.3.PNG">
+    <p class="pie">Configuración NAT aplicada y ACL verificada.</p>
+</div>
+
+<h2>50.4–50.6 Pruebas de acceso desde hosts internos (consumo del pool)</h2>
+<div class="bloque">
+    <p>Se realizan accesos HTTP al servidor externo (<code>http://209.165.201.5</code>) desde distintos hosts internos. Tras cada prueba se consulta la tabla NAT con <code>show ip nat translations</code> para observar la asignación de IP públicas del pool.</p>
+    <p><strong>Interpretación esperada:</strong></p>
+    <ul>
+        <li>El primer host consume la primera IP del pool (ej. 209.165.200.229).</li>
+        <li>El segundo host consume la segunda IP del pool (ej. 209.165.200.230).</li>
+        <li>El tercer host puede no obtener IP si el pool está completamente ocupado (punto clave del ejercicio).</li>
+    </ul>
+    <p><strong>Nota técnica:</strong> es normal que aparezcan múltiples entradas TCP para un mismo host porque un navegador abre varias conexiones simultáneas (distintos puertos origen).</p>
+    <img src="media/50.4.PNG">
+    <p class="pie">Prueba 1 (host interno) y tabla NAT asociada.</p>
+
+    <img src="media/50.5.PNG">
+    <p class="pie">Prueba 2 (segundo host) y consumo de la segunda IP del pool.</p>
+
+    <img src="media/50.6.PNG">
+    <p class="pie">Prueba 3 (tercer host) – comportamiento según disponibilidad del pool.</p>
+</div>
+
+<h2>50.7 Estado de la tabla NAT con conexiones activas</h2>
+<div class="bloque">
+    <p>Se observa la tabla NAT con traducciones activas. La columna <strong>Inside local</strong> identifica el host interno y <strong>Inside global</strong> la IP pública asignada desde el pool. Los diferentes puertos (<em>source ports</em>) reflejan múltiples sesiones TCP.</p>
+    <p><strong>Lectura técnica:</strong> el router está realizando SNAT cambiando la IP <strong>origen</strong> y manteniendo el destino (servidor 209.165.201.5:80), permitiendo acceso desde redes privadas a una red pública.</p>
+    <img src="media/50.7.PNG">
+    <p class="pie">Tabla NAT con traducciones activas (múltiples sesiones TCP).</p>
+</div>
+
+<h2>50.8 Limpieza de traducciones NAT</h2>
+<div class="bloque">
+    <p>Para liberar el pool y simular la expiración/cierre de sesiones, se eliminan las traducciones activas del router mediante:</p>
+    <p><code>clear ip nat translation *</code></p>
+    <p>Tras ello, <code>show ip nat translations</code> debe mostrarse vacío, confirmando que no quedan traducciones ocupando las IP públicas del pool.</p>
+    <img src="media/50.8.PNG">
+    <p class="pie">Tabla NAT limpia tras ejecutar clear ip nat translation *.</p>
+</div>
+
+<h2>50.9 Nueva asignación del pool tras liberar traducciones</h2>
+<div class="bloque">
+    <p>Se repite el acceso HTTP desde un host interno (por ejemplo L1). Al estar el pool liberado, R2 asigna de nuevo una IP pública del pool al host que genera el tráfico. Se verifica con <code>show ip nat translations</code> que aparecen nuevas entradas asociadas al host.</p>
+    <p><strong>Qué se demuestra:</strong> el pool vuelve a estar disponible y el NAT dinámico reasigna IP públicas en función de la demanda.</p>
+    <img src="media/50.9.PNG">
+    <p class="pie">Nuevas traducciones NAT creadas tras liberar el pool.</p>
+</div>
+
+<h2>50.10 Guardado final del proyecto</h2>
+<div class="bloque">
+    <p>Se guarda el fichero .pkt final con la práctica completamente funcional para su entrega.</p>
+    <img src="media/50.10.PNG">
+    <p class="pie">Guardado final del Packet Tracer (.pkt) listo para entregar.</p>
+</div>
+
+<h2>Conclusión técnica</h2>
+<div class="bloque">
+    <p>La práctica valida el funcionamiento del <strong>SNAT dinámico con pool</strong> en Cisco, permitiendo que hosts internos con direcciones privadas accedan a un servicio externo mediante traducción de la <strong>IP origen</strong>. El uso de un pool limitado de 2 IP públicas permite observar un comportamiento realista: cuando el pool está ocupado, nuevos hosts pueden no obtener traducción, y al liberar la tabla NAT (o expirar sesiones) las direcciones vuelven a estar disponibles.</p>
+    <p>Finalmente se comprueba que la tabla NAT refleja correctamente la relación entre <strong>Inside local</strong> e <strong>Inside global</strong> y que múltiples conexiones TCP generan múltiples entradas con distintos puertos, comportamiento habitual en tráfico HTTP.</p>
+</div>
+
+</div>
+
+<footer>
+Práctica 9 · SNAT Dinámico (Pool) · Packet Tracer · ASIR
+</footer>
+
+</body>
+</html>
