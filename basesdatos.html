@@ -1,1 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Bases de Datos</title>
 
+<style>
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+/* LOADING */
+#loading{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    z-index:10000;
+    animation:fadeOut 2s forwards 2s;
+    color:#ff3c00;
+}
+
+@keyframes fadeOut{
+    to{opacity:0;visibility:hidden;}
+}
+
+/* HEADER */
+header{
+    padding:60px 0;
+    text-align:center;
+    font-size:42px;
+    letter-spacing:2px;
+    color:#ff3c00;
+    text-shadow:0 0 20px rgba(255,60,0,0.7);
+}
+
+/* SUB */
+.sub{
+    text-align:center;
+    margin-top:-20px;
+    color:#888;
+    font-size:14px;
+}
+
+/* CONTENEDOR */
+.contenedor{
+    width:90%;
+    max-width:1000px;
+    margin:60px auto;
+}
+
+/* UNIDAD */
+.unidad{
+    background:linear-gradient(145deg,#111,#1a1a1a);
+    border:2px solid #222;
+    padding:40px;
+    margin-bottom:30px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.unidad:hover{
+    border-color:#ff3c00;
+    box-shadow:0 0 25px rgba(255,60,0,0.5);
+}
+
+.unidad h2{
+    margin:0;
+    font-size:32px;
+    color:#ff3c00;
+}
+
+.unidad p{
+    margin-top:10px;
+    color:#bbb;
+}
+
+/* TAREAS */
+.tareas{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.5s ease;
+    margin-top:20px;
+}
+
+.tarea{
+    padding:15px;
+    border-top:1px solid #222;
+    margin-top:15px;
+    background:#0f0f0f;
+}
+
+.tarea a{
+    color:#ffcc00;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.tarea a:hover{
+    text-shadow:0 0 10px #ffcc00;
+}
+
+/* ACTIVO */
+.unidad.activa .tareas{
+    max-height:1500px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loading">CARGANDO SISTEMA DE BASE DE DATOS...</div>
+
+<header>BASE DE DATOS // ROCK SYSTEM</header>
+<div class="sub">MYSQL · APACHE · PHP · CONTROL TOTAL</div>
+
+<div class="contenedor">
+
+<div class="unidad">
+<h2>UNIDAD 7</h2>
+<p>Instalación y configuración de SGBD</p>
+
+<div class="tareas">
+
+<div class="tarea">
+<a href="ud07_tarea1.html">Tarea 1 – Instalación Ubuntu Server</a>
+</div>
+
+<div class="tarea">
+<a href="ud07_tarea2.html">Tarea 2 – Apache Server</a>
+</div>
+
+<div class="tarea">
+<a href="ud07_tarea3.html">Tarea 3 – MySQL Server</a>
+</div>
+
+<div class="tarea">
+<a href="ud07_tarea4.html">Tarea 4 – Usuarios y permisos</a>
+</div>
+
+<div class="tarea">
+<a href="ud07_tarea5.html">Tarea 5 – PHP</a>
+</div>
+
+<div class="tarea">
+<a href="ud07_tarea6.html">Tarea 6 – phpMyAdmin</a>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+const sonido=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-metal-click-1104.mp3");
+
+document.querySelector(".unidad").addEventListener("click",()=>{
+    document.querySelector(".unidad").classList.toggle("activa");
+    sonido.play();
+});
+
+</script>
+
+</body>
+</html>
