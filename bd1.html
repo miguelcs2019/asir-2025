@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UD07 – Tarea 1 – Instalación Ubuntu Server</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+/* HEADER */
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:34px;
+    color:#ff3c00;
+    text-shadow:0 0 15px rgba(255,60,0,0.7);
+    border-bottom:2px solid #222;
+}
+
+/* CONTENEDOR */
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+/* TITULOS */
+h2{
+    border-left:6px solid #ff3c00;
+    padding-left:12px;
+    margin-top:40px;
+}
+
+h3{
+    color:#ffcc00;
+}
+
+/* TEXTO */
+p{
+    line-height:1.7;
+}
+
+code{
+    color:#ffcc00;
+}
+
+/* BLOQUES */
+.paso{
+    background:#111;
+    border:1px solid #333;
+    padding:20px;
+    border-radius:10px;
+    margin:20px 0;
+    box-shadow:0 0 10px rgba(0,0,0,0.6);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>UD07 – Tarea 1: Instalación Ubuntu Server</header>
+
+<div class="contenedor">
+
+<h2>Objetivo de la práctica</h2>
+
+<p>
+En esta práctica se realiza la instalación de Ubuntu Server, que servirá como base
+para montar un sistema de bases de datos completo (Apache + MySQL + PHP).
+</p>
+
+<p>
+El objetivo es dejar el sistema preparado, limpio y correctamente configurado
+para su uso como servidor.
+</p>
+
+<h2>Proceso de instalación paso a paso</h2>
+
+<!-- PASO 1 -->
+<div class="paso">
+<h3>1. Creación de la máquina virtual</h3>
+<p>
+Se crea una máquina virtual asignando:
+</p>
+<ul>
+<li>RAM: mínimo 2 GB (recomendado 4 GB)</li>
+<li>Disco: mínimo 20 GB</li>
+<li>CPU: 2 núcleos si es posible</li>
+</ul>
+
+<p>
+Se monta la ISO de Ubuntu Server como dispositivo de arranque.
+</p>
+</div>
+
+<!-- PASO 2 -->
+<div class="paso">
+<h3>2. Inicio del instalador</h3>
+<p>
+Al arrancar la máquina se selecciona:
+</p>
+<p><code>Install Ubuntu Server</code></p>
+
+<p>
+El resto de opciones NO se utilizan en este caso.
+</p>
+</div>
+
+<!-- PASO 3 -->
+<div class="paso">
+<h3>3. Idioma, teclado y red</h3>
+
+<p><strong>Idioma:</strong> seleccionar el deseado (ej: Español).</p>
+
+<p><strong>Teclado:</strong> dejar automático o seleccionar español.</p>
+
+<p><strong>Red:</strong></p>
+<ul>
+<li>Se configura automáticamente (DHCP).</li>
+<li>NO modificar si no sabes lo que haces.</li>
+</ul>
+
+</div>
+
+<!-- PASO 4 -->
+<div class="paso">
+<h3>4. Configuración del proxy</h3>
+
+<p>
+Este paso se deja vacío.
+</p>
+
+<p><strong>RECOMENDADO:</strong> no configurar proxy salvo que se requiera.</p>
+</div>
+
+<!-- PASO 5 -->
+<div class="paso">
+<h3>5. Configuración de repositorios</h3>
+
+<p>
+Se puede dejar el repositorio por defecto.
+</p>
+
+<p><strong>RECOMENDADO:</strong> no cambiarlo.</p>
+</div>
+
+<!-- PASO 6 -->
+<div class="paso">
+<h3>6. Particionado del disco</h3>
+
+<p>
+Seleccionar:
+</p>
+
+<p><code>Use entire disk</code></p>
+
+<ul>
+<li>Modo automático</li>
+<li>No complicarse con particiones manuales</li>
+</ul>
+
+<p><strong>IMPORTANTE:</strong> confirmar los cambios cuando lo pida.</p>
+
+</div>
+
+<!-- PASO 7 -->
+<div class="paso">
+<h3>7. Creación de usuario</h3>
+
+<p>
+Se introduce:
+</p>
+
+<ul>
+<li>Nombre del usuario</li>
+<li>Nombre del servidor</li>
+<li>Contraseña</li>
+</ul>
+
+<p>
+Este usuario será el administrador del sistema.
+</p>
+
+<p><strong>RECOMENDADO:</strong> usar una contraseña segura.</p>
+
+</div>
+
+<!-- PASO 8 -->
+<div class="paso">
+<h3>8. Instalación de OpenSSH</h3>
+
+<p>
+Aquí aparece una opción importante:
+</p>
+
+<p><code>Install OpenSSH server</code></p>
+
+<p><strong>RECOMENDADO:</strong> ACTIVAR esta opción ✔</p>
+
+<ul>
+<li>Permite conectarse remotamente al servidor</li>
+<li>Muy útil para administración</li>
+</ul>
+
+</div>
+
+<!-- PASO 9 -->
+<div class="paso">
+<h3>9. Selección de paquetes adicionales</h3>
+
+<p>
+Aparece una lista de servicios opcionales.
+</p>
+
+<p><strong>IMPORTANTE:</strong></p>
+
+<ul>
+<li>NO seleccionar nada (instalación limpia)</li>
+<li>O como mucho OpenSSH si no se seleccionó antes</li>
+</ul>
+
+<p>
+Ejemplos de lo que NO instalar ahora:
+</p>
+
+<ul>
+<li>Docker</li>
+<li>Kubernetes</li>
+<li>Mail server</li>
+<li>Otros servicios</li>
+</ul>
+
+<p><strong>RECOMENDACIÓN CLAVE:</strong></p>
+
+<p>
+Instalar solo lo necesario más adelante manualmente para evitar errores
+y mantener el sistema limpio.
+</p>
+
+</div>
+
+<!-- PASO 10 -->
+<div class="paso">
+<h3>10. Finalización</h3>
+
+<p>
+Se completa la instalación y el sistema se reinicia.
+</p>
+
+<p>
+Después del reinicio:
+</p>
+
+<ul>
+<li>Retirar la ISO</li>
+<li>Iniciar sesión con el usuario creado</li>
+</ul>
+
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+La instalación de Ubuntu Server se ha realizado correctamente siguiendo una
+configuración básica y limpia.
+</p>
+
+<p>
+Se ha priorizado:
+</p>
+
+<ul>
+<li>✔ Simplicidad</li>
+<li>✔ Seguridad</li>
+<li>✔ Control del sistema</li>
+</ul>
+
+<p>
+Este entorno queda preparado para la instalación posterior de servicios como
+Apache, MySQL y PHP, fundamentales en sistemas de bases de datos.
+</p>
+
+</div>
+
+</body>
+</html>
