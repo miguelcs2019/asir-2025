@@ -1,1 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica 10.3 – PAT en Packet Tracer</title>
 
+<style>
+    body {
+        margin: 0;
+        background: #0e0e0e;
+        color: #e6e6e6;
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    header {
+        background: #000;
+        padding: 30px 10px;
+        text-align: center;
+        border-bottom: 3px solid #ff7a00;
+    }
+
+    header h1 {
+        margin: 0;
+        color: #ff7a00;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        color: #4aa3ff;
+        font-size: 16px;
+    }
+
+    .contenedor {
+        width: 92%;
+        max-width: 1100px;
+        margin: 40px auto;
+    }
+
+    h2 {
+        margin-top: 50px;
+        color: #ff7a00;
+        border-left: 6px solid #ff7a00;
+        padding-left: 14px;
+    }
+
+    p {
+        line-height: 1.6;
+    }
+
+    .bloque {
+        background: #151515;
+        border: 1px solid #2a2a2a;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 25px 0;
+        box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    .bloque h3 {
+        color: #4aa3ff;
+        margin-top: 0;
+    }
+
+    img {
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 6px;
+        border: 1px solid #333;
+    }
+
+    .pie {
+        font-size: 13px;
+        color: #aaa;
+        margin-top: 6px;
+    }
+
+    footer {
+        margin-top: 60px;
+        padding: 20px;
+        text-align: center;
+        color: #888;
+        font-size: 14px;
+        border-top: 1px solid #333;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Práctica 10.3 – PAT (Port Address Translation)</h1>
+    <p>MiguelCS · ASIR · NAT y PAT</p>
+</header>
+
+<div class="contenedor">
+
+<h2>Introducción</h2>
+<div class="bloque">
+    <p>En esta práctica se configura PAT (Port Address Translation), también conocido como NAT con overload, en dos routers distintos. El objetivo es permitir que múltiples equipos de redes privadas accedan simultáneamente a un mismo servidor externo utilizando una o varias direcciones IP públicas.</p>
+    <p>En el router R1 se aplica PAT utilizando un pool de direcciones públicas junto con overload, mientras que en el router R2 se configura PAT directamente sobre la interfaz pública del router. De esta forma se compara el funcionamiento de ambas variantes y se observa cómo la traducción diferencia conexiones utilizando puertos TCP de origen.</p>
+</div>
+
+<h2>60.0 Carga de la topología</h2>
+<div class="bloque">
+    <p>Se carga el fichero inicial proporcionado en Packet Tracer y se verifica la topología completa del escenario. Se observa la existencia de dos bloques de red privada, uno detrás de R1 (172.16.0.0/16) y otro detrás de R2 (172.17.0.0/16), ambos con acceso a un mismo servidor público.</p>
+    <img src="media/60.0.PNG">
+    <p class="pie">Topología base del ejercicio cargada en Packet Tracer.</p>
+</div>
+
+<h2>60.1 Prueba inicial sin NAT desde PC1</h2>
+<div class="bloque">
+    <p>Antes de configurar PAT, se prueba el acceso al servidor <strong>209.165.201.5</strong> desde PC1 utilizando el navegador web. El acceso no funciona, ya que la red privada todavía no dispone de traducción NAT/PAT hacia la red pública.</p>
+    <p>Esto demuestra el estado inicial del ejercicio y justifica la necesidad de configurar traducción de direcciones en el router.</p>
+    <img src="media/60.1.PNG">
+    <p class="pie">Prueba fallida de acceso al servidor desde PC1 antes de configurar NAT.</p>
+</div>
+
+<h2>60.2 Verificación inicial en R1</h2>
+<div class="bloque">
+    <p>En R1 se comprueba que no existe ninguna configuración NAT previa mediante los comandos:</p>
+    <p><strong>show running-config | include nat</strong></p>
+    <p><strong>show ip route</strong></p>
+    <p><strong>show ip nat translations</strong></p>
+    <p>La tabla NAT aparece vacía, lo que confirma que todavía no se está realizando ninguna traducción de direcciones.</p>
+    <img src="media/60.2.PNG">
+    <p class="pie">Comprobación inicial en R1 antes de configurar PAT.</p>
+</div>
+
+<h2>60.3 Configuración PAT en R1</h2>
+<div class="bloque">
+    <p>Se configura PAT en R1 utilizando una ACL que identifica la red privada 172.16.0.0/16, un pool de dos direcciones públicas y la opción <strong>overload</strong>, que permite reutilizar las mismas direcciones diferenciando sesiones por puerto.</p>
+    <p><strong>Configuración aplicada:</strong></p>
+    <p><strong>access-list 1 permit 172.16.0.0 0.0.255.255</strong></p>
+    <p><strong>ip nat pool POOL1 209.165.200.233 209.165.200.234 netmask 255.255.255.252</strong></p>
+    <p><strong>ip nat inside source list 1 pool POOL1 overload</strong></p>
+    <p>Después se definen las interfaces internas y externas del NAT:</p>
+    <p><strong>interface s0/1/0 → ip nat outside</strong></p>
+    <p><strong>interface g0/0/0 → ip nat inside</strong></p>
+    <p><strong>interface g0/0/1 → ip nat inside</strong></p>
+    <p>Se verifica la configuración con <strong>show running-config | include nat</strong>, <strong>show access-lists</strong> y <strong>show ip nat translations</strong>.</p>
+    <img src="media/60.3.PNG">
+    <p class="pie">Configuración PAT aplicada correctamente en R1.</p>
+</div>
+
+<h2>60.4 Prueba desde PC1</h2>
+<div class="bloque">
+    <p>Una vez configurado PAT en R1, se prueba de nuevo el acceso al servidor desde PC1. El acceso ahora sí funciona, ya que el router traduce la dirección privada del host a una dirección pública del pool.</p>
+    <p>Tras la prueba se consulta la tabla NAT, observando la traducción generada para PC1.</p>
+    <img src="media/60.4.PNG">
+    <p class="pie">Acceso correcto al servidor desde PC1 con PAT activo en R1.</p>
+</div>
+
+<h2>60.5 Prueba desde L1</h2>
+<div class="bloque">
+    <p>Se repite la prueba desde L1. La conectividad también funciona y se observa en la tabla NAT una nueva traducción. Aunque varias conexiones puedan compartir la misma IP pública, PAT las diferencia mediante puertos distintos.</p>
+    <img src="media/60.5.PNG">
+    <p class="pie">Acceso correcto desde L1 y nueva traducción visible en la tabla NAT.</p>
+</div>
+
+<h2>60.6 Prueba desde PC2</h2>
+<div class="bloque">
+    <p>PC2 accede correctamente al servidor. La tabla NAT sigue creciendo con nuevas entradas, demostrando que varios hosts de la red privada pueden salir simultáneamente utilizando el mecanismo overload.</p>
+    <img src="media/60.6.PNG">
+    <p class="pie">Prueba desde PC2 con traducción PAT activa.</p>
+</div>
+
+<h2>60.7 Prueba desde L2</h2>
+<div class="bloque">
+    <p>Desde L2 también se logra acceso al servidor externo. Con esta prueba se confirma que PAT en R1 funciona para todos los equipos de la red 172.16.0.0/16.</p>
+    <p><strong>Respuesta a la pregunta del ejercicio:</strong> sí, funciona en todas las pruebas realizadas desde PC1, L1, PC2 y L2.</p>
+    <img src="media/60.7.PNG">
+    <p class="pie">Acceso correcto desde L2; PAT funcionando para todos los equipos del lado de R1.</p>
+</div>
+
+<h2>60.8 Configuración PAT en R2</h2>
+<div class="bloque">
+    <p>En R2 se configura PAT por interfaz, es decir, se utiliza directamente la IP pública de su interfaz externa como dirección inside global para todos los hosts de la red 172.17.0.0/16.</p>
+    <p><strong>Configuración aplicada:</strong></p>
+    <p><strong>access-list 1 permit 172.17.0.0 0.0.255.255</strong></p>
+    <p><strong>ip nat inside source list 1 interface s0/1/1 overload</strong></p>
+    <p>Posteriormente se marcan las interfaces desde el punto de vista del NAT:</p>
+    <p><strong>interface s0/1/1 → ip nat outside</strong></p>
+    <p><strong>interface g0/0/1 → ip nat inside</strong></p>
+    <p><strong>interface g0/0/0 → ip nat inside</strong></p>
+    <p>Este último punto es importante, ya que el propio enunciado advierte que el alumno debe configurar también como inside la interfaz hacia SW4.</p>
+    <img src="media/60.8.PNG">
+    <p class="pie">Configuración PAT por interfaz aplicada correctamente en R2.</p>
+</div>
+
+<h2>60.9 Prueba desde PC3</h2>
+<div class="bloque">
+    <p>Tras configurar PAT en R2, se prueba acceso desde PC3. La conexión funciona correctamente y la tabla NAT muestra que la dirección inside global corresponde a la IP pública de la interfaz externa de R2.</p>
+    <img src="media/60.9.PNG">
+    <p class="pie">Acceso correcto desde PC3 con PAT configurado en R2.</p>
+</div>
+
+<h2>60.10 Prueba desde L3</h2>
+<div class="bloque">
+    <p>Se realiza la misma prueba desde L3. El acceso sigue funcionando y se generan nuevas entradas en la tabla NAT, diferenciadas por puertos TCP.</p>
+    <img src="media/60.10.PNG">
+    <p class="pie">Prueba correcta desde L3 y ampliación de la tabla NAT.</p>
+</div>
+
+<h2>60.11 Prueba desde PC4</h2>
+<div class="bloque">
+    <p>PC4 también consigue conectividad al servidor. Esto confirma que PAT por interfaz permite que múltiples hosts compartan una única IP pública.</p>
+    <img src="media/60.11.PNG">
+    <p class="pie">Acceso correcto desde PC4 mediante PAT por interfaz.</p>
+</div>
+
+<h2>60.12 Prueba desde L4</h2>
+<div class="bloque">
+    <p>Se completa la última prueba desde L4 con resultado satisfactorio. Todas las conexiones desde la red 172.17.0.0/16 funcionan correctamente.</p>
+    <p><strong>Respuesta a las preguntas del ejercicio:</strong></p>
+    <p><strong>¿Funciona en todas las pruebas?</strong> Sí.</p>
+    <p><strong>¿Cuál es la dirección inside global que aparece?</strong> La IP pública de la interfaz externa de R2, es decir, <strong>209.165.202.130</strong>.</p>
+    <p><strong>¿A qué corresponde esa IP?</strong> Corresponde a la interfaz pública del router R2, que se utiliza como dirección global común para todos los hosts gracias a PAT.</p>
+    <img src="media/60.12.PNG">
+    <p class="pie">Prueba final desde L4 y confirmación de PAT funcionando en toda la red de R2.</p>
+</div>
+
+<h2>Conclusión</h2>
+<div class="bloque">
+    <p>La práctica demuestra el funcionamiento de PAT (Port Address Translation) en dos escenarios distintos. En R1 se aplica PAT utilizando un pool de direcciones públicas más la opción overload, mientras que en R2 se implementa PAT directamente sobre la interfaz pública del router.</p>
+    <p>En ambos casos, múltiples hosts internos consiguen acceder al mismo servidor público gracias al uso de puertos de origen distintos, lo que permite multiplexar varias conexiones sobre una o varias direcciones IP públicas. Esta técnica es esencial en redes reales para optimizar el uso del direccionamiento IPv4 público.</p>
+    <p>Además, la práctica permite observar la diferencia entre utilizar un pool de direcciones públicas (R1) y usar una única IP pública asociada a la interfaz del router (R2), comprendiendo así dos variantes habituales de PAT en entornos Cisco.</p>
+</div>
+
+</div>
+
+<footer>
+    Práctica 10.3 · PAT (Port Address Translation) · ASIR
+</footer>
+
+</body>
+</html>
