@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UD07 – Tarea 3 – MySQL Server</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:34px;
+    color:#ff3c00;
+    text-shadow:0 0 15px rgba(255,60,0,0.7);
+    border-bottom:2px solid #222;
+}
+
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+h2{
+    border-left:6px solid #ff3c00;
+    padding-left:12px;
+    margin-top:40px;
+}
+
+h3{
+    color:#ffcc00;
+}
+
+p{
+    line-height:1.7;
+}
+
+code{
+    color:#ffcc00;
+}
+
+.paso{
+    background:#111;
+    border:1px solid #333;
+    padding:20px;
+    border-radius:10px;
+    margin:20px 0;
+}
+
+img{
+    width:100%;
+    border:1px solid #ff3c00;
+    border-radius:6px;
+    margin-top:12px;
+}
+
+.pie{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>UD07 – Tarea 3: Instalación y configuración de MySQL</header>
+
+<div class="contenedor">
+
+<h2>Objetivo de la práctica</h2>
+
+<p>
+En esta práctica se instala MySQL Server y se realiza su configuración básica,
+incluyendo la seguridad inicial, acceso como root y creación de usuarios.
+</p>
+
+<!-- ABD6 -->
+<div class="paso">
+<h3>1. Instalación de MySQL</h3>
+
+<p><code>sudo apt-get install mysql-server php-mysql</code></p>
+
+<p>
+Se instala el servidor MySQL junto con soporte para PHP.
+</p>
+
+<img src="media/ABD6.PNG">
+<p class="pie">Captura ABD6: Instalación de MySQL.</p>
+</div>
+
+<!-- ABD7 -->
+<div class="paso">
+<h3>2. Configuración de seguridad</h3>
+
+<p><code>sudo mysql_secure_installation</code></p>
+
+<p>
+Este proceso permite:
+</p>
+
+<ul>
+<li>Eliminar usuarios anónimos</li>
+<li>Deshabilitar acceso remoto root</li>
+<li>Eliminar base de datos de pruebas</li>
+</ul>
+
+<p><strong>RECOMENDADO:</strong> aceptar todas las opciones de seguridad.</p>
+
+<img src="media/ABD7.PNG">
+<p class="pie">Captura ABD7: Configuración de seguridad.</p>
+</div>
+
+<!-- ABD8 -->
+<div class="paso">
+<h3>3. Acceso a MySQL</h3>
+
+<p><code>sudo mysql</code></p>
+
+<p>
+Se accede al servidor como usuario root sin contraseña inicial.
+</p>
+
+<img src="media/ABD8.PNG">
+<p class="pie">Captura ABD8: Acceso a MySQL.</p>
+</div>
+
+<!-- ABD9 -->
+<div class="paso">
+<h3>4. Cambio de contraseña de root</h3>
+
+<p>
+Se ejecuta:
+</p>
+
+<p><code>ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'password';</code></p>
+
+<p>
+Esto establece una contraseña para el usuario root.
+</p>
+
+<img src="media/ABD9.PNG">
+<p class="pie">Captura ABD9: Cambio de contraseña.</p>
+</div>
+
+<!-- ABD10 -->
+<div class="paso">
+<h3>5. Prueba de acceso</h3>
+
+<p><code>mysql -u root -p</code></p>
+
+<p>
+Se verifica que el acceso con contraseña funciona correctamente.
+</p>
+
+<img src="media/ABD10.PNG">
+<p class="pie">Captura ABD10: Login correcto.</p>
+</div>
+
+<!-- ABD11 -->
+<div class="paso">
+<h3>6. Creación de usuario</h3>
+
+<p><code>CREATE USER 'usuario'@'%' IDENTIFIED BY 'password';</code></p>
+
+<p>
+El símbolo <code>%</code> permite conexión desde cualquier equipo.
+</p>
+
+<img src="media/ABD11.PNG">
+<p class="pie">Captura ABD11: Creación de usuario.</p>
+</div>
+
+<!-- ABD12 -->
+<div class="paso">
+<h3>7. Asignación de permisos</h3>
+
+<p><code>GRANT ALL PRIVILEGES ON *.* TO 'usuario'@'%' WITH GRANT OPTION;</code></p>
+
+<p>
+Se conceden todos los permisos al usuario creado.
+</p>
+
+<img src="media/ABD12.PNG">
+<p class="pie">Captura ABD12: Permisos asignados.</p>
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+MySQL ha sido instalado y configurado correctamente.
+</p>
+
+<p>
+Se ha asegurado el sistema, se ha configurado el acceso root y se ha creado un
+usuario con permisos completos, dejando el entorno preparado para su uso.
+</p>
+
+</div>
+
+</body>
+</html>
