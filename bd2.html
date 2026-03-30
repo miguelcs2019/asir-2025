@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UD07 – Tarea 2 – Apache Server</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+/* HEADER */
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:34px;
+    color:#ff3c00;
+    text-shadow:0 0 15px rgba(255,60,0,0.7);
+    border-bottom:2px solid #222;
+}
+
+/* CONTENEDOR */
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+/* TITULOS */
+h2{
+    border-left:6px solid #ff3c00;
+    padding-left:12px;
+    margin-top:40px;
+}
+
+h3{
+    color:#ffcc00;
+}
+
+/* TEXTO */
+p{
+    line-height:1.7;
+}
+
+code{
+    color:#ffcc00;
+}
+
+/* BLOQUES */
+.paso{
+    background:#111;
+    border:1px solid #333;
+    padding:20px;
+    border-radius:10px;
+    margin:20px 0;
+    box-shadow:0 0 10px rgba(0,0,0,0.6);
+}
+
+/* IMAGEN */
+img{
+    width:100%;
+    border:1px solid #ff3c00;
+    border-radius:6px;
+    margin-top:12px;
+}
+
+.pie{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>UD07 – Tarea 2: Instalación y comprobación de Apache</header>
+
+<div class="contenedor">
+
+<h2>Objetivo de la práctica</h2>
+
+<p>
+En esta práctica se instala el servidor web Apache en Ubuntu Server
+y se verifica su correcto funcionamiento tanto en local como desde otro equipo.
+</p>
+
+<p>
+Apache es un servidor HTTP encargado de servir páginas web, siendo una pieza
+fundamental en entornos de bases de datos y aplicaciones web.
+</p>
+
+<!-- ABD1 -->
+<div class="paso">
+<h3>1. Instalación de Apache</h3>
+
+<p>
+Se instala Apache mediante el siguiente comando:
+</p>
+
+<p><code>sudo apt-get install apache2</code></p>
+
+<p>
+Este proceso descarga e instala automáticamente el servidor web junto con
+sus dependencias.
+</p>
+
+<img src="media/ABD1.PNG">
+<p class="pie">Captura ABD1: Instalación de Apache completada.</p>
+</div>
+
+<!-- ABD2 -->
+<div class="paso">
+<h3>2. Comprobación del servicio</h3>
+
+<p>
+Una vez instalado, se verifica que el servicio está activo con:
+</p>
+
+<p><code>systemctl status apache2</code></p>
+
+<p>
+El estado correcto debe aparecer como:
+<strong>active (running)</strong>.
+</p>
+
+<img src="media/ABD2.PNG">
+<p class="pie">Captura ABD2: Servicio Apache activo.</p>
+</div>
+
+<!-- ABD3 -->
+<div class="paso">
+<h3>3. Prueba en local</h3>
+
+<p>
+Se abre un navegador dentro del servidor y se accede a:
+</p>
+
+<p><code>http://localhost</code></p>
+
+<p>
+Si Apache funciona correctamente, se mostrará la página por defecto.
+</p>
+
+<img src="media/ABD3.PNG">
+<p class="pie">Captura ABD3: Página web de Apache en local.</p>
+</div>
+
+<!-- ABD4 -->
+<div class="paso">
+<h3>4. Obtención de la IP del servidor</h3>
+
+<p>
+Para acceder desde otro equipo, primero se obtiene la IP con:
+</p>
+
+<p><code>ip a</code></p>
+
+<p>
+Se debe identificar la dirección IP asignada a la máquina.
+</p>
+
+<img src="media/ABD4.PNG">
+<p class="pie">Captura ABD4: Dirección IP del servidor.</p>
+</div>
+
+<!-- ABD5 -->
+<div class="paso">
+<h3>5. Acceso remoto</h3>
+
+<p>
+Desde otro equipo de la red, se accede mediante:
+</p>
+
+<p><code>http://IP_DEL_SERVIDOR</code></p>
+
+<p>
+Si todo está correctamente configurado, se mostrará la misma página de Apache.
+</p>
+
+<p>
+Es necesario que la máquina esté en modo red <strong>Adaptador puente</strong>.
+</p>
+
+<img src="media/ABD5.PNG">
+<p class="pie">Captura ABD5: Acceso remoto a Apache.</p>
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+Apache ha sido instalado y verificado correctamente tanto en local como en remoto.
+</p>
+
+<p>
+Se ha comprobado que el servidor está activo y accesible desde otros equipos,
+lo que confirma que el servicio funciona correctamente.
+</p>
+
+<p>
+Este paso es fundamental para continuar con la instalación del entorno completo
+de bases de datos (MySQL y PHP).
+</p>
+
+</div>
+
+</body>
+</html>
