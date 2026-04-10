@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UD07 – Tarea 4 – PHP y conexión MySQL</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:34px;
+    color:#ff3c00;
+    text-shadow:0 0 15px rgba(255,60,0,0.7);
+    border-bottom:2px solid #222;
+}
+
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+h2{
+    border-left:6px solid #ff3c00;
+    padding-left:12px;
+    margin-top:40px;
+}
+
+h3{
+    color:#ffcc00;
+}
+
+p{
+    line-height:1.7;
+}
+
+code{
+    color:#ffcc00;
+}
+
+pre{
+    background:#000;
+    padding:15px;
+    border:1px solid #333;
+    border-radius:6px;
+    overflow-x:auto;
+}
+
+.paso{
+    background:#111;
+    border:1px solid #333;
+    padding:20px;
+    border-radius:10px;
+    margin:20px 0;
+}
+
+img{
+    width:100%;
+    border:1px solid #ff3c00;
+    border-radius:6px;
+    margin-top:12px;
+}
+
+.pie{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>UD07 – Tarea 4: PHP y conexión con MySQL</header>
+
+<div class="contenedor">
+
+<h2>Objetivo de la práctica</h2>
+
+<p>
+En esta práctica se instala PHP y se comprueba su funcionamiento en Apache,
+además de verificar la conexión con el servidor MySQL.
+</p>
+
+<p>
+Este paso permite validar que el entorno completo de servidor web y base de datos
+funciona correctamente.
+</p>
+
+<!-- ABD13 -->
+<div class="paso">
+<h3>1. Instalación de PHP</h3>
+
+<p><code>sudo apt install php php-mysql -y</code></p>
+
+<p>
+Se instala PHP junto con el módulo necesario para conectarse a MySQL.
+</p>
+
+<img src="media/ABD13.PNG">
+<p class="pie">Captura ABD13: Instalación de PHP.</p>
+</div>
+
+<!-- ABD14 -->
+<div class="paso">
+<h3>2. Instalación de Apache</h3>
+
+<p><code>sudo apt install apache2 -y</code></p>
+
+<p>
+Apache es el servidor web encargado de ejecutar los archivos PHP.
+</p>
+
+<img src="media/ABD14.PNG">
+<p class="pie">Captura ABD14: Instalación de Apache.</p>
+</div>
+
+<!-- ABD15 -->
+<div class="paso">
+<h3>3. Comprobación del servidor web</h3>
+
+<p>
+Se accede desde el navegador a:
+</p>
+
+<p><code>http://localhost</code></p>
+
+<p>
+Se verifica que Apache funciona correctamente mostrando su página por defecto.
+</p>
+
+<img src="media/ABD15.PNG">
+<p class="pie">Captura ABD15: Página de Apache funcionando.</p>
+</div>
+
+<!-- ABD16 -->
+<div class="paso">
+<h3>4. Prueba de PHP</h3>
+
+<p>
+Se crea el archivo <code>info.php</code> con el siguiente contenido:
+</p>
+
+<pre><code>
+&lt;?php
+phpinfo();
+?&gt;
+</code></pre>
+
+<p>
+Al acceder a <code>http://localhost/info.php</code> se muestra la información
+del sistema PHP.
+</p>
+
+<img src="media/ABD16.PNG">
+<p class="pie">Captura ABD16: Información de PHP.</p>
+</div>
+
+<!-- ABD17 -->
+<div class="paso">
+<h3>5. Conexión PHP con MySQL</h3>
+
+<p>
+Se crea el archivo <code>conexion.php</code> con el siguiente código:
+</p>
+
+<pre><code>
+&lt;?php
+$conexion = new mysqli("localhost", "miguel", "1234");
+
+if ($conexion-&gt;connect_error) {
+    die("Error de conexion: " . $conexion-&gt;connect_error);
+}
+
+echo "Conexion exitosa a MySQL";
+?&gt;
+</code></pre>
+
+<p>
+Este script establece una conexión con el servidor MySQL.
+</p>
+
+<p>
+Al acceder desde el navegador se muestra un mensaje confirmando la conexión.
+</p>
+
+<img src="media/ABD17.PNG">
+<p class="pie">Captura ABD17: Conexión exitosa con MySQL.</p>
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+Se ha comprobado el funcionamiento completo del entorno:
+</p>
+
+<ul>
+<li>✔ Servidor web Apache operativo</li>
+<li>✔ PHP funcionando correctamente</li>
+<li>✔ Conexión con MySQL establecida</li>
+</ul>
+
+<p>
+Este entorno permite desarrollar aplicaciones web dinámicas conectadas a bases
+de datos, siendo la base de muchos sistemas actuales.
+</p>
+
+</div>
+
+</body>
+</html>
