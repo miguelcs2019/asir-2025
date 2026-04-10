@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UD07 – Tarea 5 – phpMyAdmin</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:34px;
+    color:#ff3c00;
+    text-shadow:0 0 15px rgba(255,60,0,0.7);
+    border-bottom:2px solid #222;
+}
+
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+h2{
+    border-left:6px solid #ff3c00;
+    padding-left:12px;
+    margin-top:40px;
+}
+
+h3{
+    color:#ffcc00;
+}
+
+p{
+    line-height:1.7;
+}
+
+code{
+    color:#ffcc00;
+}
+
+pre{
+    background:#000;
+    padding:15px;
+    border:1px solid #333;
+    border-radius:6px;
+    overflow-x:auto;
+}
+
+.paso{
+    background:#111;
+    border:1px solid #333;
+    padding:20px;
+    border-radius:10px;
+    margin:20px 0;
+}
+
+img{
+    width:100%;
+    border:1px solid #ff3c00;
+    border-radius:6px;
+    margin-top:12px;
+}
+
+.pie{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>UD07 – Tarea 5: Instalación y uso de phpMyAdmin</header>
+
+<div class="contenedor">
+
+<h2>Objetivo de la práctica</h2>
+
+<p>
+En esta práctica se instala phpMyAdmin y se comprueba su funcionamiento mediante
+acceso desde navegador, permitiendo la gestión gráfica de bases de datos MySQL.
+</p>
+
+<!-- ABD18 -->
+<div class="paso">
+<h3>1. Instalación de phpMyAdmin</h3>
+
+<p>
+Se ejecuta el siguiente comando:
+</p>
+
+<p><code>sudo apt install phpmyadmin</code></p>
+
+<img src="media/ABD18.PNG">
+<p class="pie">Captura ABD18: Instalación de phpMyAdmin.</p>
+
+<p>
+Durante la instalación aparecen varias opciones importantes:
+</p>
+
+<ul>
+<li>
+<strong>Servidor web:</strong> se selecciona <code>apache2</code>, ya que es el servidor utilizado.
+</li>
+
+<li>
+<strong>Configuración automática:</strong> se selecciona <code>Yes</code> para que phpMyAdmin configure
+su base de datos automáticamente.
+</li>
+
+<li>
+<strong>Contraseña:</strong> se establece una contraseña para el acceso a phpMyAdmin.
+</li>
+</ul>
+
+<p>
+Estas opciones permiten una instalación rápida y funcional sin configuración manual.
+</p>
+
+</div>
+
+<!-- ABD19 -->
+<div class="paso">
+<h3>2. Acceso a phpMyAdmin</h3>
+
+<p>
+Se accede desde un navegador web mediante:
+</p>
+
+<ul>
+<li><code>http://localhost/phpmyadmin</code> (desde el servidor)</li>
+<li><code>http://IP_DEL_SERVIDOR/phpmyadmin</code> (desde cliente)</li>
+</ul>
+
+<p>
+Se introducen las credenciales configuradas previamente (root o usuario creado).
+</p>
+
+<p>
+Si todo es correcto, se muestra la interfaz gráfica de phpMyAdmin.
+</p>
+
+<img src="media/ABD19.PNG">
+<p class="pie">Captura ABD19: Acceso a phpMyAdmin.</p>
+
+</div>
+
+<h2>Conclusión</h2>
+
+<p>
+La instalación de phpMyAdmin se ha realizado correctamente, permitiendo la gestión
+de bases de datos de forma gráfica mediante navegador.
+</p>
+
+<p>
+Se ha comprobado el acceso tanto en local como desde otros equipos, validando el
+funcionamiento del sistema en un entorno cliente-servidor.
+</p>
+
+<h2>Memoria final del sistema</h2>
+
+<p>
+Durante la práctica se ha configurado un entorno completo compuesto por:
+</p>
+
+<ul>
+<li><strong>Apache:</strong> servidor web (instalado en el servidor).</li>
+<li><strong>MySQL:</strong> gestor de bases de datos (instalado en el servidor).</li>
+<li><strong>PHP:</strong> lenguaje que conecta web y base de datos (ejecutado en servidor).</li>
+<li><strong>phpMyAdmin:</strong> herramienta gráfica de gestión (instalada en servidor).</li>
+</ul>
+
+<p>
+Todos los servicios se instalan en el servidor (Ubuntu Server), mientras que el acceso
+se realiza desde un cliente mediante navegador web.
+</p>
+
+<p>
+Esto corresponde a una arquitectura cliente-servidor:
+</p>
+
+<ul>
+<li>El servidor procesa y gestiona los datos.</li>
+<li>El cliente accede a los servicios a través de la red.</li>
+</ul>
+
+<p>
+Este tipo de configuración es la base de la mayoría de aplicaciones web actuales.
+</p>
+
+</div>
+
+</body>
+</html>
