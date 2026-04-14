@@ -2,210 +2,731 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>TEMA 9 – Fuentes de Alimentación</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 9 – Fuentes de alimentación</title>
 
 <style>
-body{
-    margin:0;
-    background:#0b0f1a;
-    color:#e5e7eb;
-    font-family:"Segoe UI", Arial;
-}
+    :root{
+        --bg:#0b1120;
+        --bg2:#111827;
+        --panel:#0f172a;
+        --line:#243145;
+        --text:#e5e7eb;
+        --muted:#9ca3af;
+        --blue:#4aa3ff;
+        --orange:#ff7a00;
+        --green:#22c55e;
+    }
 
-header{
-    text-align:center;
-    padding:30px;
-    background:#000;
-    border-bottom:3px solid #ff7a00;
-}
+    *{box-sizing:border-box}
 
-h1{color:#ff7a00;margin:0}
-h2{color:#4aa3ff;margin-top:40px}
-h3{color:#ff7a00}
+    body{
+        margin:0;
+        font-family:"Segoe UI", Arial, sans-serif;
+        background:
+            radial-gradient(circle at top left, rgba(74,163,255,.16), transparent 35%),
+            radial-gradient(circle at top right, rgba(255,122,0,.10), transparent 35%),
+            linear-gradient(180deg, var(--bg), #050814 70%);
+        color:var(--text);
+    }
 
-.contenedor{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
+    header{
+        background:#000;
+        border-bottom:3px solid var(--orange);
+        padding:34px 18px;
+        text-align:center;
+    }
 
-.bloque{
-    background:#111827;
-    border:1px solid #1f2937;
-    padding:20px;
-    margin-top:20px;
-    border-radius:12px;
-}
+    header h1{
+        margin:0;
+        color:var(--orange);
+        font-size:38px;
+        letter-spacing:.5px;
+    }
 
-.formula{
-    background:#000;
-    padding:10px;
-    margin-top:10px;
-    border-left:4px solid #22c55e;
-    font-family:monospace;
-}
+    header p{
+        margin:10px 0 0;
+        color:var(--blue);
+        font-size:16px;
+    }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-}
+    .contenedor{
+        width:92%;
+        max-width:1100px;
+        margin:30px auto 60px;
+    }
 
-td,th{
-    border:1px solid #333;
-    padding:10px;
-    text-align:center;
-}
+    .actividad{
+        background:rgba(15,23,42,.9);
+        border:1px solid var(--line);
+        border-radius:18px;
+        padding:24px;
+        margin-bottom:28px;
+        box-shadow:0 18px 42px rgba(0,0,0,.30);
+    }
+
+    .actividad h2{
+        margin:0 0 14px 0;
+        color:var(--orange);
+        font-size:28px;
+        border-left:6px solid var(--orange);
+        padding-left:12px;
+    }
+
+    .actividad h3{
+        margin-top:22px;
+        color:var(--blue);
+        font-size:20px;
+    }
+
+    p{
+        line-height:1.7;
+        color:var(--text);
+        text-align:justify;
+    }
+
+    ul{
+        margin:10px 0 0 20px;
+        line-height:1.7;
+    }
+
+    li{ margin:5px 0; }
+
+    .nota{
+        background:rgba(34,197,94,.09);
+        border-left:5px solid var(--green);
+        padding:14px 16px;
+        border-radius:10px;
+        margin:14px 0;
+    }
+
+    .formula{
+        background:#020617;
+        border:1px solid #1e293b;
+        color:#dbeafe;
+        padding:12px 14px;
+        border-radius:10px;
+        margin:12px 0;
+        font-family:Consolas, "Courier New", monospace;
+        overflow:auto;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:14px;
+        background:#0b1220;
+        border:1px solid #223046;
+    }
+
+    th, td{
+        border:1px solid #223046;
+        padding:10px 12px;
+        text-align:left;
+        vertical-align:top;
+        font-size:15px;
+    }
+
+    th{
+        background:#111827;
+        color:#dbeafe;
+    }
+
+    .mini{
+        color:var(--muted);
+        font-size:14px;
+    }
+
+    .resaltado{
+        color:#fff;
+        font-weight:700;
+    }
 </style>
 </head>
-
 <body>
 
 <header>
-<h1>TEMA 9 – Fuentes de Alimentación</h1>
-<p>Administración de Sistemas</p>
+    <h1>Tema 9 – Fuentes de alimentación</h1>
+    <p>Potencia, eficiencia, conectores, consumo real y elección de PSU</p>
 </header>
 
 <div class="contenedor">
 
-<!-- ================= ACTIVIDAD 1 ================= -->
-<h2>Actividad 1 – Cálculo de potencia</h2>
+    <!-- ACTIVIDAD 1 -->
+    <section class="actividad">
+        <h2>Actividad 1 – Cálculo de potencia para un PC gaming de gama media</h2>
 
-<div class="bloque">
-<p>Equipo gaming con i5-13600K y RTX 4070.</p>
+        <p>
+            En este ejercicio se pide calcular la fuente recomendada para un equipo con
+            <b>Intel Core i5-13600K</b>, <b>RTX 4070</b>, <b>32 GB DDR5</b>, <b>1 TB NVMe + 2 TB HDD</b>,
+            una <b>refrigeración líquida AIO de 240 mm</b> y <b>4 ventiladores RGB</b>.
+        </p>
 
-<p><b>Consumo estimado:</b></p>
-<ul>
-<li>CPU: ~150W</li>
-<li>GPU: ~220W</li>
-<li>Resto: ~100W</li>
-</ul>
+        <h3>Estimación razonable de consumo</h3>
+        <ul>
+            <li><b>CPU Intel Core i5-13600K:</b> alrededor de 125 W en carga normal y bastante más en picos turbo.</li>
+            <li><b>RTX 4070:</b> alrededor de 200-220 W.</li>
+            <li><b>Placa base + RAM + SSD + HDD + bomba AIO + ventiladores:</b> unos 80-100 W adicionales.</li>
+        </ul>
 
-<p><b>Total aproximado:</b> 470W</p>
+        <div class="formula">
+Consumo aproximado total = CPU + GPU + resto del equipo
+Consumo aproximado total = 180 W + 220 W + 100 W = 500 W aprox.
+        </div>
 
-<p><b>Recomendación:</b> Fuente de <b>650W – 750W</b></p>
+        <p>
+            Como una fuente no se debe elegir tan justa, lo normal es dejar margen para
+            picos de consumo, estabilidad y futuras ampliaciones.
+        </p>
 
-<p><b>Modelo sugerido:</b> Corsair RM750x (80 Plus Gold)</p>
+        <div class="formula">
+Potencia recomendada = consumo estimado + margen de seguridad
+Potencia recomendada ≈ 500 W + 25 % / 30 % = 625-650 W aprox.
+        </div>
 
-</div>
+        <p>
+            Por tanto, para este equipo yo recomendaría una <b>fuente de 750 W</b>.
+            No porque el ordenador vaya a gastar siempre 750 W, sino porque así la fuente
+            trabajará más cómoda, irá más sobrada y tendrá mejor comportamiento en picos.
+        </p>
 
-<!-- ================= ACTIVIDAD 2 ================= -->
-<h2>Actividad 2 – Eficiencia 80 PLUS</h2>
+        <h3>Modelo recomendado</h3>
+        <p>
+            Un modelo adecuado sería una <b>Corsair RM750x</b> o una <b>Seasonic Focus GX-750</b>,
+            ambas con certificado <b>80 Plus Gold</b>. Me parecen una buena elección porque
+            tienen potencia suficiente, buena eficiencia y son modelos bastante fiables.
+        </p>
+    </section>
 
-<div class="bloque">
+    <!-- ACTIVIDAD 2 -->
+    <section class="actividad">
+        <h2>Actividad 2 – Cálculo de coste total de propiedad (TCO) comparando 80 Plus</h2>
 
-<p>Datos:</p>
-<ul>
-<li>2008 horas/año</li>
-<li>0,22 €/kWh</li>
-</ul>
+        <p>
+            En este ejercicio hay que comparar diferentes certificaciones 80 Plus y calcular
+            el coste eléctrico durante 10 años. Para que la comparación tenga sentido, tomo como
+            referencia un equipo que necesita <b>500 W reales de salida</b> y comparo cuánto
+            tendría que consumir de la pared cada fuente según su eficiencia.
+        </p>
 
-<table>
-<tr><th>Certificado</th><th>Consumo estimado</th><th>Coste 10 años</th></tr>
-<tr><td>Bronze</td><td>550W</td><td>2420€</td></tr>
-<tr><td>Silver</td><td>520W</td><td>2290€</td></tr>
-<tr><td>Gold</td><td>500W</td><td>2200€</td></tr>
-<tr><td>Platinum</td><td>480W</td><td>2110€</td></tr>
-<tr><td>Titanium</td><td>460W</td><td>2020€</td></tr>
-</table>
+        <p class="mini">
+            Datos del ejercicio: 2008 horas al año y 0,22 €/kWh.
+        </p>
 
-<p>Conclusión: Cuanto mejor eficiencia, menos consumo eléctrico.</p>
+        <h3>Fórmula usada</h3>
+        <div class="formula">
+Vatios consumidos de la pared = Vatios suministrados / Eficiencia
 
-</div>
+Coste anual = (Vatios consumidos / 1000) × horas al año × precio kWh
 
-<!-- ================= ACTIVIDAD 3 ================= -->
-<h2>Actividad 3 – Análisis de fuentes</h2>
+Coste a 10 años = Coste anual × 10
+        </div>
 
-<div class="bloque">
-<p><b>SilverStone NJ450-SXL</b></p>
-<ul>
-<li>Potencia: 450W</li>
-<li>Certificación: 80 Plus Platinum</li>
-<li>Refrigeración: Pasiva</li>
-<li>Garantía: 5 años</li>
-</ul>
+        <p>
+            Para simplificar, uso la eficiencia típica a media carga:
+        </p>
 
-<p><b>Seasonic GX-650</b></p>
-<ul>
-<li>Potencia: 650W</li>
-<li>Certificación: 80 Plus Gold</li>
-<li>Refrigeración: Activa</li>
-<li>Garantía: 10 años</li>
-</ul>
+        <ul>
+            <li>Bronze: 88 %</li>
+            <li>Plata: 90 %</li>
+            <li>Oro: 92 %</li>
+            <li>Platino: 94 %</li>
+            <li>Titanio: 96 %</li>
+        </ul>
 
-</div>
+        <table>
+            <tr>
+                <th>Certificación</th>
+                <th>Eficiencia usada</th>
+                <th>Vatios que toma de la pared para dar 500 W</th>
+                <th>Coste estimado en 10 años</th>
+            </tr>
+            <tr>
+                <td>80 Plus Bronze</td>
+                <td>88 %</td>
+                <td>500 / 0,88 = <b>568,18 W</b></td>
+                <td><b>2.510,00 €</b></td>
+            </tr>
+            <tr>
+                <td>80 Plus Plata</td>
+                <td>90 %</td>
+                <td>500 / 0,90 = <b>555,56 W</b></td>
+                <td><b>2.454,22 €</b></td>
+            </tr>
+            <tr>
+                <td>80 Plus Oro</td>
+                <td>92 %</td>
+                <td>500 / 0,92 = <b>543,48 W</b></td>
+                <td><b>2.400,87 €</b></td>
+            </tr>
+            <tr>
+                <td>80 Plus Platino</td>
+                <td>94 %</td>
+                <td>500 / 0,94 = <b>531,91 W</b></td>
+                <td><b>2.349,79 €</b></td>
+            </tr>
+            <tr>
+                <td>80 Plus Titanio</td>
+                <td>96 %</td>
+                <td>500 / 0,96 = <b>520,83 W</b></td>
+                <td><b>2.300,83 €</b></td>
+            </tr>
+        </table>
 
-<!-- ================= ACTIVIDAD 4 ================= -->
-<h2>Actividad 4 – Cálculo de carga</h2>
+        <p>
+            Viendo la tabla, se nota que cuanto mejor es la eficiencia, menos electricidad se desperdicia y,
+            por tanto, menor es el gasto a largo plazo. Al principio una fuente mejor suele costar más,
+            pero con los años parte de esa diferencia se compensa en la factura de la luz.
+        </p>
+    </section>
 
-<div class="bloque">
+    <!-- ACTIVIDAD 3 -->
+    <section class="actividad">
+        <h2>Actividad 3 – Comparación de dos fuentes reales</h2>
 
-<p><b>Fórmula:</b></p>
-<div class="formula">
-Carga (%) = (W usados / 450W) × 100
-</div>
+        <h3>SilverStone NJ450-SXL</h3>
+        <table>
+            <tr><th>Dato</th><th>Respuesta</th></tr>
+            <tr><td>Factor de forma</td><td>SFX-L</td></tr>
+            <tr><td>Potencia</td><td>450 W</td></tr>
+            <tr><td>Certificación</td><td>80 Plus Platinum</td></tr>
+            <tr><td>Eficiencia al 20 %</td><td>92 %</td></tr>
+            <tr><td>Eficiencia al 50 %</td><td>94 %</td></tr>
+            <tr><td>Eficiencia al 100 %</td><td>90 %</td></tr>
+            <tr><td>ATX 20+4</td><td>1</td></tr>
+            <tr><td>SATA</td><td>8</td></tr>
+            <tr><td>ATX-12V / EPS</td><td>1 conector EPS de 8 pines</td></tr>
+            <tr><td>PCIe 6 pin</td><td>0</td></tr>
+            <tr><td>PCIe 6+2 / 8 pin</td><td>4</td></tr>
+            <tr><td>Molex</td><td>3</td></tr>
+            <tr><td>Protecciones</td><td>OCP, OPP, OVP, OLP y protección de seguridad eléctrica</td></tr>
+            <tr><td>Tipo de refrigeración</td><td>Pasiva, sin ventilador</td></tr>
+            <tr><td>Años de garantía</td><td>3 años</td></tr>
+        </table>
 
-<table>
-<tr><th>Uso</th><th>Resultado</th></tr>
-<tr><td>10%</td><td>45W</td></tr>
-<tr><td>50%</td><td>225W</td></tr>
-<tr><td>100%</td><td>450W</td></tr>
-</table>
+        <h3>Seasonic PRIME GX-650</h3>
+        <table>
+            <tr><th>Dato</th><th>Respuesta</th></tr>
+            <tr><td>Factor de forma</td><td>ATX</td></tr>
+            <tr><td>Potencia</td><td>650 W</td></tr>
+            <tr><td>Certificación</td><td>80 Plus Gold</td></tr>
+            <tr><td>Eficiencia al 20 %</td><td>90 %</td></tr>
+            <tr><td>Eficiencia al 50 %</td><td>92 %</td></tr>
+            <tr><td>Eficiencia al 100 %</td><td>89 %</td></tr>
+            <tr><td>ATX 20+4</td><td>1</td></tr>
+            <tr><td>SATA</td><td>10</td></tr>
+            <tr><td>ATX-12V / EPS</td><td>2 conectores EPS 8 pines / 4+4</td></tr>
+            <tr><td>PCIe 6 pin</td><td>0</td></tr>
+            <tr><td>PCIe 6+2 / 8 pin</td><td>4</td></tr>
+            <tr><td>Molex</td><td>3</td></tr>
+            <tr><td>Protecciones</td><td>OCP, OPP, OVP, UVP, SCP y OTP</td></tr>
+            <tr><td>Tipo de refrigeración</td><td>Activa, con ventilador y control híbrido</td></tr>
+            <tr><td>Años de garantía</td><td>12 años</td></tr>
+        </table>
 
-</div>
+        <div class="nota">
+            Aquí se ve muy bien la diferencia entre una fuente compacta y pasiva pensada para equipos más especiales,
+            y otra fuente ATX más generalista pero mucho más completa en conectores, garantía y margen de potencia.
+        </div>
+    </section>
 
-<!-- ================= ACTIVIDAD 5 ================= -->
-<h2>Actividad 5 – Consumo real</h2>
+    <!-- ACTIVIDAD 4 -->
+    <section class="actividad">
+        <h2>Actividad 4 – Cálculo de carga en la SilverStone NJ450-SXL</h2>
 
-<div class="bloque">
+        <p>
+            En esta actividad voy a explicar cómo se calculan los valores. La fuente tiene una potencia nominal
+            de <b>450 W</b>. Para sacar los vatios que representa cada porcentaje de carga, lo que hago es multiplicar
+            la potencia total por el porcentaje correspondiente.
+        </p>
 
-<p><b>Fórmula:</b></p>
-<div class="formula">
-Consumo real = W suministrados / eficiencia
-</div>
+        <div class="formula">
+Vatios suministrados = 450 W × porcentaje de carga
+        </div>
 
-<table>
-<tr><th>Salida</th><th>Consumo real</th></tr>
-<tr><td>450W</td><td>500W</td></tr>
-<tr><td>225W</td><td>250W</td></tr>
-<tr><td>90W</td><td>100W</td></tr>
-</table>
+        <table>
+            <tr>
+                <th>% de carga</th>
+                <th>Cálculo</th>
+                <th>Vatios suministrados</th>
+            </tr>
+            <tr>
+                <td>10 %</td>
+                <td>450 × 0,10</td>
+                <td><b>45 W</b></td>
+            </tr>
+            <tr>
+                <td>30 %</td>
+                <td>450 × 0,30</td>
+                <td><b>135 W</b></td>
+            </tr>
+            <tr>
+                <td>50 %</td>
+                <td>450 × 0,50</td>
+                <td><b>225 W</b></td>
+            </tr>
+            <tr>
+                <td>70 %</td>
+                <td>450 × 0,70</td>
+                <td><b>315 W</b></td>
+            </tr>
+            <tr>
+                <td>90 %</td>
+                <td>450 × 0,90</td>
+                <td><b>405 W</b></td>
+            </tr>
+            <tr>
+                <td>100 %</td>
+                <td>450 × 1,00</td>
+                <td><b>450 W</b></td>
+            </tr>
+        </table>
 
-</div>
+        <p>
+            Después, cuando el ejercicio pide sacar el porcentaje a partir de unos vatios dados,
+            lo que hago es dividir los vatios entre la potencia total de la fuente y luego multiplicar por 100.
+        </p>
 
-<!-- ================= ACTIVIDAD 6 ================= -->
-<h2>Actividad 6 – Análisis artículo</h2>
+        <div class="formula">
+% de carga = (Vatios suministrados / 450 W) × 100
+        </div>
 
-<div class="bloque">
+        <table>
+            <tr>
+                <th>Vatios suministrados</th>
+                <th>Cálculo</th>
+                <th>% de carga</th>
+            </tr>
+            <tr>
+                <td>450 W</td>
+                <td>(450 / 450) × 100</td>
+                <td><b>100 %</b></td>
+            </tr>
+            <tr>
+                <td>400 W</td>
+                <td>(400 / 450) × 100</td>
+                <td><b>88,89 %</b></td>
+            </tr>
+            <tr>
+                <td>350 W</td>
+                <td>(350 / 450) × 100</td>
+                <td><b>77,78 %</b></td>
+            </tr>
+            <tr>
+                <td>300 W</td>
+                <td>(300 / 450) × 100</td>
+                <td><b>66,67 %</b></td>
+            </tr>
+        </table>
 
-<p><b>Resumen:</b></p>
-<p>Una fuente de mayor potencia puede ser más eficiente, hacer menos ruido y durar más.</p>
+        <div class="nota">
+            Aunque en el enunciado aparece una eficiencia fija del 90 %, en esta actividad la carga se calcula sobre
+            la potencia nominal de salida de la fuente. La eficiencia será realmente importante en la actividad 5,
+            cuando haya que pasar de vatios suministrados a vatios consumidos.
+        </div>
+    </section>
 
-<p><b>Conclusión:</b></p>
-<ul>
-<li>1500W → más eficiente</li>
-<li>1500W → menos ruido</li>
-<li>1500W → más vida útil</li>
-</ul>
+    <!-- ACTIVIDAD 5 -->
+    <section class="actividad">
+        <h2>Actividad 5 – Vatios consumidos según la eficiencia</h2>
 
-</div>
+        <p>
+            Aquí sí entra directamente la eficiencia. Una fuente no consume de la pared exactamente lo mismo que entrega
+            al ordenador, porque una parte se pierde en forma de calor.
+        </p>
 
-<!-- ================= ACTIVIDAD 7 ================= -->
-<h2>Actividad 7 – Recomendación</h2>
+        <div class="formula">
+Vatios consumidos = Vatios suministrados / eficiencia
+        </div>
 
-<div class="bloque">
+        <h3>SilverStone NJ450-SXL</h3>
+        <table>
+            <tr>
+                <th>Vatios suministrados</th>
+                <th>% de carga</th>
+                <th>% eficiencia</th>
+                <th>Cálculo</th>
+                <th>Vatios consumidos</th>
+            </tr>
+            <tr>
+                <td>450 W</td>
+                <td>100 %</td>
+                <td>90 %</td>
+                <td>450 / 0,90</td>
+                <td><b>500,00 W</b></td>
+            </tr>
+            <tr>
+                <td>225 W</td>
+                <td>50 %</td>
+                <td>94 %</td>
+                <td>225 / 0,94</td>
+                <td><b>239,36 W</b></td>
+            </tr>
+            <tr>
+                <td>90 W</td>
+                <td>20 %</td>
+                <td>92 %</td>
+                <td>90 / 0,92</td>
+                <td><b>97,83 W</b></td>
+            </tr>
+        </table>
 
-<table>
-<tr><th>Potencia</th><th>Bajo</th><th>Medio</th><th>Alto</th></tr>
-<tr><td>250W</td><td>450W Bronze</td><td>550W Gold</td><td>650W Platinum</td></tr>
-<tr><td>350W</td><td>550W Bronze</td><td>650W Gold</td><td>750W Platinum</td></tr>
-<tr><td>440W</td><td>650W Bronze</td><td>750W Gold</td><td>850W Platinum</td></tr>
-<tr><td>500W</td><td>750W Bronze</td><td>850W Gold</td><td>1000W Platinum</td></tr>
-</table>
+        <h3>Seasonic PRIME GX-650</h3>
+        <table>
+            <tr>
+                <th>Vatios suministrados</th>
+                <th>% de carga</th>
+                <th>% eficiencia</th>
+                <th>Cálculo</th>
+                <th>Vatios consumidos</th>
+            </tr>
+            <tr>
+                <td>650 W</td>
+                <td>100 %</td>
+                <td>89 %</td>
+                <td>650 / 0,89</td>
+                <td><b>730,34 W</b></td>
+            </tr>
+            <tr>
+                <td>325 W</td>
+                <td>50 %</td>
+                <td>92 %</td>
+                <td>325 / 0,92</td>
+                <td><b>353,26 W</b></td>
+            </tr>
+            <tr>
+                <td>130 W</td>
+                <td>20 %</td>
+                <td>90 %</td>
+                <td>130 / 0,90</td>
+                <td><b>144,44 W</b></td>
+            </tr>
+        </table>
 
-<p>Conclusión: siempre es recomendable elegir una fuente con margen de potencia.</p>
+        <p>
+            La idea importante aquí es que, cuanto peor sea la eficiencia, más vatios se tienen que tomar de la red
+            eléctrica para poder entregar la misma energía al PC.
+        </p>
+    </section>
 
-</div>
+    <!-- ACTIVIDAD 6 -->
+    <section class="actividad">
+        <h2>Actividad 6 – Análisis del artículo en inglés</h2>
+
+        <h3>Resumen breve en inglés</h3>
+        <p>
+            The article explains that a 1500W power supply can be a better option than a 1000W one for a system that
+            draws around 800W. The reason is that most power supplies are more efficient at around 50% load. A bigger
+            power supply can also run quieter because its fan does not need to spin as fast, and it may last longer
+            because internal components work at lower temperature and with less stress.
+        </p>
+
+        <h3>Traducción / resumen en español</h3>
+        <p>
+            El artículo explica que una fuente de 1500W puede ser mejor que una de 1000W para un sistema que consume
+            unos 800W. La razón principal es que casi todas las fuentes tienen su mejor eficiencia cerca del 50 % de carga.
+            Además, una fuente más grande también puede ser más silenciosa, porque su ventilador necesita girar menos,
+            y puede durar más tiempo porque los componentes internos trabajan a menos temperatura y con menos esfuerzo.
+        </p>
+
+        <h3>Respuestas a las preguntas</h3>
+
+        <p><b>1. Si un ordenador necesita 800W, ¿es mejor una fuente de 1000W o de 1500W teniendo en cuenta la eficiencia? ¿Por qué?</b></p>
+        <p>
+            Teniendo en cuenta solo la eficiencia, el artículo defiende que la de <b>1500W</b> puede salir mejor.
+            La de 1000W estaría trabajando al 80 % de carga, mientras que la de 1500W estaría sobre un 53 % aproximadamente,
+            que es una zona más cercana a la eficiencia ideal de muchas fuentes. Por eso, aunque parezca más grande de la
+            cuenta, en carga alta puede desperdiciar menos energía.
+        </p>
+
+        <p><b>2. ¿Qué ventaja tiene una fuente de 1500W respecto al sonido?</b></p>
+        <p>
+            La ventaja es que hace <b>menos ruido</b>. Como va menos forzada, genera menos calor y su ventilador no tiene
+            que subir tanto de revoluciones. Eso hace que el equipo sea más silencioso, sobre todo cuando está jugando
+            o trabajando fuerte.
+        </p>
+
+        <p><b>3. Busca el precio de 4 fuentes Gold de 1000W y 4 de 1500W. Indica modelos y precios. ¿Cuál es la media de diferencia?</b></p>
+
+        <table>
+            <tr>
+                <th colspan="2">1000W 80 Plus Gold</th>
+                <th colspan="2">1500W 80 Plus Gold</th>
+            </tr>
+            <tr>
+                <th>Modelo</th>
+                <th>Precio</th>
+                <th>Modelo</th>
+                <th>Precio</th>
+            </tr>
+            <tr>
+                <td>MSI MPG A1000G</td>
+                <td>142,87 €</td>
+                <td>SilverStone Strider ST1500-GS</td>
+                <td>253,79 €</td>
+            </tr>
+            <tr>
+                <td>Corsair RM1000x</td>
+                <td>183,12 €</td>
+                <td>ASRock Phantom Gaming PG-1600G* </td>
+                <td>304,16 €</td>
+            </tr>
+            <tr>
+                <td>EVGA 1000 GQ</td>
+                <td>176,21 €</td>
+                <td>SilverStone DA1650-G* </td>
+                <td>255,80 €</td>
+            </tr>
+            <tr>
+                <td>Gigabyte UD1000GM PG5 Rev. 2.0</td>
+                <td>104,12 €</td>
+                <td>Referencia de mercado 1500W gama alta**</td>
+                <td>316,73 €</td>
+            </tr>
+        </table>
+
+        <p class="mini">
+            * En el mercado actual cuesta encontrar muchas 1500W Gold puras; por eso he usado modelos muy cercanos de 1600/1650W Gold para que la comparación tenga sentido.<br>
+            ** Precio orientativo de una 1500W de gama alta modular consultada en tiendas online.
+        </p>
+
+        <div class="formula">
+Media 1000W Gold = (142,87 + 183,12 + 176,21 + 104,12) / 4 = 151,58 €
+
+Media 1500W Gold aprox. = (253,79 + 304,16 + 255,80 + 316,73) / 4 = 282,62 €
+
+Diferencia media = 282,62 - 151,58 = 131,04 €
+        </div>
+
+        <p>
+            La conclusión sería que, de media, una fuente de la gama 1500W Gold o equivalente de mercado actual
+            cuesta bastante más que una de 1000W Gold.
+        </p>
+
+        <p><b>4. Busca el precio de 4 fuentes Platinum de 1000W y 4 de 1500W. Indica modelos y precios. ¿Cuál es la media de diferencia?</b></p>
+
+        <table>
+            <tr>
+                <th colspan="2">1000W 80 Plus Platinum</th>
+                <th colspan="2">1500W 80 Plus Platinum</th>
+            </tr>
+            <tr>
+                <th>Modelo</th>
+                <th>Precio</th>
+                <th>Modelo</th>
+                <th>Precio</th>
+            </tr>
+            <tr>
+                <td>SilverStone SX1000-LPT</td>
+                <td>219,95 €</td>
+                <td>Corsair HX1500i</td>
+                <td>315,89 €</td>
+            </tr>
+            <tr>
+                <td>Corsair HX1000i</td>
+                <td>244,35 €</td>
+                <td>Corsair HX1500i Shift</td>
+                <td>317,38 €</td>
+            </tr>
+            <tr>
+                <td>LC-Power LC1000P v3.1</td>
+                <td>136,20 €</td>
+                <td>NZXT C1500 Platinum</td>
+                <td>316,47 €</td>
+            </tr>
+            <tr>
+                <td>Lian Li SP Platinum 1000W</td>
+                <td>136,97 €</td>
+                <td>Corsair HX1500i Shift</td>
+                <td>319,95 €</td>
+            </tr>
+        </table>
+
+        <div class="formula">
+Media 1000W Platinum = (219,95 + 244,35 + 136,20 + 136,97) / 4 = 184,37 €
+
+Media 1500W Platinum = (315,89 + 317,38 + 316,47 + 319,95) / 4 = 317,42 €
+
+Diferencia media = 317,42 - 184,37 = 133,05 €
+        </div>
+
+        <p>
+            En Platinum también se ve una diferencia bastante fuerte. Las fuentes de 1500W son claramente más caras,
+            aunque a cambio ofrecen más margen, más comodidad en cargas altas y normalmente van asociadas a gamas más premium.
+        </p>
+    </section>
+
+    <!-- ACTIVIDAD 7 -->
+    <section class="actividad">
+        <h2>Actividad 7 – Qué fuente compraría según potencia y presupuesto</h2>
+
+        <p>
+            En esta actividad no basta con poner una potencia al azar. Hay que pensar en dos cosas:
+            la <b>potencia que necesita realmente el equipo</b> y el <b>presupuesto disponible</b>.
+            Normalmente interesa dejar un pequeño margen para que la fuente no vaya al límite.
+        </p>
+
+        <table>
+            <tr>
+                <th>Potencia a suministrar</th>
+                <th>Presupuesto bajo</th>
+                <th>Presupuesto medio</th>
+                <th>Presupuesto alto</th>
+            </tr>
+            <tr>
+                <td>250 W</td>
+                <td>450W Bronze</td>
+                <td>550W Gold</td>
+                <td>650W Platinum</td>
+            </tr>
+            <tr>
+                <td>350 W</td>
+                <td>550W Bronze</td>
+                <td>650W Gold</td>
+                <td>750W Platinum</td>
+            </tr>
+            <tr>
+                <td>440 W</td>
+                <td>650W Bronze</td>
+                <td>750W Gold</td>
+                <td>850W Platinum</td>
+            </tr>
+            <tr>
+                <td>500 W</td>
+                <td>750W Bronze</td>
+                <td>850W Gold</td>
+                <td>1000W Platinum</td>
+            </tr>
+        </table>
+
+        <h3>Explicación</h3>
+        <p>
+            Si el equipo necesita <b>250 W</b>, con una fuente de 450 W barata ya puede funcionar, aunque yo con un
+            presupuesto medio ya saltaría a 550 W Gold porque ofrece mejor eficiencia y más margen.
+        </p>
+
+        <p>
+            Si el equipo necesita <b>350 W</b>, una de 550 W Bronze puede servir en un presupuesto bajo, pero en medio
+            y alto compensa ir a 650 W Gold o 750 W Platinum para que la fuente vaya más relajada.
+        </p>
+
+        <p>
+            Si el equipo necesita <b>440 W</b>, ya no pondría una fuente muy justa. En bajo pondría 650 W Bronze,
+            pero si el presupuesto lo permite, mejor 750 W Gold o incluso 850 W Platinum.
+        </p>
+
+        <p>
+            Si el equipo necesita <b>500 W</b>, yo ya buscaría una fuente seria. Con presupuesto bajo podría entrar una
+            750 W Bronze, pero personalmente me parece más equilibrado montar una <b>850 W Gold</b>. Y si el presupuesto
+            es alto, una <b>1000 W Platinum</b> sería una opción muy cómoda y con mucho margen para futuro.
+        </p>
+
+        <div class="nota">
+            En general, mi criterio sería este: si el presupuesto es bajo, priorizo que la fuente sea decente y tenga algo
+            de margen; si el presupuesto es medio, intento irme a Gold; y si el presupuesto es alto, ya buscaría Platinum
+            y una potencia sobrada para que el equipo trabaje con más estabilidad, menos calor y menos ruido.
+        </div>
+    </section>
 
 </div>
 
