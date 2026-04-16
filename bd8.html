@@ -1,144 +1,225 @@
-<h2 style="border-left:6px solid #ff3c00;padding-left:12px;margin-top:50px;">
-🪵 Modelo Almacen de Maderas
-</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>UD07 – Almacen de Maderas</title>
 
-<!-- MODELO -->
+<style>
+
+/* ===== BASE ===== */
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:#eaeaea;
+    font-family:'Consolas','Courier New',monospace;
+}
+
+/* ===== HEADER ===== */
+header{
+    padding:50px 0;
+    text-align:center;
+    font-size:34px;
+    color:#ff3c00;
+    text-shadow:0 0 15px rgba(255,60,0,0.7);
+    border-bottom:2px solid #222;
+}
+
+/* ===== CONTENEDOR ===== */
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+/* ===== TITULOS ===== */
+h2{
+    border-left:6px solid #ff3c00;
+    padding-left:12px;
+    margin-top:40px;
+}
+
+h3{
+    color:#ffcc00;
+}
+
+/* ===== TEXTO ===== */
+p, li{
+    color:#eaeaea;
+    line-height:1.7;
+}
+
+/* ===== BLOQUES ===== */
+.paso{
+    background:#111;
+    border:1px solid #333;
+    padding:20px;
+    border-radius:10px;
+    margin:20px 0;
+    box-shadow:0 0 10px rgba(255,60,0,0.2);
+}
+
+/* ===== TARJETAS ===== */
+.card{
+    background:#151515;
+    border:2px solid #ff3c00;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    transition:0.3s;
+}
+
+.card:hover{
+    box-shadow:0 0 15px rgba(255,60,0,0.6);
+    transform:scale(1.02);
+}
+
+.card b{
+    color:#ffcc00;
+}
+
+/* ===== RELACIONES ===== */
+.rel{
+    background:#111;
+    border-left:5px solid #00ffcc;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:6px;
+}
+
+.rel-nm{
+    background:#1a1a1a;
+    border:2px solid #ff3c00;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+/* ===== IMAGENES ===== */
+img{
+    width:100%;
+    border:1px solid #ff3c00;
+    border-radius:6px;
+    margin-top:12px;
+}
+
+/* ===== PIE ===== */
+.pie{
+    font-size:14px;
+    opacity:0.8;
+    margin-top:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🪵 Almacen de Maderas – Modelo Relacional</header>
+
+<div class="contenedor">
+
+<h2>Modelo Entidad-Relacion</h2>
+
 <div class="paso">
-<h3>Modelo Entidad-Relacion</h3>
-
 <p>
-Sistema de gestion de un almacen de maderas donde se controlan clientes,
+Se ha disenado el modelo E/R de un almacen de maderas donde se gestionan clientes,
 pedidos, productos y proveedores.
 </p>
 
-<img src="media/ABD27.PNG">
-<p class="pie">Captura ABD27: Modelo E/R.</p>
+<img src="media/ABD26.PNG">
+<p class="pie">Captura ABD26: Modelo E/R del sistema.</p>
 </div>
 
-<!-- TABLAS -->
+
+<h2>Tablas creadas</h2>
+
 <div class="paso">
-<h3>Tablas creadas</h3>
 
-<div style="margin-top:20px;">
-
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Clientes</b><br>
+<div class="card"><b>Clientes</b><br>
 id_cliente · nombre · telefono · ciudad
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Pedidos</b><br>
+<div class="card"><b>Pedidos</b><br>
 id_pedido · fecha · total · id_cliente · id_empleado
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Empleados</b><br>
+<div class="card"><b>Empleados</b><br>
 id_empleado · nombre · puesto · salario
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Productos</b><br>
+<div class="card"><b>Productos</b><br>
 id_producto · nombre · precio_m3 · stock · id_tipo
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Tipos_Madera</b><br>
+<div class="card"><b>Tipos_Madera</b><br>
 id_tipo · nombre · densidad · origen
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Proveedores</b><br>
+<div class="card"><b>Proveedores</b><br>
 id_proveedor · nombre · telefono · ciudad
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;margin-bottom:15px;">
-<b style="color:#ffcc00;">Compras</b><br>
+<div class="card"><b>Compras</b><br>
 id_compra · cantidad · fecha · id_proveedor · id_producto
 </div>
 
-<div style="background:#151515;border:2px solid #ff3c00;padding:15px;border-radius:10px;">
-<b style="color:#ffcc00;">Detalle_Pedido</b><br>
+<div class="card"><b>Detalle_Pedido</b><br>
 id_detalle · cantidad · precio_unitario · id_pedido · id_producto
 </div>
 
 </div>
-</div>
 
-<!-- RELACIONES -->
+
+<h2>Relaciones</h2>
+
 <div class="paso">
-<h3>Relaciones</h3>
 
-<div style="margin-top:15px;">
+<div class="rel">Clientes → Pedidos (1:N)</div>
+<div class="rel">Empleados → Pedidos (1:N)</div>
+<div class="rel">Pedidos → Detalle_Pedido (1:N)</div>
+<div class="rel">Productos → Detalle_Pedido (1:N)</div>
+<div class="rel">Tipos_Madera → Productos (1:N)</div>
+<div class="rel">Proveedores → Compras (1:N)</div>
+<div class="rel">Productos → Compras (1:N)</div>
 
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Clientes → Pedidos (1:N)
-</div>
+<p><b>Relaciones N:M</b></p>
 
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Empleados → Pedidos (1:N)
-</div>
-
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Pedidos → Detalle_Pedido (1:N)
-</div>
-
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Productos → Detalle_Pedido (1:N)
-</div>
-
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Tipos_Madera → Productos (1:N)
-</div>
-
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Proveedores → Compras (1:N)
-</div>
-
-<div style="background:#111;border-left:5px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-Productos → Compras (1:N)
-</div>
+<div class="rel-nm">Pedidos ↔ Productos mediante Detalle_Pedido</div>
+<div class="rel-nm">Proveedores ↔ Productos mediante Compras</div>
 
 </div>
 
-<p style="margin-top:20px;"><b style="color:#ffcc00;">Relaciones N:M:</b></p>
 
-<div style="background:#1a1a1a;border:2px solid #ff3c00;padding:12px;border-radius:8px;margin-top:10px;">
-Pedidos ↔ Productos mediante Detalle_Pedido
-</div>
+<h2>Implementacion en phpMyAdmin</h2>
 
-<div style="background:#1a1a1a;border:2px solid #ff3c00;padding:12px;border-radius:8px;margin-top:10px;">
-Proveedores ↔ Productos mediante Compras
-</div>
-
-</div>
-
-<!-- IMPLEMENTACION -->
 <div class="paso">
-<h3>Implementacion en phpMyAdmin</h3>
-
 <p>
-Se han creado todas las tablas con sus claves primarias y foraneas siguiendo el modelo.
+Se han creado las tablas, definido claves primarias y foraneas y comprobado su funcionamiento.
 </p>
 
-<img src="media/ABD26.PNG">
-<p class="pie">Captura ABD26: Tablas creadas.</p>
+<img src="media/ABD27.PNG">
+<p class="pie">Captura ABD27: Tablas creadas.</p>
 </div>
 
-<!-- RELACIONES VISUAL -->
-<div class="paso">
-<h3>Relaciones en la base de datos</h3>
 
+<h2>Relaciones en la base de datos</h2>
+
+<div class="paso">
 <img src="media/ABD28.PNG">
-<p class="pie">Captura ABD28: Relaciones.</p>
+<p class="pie">Captura ABD28: Relaciones entre tablas.</p>
 </div>
 
-<!-- CONCLUSION -->
+
+<h2>Conclusion</h2>
+
 <div class="paso">
-<h3>Conclusion</h3>
-
 <p>
-El sistema permite gestionar de forma completa el almacen de maderas
-con integridad referencial y control de datos.
+El modelo permite gestionar correctamente el almacen de maderas,
+garantizando la integridad de los datos mediante claves foraneas.
 </p>
+</div>
 
 </div>
+
+</body>
+</html>
