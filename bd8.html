@@ -1,0 +1,110 @@
+<h2>Modelo Almacen de Maderas</h2>
+
+<div class="paso">
+<h3>Modelo Entidad-Relacion</h3>
+
+<p>
+En esta actividad se ha disenado el modelo Entidad-Relacion correspondiente a un sistema
+de gestion de un almacen de maderas.
+</p>
+
+<p>
+El modelo representa clientes, pedidos, productos, proveedores y el flujo completo
+de compras y ventas dentro del almacen.
+</p>
+
+<img src="media/ABD26.PNG">
+<p class="pie">Captura ABD26: Modelo E/R del almacen de maderas.</p>
+</div>
+
+<div class="paso">
+<h3>Tablas creadas (Entidades)</h3>
+
+<p>Se han creado las siguientes tablas en la base de datos:</p>
+
+<ul>
+<li><b>Clientes</b>: id_cliente, nombre, telefono, ciudad</li>
+<li><b>Pedidos</b>: id_pedido, fecha, total, id_cliente, id_empleado</li>
+<li><b>Empleados</b>: id_empleado, nombre, puesto, salario</li>
+<li><b>Productos</b>: id_producto, nombre, precio_m3, stock, id_tipo</li>
+<li><b>Tipos_Madera</b>: id_tipo, nombre, densidad, origen</li>
+<li><b>Proveedores</b>: id_proveedor, nombre, telefono, ciudad</li>
+<li><b>Compras</b>: id_compra, cantidad, fecha, id_proveedor, id_producto</li>
+<li><b>Detalle_Pedido</b>: id_detalle, cantidad, precio_unitario, id_pedido, id_producto</li>
+</ul>
+
+</div>
+
+<div class="paso">
+<h3>Relaciones del modelo</h3>
+
+<ul>
+<li><b>Clientes – Pedidos (1:N)</b>: un cliente puede realizar varios pedidos</li>
+
+<li><b>Empleados – Pedidos (1:N)</b>: un empleado gestiona varios pedidos</li>
+
+<li><b>Pedidos – Detalle_Pedido (1:N)</b>: un pedido tiene varias lineas</li>
+
+<li><b>Productos – Detalle_Pedido (1:N)</b>: un producto puede aparecer en varios pedidos</li>
+
+<li><b>Tipos_Madera – Productos (1:N)</b>: un tipo de madera tiene varios productos</li>
+
+<li><b>Proveedores – Compras (1:N)</b>: un proveedor realiza varias compras</li>
+
+<li><b>Productos – Compras (1:N)</b>: un producto puede comprarse varias veces</li>
+</ul>
+
+<p>
+Estas relaciones generan dos relaciones de tipo N:M:
+</p>
+
+<ul>
+<li>Pedidos y Productos mediante la tabla Detalle_Pedido</li>
+<li>Proveedores y Productos mediante la tabla Compras</li>
+</ul>
+
+</div>
+
+<div class="paso">
+<h3>Implementacion en phpMyAdmin</h3>
+
+<p>
+Siguiendo el mismo procedimiento de la actividad 1, se ha realizado la creacion
+de todas las tablas en phpMyAdmin, definiendo claves primarias y claves foraneas.
+</p>
+
+<p>
+Tambien se han insertado los datos necesarios para comprobar el correcto funcionamiento
+del modelo.
+</p>
+
+<img src="media/ABD27.PNG">
+<p class="pie">Captura ABD27: Tablas creadas en phpMyAdmin.</p>
+</div>
+
+<div class="paso">
+<h3>Relaciones en la base de datos</h3>
+
+<p>
+Se ha verificado el modelo mediante la vista de disenador de phpMyAdmin,
+donde se observan todas las relaciones correctamente establecidas.
+</p>
+
+<img src="media/ABD28.PNG">
+<p class="pie">Captura ABD28: Relaciones entre tablas.</p>
+</div>
+
+<div class="paso">
+<h3>Conclusion</h3>
+
+<p>
+Se ha conseguido transformar correctamente el modelo Entidad-Relacion del almacen
+de maderas en un modelo relacional implementado en MySQL.
+</p>
+
+<p>
+La estructura permite gestionar clientes, pedidos, productos y proveedores
+de forma eficiente, asegurando la integridad de los datos mediante claves foraneas.
+</p>
+
+</div>
