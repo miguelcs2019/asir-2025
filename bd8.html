@@ -1,149 +1,162 @@
-<h2 style="border-left:6px solid #ff3c00;padding-left:12px;margin-top:50px;">
-🪵 MODELO ALMACEN DE MADERAS
-</h2>
+<h2>Modelo Almacen de Maderas</h2>
 
 <div class="paso">
-
-<h3>🎸 Modelo Entidad-Relacion</h3>
+<h3>Modelo Entidad-Relacion</h3>
 
 <p>
-En esta actividad se ha disenado el modelo E/R de un sistema de gestion de un almacen de maderas,
-representando el flujo completo de pedidos, productos y proveedores.
+Se ha disenado el modelo E/R de un almacen de maderas donde se representan
+clientes, pedidos, productos y proveedores.
 </p>
 
-<img src="media/ABD26.PNG">
-<p class="pie">Captura ABD26: Modelo E/R del sistema.</p>
+<p>
+Este modelo permite gestionar tanto las ventas como las compras de materiales,
+asi como el control de stock.
+</p>
 
+<img src="media/ABD28.PNG">
+<p class="pie">Captura ABD28: Modelo E/R del sistema.</p>
 </div>
+
 
 <div class="paso">
+<h3>Tablas creadas</h3>
 
-<h3>🏉 Tablas creadas</h3>
+<p><b>Clientes</b></p>
+<ul>
+<li>id_cliente</li>
+<li>nombre</li>
+<li>telefono</li>
+<li>ciudad</li>
+</ul>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px;">
+<p><b>Pedidos</b></p>
+<ul>
+<li>id_pedido</li>
+<li>fecha</li>
+<li>total</li>
+<li>id_cliente (FK)</li>
+<li>id_empleado (FK)</li>
+</ul>
 
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Clientes</b><br>
-id_cliente<br>nombre<br>telefono<br>ciudad
+<p><b>Empleados</b></p>
+<ul>
+<li>id_empleado</li>
+<li>nombre</li>
+<li>puesto</li>
+<li>salario</li>
+</ul>
+
+<p><b>Productos</b></p>
+<ul>
+<li>id_producto</li>
+<li>nombre</li>
+<li>precio_m3</li>
+<li>stock</li>
+<li>id_tipo (FK)</li>
+</ul>
+
+<p><b>Tipos_Madera</b></p>
+<ul>
+<li>id_tipo</li>
+<li>nombre</li>
+<li>densidad</li>
+<li>origen</li>
+</ul>
+
+<p><b>Proveedores</b></p>
+<ul>
+<li>id_proveedor</li>
+<li>nombre</li>
+<li>telefono</li>
+<li>ciudad</li>
+</ul>
+
+<p><b>Compras</b></p>
+<ul>
+<li>id_compra</li>
+<li>cantidad</li>
+<li>fecha</li>
+<li>id_proveedor (FK)</li>
+<li>id_producto (FK)</li>
+</ul>
+
+<p><b>Detalle_Pedido</b></p>
+<ul>
+<li>id_detalle</li>
+<li>cantidad</li>
+<li>precio_unitario</li>
+<li>id_pedido (FK)</li>
+<li>id_producto (FK)</li>
+</ul>
+
 </div>
 
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Pedidos</b><br>
-id_pedido<br>fecha<br>total<br>id_cliente<br>id_empleado
-</div>
-
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Empleados</b><br>
-id_empleado<br>nombre<br>puesto<br>salario
-</div>
-
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Productos</b><br>
-id_producto<br>nombre<br>precio_m3<br>stock<br>id_tipo
-</div>
-
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Tipos_Madera</b><br>
-id_tipo<br>nombre<br>densidad<br>origen
-</div>
-
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Proveedores</b><br>
-id_proveedor<br>nombre<br>telefono<br>ciudad
-</div>
-
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Compras</b><br>
-id_compra<br>cantidad<br>fecha<br>id_proveedor<br>id_producto
-</div>
-
-<div style="background:#0f0f0f;border-left:4px solid #ff3c00;padding:15px;border-radius:8px;">
-<b style="color:#ffcc00;">Detalle_Pedido</b><br>
-id_detalle<br>cantidad<br>precio_unitario<br>id_pedido<br>id_producto
-</div>
-
-</div>
-
-</div>
 
 <div class="paso">
+<h3>Relaciones del modelo</h3>
 
-<h3>🔥 Relaciones del modelo</h3>
+<ul>
+<li>Clientes - Pedidos (1:N)</li>
+<li>Empleados - Pedidos (1:N)</li>
+<li>Pedidos - Detalle_Pedido (1:N)</li>
+<li>Productos - Detalle_Pedido (1:N)</li>
+<li>Tipos_Madera - Productos (1:N)</li>
+<li>Proveedores - Compras (1:N)</li>
+<li>Productos - Compras (1:N)</li>
+</ul>
 
-<div style="margin-top:20px;">
+<p><b>Relaciones N:M:</b></p>
 
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Clientes → Pedidos</b> (1:N)
-</div>
-
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Empleados → Pedidos</b> (1:N)
-</div>
-
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Pedidos → Detalle_Pedido</b> (1:N)
-</div>
-
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Productos → Detalle_Pedido</b> (1:N)
-</div>
-
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Tipos_Madera → Productos</b> (1:N)
-</div>
-
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Proveedores → Compras</b> (1:N)
-</div>
-
-<div style="background:#1a1a1a;border-left:4px solid #00ffcc;padding:12px;margin-bottom:10px;border-radius:6px;">
-<b>Productos → Compras</b> (1:N)
-</div>
+<ul>
+<li>Pedidos y Productos mediante Detalle_Pedido</li>
+<li>Proveedores y Productos mediante Compras</li>
+</ul>
 
 </div>
 
-<h3 style="margin-top:25px;">⚡ Relaciones N:M</h3>
-
-<div style="background:#111;border:1px solid #ff3c00;padding:15px;border-radius:8px;margin-top:10px;">
-🔥 Pedidos ↔ Productos mediante <b>Detalle_Pedido</b>
-</div>
-
-<div style="background:#111;border:1px solid #ff3c00;padding:15px;border-radius:8px;margin-top:10px;">
-🔥 Proveedores ↔ Productos mediante <b>Compras</b>
-</div>
-
-</div>
 
 <div class="paso">
-
-<h3>⚙️ Implementacion en phpMyAdmin</h3>
+<h3>Implementacion en phpMyAdmin</h3>
 
 <p>
-Siguiendo el mismo criterio que en la actividad 1, se han creado todas las tablas,
-definido claves primarias y claves foraneas y comprobado el funcionamiento.
+Siguiendo el mismo criterio de la actividad 1, se han creado todas las tablas
+en phpMyAdmin, definiendo claves primarias y claves foraneas.
+</p>
+
+<p>
+Tambien se han insertado datos de prueba para verificar el correcto funcionamiento
+del sistema.
 </p>
 
 <img src="media/ABD27.PNG">
-<p class="pie">Captura ABD27: Tablas creadas.</p>
-
+<p class="pie">Captura ABD27: Tablas creadas en phpMyAdmin.</p>
 </div>
 
-<div class="paso">
-
-<h3>🔗 Relaciones en la base de datos</h3>
-
-<img src="media/ABD28.PNG">
-<p class="pie">Captura ABD28: Relaciones entre tablas.</p>
-
-</div>
 
 <div class="paso">
-
-<h3>🏁 Conclusion final</h3>
+<h3>Relaciones en la base de datos</h3>
 
 <p>
-El modelo permite gestionar de forma eficiente el almacen de maderas,
-integrando clientes, pedidos y proveedores con integridad referencial.
+Se ha utilizado la vista de disenador para comprobar visualmente las relaciones
+entre las tablas.
+</p>
+
+<img src="media/ABD27.PNG">
+<p class="pie">Captura ABD27: Relaciones entre tablas.</p>
+</div>
+
+
+<div class="paso">
+<h3>Conclusion</h3>
+
+<p>
+El modelo desarrollado permite gestionar de forma completa un almacen de maderas,
+incluyendo clientes, pedidos, productos y proveedores.
+</p>
+
+<p>
+La utilizacion de claves foraneas garantiza la integridad de los datos
+y el correcto funcionamiento de las relaciones entre tablas.
 </p>
 
 </div>
