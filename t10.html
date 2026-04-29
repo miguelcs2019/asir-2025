@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tarjetas Gráficas – Aspectos importantes</title>
+
+  <style>
+    :root{
+      --bg0:#050814;
+      --bg1:#07102a;
+      --panel:rgba(255,255,255,.06);
+      --line:rgba(148,163,184,.18);
+      --text:#e5e7eb;
+      --muted:#9aa6bd;
+      --blue:#60a5fa;
+      --green:#22c55e;
+      --purple:#a78bfa;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      color:var(--text);
+      padding:28px 14px;
+      background:
+        radial-gradient(1200px 700px at 10% 15%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(1000px 600px at 85% 25%, rgba(34,197,94,.14), transparent 60%),
+        radial-gradient(900px 700px at 50% 95%, rgba(167,139,250,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    header{
+      border-radius:22px;
+      padding:24px 22px;
+      background:linear-gradient(135deg, rgba(96,165,250,.14), rgba(34,197,94,.10));
+      border:1px solid var(--line);
+      box-shadow:0 18px 46px rgba(0,0,0,.35);
+      margin-bottom:18px;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(6,10,24,.55);
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:#dbeafe;
+      margin-bottom:10px;
+    }
+
+    .kdot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--blue);
+      box-shadow:0 0 0 6px rgba(96,165,250,.15);
+    }
+
+    h1{
+      margin:0 0 8px 0;
+      font-size:34px;
+      line-height:1.15;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      text-align:justify;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 18px;
+      box-shadow:0 16px 38px rgba(0,0,0,.28);
+      backdrop-filter:blur(10px);
+    }
+
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:20px;
+      color:#eaf2ff;
+    }
+
+    .card h3{
+      margin:18px 0 8px 0;
+      font-size:16px;
+      color:var(--blue);
+    }
+
+    p{
+      margin:8px 0;
+      line-height:1.65;
+      text-align:justify;
+    }
+
+    ul{
+      margin:10px 0 0 18px;
+      line-height:1.65;
+    }
+
+    li{
+      margin:6px 0;
+    }
+
+    .callout{
+      margin-top:12px;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid rgba(34,197,94,.22);
+      background:linear-gradient(135deg, rgba(34,197,94,.12), rgba(96,165,250,.08));
+      color:#e5e7eb;
+      font-size:14px;
+      line-height:1.6;
+      text-align:justify;
+    }
+
+    .warning{
+      margin-top:12px;
+      border-radius:14px;
+      padding:12px 12px;
+      border:1px solid rgba(245,158,11,.35);
+      background:linear-gradient(135deg, rgba(245,158,11,.12), rgba(96,165,250,.06));
+      color:#f8e7c4;
+      font-size:14px;
+      line-height:1.6;
+      text-align:justify;
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(6,10,24,.45);
+      margin-top:12px;
+    }
+
+    th,td{
+      padding:12px 12px;
+      font-size:14px;
+      border-bottom:1px solid rgba(148,163,184,.14);
+      vertical-align:top;
+      text-align:left;
+    }
+
+    th{
+      background:rgba(167,139,250,.10);
+      color:#eaf2ff;
+      font-weight:700;
+    }
+
+    tr:last-child td{
+      border-bottom:none;
+    }
+
+    .foot{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <div class="kicker"><span class="kdot"></span>Tarjetas gráficas · Búsqueda en tiendas online</div>
+      <h1>Aspectos importantes que hay que mirar en una tarjeta gráfica</h1>
+      <p class="sub">
+        Cuando buscamos una tarjeta gráfica en tiendas como PCComponentes, Coolmod, Amazon,
+        Neobyte o PCBox, no basta con mirar solo el nombre o el precio. Hay varias características
+        que conviene revisar para saber si esa gráfica realmente sirve para nuestro equipo y para
+        el uso que queremos darle.
+      </p>
+    </header>
+
+    <div class="grid">
+
+      <section class="card">
+        <h2>1) Fabricantes</h2>
+        <p>
+          En una tarjeta gráfica hay que distinguir entre el fabricante de la <b>GPU</b> y la marca
+          que monta la tarjeta completa.
+        </p>
+
+        <h3>Fabricantes del chip gráfico</h3>
+        <ul>
+          <li><b>NVIDIA</b>, con sus gamas GeForce RTX.</li>
+          <li><b>AMD</b>, con sus gamas Radeon RX.</li>
+          <li><b>Intel</b>, con sus gráficas Intel Arc.</li>
+        </ul>
+
+        <p>
+          NVIDIA y AMD son los fabricantes más conocidos en gráficas dedicadas, pero Intel también
+          ha entrado en este mercado con sus tarjetas <b>Intel Arc</b>. Además, Intel lleva muchos años
+          desarrollando gráficos integrados dentro de sus procesadores.
+        </p>
+
+        <h3>Ensambladores o marcas comerciales</h3>
+        <ul>
+          <li>ASUS</li>
+          <li>MSI</li>
+          <li>Gigabyte</li>
+          <li>Zotac</li>
+          <li>Sapphire</li>
+          <li>PowerColor</li>
+          <li>ASRock</li>
+        </ul>
+
+        <div class="callout">
+          Esto es importante porque una misma GPU puede existir en muchas versiones distintas.
+          Por ejemplo, una RTX 4070 de ASUS y una RTX 4070 de MSI tienen la misma base,
+          pero pueden cambiar en refrigeración, tamaño, ruido o precio.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2) Modelo de GPU</h2>
+        <p>
+          El modelo de la GPU es la característica más importante porque marca el nivel de rendimiento general.
+          No es lo mismo una RTX 4060 que una RTX 4070, una RX 7600 que una RX 7800 XT,
+          o una Intel Arc A750 que una Arc A770.
+        </p>
+
+        <p>
+          De forma general, cuanto más alta es la gama, mejor rendimiento tendrá en juegos,
+          edición de vídeo, modelado 3D o tareas de inteligencia artificial.
+        </p>
+
+        <div class="callout">
+          La GPU es el “cerebro” de la tarjeta gráfica. Si el modelo es flojo,
+          da igual que la marca sea buena: el rendimiento seguirá estando limitado.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3) Memoria VRAM</h2>
+        <p>
+          La VRAM es la memoria propia de la tarjeta gráfica. Se mide en GB y suele aparecer como
+          8 GB, 12 GB, 16 GB, etc.
+        </p>
+
+        <ul>
+          <li>Para uso básico o juegos sencillos puede bastar con 8 GB.</li>
+          <li>Para juegos más exigentes o edición es mejor 12 GB o más.</li>
+          <li>Para trabajos pesados o resoluciones altas, una VRAM mayor da más margen.</li>
+        </ul>
+
+        <p>
+          También influye el tipo de memoria, normalmente <b>GDDR6</b> o <b>GDDR6X</b>.
+          No solo importa la cantidad, también la velocidad.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>4) Frecuencia y núcleos</h2>
+        <p>
+          Otro dato habitual es la frecuencia de la GPU, medida en MHz, y el número de núcleos
+          que incorpora.
+        </p>
+
+        <ul>
+          <li>En NVIDIA suelen hablar de <b>CUDA Cores</b>.</li>
+          <li>En AMD se suele hablar de <b>Stream Processors</b>.</li>
+          <li>En Intel Arc se habla de <b>Xe-Cores</b>.</li>
+        </ul>
+
+        <p>
+          De forma sencilla, cuantos más recursos internos tenga la gráfica, más capacidad tendrá
+          para procesar información. Aun así, no conviene mirar un solo dato aislado, porque el
+          rendimiento depende del conjunto.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>5) Tamaño físico de la tarjeta</h2>
+        <p>
+          Este es uno de los puntos más importantes y mucha gente no lo mira hasta que ya ha comprado la gráfica.
+          Una tarjeta puede no caber en la caja, o puede tapar otras ranuras de la placa base.
+        </p>
+
+        <h3>Longitud</h3>
+        <p>
+          Se mide en milímetros, por ejemplo 280 mm, 300 mm o más. Si la caja del PC no tiene espacio suficiente,
+          la tarjeta no entrará.
+        </p>
+
+        <h3>Grosor / número de slots</h3>
+        <ul>
+          <li><b>2 slots</b>: tamaño normal.</li>
+          <li><b>2,5 slots</b>: un poco más ancha.</li>
+          <li><b>3 slots</b> o más: gráficas grandes, con mejor refrigeración pero más espacio ocupado.</li>
+        </ul>
+
+        <h3>Altura</h3>
+        <p>
+          Algunas gráficas son también más altas de lo normal y pueden quedar muy pegadas al cristal lateral
+          o a otros componentes.
+        </p>
+
+        <h3>Peso</h3>
+        <p>
+          Las gráficas de gama alta pesan bastante y a veces se vencen hacia abajo.
+          Eso se conoce como <b>GPU sag</b>.
+        </p>
+
+        <div class="warning">
+          Antes de comprar una gráfica hay que mirar siempre si cabe en la caja.
+          Este es uno de los errores más típicos al montar un PC.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>6) Compatibilidad con la fuente de alimentación</h2>
+        <p>
+          La gráfica no solo tiene que caber, también tiene que poder alimentarse correctamente.
+          Para eso hay que mirar tres cosas.
+        </p>
+
+        <h3>Potencia total de la fuente</h3>
+        <p>
+          Cada tarjeta gráfica suele recomendar una fuente mínima. Por ejemplo,
+          una gama media-alta puede pedir 650W o 750W.
+        </p>
+
+        <h3>Conectores de alimentación</h3>
+        <ul>
+          <li>6 pines</li>
+          <li>8 pines</li>
+          <li>12VHPWR en modelos más nuevos</li>
+        </ul>
+
+        <p>
+          A veces una fuente tiene vatios suficientes, pero no tiene el conector adecuado.
+        </p>
+
+        <h3>Calidad de la fuente</h3>
+        <p>
+          No vale cualquier fuente genérica. Lo recomendable es usar una fuente de calidad,
+          al menos con certificación 80 Plus Bronze o Gold, sobre todo si la gráfica es potente.
+        </p>
+
+        <div class="callout">
+          Una buena gráfica con una mala fuente puede dar problemas de estabilidad,
+          apagados o incluso averías.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>7) Compatibilidad con la placa base</h2>
+        <p>
+          Las tarjetas gráficas actuales se conectan normalmente en una ranura <b>PCIe x16</b>.
+          En general no suele haber grandes problemas de compatibilidad, porque PCIe mantiene bastante bien
+          la compatibilidad entre versiones.
+        </p>
+
+        <p>
+          Aun así, en equipos antiguos se puede perder algo de rendimiento si la gráfica es muy moderna
+          y la placa trabaja con una versión de PCIe más antigua.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>8) Refrigeración de la gráfica</h2>
+        <p>
+          El sistema de refrigeración es clave, porque una tarjeta gráfica potente genera bastante calor.
+          Normalmente encontramos:
+        </p>
+
+        <ul>
+          <li><b>1 ventilador</b>: gama baja o modelos compactos.</li>
+          <li><b>2 ventiladores</b>: muy habitual en gama media.</li>
+          <li><b>3 ventiladores</b>: típico en modelos potentes o de gama alta.</li>
+        </ul>
+
+        <p>
+          En algunos casos también existen tarjetas con refrigeración líquida, aunque son menos habituales.
+        </p>
+
+        <p>
+          Cuanto mejor sea la refrigeración, mejor podrá mantener temperaturas razonables y menos ruido hará
+          a igualdad de carga.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>9) Flujo de aire de la caja</h2>
+        <p>
+          Aunque la tarjeta tenga buenos ventiladores, si la caja del ordenador no mete aire fresco
+          ni saca el caliente, la temperatura subirá igual.
+        </p>
+
+        <ul>
+          <li>Ventiladores frontales para meter aire.</li>
+          <li>Ventiladores traseros o superiores para sacar aire.</li>
+          <li>Espacio suficiente alrededor de la GPU.</li>
+        </ul>
+
+        <div class="warning">
+          Una caja pequeña o mal ventilada puede hacer que una gráfica potente rinda peor por temperatura.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>10) Ruido</h2>
+        <p>
+          El ruido depende del sistema de refrigeración y de cómo gestione las revoluciones.
+          En general, una tarjeta de más calidad suele llevar ventiladores mejores y puede mantener
+          temperaturas correctas con menos ruido.
+        </p>
+
+        <p>
+          También influye mucho el tamaño: una gráfica grande con tres ventiladores puede ser
+          más silenciosa que una pequeña con dos ventiladores, porque no necesita girar tan rápido.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>11) Salidas de vídeo</h2>
+        <p>
+          Otro aspecto práctico son las conexiones para monitor:
+        </p>
+
+        <ul>
+          <li><b>HDMI</b></li>
+          <li><b>DisplayPort</b></li>
+        </ul>
+
+        <p>
+          Hay que mirar cuántas lleva y cuáles necesitas según tus monitores.
+          Esto parece un detalle pequeño, pero puede ser importante si quieres usar
+          varios monitores o un monitor de alta frecuencia.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>12) Tecnologías extra</h2>
+        <p>
+          En tiendas también suelen aparecer tecnologías que conviene conocer:
+        </p>
+
+        <ul>
+          <li><b>Ray Tracing</b>: mejora efectos como reflejos e iluminación, pero exige más a la GPU.</li>
+          <li><b>DLSS</b> en NVIDIA: ayuda a ganar FPS usando reescalado inteligente.</li>
+          <li><b>FSR</b> en AMD: tecnología parecida para mejorar rendimiento.</li>
+          <li><b>XeSS</b> en Intel: alternativa de Intel para mejorar rendimiento mediante reescalado.</li>
+        </ul>
+
+        <p>
+          Estas tecnologías no sustituyen a la potencia de la gráfica, pero sí pueden mejorar la experiencia.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>13) Precio</h2>
+        <p>
+          El precio cambia mucho según la gama:
+        </p>
+
+        <table>
+          <tr>
+            <th>Gama</th>
+            <th>Precio orientativo</th>
+            <th>Uso habitual</th>
+          </tr>
+          <tr>
+            <td>Gama baja</td>
+            <td>100 € – 250 €</td>
+            <td>Ofimática, multimedia, juegos ligeros</td>
+          </tr>
+          <tr>
+            <td>Gama media</td>
+            <td>250 € – 600 €</td>
+            <td>Gaming a buena calidad</td>
+          </tr>
+          <tr>
+            <td>Gama alta</td>
+            <td>600 € – 1500 € o más</td>
+            <td>Gaming ultra, 4K, edición, 3D</td>
+          </tr>
+        </table>
+
+        <p>
+          No siempre hace falta comprar la más cara. Lo importante es ajustar la tarjeta al uso real
+          que se le va a dar.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>14) Comparación rápida NVIDIA, AMD e Intel</h2>
+
+        <table>
+          <tr>
+            <th>Fabricante</th>
+            <th>Gamas principales</th>
+            <th>Puntos fuertes</th>
+            <th>Comentario</th>
+          </tr>
+          <tr>
+            <td>NVIDIA</td>
+            <td>GeForce RTX</td>
+            <td>DLSS, Ray Tracing, buen soporte en programas profesionales</td>
+            <td>Suele ser muy fuerte en gaming, IA, streaming y edición.</td>
+          </tr>
+          <tr>
+            <td>AMD</td>
+            <td>Radeon RX</td>
+            <td>Buena relación calidad/precio, FSR, mucha VRAM en algunos modelos</td>
+            <td>Muy interesante para gaming si se busca buen rendimiento por precio.</td>
+          </tr>
+          <tr>
+            <td>Intel</td>
+            <td>Intel Arc</td>
+            <td>Precio competitivo, XeSS, mejora constante por drivers</td>
+            <td>Es una opción más nueva, sobre todo interesante en gama media.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>15) Errores típicos al comprar una gráfica</h2>
+        <ul>
+          <li>Comprar solo por precio o por la marca.</li>
+          <li>No mirar si cabe en la caja.</li>
+          <li>No comprobar la fuente de alimentación.</li>
+          <li>No revisar los conectores de alimentación.</li>
+          <li>Ignorar la ventilación general del equipo.</li>
+          <li>Pensar que más ventiladores siempre significa mejor producto.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Conclusión</h2>
+        <p>
+          A la hora de elegir una tarjeta gráfica no hay que fijarse solo en el modelo o en cuántos GB de memoria tiene.
+          También es muy importante mirar el tamaño, el consumo, la refrigeración, la compatibilidad con la fuente,
+          el espacio dentro de la caja y el tipo de conectores que necesita.
+        </p>
+
+        <p>
+          En mi opinión, una buena compra no es la tarjeta más cara, sino la que mejor se adapta al equipo y al uso
+          que le vamos a dar. Si no se revisan estos detalles, luego pueden aparecer problemas de temperatura,
+          ruido, falta de espacio o incompatibilidades.
+        </p>
+      </section>
+
+    </div>
+
+  </div>
+</body>
+</html>
