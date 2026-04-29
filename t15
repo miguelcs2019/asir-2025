@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Comparativa GPUs – Calidad/Precio</title>
+
+<style>
+body{
+    margin:0;
+    background:#050814;
+    color:#e5e7eb;
+    font-family:Segoe UI;
+}
+
+.wrap{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+header{
+    text-align:center;
+    padding:20px;
+    border-bottom:2px solid #60a5fa;
+}
+
+h1{
+    color:#60a5fa;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #333;
+}
+
+th{
+    color:#60a5fa;
+}
+
+canvas{
+    background:#111;
+    border-radius:10px;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header>
+<h1>Comparativa Tarjetas Gráficas</h1>
+<p>Relación calidad/precio usando PassMark G3D Mark</p>
+</header>
+
+<div class="card">
+<h2>Tabla de GPUs</h2>
+
+<table>
+<tr>
+<th>GPU</th>
+<th>PassMark</th>
+<th>Precio (€)</th>
+</tr>
+
+<tr><td>GTX 1650</td><td>9500</td><td>150</td></tr>
+<tr><td>RTX 2060</td><td>14000</td><td>220</td></tr>
+<tr><td>RTX 3060</td><td>17000</td><td>300</td></tr>
+<tr><td>RTX 4060</td><td>19000</td><td>330</td></tr>
+<tr><td>RX 6600</td><td>16000</td><td>240</td></tr>
+<tr><td>RX 6700 XT</td><td>20000</td><td>350</td></tr>
+<tr><td>RTX 4070</td><td>28000</td><td>600</td></tr>
+<tr><td>RTX 4080</td><td>34000</td><td>1100</td></tr>
+<tr><td>RTX 3090</td><td>26000</td><td>900</td></tr>
+<tr><td>RTX 3050</td><td>12000</td><td>280</td></tr>
+
+</table>
+</div>
+
+<div class="card">
+<h2>Gráfica calidad/precio</h2>
+
+<canvas id="grafica" width="900" height="500"></canvas>
+
+<p>
+Eje X → Rendimiento (PassMark)<br>
+Eje Y → Precio (€)
+</p>
+
+</div>
+
+<div class="card">
+<h2>Análisis</h2>
+
+<h3>✔ Alto presupuesto</h3>
+<p>
+Compraría la RTX 4070 o RX 6700 XT, ya que tienen muy buena relación rendimiento/precio.
+La RTX 4080 tiene mucho rendimiento pero el precio es muy elevado.
+</p>
+
+<h3>✔ Bajo presupuesto</h3>
+<p>
+La RX 6600 o RTX 2060 son buenas opciones, ya que ofrecen buen rendimiento por un precio bajo.
+</p>
+
+<h3>❌ Nunca con alto presupuesto</h3>
+<p>
+No compraría la RTX 3090 porque es muy cara para el rendimiento que ofrece comparada con modelos más nuevos.
+</p>
+
+<h3>❌ Nunca con bajo presupuesto</h3>
+<p>
+La RTX 3050 tiene un precio relativamente alto para el rendimiento que ofrece.
+</p>
+
+</div>
+
+</div>
+
+<script>
+const data = [
+{gpu:"GTX 1650", x:9500, y:150},
+{gpu:"RTX 2060", x:14000, y:220},
+{gpu:"RTX 3060", x:17000, y:300},
+{gpu:"RTX 4060", x:19000, y:330},
+{gpu:"RX 6600", x:16000, y:240},
+{gpu:"RX 6700 XT", x:20000, y:350},
+{gpu:"RTX 4070", x:28000, y:600},
+{gpu:"RTX 4080", x:34000, y:1100},
+{gpu:"RTX 3090", x:26000, y:900},
+{gpu:"RTX 3050", x:12000, y:280}
+];
+
+const canvas = document.getElementById("grafica");
+const ctx = canvas.getContext("2d");
+
+const maxX = 35000;
+const maxY = 1200;
+
+data.forEach(p => {
+    let x = (p.x / maxX) * 800 + 50;
+    let y = 450 - (p.y / maxY) * 400;
+
+    ctx.fillStyle = "#60a5fa";
+    ctx.beginPath();
+    ctx.arc(x,y,5,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle = "white";
+    ctx.font = "10px Arial";
+    ctx.fillText(p.gpu, x+5, y-5);
+});
+</script>
+
+</body>
+</html>
