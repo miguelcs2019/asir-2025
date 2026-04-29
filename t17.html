@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>CUDA Cores por generaciones NVIDIA</title>
+
+<style>
+:root{
+  --bg0:#050814;
+  --bg1:#07102a;
+  --panel:rgba(255,255,255,.06);
+  --line:rgba(148,163,184,.18);
+  --text:#e5e7eb;
+  --muted:#9aa6bd;
+  --blue:#60a5fa;
+  --green:#22c55e;
+  --purple:#a78bfa;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:"Segoe UI", Arial, sans-serif;
+  color:var(--text);
+  padding:28px 14px;
+  background:
+    radial-gradient(1200px 700px at 10% 15%, rgba(96,165,250,.18), transparent 60%),
+    radial-gradient(1000px 600px at 85% 25%, rgba(34,197,94,.14), transparent 60%),
+    radial-gradient(900px 700px at 50% 95%, rgba(167,139,250,.12), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+}
+
+header{
+  border-radius:22px;
+  padding:24px 22px;
+  background:linear-gradient(135deg, rgba(96,165,250,.14), rgba(34,197,94,.10));
+  border:1px solid var(--line);
+  box-shadow:0 18px 46px rgba(0,0,0,.35);
+  margin-bottom:18px;
+}
+
+.kicker{
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(6,10,24,.55);
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  font-size:12px;
+  color:#dbeafe;
+  margin-bottom:10px;
+}
+
+.kdot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--blue);
+  box-shadow:0 0 0 6px rgba(96,165,250,.15);
+}
+
+h1{
+  margin:0 0 8px 0;
+  font-size:34px;
+  line-height:1.15;
+}
+
+.sub{
+  margin:0;
+  color:var(--muted);
+  line-height:1.65;
+  text-align:justify;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 16px 38px rgba(0,0,0,.28);
+  backdrop-filter:blur(10px);
+}
+
+h2{
+  color:var(--blue);
+  margin-top:0;
+}
+
+h3{
+  color:#eaf2ff;
+  margin-bottom:8px;
+}
+
+p{
+  line-height:1.65;
+  text-align:justify;
+}
+
+ul{
+  line-height:1.65;
+}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,.16);
+  background:rgba(6,10,24,.45);
+  margin-top:12px;
+}
+
+td,th{
+  padding:12px 12px;
+  font-size:14px;
+  border-bottom:1px solid rgba(148,163,184,.14);
+  vertical-align:top;
+  text-align:left;
+}
+
+th{
+  background:rgba(167,139,250,.10);
+  color:#eaf2ff;
+  font-weight:700;
+}
+
+tr:last-child td{
+  border-bottom:none;
+}
+
+.callout{
+  margin-top:12px;
+  border-radius:14px;
+  padding:12px 14px;
+  border:1px solid rgba(34,197,94,.22);
+  background:linear-gradient(135deg, rgba(34,197,94,.12), rgba(96,165,250,.08));
+  color:#e5e7eb;
+  font-size:14px;
+  line-height:1.6;
+  text-align:justify;
+}
+
+.warning{
+  margin-top:12px;
+  border-radius:14px;
+  padding:12px 14px;
+  border:1px solid rgba(245,158,11,.35);
+  background:linear-gradient(135deg, rgba(245,158,11,.12), rgba(96,165,250,.06));
+  color:#f8e7c4;
+  font-size:14px;
+  line-height:1.6;
+  text-align:justify;
+}
+
+footer{
+  margin-top:18px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker"><span class="kdot"></span>Tarjetas gráficas · CUDA Cores</div>
+  <h1>CUDA Cores en tarjetas gráficas NVIDIA</h1>
+  <p class="sub">
+    En este ejercicio se comparan diferentes generaciones de tarjetas gráficas NVIDIA.
+    El objetivo es ver cuántos CUDA Cores tiene cada modelo y comprobar si realmente
+    una tarjeta de una generación puede compararse con el modelo superior de la generación anterior.
+  </p>
+</header>
+
+<div class="grid">
+
+  <section class="card">
+    <h2>Tabla 1 – Número de CUDA Cores por modelo</h2>
+
+    <table>
+      <tr>
+        <th>Modelo</th>
+        <th>Nº CUDA Cores</th>
+      </tr>
+
+      <tr><td>GeForce GTX 1060</td><td>1280</td></tr>
+      <tr><td>GeForce GTX 1070</td><td>1920</td></tr>
+      <tr><td>GeForce GTX 1080</td><td>2560</td></tr>
+
+      <tr><td>GeForce RTX 2060</td><td>1920</td></tr>
+      <tr><td>GeForce RTX 2070</td><td>2304</td></tr>
+      <tr><td>GeForce RTX 2080</td><td>2944</td></tr>
+
+      <tr><td>GeForce RTX 3060</td><td>3584</td></tr>
+      <tr><td>GeForce RTX 3070</td><td>5888</td></tr>
+      <tr><td>GeForce RTX 3080</td><td>8704</td></tr>
+
+      <tr><td>GeForce RTX 4060</td><td>3072</td></tr>
+      <tr><td>GeForce RTX 4070</td><td>5888</td></tr>
+      <tr><td>GeForce RTX 4080</td><td>9728</td></tr>
+      <tr><td>GeForce RTX 4090</td><td>16384</td></tr>
+
+      <tr><td>GeForce RTX 5060</td><td>3840</td></tr>
+      <tr><td>GeForce RTX 5070</td><td>6144</td></tr>
+      <tr><td>GeForce RTX 5080</td><td>10752</td></tr>
+      <tr><td>GeForce RTX 5090</td><td>21760</td></tr>
+    </table>
+
+    <div class="warning">
+      Nota: se toman como referencia los modelos base de sobremesa. En algunos casos existen versiones
+      con más o menos memoria o versiones Ti/SUPER que pueden tener valores diferentes.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Tabla 2 – CUDA Cores organizados por generación</h2>
+
+    <table>
+      <tr>
+        <th>Modelo</th>
+        <th>GeForce 10<br>(Pascal)</th>
+        <th>GeForce 20<br>(Turing)</th>
+        <th>GeForce 30<br>(Ampere)</th>
+        <th>GeForce 40<br>(Ada Lovelace)</th>
+        <th>GeForce 50<br>(Blackwell)</th>
+      </tr>
+
+      <tr>
+        <td>Modelo 60</td>
+        <td>GTX 1060<br><b>1280</b></td>
+        <td>RTX 2060<br><b>1920</b></td>
+        <td>RTX 3060<br><b>3584</b></td>
+        <td>RTX 4060<br><b>3072</b></td>
+        <td>RTX 5060<br><b>3840</b></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 70</td>
+        <td>GTX 1070<br><b>1920</b></td>
+        <td>RTX 2070<br><b>2304</b></td>
+        <td>RTX 3070<br><b>5888</b></td>
+        <td>RTX 4070<br><b>5888</b></td>
+        <td>RTX 5070<br><b>6144</b></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 80</td>
+        <td>GTX 1080<br><b>2560</b></td>
+        <td>RTX 2080<br><b>2944</b></td>
+        <td>RTX 3080<br><b>8704</b></td>
+        <td>RTX 4080<br><b>9728</b></td>
+        <td>RTX 5080<br><b>10752</b></td>
+      </tr>
+
+      <tr>
+        <td>Modelo 90</td>
+        <td>No existe modelo 90</td>
+        <td>No existe modelo 90</td>
+        <td>No aparece RTX 3090 en la tabla inicial</td>
+        <td>RTX 4090<br><b>16384</b></td>
+        <td>RTX 5090<br><b>21760</b></td>
+      </tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>¿Se cumple la frase?</h2>
+
+    <p>
+      La frase que se suele decir es que una tarjeta gráfica de una generación equivale más o menos
+      al modelo superior de la generación anterior. Por ejemplo, que una <b>GTX 1070</b> sería parecida
+      a una <b>RTX 2060</b>.
+    </p>
+
+    <p>
+      Si miramos solo los CUDA Cores, en algunos casos sí parece cumplirse. Por ejemplo,
+      la <b>GTX 1070</b> tiene <b>1920 CUDA Cores</b> y la <b>RTX 2060</b> también tiene
+      <b>1920 CUDA Cores</b>. En ese caso concreto, la comparación tiene bastante sentido.
+    </p>
+
+    <p>
+      Otro ejemplo es que la <b>RTX 4070</b> tiene <b>5888 CUDA Cores</b>, igual que la
+      <b>RTX 3070</b>. Aquí se ve que no siempre una generación nueva aumenta mucho el número
+      de núcleos respecto al modelo anterior, pero puede mejorar por otros motivos.
+    </p>
+
+    <div class="callout">
+      En general, la frase puede servir como orientación rápida, pero no se cumple siempre al 100 %.
+      El rendimiento real no depende solo del número de CUDA Cores.
+    </div>
+
+    <div class="warning">
+      Para comparar bien dos tarjetas gráficas también hay que mirar la arquitectura, la frecuencia,
+      la memoria VRAM, el bus de memoria, el consumo, los Tensor Cores, los RT Cores y las tecnologías
+      como DLSS. Por eso una gráfica más nueva puede rendir mejor aunque tenga un número parecido de CUDA Cores.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Conclusión</h2>
+
+    <p>
+      Después de ver las tablas, se puede decir que sí hay una evolución clara entre generaciones,
+      pero no siempre de forma lineal. En algunos modelos el número de CUDA Cores sube mucho,
+      como ocurre entre la RTX 2070 y la RTX 3070. En otros casos, el número se mantiene parecido,
+      como pasa entre la RTX 3070 y la RTX 4070.
+    </p>
+
+    <p>
+      En mi opinión, los CUDA Cores son un dato importante para comparar tarjetas NVIDIA,
+      pero no deben ser el único dato. Sirven para hacerse una idea rápida, pero para elegir bien
+      una tarjeta hay que mirar el conjunto completo.
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  CUDA Cores por generaciones NVIDIA · Tarjetas gráficas · MiguelCS
+</footer>
+
+</div>
+
+</body>
+</html>
