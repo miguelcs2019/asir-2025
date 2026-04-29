@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Análisis GPU – Bus de Memoria</title>
+
+<style>
+body{
+    font-family: "Segoe UI", Arial;
+    background: #0a0f1c;
+    color: #e5e7eb;
+    margin: 0;
+    padding: 20px;
+}
+
+h1{
+    text-align: center;
+    color: #60a5fa;
+}
+
+.container{
+    max-width: 1100px;
+    margin: auto;
+}
+
+.card{
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+h2{
+    color: #22c55e;
+}
+
+.result{
+    font-weight: bold;
+    color: #facc15;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+td, th{
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px;
+    text-align: center;
+}
+
+th{
+    background: rgba(96,165,250,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📊 Análisis del Bus de Memoria en GPUs</h1>
+
+<div class="card">
+<h2>📖 Resumen del artículo</h2>
+<p>
+El artículo explica cómo el bus de memoria VRAM influye directamente en el rendimiento de una tarjeta gráfica.
+Este bus determina cuántos datos pueden transferirse entre la GPU y la memoria en cada ciclo.
+Cuanto mayor es el ancho del bus y la velocidad de la memoria, mayor será el ancho de banda disponible.
+</p>
+</div>
+
+<div class="card">
+<h2>🟥 AMD Radeon RX 5700</h2>
+
+<p><b>Datos utilizados:</b></p>
+<ul>
+<li>Bus: 256 bits</li>
+<li>Memoria: GDDR6</li>
+<li>Frecuencia: 1750 MHz</li>
+<li>Chips: 8</li>
+</ul>
+
+<p><b>Cálculo:</b></p>
+<p>(8 × 16 × 2 × 1750 × 8) / 8 = <b>448 GB/s</b></p>
+
+<p><b>Dato real:</b> 448 GB/s</p>
+
+<p class="result">✅ Resultado: Coincide perfectamente</p>
+</div>
+
+<div class="card">
+<h2>🟩 NVIDIA GTX 1060</h2>
+
+<p><b>Datos utilizados:</b></p>
+<ul>
+<li>Bus: 192 bits</li>
+<li>Memoria: GDDR5</li>
+<li>Frecuencia efectiva: 8000 MHz</li>
+</ul>
+
+<p><b>Cálculo:</b></p>
+<p>(192 × 8000) / 8 = <b>192 GB/s</b></p>
+
+<p><b>Dato real:</b> 192 GB/s</p>
+
+<p class="result">✅ Resultado: Coincide perfectamente</p>
+</div>
+
+<div class="card">
+<h2>📊 Comparativa</h2>
+
+<table>
+<tr>
+<th>GPU</th>
+<th>Bus</th>
+<th>Tipo Memoria</th>
+<th>Ancho de Banda</th>
+</tr>
+
+<tr>
+<td>RX 5700</td>
+<td>256 bits</td>
+<td>GDDR6</td>
+<td>448 GB/s</td>
+</tr>
+
+<tr>
+<td>GTX 1060</td>
+<td>192 bits</td>
+<td>GDDR5</td>
+<td>192 GB/s</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="card">
+<h2>💥 Conclusiones</h2>
+
+<ul>
+<li>Los cálculos del artículo son correctos y coinciden con los datos reales.</li>
+<li>El ancho de banda depende del bus de memoria y de la frecuencia.</li>
+<li>La RX 5700 tiene más del doble de ancho de banda que la GTX 1060.</li>
+<li>Un mayor ancho de banda mejora el rendimiento, pero no de forma proporcional en FPS.</li>
+<li>Otros factores como la GPU, los shaders y la arquitectura también influyen.</li>
+</ul>
+
+</div>
+
+</div>
+
+</body>
+</html>
