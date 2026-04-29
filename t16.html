@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Comparativa NVIDIA – CUDA Cores y PassMark</title>
+
+<style>
+body{
+    margin:0;
+    background:#050814;
+    color:#e5e7eb;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+.wrap{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+header{
+    text-align:center;
+    padding:20px;
+    border-bottom:2px solid #60a5fa;
+}
+
+h1{
+    color:#60a5fa;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #333;
+}
+
+th{
+    color:#60a5fa;
+}
+
+canvas{
+    background:#111;
+    border-radius:10px;
+    margin-top:20px;
+    max-width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header>
+<h1>Comparativa NVIDIA</h1>
+<p>Relación entre CUDA Cores y PassMark G3D Mark</p>
+</header>
+
+<div class="card">
+<h2>Tabla de tarjetas NVIDIA</h2>
+
+<table>
+<tr>
+<th>GPU</th>
+<th>CUDA Cores</th>
+<th>PassMark G3D Mark</th>
+</tr>
+
+<tr><td>GTX 1650</td><td>896</td><td>7900</td></tr>
+<tr><td>RTX 2060</td><td>1920</td><td>14000</td></tr>
+<tr><td>RTX 3060</td><td>3584</td><td>17000</td></tr>
+<tr><td>RTX 3060 Ti</td><td>4864</td><td>20000</td></tr>
+<tr><td>RTX 3070 Ti</td><td>6144</td><td>23000</td></tr>
+<tr><td>RTX 4060</td><td>3072</td><td>19000</td></tr>
+<tr><td>RTX 4070</td><td>5888</td><td>26900</td></tr>
+<tr><td>RTX 4080 SUPER</td><td>10240</td><td>34500</td></tr>
+<tr><td>RTX 4090</td><td>16384</td><td>39000</td></tr>
+<tr><td>RTX 5090</td><td>21760</td><td>52000</td></tr>
+
+</table>
+</div>
+
+<div class="card">
+<h2>Gráfica de puntos</h2>
+
+<canvas id="grafica" width="900" height="520"></canvas>
+
+<p>
+Eje X → Número total de CUDA Cores<br>
+Eje Y → PassMark G3D Mark
+</p>
+</div>
+
+<div class="card">
+<h2>Análisis de la relación</h2>
+
+<p>
+Viendo la gráfica, sí se puede decir que existe una relación general entre el número de CUDA Cores
+y el valor de PassMark G3D Mark. Normalmente, cuando una tarjeta tiene más CUDA Cores, también obtiene
+una puntuación más alta en PassMark.
+</p>
+
+<p>
+Aun así, la relación no es perfecta. No basta con mirar solo los CUDA Cores, porque también influyen
+otros factores como la arquitectura, la frecuencia, la memoria VRAM, el ancho de banda, el consumo
+y la optimización de cada generación.
+</p>
+
+<p>
+Por ejemplo, una tarjeta más nueva con menos CUDA Cores puede acercarse o superar a otra más antigua
+porque su arquitectura es más eficiente. Por eso, los CUDA Cores son un dato importante, pero no el único
+para medir el rendimiento real.
+</p>
+</div>
+
+</div>
+
+<script>
+const data = [
+  {gpu:"GTX 1650", x:896, y:7900},
+  {gpu:"RTX 2060", x:1920, y:14000},
+  {gpu:"RTX 3060", x:3584, y:17000},
+  {gpu:"RTX 3060 Ti", x:4864, y:20000},
+  {gpu:"RTX 3070 Ti", x:6144, y:23000},
+  {gpu:"RTX 4060", x:3072, y:19000},
+  {gpu:"RTX 4070", x:5888, y:26900},
+  {gpu:"RTX 4080 SUPER", x:10240, y:34500},
+  {gpu:"RTX 4090", x:16384, y:39000},
+  {gpu:"RTX 5090", x:21760, y:52000}
+];
+
+const canvas = document.getElementById("grafica");
+const ctx = canvas.getContext("2d");
+
+const W = canvas.width;
+const H = canvas.height;
+
+const margenIzq = 95;
+const margenDer = 45;
+const margenSup = 55;
+const margenInf = 85;
+
+const maxX = 23000;
+const maxY = 55000;
+
+const grafW = W - margenIzq - margenDer;
+const grafH = H - margenSup - margenInf;
+
+function mapX(valor){
+  return margenIzq + (valor / maxX) * grafW;
+}
+
+function mapY(valor){
+  return margenSup + grafH - (valor / maxY) * grafH;
+}
+
+// Fondo
+ctx.fillStyle = "#111";
+ctx.fillRect(0, 0, W, H);
+
+// Título
+ctx.fillStyle = "#e5e7eb";
+ctx.font = "bold 18px Segoe UI";
+ctx.textAlign = "center";
+ctx.fillText("Relación entre CUDA Cores y PassMark G3D Mark", W / 2, 30);
+
+// Ejes principales
+ctx.strokeStyle = "#60a5fa";
+ctx.lineWidth = 2;
+
+ctx.beginPath();
+ctx.moveTo(margenIzq, margenSup);
+ctx.lineTo(margenIzq, margenSup + grafH);
+ctx.lineTo(margenIzq + grafW, margenSup + grafH);
+ctx.stroke();
+
+// Grid y etiquetas eje Y
+ctx.font = "12px Segoe UI";
+ctx.textAlign = "right";
+
+for(let y = 0; y <= maxY; y += 5000){
+  const py = mapY(y);
+
+  ctx.fillStyle = "#e5e7eb";
+  ctx.fillText(y, margenIzq - 10, py + 4);
+
+  ctx.strokeStyle = "rgba(255,255,255,0.1)";
+  ctx.beginPath();
+  ctx.moveTo(margenIzq, py);
+  ctx.lineTo(margenIzq + grafW, py);
+  ctx.stroke();
+}
+
+// Grid y etiquetas eje X
+ctx.textAlign = "center";
+
+for(let x = 0; x <= maxX; x += 2500){
+  const px = mapX(x);
+
+  ctx.fillStyle = "#e5e7eb";
+  ctx.fillText(x, px, margenSup + grafH + 22);
+
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.beginPath();
+  ctx.moveTo(px, margenSup);
+  ctx.lineTo(px, margenSup + grafH);
+  ctx.stroke();
+}
+
+// Etiquetas ejes
+ctx.fillStyle = "#60a5fa";
+ctx.font = "bold 14px Segoe UI";
+ctx.textAlign = "center";
+ctx.fillText("CUDA Cores totales", margenIzq + grafW / 2, H - 25);
+
+ctx.save();
+ctx.translate(25, margenSup + grafH / 2);
+ctx.rotate(-Math.PI / 2);
+ctx.fillText("PassMark G3D Mark", 0, 0);
+ctx.restore();
+
+// Puntos
+data.forEach(p => {
+  const x = mapX(p.x);
+  const y = mapY(p.y);
+
+  ctx.fillStyle = "#22c55e";
+  ctx.beginPath();
+  ctx.arc(x, y, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "11px Segoe UI";
+  ctx.textAlign = "left";
+  ctx.fillText(p.gpu, x + 8, y - 6);
+
+  ctx.fillStyle = "#facc15";
+  ctx.font = "10px Segoe UI";
+  ctx.fillText(p.y, x + 8, y + 8);
+});
+</script>
+
+</body>
+</html>
