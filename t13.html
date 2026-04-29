@@ -1,117 +1,353 @@
-<div class="card">
-  <div class="kicker">
-    <span class="kdot"></span>Comparativa arquitecturas NVIDIA
-  </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparativa arquitecturas NVIDIA</title>
 
-  <h2>Comparativa técnica RTX (evolución generacional)</h2>
+<style>
+    :root{
+        --bg0:#050814;
+        --bg1:#07102a;
+        --panel:rgba(255,255,255,.06);
+        --line:rgba(148,163,184,.18);
+        --text:#e5e7eb;
+        --muted:#9aa6bd;
+        --blue:#60a5fa;
+        --green:#22c55e;
+        --purple:#a78bfa;
+    }
 
-  <p>
-    En esta tabla se comparan tres generaciones de tarjetas gráficas de <b>:contentReference[oaicite:0]{index=0}</b>,
-    lo que permite observar cómo ha evolucionado la arquitectura interna y la capacidad de cálculo en los últimos años.
-  </p>
+    *{box-sizing:border-box}
 
-  <table>
-    <tr>
-      <th>Característica</th>
-      <th>RTX 3070 Ti</th>
-      <th>RTX 4080 SUPER</th>
-      <th>RTX 5090</th>
-    </tr>
+    body{
+        margin:0;
+        font-family:"Segoe UI", Arial, sans-serif;
+        color:var(--text);
+        padding:28px 14px;
+        background:
+            radial-gradient(1200px 700px at 10% 15%, rgba(96,165,250,.18), transparent 60%),
+            radial-gradient(1000px 600px at 85% 25%, rgba(34,197,94,.14), transparent 60%),
+            radial-gradient(900px 700px at 50% 95%, rgba(167,139,250,.12), transparent 55%),
+            linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
 
-    <tr>
-      <td>Arquitectura</td>
-      <td>Ampere</td>
-      <td>Ada Lovelace</td>
-      <td>Blackwell</td>
-    </tr>
+    .wrap{
+        max-width:1100px;
+        margin:0 auto;
+    }
 
-    <tr>
-      <td>SM (Streaming Multiprocessors)</td>
-      <td>48</td>
-      <td>80</td>
-      <td>192 (estimado)</td>
-    </tr>
+    header{
+        border-radius:22px;
+        padding:24px 22px;
+        background:linear-gradient(135deg, rgba(96,165,250,.14), rgba(34,197,94,.10));
+        border:1px solid var(--line);
+        box-shadow:0 18px 46px rgba(0,0,0,.35);
+        margin-bottom:18px;
+    }
 
-    <tr>
-      <td>CUDA Cores totales</td>
-      <td>6144</td>
-      <td>10240</td>
-      <td>24576 (estimado)</td>
-    </tr>
+    .kicker{
+        display:inline-flex;
+        gap:10px;
+        align-items:center;
+        padding:6px 10px;
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,.16);
+        background:rgba(6,10,24,.55);
+        letter-spacing:.09em;
+        text-transform:uppercase;
+        font-size:12px;
+        color:#dbeafe;
+        margin-bottom:10px;
+    }
 
-    <tr>
-      <td>CUDA Cores por SM</td>
-      <td>128</td>
-      <td>128</td>
-      <td>128</td>
-    </tr>
+    .kdot{
+        width:10px;
+        height:10px;
+        border-radius:50%;
+        background:var(--blue);
+        box-shadow:0 0 0 6px rgba(96,165,250,.15);
+    }
 
-    <tr>
-      <td>Tensor Cores totales</td>
-      <td>192</td>
-      <td>320</td>
-      <td>768 (estimado)</td>
-    </tr>
+    h1{
+        margin:0 0 8px 0;
+        font-size:34px;
+        line-height:1.15;
+    }
 
-    <tr>
-      <td>Tensor Cores por SM</td>
-      <td>4</td>
-      <td>4</td>
-      <td>4</td>
-    </tr>
+    .sub{
+        margin:0;
+        color:var(--muted);
+        line-height:1.65;
+        text-align:justify;
+    }
 
-    <tr>
-      <td>RT Cores totales</td>
-      <td>48</td>
-      <td>80</td>
-      <td>192 (estimado)</td>
-    </tr>
+    .grid{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:16px;
+        margin-top:16px;
+    }
 
-    <tr>
-      <td>RT Cores por SM</td>
-      <td>1</td>
-      <td>1</td>
-      <td>1</td>
-    </tr>
+    .card{
+        background:var(--panel);
+        border:1px solid var(--line);
+        border-radius:18px;
+        padding:18px;
+        box-shadow:0 16px 38px rgba(0,0,0,.28);
+        backdrop-filter:blur(10px);
+    }
 
-    <tr>
-      <td>Memoria</td>
-      <td>8 GB</td>
-      <td>16 GB</td>
-      <td>32 GB (estimado)</td>
-    </tr>
+    .card h2{
+        margin:0 0 10px 0;
+        font-size:22px;
+        color:#eaf2ff;
+    }
 
-    <tr>
-      <td>Tipo memoria</td>
-      <td>GDDR6X</td>
-      <td>GDDR6X</td>
-      <td>GDDR7</td>
-    </tr>
+    p{
+        margin:8px 0;
+        line-height:1.65;
+        text-align:justify;
+    }
 
-    <tr>
-      <td>TGP (consumo)</td>
-      <td>290 W</td>
-      <td>320 W</td>
-      <td>450 W (estimado)</td>
-    </tr>
+    table{
+        width:100%;
+        border-collapse:separate;
+        border-spacing:0;
+        overflow:hidden;
+        border-radius:14px;
+        border:1px solid rgba(148,163,184,.16);
+        background:rgba(6,10,24,.45);
+        margin-top:12px;
+    }
 
-    <tr>
-      <td>Precio (€)</td>
-      <td>650 €</td>
-      <td>1100 €</td>
-      <td>2000 €+ (estimado)</td>
-    </tr>
-  </table>
+    th,td{
+        padding:12px;
+        font-size:14px;
+        border-bottom:1px solid rgba(148,163,184,.14);
+        vertical-align:top;
+        text-align:left;
+    }
 
-  <div class="callout">
-    Se puede ver claramente cómo cada nueva generación aumenta el número de núcleos y la capacidad de cálculo,
-    lo que permite mejorar el rendimiento en videojuegos, inteligencia artificial y renderizado avanzado.
-  </div>
+    th{
+        background:rgba(167,139,250,.10);
+        color:#eaf2ff;
+        font-weight:700;
+    }
 
-  <div class="warning">
-    A pesar de este aumento de potencia, el rendimiento final no depende solo del número de núcleos.
-    También influyen la arquitectura, la frecuencia de trabajo y el ancho de banda de la memoria VRAM,
-    tal y como se ha visto en el análisis anterior.
-  </div>
+    tr:last-child td{
+        border-bottom:none;
+    }
+
+    .callout{
+        margin-top:14px;
+        border-radius:14px;
+        padding:12px;
+        border:1px solid rgba(34,197,94,.22);
+        background:linear-gradient(135deg, rgba(34,197,94,.12), rgba(96,165,250,.08));
+        color:#e5e7eb;
+        font-size:14px;
+        line-height:1.6;
+        text-align:justify;
+    }
+
+    .warning{
+        margin-top:14px;
+        border-radius:14px;
+        padding:12px;
+        border:1px solid rgba(245,158,11,.35);
+        background:linear-gradient(135deg, rgba(245,158,11,.12), rgba(96,165,250,.06));
+        color:#f8e7c4;
+        font-size:14px;
+        line-height:1.6;
+        text-align:justify;
+    }
+
+    footer{
+        margin-top:18px;
+        color:var(--muted);
+        font-size:12px;
+        text-align:center;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <header>
+        <div class="kicker"><span class="kdot"></span>Comparativa arquitecturas NVIDIA</div>
+        <h1>Comparativa técnica RTX</h1>
+        <p class="sub">
+            En este ejercicio se comparan varias generaciones de tarjetas gráficas NVIDIA RTX.
+            El objetivo es ver cómo han ido evolucionando sus arquitecturas, la cantidad de núcleos,
+            la memoria, el consumo y el precio aproximado.
+        </p>
+    </header>
+
+    <div class="grid">
+
+        <section class="card">
+            <h2>Evolución generacional de NVIDIA RTX</h2>
+
+            <p>
+                En la siguiente tabla se comparan tres tarjetas gráficas de generaciones distintas:
+                <b>RTX 3070 Ti</b>, <b>RTX 4080 SUPER</b> y <b>RTX 5090</b>.
+                Así se puede observar cómo NVIDIA ha ido aumentando la potencia de cálculo y la capacidad
+                de sus tarjetas con el paso de los años.
+            </p>
+
+            <table>
+                <tr>
+                    <th>Característica</th>
+                    <th>RTX 3070 Ti</th>
+                    <th>RTX 4080 SUPER</th>
+                    <th>RTX 5090</th>
+                </tr>
+
+                <tr>
+                    <td>Arquitectura</td>
+                    <td>Ampere</td>
+                    <td>Ada Lovelace</td>
+                    <td>Blackwell</td>
+                </tr>
+
+                <tr>
+                    <td>SM (Streaming Multiprocessors)</td>
+                    <td>48</td>
+                    <td>80</td>
+                    <td>192 estimado</td>
+                </tr>
+
+                <tr>
+                    <td>CUDA Cores totales</td>
+                    <td>6144</td>
+                    <td>10240</td>
+                    <td>24576 estimado</td>
+                </tr>
+
+                <tr>
+                    <td>CUDA Cores por SM</td>
+                    <td>128</td>
+                    <td>128</td>
+                    <td>128</td>
+                </tr>
+
+                <tr>
+                    <td>Tensor Cores totales</td>
+                    <td>192</td>
+                    <td>320</td>
+                    <td>768 estimado</td>
+                </tr>
+
+                <tr>
+                    <td>Tensor Cores por SM</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                </tr>
+
+                <tr>
+                    <td>RT Cores totales</td>
+                    <td>48</td>
+                    <td>80</td>
+                    <td>192 estimado</td>
+                </tr>
+
+                <tr>
+                    <td>RT Cores por SM</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+
+                <tr>
+                    <td>Memoria VRAM</td>
+                    <td>8 GB</td>
+                    <td>16 GB</td>
+                    <td>32 GB estimado</td>
+                </tr>
+
+                <tr>
+                    <td>Tipo de memoria</td>
+                    <td>GDDR6X</td>
+                    <td>GDDR6X</td>
+                    <td>GDDR7</td>
+                </tr>
+
+                <tr>
+                    <td>TGP aproximado</td>
+                    <td>290 W</td>
+                    <td>320 W</td>
+                    <td>450 W estimado</td>
+                </tr>
+
+                <tr>
+                    <td>Precio aproximado</td>
+                    <td>650 €</td>
+                    <td>1100 €</td>
+                    <td>2000 € o más estimado</td>
+                </tr>
+            </table>
+
+            <div class="callout">
+                Se puede ver cómo cada nueva generación aumenta el número de núcleos,
+                la memoria VRAM y la capacidad de cálculo. Esto permite mejorar el rendimiento
+                en videojuegos, inteligencia artificial, edición de vídeo y renderizado.
+            </div>
+
+            <div class="warning">
+                Aun así, el rendimiento final no depende solo del número de núcleos.
+                También influyen la arquitectura, la frecuencia de trabajo, el ancho de banda
+                de la memoria VRAM, la refrigeración y el consumo de la tarjeta.
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Explicación con mis palabras</h2>
+
+            <p>
+                Viendo la tabla, la evolución es bastante clara. La RTX 3070 Ti pertenece a una generación
+                anterior y tiene menos memoria y menos núcleos. La RTX 4080 SUPER mejora mucho esos valores,
+                sobre todo en cantidad de CUDA Cores, Tensor Cores y RT Cores.
+            </p>
+
+            <p>
+                La RTX 5090 representa una generación más nueva, con una arquitectura más avanzada y bastante
+                más memoria. Esto hace que pueda trabajar mejor en tareas pesadas como juegos en alta resolución,
+                inteligencia artificial o renderizado.
+            </p>
+
+            <p>
+                También hay que tener en cuenta que más potencia suele significar más consumo y más precio.
+                Por eso no siempre merece la pena comprar la más potente, sino la que mejor se adapte al uso
+                y al presupuesto.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Conclusión</h2>
+
+            <p>
+                En conclusión, las tarjetas gráficas han evolucionado mucho en pocos años.
+                Cada generación mejora la arquitectura, aumenta la memoria y añade más capacidad de cálculo.
+                Esto permite mejores gráficos, más FPS y mejor rendimiento en tareas profesionales.
+            </p>
+
+            <p>
+                Para un usuario normal o gamer, una tarjeta como la RTX 4080 SUPER ya sería muy potente.
+                La RTX 5090 estaría más pensada para usuarios con mucho presupuesto o para trabajos muy exigentes.
+            </p>
+        </section>
+
+    </div>
+
+    <footer>
+        Comparativa arquitecturas NVIDIA · Tarjetas gráficas · MiguelCS
+    </footer>
 
 </div>
+
+</body>
+</html>
