@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparativa GPUs – GTA V</title>
+
+<style>
+:root{
+--bg0:#050814;
+--bg1:#07102a;
+--panel:rgba(255,255,255,.06);
+--line:rgba(148,163,184,.18);
+--text:#e5e7eb;
+--muted:#9aa6bd;
+--blue:#60a5fa;
+--green:#22c55e;
+}
+
+body{
+margin:0;
+font-family:"Segoe UI", Arial;
+color:var(--text);
+padding:28px;
+background:linear-gradient(180deg,var(--bg0),var(--bg1));
+}
+
+.wrap{max-width:1100px;margin:auto;}
+
+header{
+padding:22px;
+border-radius:20px;
+background:linear-gradient(135deg, rgba(96,165,250,.15), rgba(34,197,94,.1));
+border:1px solid var(--line);
+margin-bottom:18px;
+}
+
+h1{margin:0 0 10px;}
+
+.sub{color:var(--muted);}
+
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:18px;
+padding:18px;
+margin-bottom:16px;
+}
+
+.card h2{color:#eaf2ff;}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+th{color:#9ecbff;}
+
+.callout{
+margin-top:12px;
+padding:12px;
+background:rgba(34,197,94,.1);
+border-radius:10px;
+}
+
+.warning{
+margin-top:12px;
+padding:12px;
+background:rgba(245,158,11,.15);
+border-radius:10px;
+}
+
+img{
+width:100%;
+border-radius:12px;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+<h1>Comparativa de tarjetas gráficas y rendimiento en GTA V</h1>
+<p class="sub">
+En esta actividad se analizan tarjetas gráficas actuales de NVIDIA, AMD e Intel,
+y se compara su rendimiento en el videojuego Grand Theft Auto V.
+</p>
+</header>
+
+<div class="card">
+<h2>1) Tarjetas gráficas actuales en venta</h2>
+
+<table>
+<tr>
+<th>Fabricante</th>
+<th>Modelo</th>
+<th>Arquitectura</th>
+<th>VRAM</th>
+<th>Precio (€)</th>
+<th>Gama</th>
+</tr>
+
+<tr><td>NVIDIA</td><td>RTX 4060</td><td>Ada Lovelace</td><td>8 GB</td><td>330</td><td>Media</td></tr>
+<tr><td>NVIDIA</td><td>RTX 4070</td><td>Ada Lovelace</td><td>12 GB</td><td>600</td><td>Alta</td></tr>
+<tr><td>NVIDIA</td><td>RTX 4090</td><td>Ada Lovelace</td><td>24 GB</td><td>1600</td><td>Alta</td></tr>
+
+<tr><td>AMD</td><td>RX 7600</td><td>RDNA 3</td><td>8 GB</td><td>300</td><td>Media</td></tr>
+<tr><td>AMD</td><td>RX 7800 XT</td><td>RDNA 3</td><td>16 GB</td><td>550</td><td>Alta</td></tr>
+
+<tr><td>Intel</td><td>Arc A750</td><td>Alchemist</td><td>8 GB</td><td>250</td><td>Media</td></tr>
+<tr><td>Intel</td><td>Arc A770</td><td>Alchemist</td><td>16 GB</td><td>350</td><td>Media</td></tr>
+
+</table>
+
+<div class="callout">
+Se han seleccionado modelos actuales representativos de cada fabricante
+para poder comparar diferentes gamas y precios.
+</div>
+
+</div>
+
+<div class="card">
+<h2>2) Videojuego analizado: GTA V</h2>
+
+<p>
+Se ha elegido Grand Theft Auto V porque sigue siendo uno de los juegos más utilizados
+para medir rendimiento gráfico debido a su buen equilibrio entre carga gráfica y optimización.
+</p>
+
+<img src="media/gta5.png" alt="GTA V">
+
+<div class="callout">
+GTA V permite comparar fácilmente el rendimiento en distintas resoluciones (1080p, 1440p y 4K).
+</div>
+
+</div>
+
+<div class="card">
+<h2>3) Rendimiento comparado</h2>
+
+<table>
+<tr>
+<th>GPU</th>
+<th>1080p</th>
+<th>1440p</th>
+<th>4K</th>
+</tr>
+
+<tr><td>RTX 4090</td><td>200+ FPS</td><td>180 FPS</td><td>120 FPS</td></tr>
+<tr><td>RTX 4070</td><td>150 FPS</td><td>120 FPS</td><td>70 FPS</td></tr>
+<tr><td>RTX 4060</td><td>120 FPS</td><td>90 FPS</td><td>50 FPS</td></tr>
+
+<tr><td>RX 7800 XT</td><td>160 FPS</td><td>130 FPS</td><td>80 FPS</td></tr>
+<tr><td>RX 7600</td><td>110 FPS</td><td>80 FPS</td><td>45 FPS</td></tr>
+
+<tr><td>Intel A770</td><td>100 FPS</td><td>75 FPS</td><td>40 FPS</td></tr>
+<tr><td>Intel A750</td><td>90 FPS</td><td>65 FPS</td><td>35 FPS</td></tr>
+
+</table>
+
+</div>
+
+<div class="card">
+<h2>4) Análisis</h2>
+
+<ul>
+<li>NVIDIA lidera en rendimiento alto, especialmente en 4K.</li>
+<li>AMD ofrece muy buena relación calidad/precio.</li>
+<li>Intel es opción económica pero menos potente.</li>
+<li>GTA V funciona perfectamente con gama media.</li>
+</ul>
+
+<div class="warning">
+Comprar una GPU muy cara para este juego no es necesario si solo se juega en 1080p.
+</div>
+
+</div>
+
+<div class="card">
+<h2>Conclusión</h2>
+
+<p>
+Tras analizar varias GPUs y su rendimiento en GTA V, se observa que una tarjeta de gama media
+es suficiente para una experiencia fluida.
+</p>
+
+<p>
+En mi opinión, la mejor opción calidad/precio sería una RTX 4060 o RX 7600,
+ya que ofrecen buen rendimiento sin necesidad de una gran inversión.
+</p>
+
+</div>
+
+</div>
+</body>
+</html>
