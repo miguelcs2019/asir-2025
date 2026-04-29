@@ -2,123 +2,160 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Análisis GPU – Bus de Memoria</title>
+<title>Análisis Bus VRAM</title>
 
 <style>
+:root{
+  --bg0:#050814;
+  --bg1:#07102a;
+  --panel:rgba(255,255,255,.06);
+  --line:rgba(148,163,184,.18);
+  --text:#e5e7eb;
+  --muted:#9aa6bd;
+  --blue:#60a5fa;
+  --green:#22c55e;
+  --purple:#a78bfa;
+}
+
 body{
-    font-family: "Segoe UI", Arial;
-    background: #0a0f1c;
-    color: #e5e7eb;
-    margin: 0;
-    padding: 20px;
+  margin:0;
+  font-family:"Segoe UI", Arial;
+  color:var(--text);
+  padding:28px;
+  background:
+    radial-gradient(1200px 700px at 10% 15%, rgba(96,165,250,.18), transparent 60%),
+    radial-gradient(1000px 600px at 85% 25%, rgba(34,197,94,.14), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+.wrap{
+  max-width:1100px;
+  margin:auto;
+}
+
+header{
+  border-radius:20px;
+  padding:20px;
+  background:linear-gradient(135deg, rgba(96,165,250,.15), rgba(34,197,94,.1));
+  border:1px solid var(--line);
+  margin-bottom:20px;
 }
 
 h1{
-    text-align: center;
-    color: #60a5fa;
+  margin:0;
+  font-size:32px;
 }
 
-.container{
-    max-width: 1100px;
-    margin: auto;
+.sub{
+  color:var(--muted);
 }
 
 .card{
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:16px;
 }
 
 h2{
-    color: #22c55e;
+  color:var(--blue);
 }
 
 .result{
-    font-weight: bold;
-    color: #facc15;
+  color:#facc15;
+  font-weight:bold;
 }
 
 table{
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
 }
 
-td, th{
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 10px;
-    text-align: center;
+td,th{
+  border:1px solid var(--line);
+  padding:10px;
+  text-align:center;
 }
 
 th{
-    background: rgba(96,165,250,0.2);
+  background:rgba(167,139,250,.1);
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrap">
 
-<h1>📊 Análisis del Bus de Memoria en GPUs</h1>
+<header>
+<h1>📊 Análisis del Bus de Memoria VRAM</h1>
+<p class="sub">
+En este análisis se comprueba si los cálculos del artículo sobre el ancho de banda
+de memoria coinciden con los datos reales de varias tarjetas gráficas.
+</p>
+</header>
 
 <div class="card">
 <h2>📖 Resumen del artículo</h2>
 <p>
-El artículo explica cómo el bus de memoria VRAM influye directamente en el rendimiento de una tarjeta gráfica.
-Este bus determina cuántos datos pueden transferirse entre la GPU y la memoria en cada ciclo.
-Cuanto mayor es el ancho del bus y la velocidad de la memoria, mayor será el ancho de banda disponible.
+El artículo explica que el rendimiento de una GPU depende en parte del ancho del bus de memoria
+y de la velocidad de la VRAM. Cuanto mayor sea el bus (bits) y la frecuencia,
+más datos puede mover la gráfica por segundo.
 </p>
 </div>
 
 <div class="card">
 <h2>🟥 AMD Radeon RX 5700</h2>
 
-<p><b>Datos utilizados:</b></p>
-<ul>
-<li>Bus: 256 bits</li>
-<li>Memoria: GDDR6</li>
-<li>Frecuencia: 1750 MHz</li>
-<li>Chips: 8</li>
-</ul>
-
-<p><b>Cálculo:</b></p>
-<p>(8 × 16 × 2 × 1750 × 8) / 8 = <b>448 GB/s</b></p>
+<p><b>Cálculo del artículo:</b></p>
+<p>(8 × 16 × 2 × 1750 × 8) / 8 = 448 GB/s</p>
 
 <p><b>Dato real:</b> 448 GB/s</p>
 
-<p class="result">✅ Resultado: Coincide perfectamente</p>
+<p class="result">✅ Coincide perfectamente</p>
+
 </div>
 
 <div class="card">
-<h2>🟩 NVIDIA GTX 1060</h2>
-
-<p><b>Datos utilizados:</b></p>
-<ul>
-<li>Bus: 192 bits</li>
-<li>Memoria: GDDR5</li>
-<li>Frecuencia efectiva: 8000 MHz</li>
-</ul>
+<h2>🟩 NVIDIA GTX 1060 6GB</h2>
 
 <p><b>Cálculo:</b></p>
-<p>(192 × 8000) / 8 = <b>192 GB/s</b></p>
+<p>(192 × 8000) / 8 = 192 GB/s</p>
 
 <p><b>Dato real:</b> 192 GB/s</p>
 
-<p class="result">✅ Resultado: Coincide perfectamente</p>
+<p class="result">✅ Coincide perfectamente</p>
+
 </div>
 
 <div class="card">
-<h2>📊 Comparativa</h2>
+<h2>🟪 NVIDIA GTX 1060 3GB</h2>
+
+<p><b>Cálculo:</b></p>
+<p>(192 × 8000) / 8 = 192 GB/s</p>
+
+<p><b>Dato real:</b> 192 GB/s</p>
+
+<p class="result">✅ Coincide perfectamente</p>
+
+<p>
+Aunque el ancho de banda es el mismo que la versión de 6GB, el rendimiento es menor
+porque tiene menos núcleos y menos memoria.
+</p>
+
+</div>
+
+<div class="card">
+<h2>📊 Comparativa final</h2>
 
 <table>
 <tr>
 <th>GPU</th>
 <th>Bus</th>
-<th>Tipo Memoria</th>
-<th>Ancho de Banda</th>
+<th>Memoria</th>
+<th>Ancho de banda</th>
 </tr>
 
 <tr>
@@ -129,7 +166,14 @@ Cuanto mayor es el ancho del bus y la velocidad de la memoria, mayor será el an
 </tr>
 
 <tr>
-<td>GTX 1060</td>
+<td>GTX 1060 6GB</td>
+<td>192 bits</td>
+<td>GDDR5</td>
+<td>192 GB/s</td>
+</tr>
+
+<tr>
+<td>GTX 1060 3GB</td>
 <td>192 bits</td>
 <td>GDDR5</td>
 <td>192 GB/s</td>
@@ -143,11 +187,12 @@ Cuanto mayor es el ancho del bus y la velocidad de la memoria, mayor será el an
 <h2>💥 Conclusiones</h2>
 
 <ul>
-<li>Los cálculos del artículo son correctos y coinciden con los datos reales.</li>
-<li>El ancho de banda depende del bus de memoria y de la frecuencia.</li>
+<li>Los cálculos del artículo son correctos.</li>
+<li>Todos los valores coinciden con los datos reales.</li>
+<li>El ancho de banda depende del bus y la velocidad de memoria.</li>
 <li>La RX 5700 tiene más del doble de ancho de banda que la GTX 1060.</li>
-<li>Un mayor ancho de banda mejora el rendimiento, pero no de forma proporcional en FPS.</li>
-<li>Otros factores como la GPU, los shaders y la arquitectura también influyen.</li>
+<li>Tener el mismo ancho de banda no garantiza el mismo rendimiento.</li>
+<li>Factores como núcleos, arquitectura y frecuencia influyen mucho.</li>
 </ul>
 
 </div>
