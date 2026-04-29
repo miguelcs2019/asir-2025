@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alternativas a la GPU – Procesamiento de imagen</title>
+
+  <style>
+    :root{
+      --bg0:#050814;
+      --bg1:#07102a;
+      --panel:rgba(255,255,255,.06);
+      --line:rgba(148,163,184,.18);
+      --text:#e5e7eb;
+      --muted:#9aa6bd;
+      --blue:#60a5fa;
+      --green:#22c55e;
+      --purple:#a78bfa;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      color:var(--text);
+      padding:28px 14px;
+      background:
+        radial-gradient(1200px 700px at 10% 15%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(1000px 600px at 85% 25%, rgba(34,197,94,.14), transparent 60%),
+        radial-gradient(900px 700px at 50% 95%, rgba(167,139,250,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    .wrap{max-width:1100px;margin:0 auto;}
+
+    header{
+      border-radius:22px;
+      padding:24px 22px;
+      background:linear-gradient(135deg, rgba(96,165,250,.14), rgba(34,197,94,.10));
+      border:1px solid var(--line);
+      box-shadow:0 18px 46px rgba(0,0,0,.35);
+      margin-bottom:18px;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(6,10,24,.55);
+      font-size:12px;
+      color:#dbeafe;
+      margin-bottom:10px;
+    }
+
+    .kdot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--blue);
+    }
+
+    h1{margin:0 0 8px 0;font-size:34px;}
+    .sub{color:var(--muted);text-align:justify;}
+
+    .grid{display:grid;gap:16px;margin-top:16px;}
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 16px 38px rgba(0,0,0,.28);
+    }
+
+    .card h2{margin:0 0 10px 0;color:#eaf2ff;}
+    .card h3{color:var(--blue);}
+
+    p{line-height:1.65;text-align:justify;}
+
+    ul{margin-left:18px;}
+
+    .callout{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      background:rgba(34,197,94,.1);
+    }
+
+    .warning{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      background:rgba(245,158,11,.15);
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker"><span class="kdot"></span>Tema 10 · Alternativas GPU</div>
+  <h1>¿Es la GPU el único componente que procesa imagen?</h1>
+  <p class="sub">
+    Cuando hablamos de procesar gráficos o vídeo, normalmente pensamos directamente en la tarjeta gráfica.
+    Sin embargo, no es el único componente capaz de realizar este tipo de tareas. Existen varias alternativas
+    que se utilizan en móviles, portátiles y otros dispositivos, cada una con sus ventajas y limitaciones.
+  </p>
+</header>
+
+<div class="grid">
+
+<section class="card">
+<h2>1) CPU (Procesador)</h2>
+<p>
+El procesador principal del equipo también puede procesar imágenes y vídeo. De hecho,
+antes de que las GPU fueran tan potentes, la CPU hacía prácticamente todo el trabajo gráfico.
+</p>
+
+<ul>
+<li>Puede decodificar vídeo (por software).</li>
+<li>Puede procesar imágenes en programas como Photoshop.</li>
+<li>Se encarga de coordinar el resto de componentes.</li>
+</ul>
+
+<div class="warning">
+La CPU puede hacerlo todo, pero es mucho más lenta que una GPU para tareas gráficas intensivas.
+</div>
+</section>
+
+<section class="card">
+<h2>2) Gráficos integrados (iGPU)</h2>
+<p>
+Muchos procesadores incluyen una GPU integrada, conocida como iGPU.
+Este tipo de gráficos no necesita una tarjeta dedicada.
+</p>
+
+<ul>
+<li>Ejemplo: Intel UHD Graphics, AMD Radeon integrada.</li>
+<li>Consumen menos energía.</li>
+<li>Son habituales en portátiles.</li>
+</ul>
+
+<div class="callout">
+Son suficientes para uso normal, vídeo y juegos ligeros.
+</div>
+</section>
+
+<section class="card">
+<h2>3) NPU (Unidades de Inteligencia Artificial)</h2>
+<p>
+Las NPU son procesadores especializados en inteligencia artificial.
+Cada vez son más comunes en móviles y portátiles modernos.
+</p>
+
+<ul>
+<li>Se usan para mejorar fotos automáticamente.</li>
+<li>Aplican filtros en tiempo real.</li>
+<li>Reconocen caras o escenas.</li>
+</ul>
+
+<p>
+Por ejemplo, cuando un móvil mejora una foto automáticamente,
+muchas veces lo hace gracias a una NPU.
+</p>
+</section>
+
+<section class="card">
+<h2>4) DSP (Procesador de señal digital)</h2>
+<p>
+El DSP es un procesador especializado en señales como audio y vídeo.
+Se usa mucho en móviles.
+</p>
+
+<ul>
+<li>Optimizado para eficiencia energética.</li>
+<li>Procesa vídeo en segundo plano.</li>
+<li>Muy usado en cámaras de smartphones.</li>
+</ul>
+
+<div class="callout">
+Permite procesar vídeo sin gastar mucha batería.
+</div>
+</section>
+
+<section class="card">
+<h2>5) ISP (Procesador de imagen)</h2>
+<p>
+El ISP es el encargado de procesar las imágenes que vienen directamente del sensor de la cámara.
+</p>
+
+<ul>
+<li>Ajusta brillo, color y contraste.</li>
+<li>Reduce ruido.</li>
+<li>Mejora la calidad de la imagen.</li>
+</ul>
+
+<p>
+Es clave en móviles, ya que determina en gran parte la calidad de las fotos.
+</p>
+</section>
+
+<section class="card">
+<h2>6) SoC (Sistema en un chip)</h2>
+<p>
+En dispositivos como móviles o tablets, todos estos componentes suelen estar integrados
+en un único chip llamado SoC.
+</p>
+
+<ul>
+<li>Incluye CPU, GPU, NPU, ISP y DSP.</li>
+<li>Optimizado para bajo consumo.</li>
+<li>Ejemplo: Snapdragon, Apple Silicon.</li>
+</ul>
+
+<div class="callout">
+Esto permite que un móvil haga muchas tareas gráficas sin necesidad de una GPU dedicada.
+</div>
+</section>
+
+<section class="card">
+<h2>7) Diferencias principales</h2>
+
+<ul>
+<li>GPU → máxima potencia gráfica.</li>
+<li>CPU → versátil pero menos eficiente.</li>
+<li>iGPU → equilibrio entre consumo y rendimiento.</li>
+<li>NPU / DSP / ISP → tareas específicas y optimizadas.</li>
+</ul>
+
+</section>
+
+<section class="card">
+<h2>Conclusión</h2>
+<p>
+La GPU no es el único componente que puede procesar imágenes o vídeo.
+Existen muchas alternativas, especialmente en dispositivos modernos como móviles o portátiles,
+donde se combinan diferentes procesadores especializados.
+</p>
+
+<p>
+En mi opinión, cada componente tiene su función: la GPU aporta potencia,
+pero otros como la NPU o el ISP permiten mejorar la eficiencia y añadir funciones inteligentes.
+Por eso hoy en día los sistemas combinan varios tipos de procesadores en lugar de depender solo de uno.
+</p>
+</section>
+
+</div>
+</div>
+</body>
+</html>
