@@ -11,7 +11,7 @@
             background: linear-gradient(135deg, #00111f, #000814);
             font-family: 'Segoe UI', Arial, sans-serif;
             color: white;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,15 +20,25 @@
         h1 {
             text-align: center;
             font-size: 42px;
-            margin-bottom: 60px;
+            margin-bottom: 45px;
             color: #8deaff;
             text-shadow: 0 0 15px #00eaff;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 26px;
+            margin-top: 35px;
+            margin-bottom: 25px;
+            color: #8deaff;
+            text-shadow: 0 0 10px #00eaff;
         }
 
         .contenedor {
             text-align: center;
             width: 90%;
             max-width: 1000px;
+            padding: 40px 0;
         }
 
         .botones {
@@ -58,42 +68,82 @@
             box-shadow: 0 0 35px #00eaff;
             background: rgba(0,255,255,0.25);
         }
+
+        .separador {
+            width: 80%;
+            height: 1px;
+            margin: 45px auto;
+            background: #00eaff;
+            box-shadow: 0 0 10px #00eaff;
+            opacity: 0.5;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="contenedor">
-        <h1>Portal Prácticas – Miguel</h1>
+<div class="contenedor">
 
-        <div class="botones">
-
-            <a class="btn" href="portalmarques.html">
-                Lenguaje de Marcas
-            </a>
-
-            <a class="btn" href="portalsistemes.html">
-                Sistemes Operatius
-            </a>
-
-            <!-- NUEVO BOTÓN -->
-            <a class="btn" href="portalxarxes.html">
-                Administració de Xarxes
-            </a>
-
-            <a class="btn" href="fonaments_portal.html">
-                Fonaments Informàtica
-            </a>
-
-              <a class="btn" href="basesdatos.html">
-                Bases de Datos 
-            </a>
+    <h1>Portal Prácticas – Miguel</h1>
 
 
-        </div>
+    <!-- ========================= -->
+    <!--        PRIMER CURSO       -->
+    <!-- ========================= -->
+
+    <h2>1r Curs</h2>
+
+    <div class="botones">
+
+        <a class="btn" href="portalmarques.html">
+            Lenguaje de Marcas
+        </a>
+
+        <a class="btn" href="portalsistemes.html">
+            Sistemes Operatius
+        </a>
+
+        <a class="btn" href="portalxarxes.html">
+            Administració de Xarxes
+        </a>
+
+        <a class="btn" href="fonaments_portal.html">
+            Fonaments Informàtica
+        </a>
+
+        <a class="btn" href="basesdatos.html">
+            Bases de Datos
+        </a>
+
     </div>
+
+
+    <div class="separador"></div>
+
+
+    <!-- ========================= -->
+    <!--        SEGUNDO CURSO      -->
+    <!-- ========================= -->
+
+    <h2>2n Curs</h2>
+
+    <div class="botones">
+
+        <a class="btn" href="seguretat.html">
+            Seguretat i Alta Disponibilitat
+        </a>
+
+        <a class="btn" href="administracio.html">
+            Administració de Sistemes
+        </a>
+
+        <a class="btn" href="digitalitzacio.html">
+            Digitalització
+        </a>
+
+    </div>
+
+</div>
 
 </body>
 </html>
-
-
