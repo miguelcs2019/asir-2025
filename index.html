@@ -1,149 +1,508 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Prácticas – Miguel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #00111f, #000814);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+<title>Portal ASIX | Miguel</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        min-height: 100vh;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #ffffff;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(0, 234, 255, 0.10), transparent 30%),
+            radial-gradient(circle at 85% 80%, rgba(80, 70, 255, 0.10), transparent 30%),
+            #030812;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+
+    .portal {
+        width: 92%;
+        max-width: 1200px;
+        margin: auto;
+        padding: 60px 0 80px;
+    }
+
+    /* CABECERA */
+
+    header {
+        margin-bottom: 60px;
+    }
+
+    .etiqueta {
+        display: inline-block;
+        color: #00eaff;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-size: 52px;
+        line-height: 1.05;
+        margin-bottom: 14px;
+        background: linear-gradient(90deg, #ffffff, #8deaff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .subtitulo {
+        color: #8193a8;
+        font-size: 18px;
+    }
+
+    /* SECCIONES */
+
+    .curso {
+        margin-bottom: 60px;
+    }
+
+    .titulo-curso {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .numero {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: rgba(0, 234, 255, 0.12);
+        border: 1px solid rgba(0, 234, 255, 0.35);
+        color: #00eaff;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 25px;
+    }
+
+    .estado {
+        margin-left: auto;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .activo {
+        color: #8dffbf;
+        background: rgba(0, 255, 128, 0.08);
+        border: 1px solid rgba(0, 255, 128, 0.25);
+    }
+
+    .completado {
+        color: #8998aa;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* GRID */
+
+    .modulos {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    /* TARJETAS */
+
+    .modulo {
+        position: relative;
+        min-height: 190px;
+        padding: 25px;
+        border-radius: 18px;
+        text-decoration: none;
+        color: white;
+
+        background: linear-gradient(
+            145deg,
+            rgba(255,255,255,0.055),
+            rgba(255,255,255,0.018)
+        );
+
+        border: 1px solid rgba(255,255,255,0.09);
+
+        transition:
+            transform .25s ease,
+            border-color .25s ease,
+            box-shadow .25s ease,
+            background .25s ease;
+
+        overflow: hidden;
+    }
+
+    .modulo::before {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        right: -45px;
+        top: -45px;
+        border-radius: 50%;
+        background: rgba(0, 234, 255, 0.08);
+        filter: blur(5px);
+    }
+
+    .modulo:hover {
+        transform: translateY(-7px);
+        border-color: rgba(0, 234, 255, 0.55);
+        box-shadow: 0 15px 40px rgba(0, 234, 255, 0.10);
+        background: linear-gradient(
+            145deg,
+            rgba(0,234,255,0.08),
+            rgba(255,255,255,0.025)
+        );
+    }
+
+    /* ICONOS */
+
+    .icono {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 13px;
+
+        background: rgba(0, 234, 255, 0.09);
+        border: 1px solid rgba(0, 234, 255, 0.18);
+
+        font-size: 23px;
+        margin-bottom: 25px;
+    }
+
+    .modulo h3 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .modulo p {
+        color: #72849a;
+        font-size: 14px;
+    }
+
+    .flecha {
+        position: absolute;
+        right: 23px;
+        bottom: 22px;
+        color: #00eaff;
+        font-size: 20px;
+        transition: transform .25s;
+    }
+
+    .modulo:hover .flecha {
+        transform: translateX(5px);
+    }
+
+
+    /* PRIMER CURSO MÁS DISCRETO */
+
+    .primer-curso {
+        opacity: .72;
+        transition: opacity .3s;
+    }
+
+    .primer-curso:hover {
+        opacity: 1;
+    }
+
+    /* FOOTER */
+
+    footer {
+        padding-top: 25px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        color: #536477;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+        .modulos {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .portal {
+            padding-top: 35px;
         }
 
         h1 {
-            text-align: center;
-            font-size: 42px;
-            margin-bottom: 45px;
-            color: #8deaff;
-            text-shadow: 0 0 15px #00eaff;
+            font-size: 38px;
         }
 
-        h2 {
-            text-align: center;
-            font-size: 26px;
-            margin-top: 35px;
-            margin-bottom: 25px;
-            color: #8deaff;
-            text-shadow: 0 0 10px #00eaff;
+        .modulos {
+            grid-template-columns: 1fr;
         }
 
-        .contenedor {
-            text-align: center;
-            width: 90%;
-            max-width: 1000px;
-            padding: 40px 0;
+        .estado {
+            display: none;
         }
 
-        .botones {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
+        footer {
+            flex-direction: column;
+            gap: 8px;
         }
+    }
 
-        .btn {
-            width: 280px;
-            padding: 25px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 18px;
-            text-decoration: none;
-            color: #cfffff;
-            border: 2px solid #00eaff;
-            font-size: 22px;
-            font-weight: bold;
-            transition: .3s;
-            backdrop-filter: blur(5px);
-            text-shadow: 0 0 10px #00eaff;
-        }
-
-        .btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 35px #00eaff;
-            background: rgba(0,255,255,0.25);
-        }
-
-        .separador {
-            width: 80%;
-            height: 1px;
-            margin: 45px auto;
-            background: #00eaff;
-            box-shadow: 0 0 10px #00eaff;
-            opacity: 0.5;
-        }
-    </style>
+</style>
 </head>
 
 <body>
 
-<div class="contenedor">
+<main class="portal">
 
-    <h1>Portal Prácticas – Miguel</h1>
+    <!-- CABECERA -->
 
+    <header>
 
-    <!-- ========================= -->
-    <!--        PRIMER CURSO       -->
-    <!-- ========================= -->
+        <div class="etiqueta">
+            Administració de Sistemes Informàtics en Xarxa
+        </div>
 
-    <h2>1r Curs</h2>
+        <h1>Portal ASIX</h1>
 
-    <div class="botones">
+        <p class="subtitulo">
+            Pràctiques · Apunts · Projectes
+        </p>
 
-        <a class="btn" href="portalmarques.html">
-            Lenguaje de Marcas
-        </a>
-
-        <a class="btn" href="portalsistemes.html">
-            Sistemes Operatius
-        </a>
-
-        <a class="btn" href="portalxarxes.html">
-            Administració de Xarxes
-        </a>
-
-        <a class="btn" href="fonaments_portal.html">
-            Fonaments Informàtica
-        </a>
-
-        <a class="btn" href="basesdatos.html">
-            Bases de Datos
-        </a>
-
-    </div>
+    </header>
 
 
-    <div class="separador"></div>
+    <!-- ========================== -->
+    <!--       SEGUNDO CURSO        -->
+    <!-- ========================== -->
+
+    <section class="curso">
+
+        <div class="titulo-curso">
+
+            <div class="numero">2</div>
+
+            <div>
+                <h2>Segon Curs</h2>
+            </div>
+
+            <span class="estado activo">
+                CURS ACTUAL
+            </span>
+
+        </div>
 
 
-    <!-- ========================= -->
-    <!--        SEGUNDO CURSO      -->
-    <!-- ========================= -->
+        <div class="modulos">
 
-    <h2>2n Curs</h2>
 
-    <div class="botones">
+            <!-- SEGURETAT -->
 
-        <a class="btn" href="seguretat.html">
-            Seguretat i Alta Disponibilitat
-        </a>
+            <a href="seguretat.html" class="modulo">
 
-        <a class="btn" href="administracio.html">
-            Administració de Sistemes
-        </a>
+                <div class="icono">
+                    🛡️
+                </div>
 
-        <a class="btn" href="digitalitzacio.html">
-            Digitalització
-        </a>
+                <h3>
+                    Seguretat i Alta Disponibilitat
+                </h3>
 
-    </div>
+                <p>
+                    Seguretat · Xarxes · Sistemes
+                </p>
 
-</div>
+                <span class="flecha">→</span>
+
+            </a>
+
+
+            <!-- ADMINISTRACIÓ -->
+
+            <a href="administracio.html" class="modulo">
+
+                <div class="icono">
+                    🖥️
+                </div>
+
+                <h3>
+                    Administració de Sistemes
+                </h3>
+
+                <p>
+                    Servidors · Serveis · Infraestructura
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+
+            <!-- DIGITALITZACIÓ -->
+
+            <a href="digitalitzacio.html" class="modulo">
+
+                <div class="icono">
+                    ◈
+                </div>
+
+                <h3>
+                    Digitalització
+                </h3>
+
+                <p>
+                    Transformació · Tecnologia
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================== -->
+    <!--        PRIMER CURSO        -->
+    <!-- ========================== -->
+
+    <section class="curso primer-curso">
+
+        <div class="titulo-curso">
+
+            <div class="numero">1</div>
+
+            <div>
+                <h2>Primer Curs</h2>
+            </div>
+
+            <span class="estado completado">
+                CURS ANTERIOR
+            </span>
+
+        </div>
+
+
+        <div class="modulos">
+
+
+            <a href="portalmarques.html" class="modulo">
+
+                <div class="icono">⌨</div>
+
+                <h3>Lenguaje de Marcas</h3>
+
+                <p>
+                    HTML · CSS · XML
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+
+            <a href="portalsistemes.html" class="modulo">
+
+                <div class="icono">⚙️</div>
+
+                <h3>Sistemes Operatius</h3>
+
+                <p>
+                    Linux · Windows · Sistemes
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+
+            <a href="portalxarxes.html" class="modulo">
+
+                <div class="icono">🌐</div>
+
+                <h3>Administració de Xarxes</h3>
+
+                <p>
+                    Xarxes · TCP/IP · Configuració
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+
+            <a href="fonaments_portal.html" class="modulo">
+
+                <div class="icono">🔧</div>
+
+                <h3>Fonaments Informàtica</h3>
+
+                <p>
+                    Hardware · Arquitectura
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+
+            <a href="basesdatos.html" class="modulo">
+
+                <div class="icono">▰</div>
+
+                <h3>Bases de Datos</h3>
+
+                <p>
+                    SQL · Dades · Modelatge
+                </p>
+
+                <span class="flecha">→</span>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <span>Portal acadèmic</span>
+
+        <span>Miguel · ASIX 2026/2027</span>
+
+    </footer>
+
+
+</main>
 
 </body>
 </html>
+```
