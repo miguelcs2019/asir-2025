@@ -1,0 +1,2517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Actividad 2 | Alta Disponibilidad</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#020507;
+    --panel:#080d12;
+    --panel2:#0b1117;
+
+    --gold:#f5b942;
+    --gold2:#ffd875;
+
+    --green:#00ff9d;
+    --cyan:#00eaff;
+    --red:#ff5d68;
+
+    --text:#dce5eb;
+    --muted:#71808b;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    background:#020507;
+    color:var(--text);
+    font-family:"Segoe UI",Arial,sans-serif;
+    overflow-x:hidden;
+}
+
+/* ===================================== */
+/* FONDO                                 */
+/* ===================================== */
+
+#networkCanvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:-3;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(0,255,157,.07),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 85% 70%,
+            rgba(0,234,255,.06),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(245,185,66,.05),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            rgba(2,5,7,.50),
+            rgba(2,5,7,.96)
+        );
+}
+
+/* ===================================== */
+/* LOADING                               */
+/* ===================================== */
+
+#loading{
+    position:fixed;
+    inset:0;
+    z-index:10000;
+
+    background:#010304;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    animation:hideLoading .7s forwards 2s;
+}
+
+.loader-ring{
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    border:2px solid rgba(0,255,157,.15);
+    border-top:2px solid var(--green);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:var(--green);
+    font-family:Consolas,monospace;
+    font-weight:bold;
+
+    box-shadow:0 0 30px rgba(0,255,157,.2);
+
+    animation:rotate 1.2s linear infinite;
+}
+
+.loader-inner{
+    animation:reverseRotate 1.2s linear infinite;
+}
+
+.loading-text{
+    margin-top:25px;
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:12px;
+
+    letter-spacing:4px;
+}
+
+.loading-sub{
+    margin-top:8px;
+
+    color:#48545d;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+@keyframes rotate{
+    to{transform:rotate(360deg);}
+}
+
+@keyframes reverseRotate{
+    to{transform:rotate(-360deg);}
+}
+
+@keyframes hideLoading{
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+}
+
+/* ===================================== */
+/* HEADER                                */
+/* ===================================== */
+
+header{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+    padding:45px 0 35px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:60px;
+}
+
+.volver{
+    color:#75828c;
+
+    text-decoration:none;
+
+    font-family:Consolas,monospace;
+    font-size:12px;
+
+    transition:.25s;
+}
+
+.volver:hover{
+    color:var(--green);
+}
+
+.node-status{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    letter-spacing:2px;
+}
+
+.node-status::before{
+    content:"";
+
+    display:inline-block;
+
+    width:7px;
+    height:7px;
+
+    margin-right:8px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:0 0 12px var(--green);
+}
+
+.block{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:12px;
+
+    letter-spacing:4px;
+
+    margin-bottom:13px;
+}
+
+h1{
+    max-width:950px;
+
+    font-size:54px;
+    line-height:1.05;
+
+    background:linear-gradient(
+        90deg,
+        #ffffff,
+        #9dffe0,
+        var(--green)
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.descripcion{
+    max-width:850px;
+
+    margin-top:20px;
+
+    color:#82909b;
+
+    font-size:16px;
+    line-height:1.7;
+}
+
+.descripcion strong{
+    color:white;
+}
+
+/* ===================================== */
+/* MAIN                                  */
+/* ===================================== */
+
+main{
+    width:92%;
+    max-width:1200px;
+
+    margin:25px auto 80px;
+}
+
+/* ===================================== */
+/* ESTADO SERVIDOR                       */
+/* ===================================== */
+
+.server-status{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:12px;
+
+    margin-bottom:35px;
+}
+
+.status-card{
+    padding:16px 18px;
+
+    background:rgba(8,13,18,.82);
+
+    border:1px solid rgba(255,255,255,.07);
+
+    border-radius:10px;
+}
+
+.status-card span{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#596771;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:2px;
+}
+
+.status-card strong{
+    font-family:Consolas,monospace;
+    font-size:13px;
+}
+
+.online{
+    color:var(--green);
+}
+
+.secure{
+    color:var(--cyan);
+}
+
+/* ===================================== */
+/* PANEL CALCULADORA                     */
+/* ===================================== */
+
+.calculator{
+    overflow:hidden;
+
+    border:1px solid rgba(0,255,157,.20);
+
+    border-radius:17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,255,157,.035),
+            rgba(8,13,18,.94)
+        );
+
+    box-shadow:0 25px 60px rgba(0,0,0,.3);
+}
+
+.calculator-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:22px 25px;
+
+    border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.calculator-header h2{
+    font-size:20px;
+}
+
+.calculator-header span{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.calculator-body{
+    padding:30px;
+}
+
+/* ===================================== */
+/* FORMULARIO                            */
+/* ===================================== */
+
+.form-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.campo{
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,.07);
+
+    border-radius:12px;
+
+    background:rgba(0,0,0,.18);
+}
+
+.campo label{
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#71808b;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.input-unit{
+    display:flex;
+    align-items:center;
+}
+
+input{
+    width:100%;
+
+    padding:13px;
+
+    border:1px solid rgba(255,255,255,.1);
+
+    border-radius:8px;
+
+    outline:none;
+
+    background:#05090c;
+
+    color:white;
+
+    font-family:Consolas,monospace;
+    font-size:17px;
+
+    transition:.2s;
+}
+
+input:focus{
+    border-color:var(--green);
+
+    box-shadow:0 0 0 2px rgba(0,255,157,.08);
+}
+
+.unit{
+    margin-left:10px;
+
+    color:#65727c;
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+/* ===================================== */
+/* CAÍDAS                                */
+/* ===================================== */
+
+.fallos-panel{
+    margin-top:20px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,.07);
+
+    border-radius:12px;
+
+    background:rgba(0,0,0,.18);
+}
+
+.fallos-header{
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:18px;
+}
+
+.fallos-header label{
+    color:#71808b;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.add-button{
+    padding:8px 13px;
+
+    border:1px solid rgba(0,255,157,.25);
+
+    border-radius:7px;
+
+    background:rgba(0,255,157,.05);
+
+    color:var(--green);
+
+    cursor:pointer;
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+.add-button:hover{
+    background:rgba(0,255,157,.12);
+}
+
+.fallos{
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:10px;
+}
+
+.fallo{
+    position:relative;
+}
+
+.fallo span{
+    display:block;
+
+    margin-bottom:6px;
+
+    color:#52606a;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.fallo input{
+    text-align:center;
+}
+
+/* ===================================== */
+/* BOTÓN CALCULAR                        */
+/* ===================================== */
+
+.calculate{
+    width:100%;
+
+    margin-top:25px;
+    padding:17px;
+
+    border:1px solid var(--green);
+
+    border-radius:10px;
+
+    background:rgba(0,255,157,.08);
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+
+    font-size:13px;
+    font-weight:bold;
+
+    letter-spacing:3px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.calculate:hover{
+    background:var(--green);
+
+    color:#001b10;
+
+    box-shadow:0 0 30px rgba(0,255,157,.25);
+}
+
+/* ===================================== */
+/* RESULTADOS                            */
+/* ===================================== */
+
+.resultados{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:12px;
+
+    margin-top:30px;
+}
+
+.resultado{
+    min-height:125px;
+
+    padding:19px;
+
+    border:1px solid rgba(255,255,255,.07);
+
+    border-radius:11px;
+
+    background:#070c10;
+}
+
+.resultado span{
+    display:block;
+
+    color:#58656f;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:2px;
+
+    margin-bottom:13px;
+}
+
+.resultado strong{
+    display:block;
+
+    color:white;
+
+    font-family:Consolas,monospace;
+
+    font-size:23px;
+}
+
+.resultado small{
+    display:block;
+
+    color:#65727c;
+
+    margin-top:7px;
+
+    font-size:10px;
+}
+
+.resultado.destacado{
+    border-color:rgba(0,255,157,.3);
+}
+
+.resultado.destacado strong{
+    color:var(--green);
+}
+
+/* ===================================== */
+/* UPTIME BAR                            */
+/* ===================================== */
+
+.uptime-panel{
+    margin-top:20px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,.07);
+
+    border-radius:11px;
+
+    background:#070c10;
+}
+
+.uptime-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:12px;
+
+    font-family:Consolas,monospace;
+
+    font-size:10px;
+
+    color:#66747e;
+}
+
+.uptime-top strong{
+    color:var(--green);
+}
+
+.bar{
+    width:100%;
+
+    height:8px;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background:#11181e;
+}
+
+.bar-fill{
+    width:99.9344%;
+    height:100%;
+
+    border-radius:20px;
+
+    background:linear-gradient(
+        90deg,
+        #00a967,
+        var(--green)
+    );
+
+    box-shadow:0 0 12px rgba(0,255,157,.4);
+
+    transition:width 1s;
+}
+
+/* ===================================== */
+/* TÍTULOS                               */
+/* ===================================== */
+
+.section-title{
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    margin:55px 0 20px;
+
+    padding-bottom:15px;
+
+    border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.section-title span{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+
+    font-size:11px;
+}
+
+.section-title h2{
+    font-size:22px;
+}
+
+/* ===================================== */
+/* SLA CALCULATOR                        */
+/* ===================================== */
+
+.sla{
+    padding:28px;
+
+    border:1px solid rgba(0,234,255,.18);
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,234,255,.04),
+            rgba(8,13,18,.9)
+        );
+}
+
+.sla-buttons{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-bottom:28px;
+}
+
+.sla-button{
+    padding:12px 18px;
+
+    border:1px solid rgba(0,234,255,.18);
+
+    border-radius:8px;
+
+    background:#071015;
+
+    color:#87959f;
+
+    font-family:Consolas,monospace;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.sla-button:hover,
+.sla-button.active{
+    color:var(--cyan);
+
+    border-color:var(--cyan);
+
+    background:rgba(0,234,255,.07);
+}
+
+.sla-result{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:15px;
+}
+
+.sla-box{
+    padding:20px;
+
+    border-radius:10px;
+
+    background:#060b0f;
+
+    border:1px solid rgba(255,255,255,.07);
+}
+
+.sla-box span{
+    display:block;
+
+    color:#5e6b75;
+
+    font-family:Consolas,monospace;
+
+    font-size:9px;
+
+    letter-spacing:2px;
+
+    margin-bottom:10px;
+}
+
+.sla-box strong{
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+
+    font-size:22px;
+}
+
+/* ===================================== */
+/* EJERCICIOS                            */
+/* ===================================== */
+
+.pregunta{
+    margin-bottom:15px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(245,185,66,.15);
+
+    border-radius:13px;
+
+    background:rgba(8,13,18,.85);
+}
+
+.pregunta-header{
+    width:100%;
+
+    padding:21px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    border:0;
+
+    background:transparent;
+
+    color:white;
+
+    text-align:left;
+
+    cursor:pointer;
+}
+
+.numero{
+    flex-shrink:0;
+
+    width:45px;
+    height:45px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    border:1px solid rgba(245,185,66,.35);
+
+    border-radius:8px;
+
+    color:var(--gold);
+
+    font-family:Consolas,monospace;
+
+    font-weight:bold;
+}
+
+.pregunta-text{
+    flex:1;
+
+    line-height:1.5;
+
+    font-size:15px;
+}
+
+.open{
+    color:var(--gold);
+
+    font-size:20px;
+}
+
+.solucion{
+    max-height:0;
+
+    overflow:hidden;
+
+    opacity:0;
+
+    transition:
+        max-height .5s,
+        opacity .4s;
+}
+
+.pregunta.active .solucion{
+    max-height:1200px;
+
+    opacity:1;
+}
+
+.solucion-inner{
+    padding:5px 25px 25px 84px;
+}
+
+.formula{
+    margin:15px 0;
+
+    padding:15px;
+
+    border-left:3px solid var(--cyan);
+
+    background:rgba(0,234,255,.035);
+
+    color:#b7c3cb;
+
+    font-family:Consolas,monospace;
+
+    line-height:1.8;
+}
+
+.operacion{
+    margin:10px 0;
+
+    color:#8e9aa3;
+
+    line-height:1.7;
+}
+
+.resultado-final{
+    margin-top:15px;
+
+    padding:15px;
+
+    border:1px solid rgba(0,255,157,.2);
+
+    border-radius:8px;
+
+    background:rgba(0,255,157,.04);
+
+    color:var(--green);
+
+    font-weight:bold;
+}
+
+/* ===================================== */
+/* AVISO MTTF                            */
+/* ===================================== */
+
+.aviso{
+    margin-top:25px;
+
+    padding:22px;
+
+    border:1px solid rgba(245,185,66,.22);
+
+    border-radius:12px;
+
+    background:rgba(245,185,66,.04);
+
+    color:#9da9b2;
+
+    line-height:1.7;
+}
+
+.aviso strong{
+    color:var(--gold);
+}
+
+/* ===================================== */
+/* FOOTER                                */
+/* ===================================== */
+
+footer{
+    width:92%;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:25px 0 40px;
+
+    border-top:1px solid rgba(255,255,255,.06);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:#46515a;
+
+    font-family:Consolas,monospace;
+
+    font-size:10px;
+}
+
+/* ===================================== */
+/* RESPONSIVE                            */
+/* ===================================== */
+
+@media(max-width:900px){
+
+    .server-status,
+    .resultados{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .fallos{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    h1{
+        font-size:37px;
+    }
+
+    .form-grid,
+    .sla-result{
+        grid-template-columns:1fr;
+    }
+
+    .server-status,
+    .resultados{
+        grid-template-columns:1fr;
+    }
+
+    .fallos{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .solucion-inner{
+        padding:5px 20px 20px;
+    }
+
+    footer{
+        flex-direction:column;
+        gap:8px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- LOADING -->
+
+<div id="loading">
+
+    <div class="loader-ring">
+        <div class="loader-inner">HA</div>
+    </div>
+
+    <div class="loading-text">
+        INITIALIZING NODE
+    </div>
+
+    <div class="loading-sub">
+        HIGH AVAILABILITY PROTOCOL
+    </div>
+
+</div>
+
+
+<canvas id="networkCanvas"></canvas>
+
+<div class="background"></div>
+
+
+
+<!-- ===================================== -->
+<!-- HEADER                                -->
+<!-- ===================================== -->
+
+<header>
+
+    <div class="topbar">
+
+        <a href="seguretat.html" class="volver">
+            ← BLOCKCHAIN D'ACTIVITATS
+        </a>
+
+        <div class="node-status">
+            NODE ONLINE
+        </div>
+
+    </div>
+
+
+    <div class="block">
+        // BLOCK #02 · HIGH AVAILABILITY
+    </div>
+
+
+    <h1>
+        Calculadora de<br>
+        Alta Disponibilidad
+    </h1>
+
+
+    <p class="descripcion">
+
+        Calcula automáticamente
+
+        <strong>
+            MTTR, MTBF, tiempo de inactividad y disponibilidad
+        </strong>
+
+        de un servidor a partir de sus fallos y tiempos
+        de recuperación.
+
+    </p>
+
+</header>
+
+
+
+<main>
+
+
+<!-- ===================================== -->
+<!-- SERVER STATUS                         -->
+<!-- ===================================== -->
+
+<section class="server-status">
+
+    <div class="status-card">
+        <span>NODE STATUS</span>
+        <strong class="online">● ONLINE</strong>
+    </div>
+
+    <div class="status-card">
+        <span>PROTOCOL</span>
+        <strong>HA-02</strong>
+    </div>
+
+    <div class="status-card">
+        <span>MONITORING</span>
+        <strong class="secure">ACTIVE</strong>
+    </div>
+
+    <div class="status-card">
+        <span>NETWORK</span>
+        <strong>SECURE</strong>
+    </div>
+
+</section>
+
+
+
+<!-- ===================================== -->
+<!-- CALCULADORA                           -->
+<!-- ===================================== -->
+
+<section class="calculator">
+
+    <div class="calculator-header">
+
+        <h2>
+            High Availability Calculator
+        </h2>
+
+        <span>
+            SYSTEM READY
+        </span>
+
+    </div>
+
+
+    <div class="calculator-body">
+
+
+        <div class="form-grid">
+
+
+            <div class="campo">
+
+                <label>
+                    PERIODO ANALIZADO
+                </label>
+
+                <div class="input-unit">
+
+                    <input
+                        type="number"
+                        id="dias"
+                        value="90"
+                        min="1"
+                    >
+
+                    <span class="unit">
+                        DÍAS
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label>
+                    NÚMERO DE CAÍDAS
+                </label>
+
+                <div class="input-unit">
+
+                    <input
+                        type="number"
+                        id="numeroFallos"
+                        value="5"
+                        min="1"
+                        readonly
+                    >
+
+                    <span class="unit">
+                        FALLOS
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- FALLOS -->
+
+        <div class="fallos-panel">
+
+            <div class="fallos-header">
+
+                <label>
+                    TIEMPOS DE REPARACIÓN · MINUTOS
+                </label>
+
+                <button
+                    class="add-button"
+                    onclick="addFallo()"
+                >
+                    + AÑADIR CAÍDA
+                </button>
+
+            </div>
+
+
+            <div
+                class="fallos"
+                id="fallos"
+            >
+
+                <div class="fallo">
+                    <span>FALLO #01</span>
+                    <input class="repair" type="number" value="5" min="0">
+                </div>
+
+                <div class="fallo">
+                    <span>FALLO #02</span>
+                    <input class="repair" type="number" value="5" min="0">
+                </div>
+
+                <div class="fallo">
+                    <span>FALLO #03</span>
+                    <input class="repair" type="number" value="5" min="0">
+                </div>
+
+                <div class="fallo">
+                    <span>FALLO #04</span>
+                    <input class="repair" type="number" value="30" min="0">
+                </div>
+
+                <div class="fallo">
+                    <span>FALLO #05</span>
+                    <input class="repair" type="number" value="40" min="0">
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <button
+            class="calculate"
+            onclick="calcular()"
+        >
+            ▶ CALCULAR DISPONIBILIDAD
+        </button>
+
+
+
+        <!-- RESULTADOS -->
+
+        <div class="resultados">
+
+
+            <div class="resultado">
+
+                <span>
+                    MTTR
+                </span>
+
+                <strong id="mttr">
+                    17 min
+                </strong>
+
+                <small>
+                    Tiempo medio de reparación
+                </small>
+
+            </div>
+
+
+            <div class="resultado">
+
+                <span>
+                    MTBF
+                </span>
+
+                <strong id="mtbf">
+                    17,99 días
+                </strong>
+
+                <small id="mtbfMin">
+                    25.903 minutos
+                </small>
+
+            </div>
+
+
+            <div class="resultado">
+
+                <span>
+                    DOWNTIME
+                </span>
+
+                <strong id="downtime">
+                    1 h 25 min
+                </strong>
+
+                <small>
+                    Tiempo total inactivo
+                </small>
+
+            </div>
+
+
+            <div class="resultado destacado">
+
+                <span>
+                    DISPONIBILIDAD
+                </span>
+
+                <strong id="availability">
+                    99,9344 %
+                </strong>
+
+                <small>
+                    Uptime del servidor
+                </small>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- BARRA -->
+
+        <div class="uptime-panel">
+
+            <div class="uptime-top">
+
+                <span>
+                    SERVER UPTIME
+                </span>
+
+                <strong id="uptimeText">
+                    99,9344 %
+                </strong>
+
+            </div>
+
+
+            <div class="bar">
+
+                <div
+                    class="bar-fill"
+                    id="uptimeBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ===================================== -->
+<!-- SLA                                   -->
+<!-- ===================================== -->
+
+<div class="section-title">
+
+    <span>
+        02 //
+    </span>
+
+    <h2>
+        Calculadora de SLA · Los nueves
+    </h2>
+
+</div>
+
+
+<section class="sla">
+
+
+    <div class="sla-buttons">
+
+        <button
+            class="sla-button"
+            onclick="calcularSLA(99,this)"
+        >
+            99 %
+        </button>
+
+        <button
+            class="sla-button"
+            onclick="calcularSLA(99.9,this)"
+        >
+            99,9 %
+        </button>
+
+        <button
+            class="sla-button"
+            onclick="calcularSLA(99.99,this)"
+        >
+            99,99 %
+        </button>
+
+        <button
+            class="sla-button active"
+            onclick="calcularSLA(99.999,this)"
+        >
+            99,999 %
+        </button>
+
+    </div>
+
+
+
+    <div class="sla-result">
+
+
+        <div class="sla-box">
+
+            <span>
+                DOWNTIME MÁXIMO / MES
+            </span>
+
+            <strong id="slaMes">
+                25,92 segundos
+            </strong>
+
+        </div>
+
+
+        <div class="sla-box">
+
+            <span>
+                DOWNTIME MÁXIMO / AÑO
+            </span>
+
+            <strong id="slaAno">
+                5,26 minutos
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- ===================================== -->
+<!-- PREGUNTAS                             -->
+<!-- ===================================== -->
+
+<div class="section-title">
+
+    <span>
+        03 //
+    </span>
+
+    <h2>
+        Ejercicio propuesto
+    </h2>
+
+</div>
+
+
+
+<!-- PREGUNTA 1 -->
+
+<div class="pregunta">
+
+    <button
+        class="pregunta-header"
+        onclick="togglePregunta(this)"
+    >
+
+        <div class="numero">
+            01
+        </div>
+
+        <div class="pregunta-text">
+
+            Calcular el MTTR, MTTF y MTBF de un servidor
+            que ha tenido 5 caídas en los últimos 3 meses.
+
+            Las tres primeras se solucionaron en 5 minutos,
+            pero las dos últimas supusieron un tiempo de
+            inactividad de 30 y 40 minutos respectivamente.
+
+        </div>
+
+        <span class="open">
+            +
+        </span>
+
+    </button>
+
+
+    <div class="solucion">
+
+        <div class="solucion-inner">
+
+
+            <div class="formula">
+
+                Downtime total =
+                5 + 5 + 5 + 30 + 40
+
+                <br>
+
+                Downtime total = 85 minutos
+
+            </div>
+
+
+            <div class="formula">
+
+                MTTR =
+                Tiempo total de reparación /
+                Número de fallos
+
+                <br><br>
+
+                MTTR =
+                85 / 5
+
+                <br>
+
+                MTTR = 17 minutos
+
+            </div>
+
+
+            <p class="operacion">
+
+                Consideramos 3 meses como 90 días.
+
+                <br><br>
+
+                90 × 24 × 60 =
+                <strong>129.600 minutos</strong>
+
+                <br><br>
+
+                Tiempo operativo:
+
+                <br>
+
+                129.600 - 85 =
+                <strong>129.515 minutos</strong>
+
+            </p>
+
+
+            <div class="formula">
+
+                MTBF =
+                Tiempo operativo /
+                Número de fallos
+
+                <br><br>
+
+                MTBF =
+                129.515 / 5
+
+                <br>
+
+                MTBF =
+                25.903 minutos
+
+                <br><br>
+
+                25.903 / 1.440 =
+                17,99 días
+
+            </div>
+
+
+            <div class="resultado-final">
+
+                ✓ MTTR = 17 minutos
+
+                <br>
+
+                ✓ MTBF = 25.903 minutos ≈ 17,99 días
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- PREGUNTA 2 -->
+
+<div class="pregunta">
+
+    <button
+        class="pregunta-header"
+        onclick="togglePregunta(this)"
+    >
+
+        <div class="numero">
+            02
+        </div>
+
+        <div class="pregunta-text">
+
+            ¿Qué porcentaje de disponibilidad ha tenido
+            el servidor del caso anterior?
+
+            Tiempo disponible / tiempo total.
+
+        </div>
+
+        <span class="open">
+            +
+        </span>
+
+    </button>
+
+
+    <div class="solucion">
+
+        <div class="solucion-inner">
+
+
+            <p class="operacion">
+
+                Tiempo total:
+
+                <strong>
+                    129.600 minutos
+                </strong>
+
+                <br><br>
+
+                Tiempo inactivo:
+
+                <strong>
+                    85 minutos
+                </strong>
+
+                <br><br>
+
+                Tiempo disponible:
+
+                <br>
+
+                129.600 - 85 =
+                <strong>
+                    129.515 minutos
+                </strong>
+
+            </p>
+
+
+            <div class="formula">
+
+                Disponibilidad =
+
+                (Tiempo disponible /
+                Tiempo total) × 100
+
+                <br><br>
+
+                Disponibilidad =
+
+                (129.515 / 129.600) × 100
+
+                <br><br>
+
+                Disponibilidad ≈ 99,9344 %
+
+            </div>
+
+
+            <div class="resultado-final">
+
+                ✓ DISPONIBILIDAD =
+                99,9344 %
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- PREGUNTA 3 -->
+
+<div class="pregunta">
+
+    <button
+        class="pregunta-header"
+        onclick="togglePregunta(this)"
+    >
+
+        <div class="numero">
+            03
+        </div>
+
+        <div class="pregunta-text">
+
+            ¿Cuánto tiempo puede estar inactivo al mes
+            un equipo para conseguir una disponibilidad
+            de 5 nueves (99,999 %)?
+
+        </div>
+
+        <span class="open">
+            +
+        </span>
+
+    </button>
+
+
+    <div class="solucion">
+
+        <div class="solucion-inner">
+
+
+            <p class="operacion">
+
+                Consideramos un mes de 30 días.
+
+                <br><br>
+
+                30 × 24 × 60 =
+
+                <strong>
+                    43.200 minutos
+                </strong>
+
+            </p>
+
+
+            <div class="formula">
+
+                Porcentaje de inactividad =
+
+                100 - 99,999
+
+                <br>
+
+                = 0,001 %
+
+                <br><br>
+
+                Downtime =
+
+                43.200 × 0,00001
+
+                <br><br>
+
+                = 0,432 minutos
+
+            </div>
+
+
+            <p class="operacion">
+
+                Convertimos a segundos:
+
+                <br><br>
+
+                0,432 × 60 =
+
+                <strong>
+                    25,92 segundos
+                </strong>
+
+            </p>
+
+
+            <div class="resultado-final">
+
+                ✓ CINCO NUEVES = 99,999 %
+
+                <br>
+
+                ✓ Tiempo máximo de inactividad:
+
+                <br>
+
+                25,92 segundos al mes
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- AVISO -->
+
+<div class="aviso">
+
+    <strong>
+        ⚠ NOTA TÉCNICA SOBRE MTTF
+    </strong>
+
+    <br><br>
+
+    El <strong>MTTF (Mean Time To Failure)</strong>
+    se utiliza principalmente para componentes o sistemas
+    no reparables y representa el tiempo medio esperado
+    hasta que se produce un fallo.
+
+    <br><br>
+
+    En un servidor que se repara y vuelve a entrar en servicio,
+    como el de este ejercicio, las métricas más representativas
+    son <strong>MTBF</strong> y <strong>MTTR</strong>.
+
+</div>
+
+
+</main>
+
+
+
+<footer>
+
+    <span>
+        BLOCK #02 · HIGH AVAILABILITY
+    </span>
+
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
+
+</footer>
+
+
+
+<script>
+
+/* ===================================== */
+/* CALCULADORA                           */
+/* ===================================== */
+
+function calcular(){
+
+    const dias =
+        parseFloat(
+            document.getElementById("dias").value
+        );
+
+
+    const repairs =
+        Array.from(
+            document.querySelectorAll(".repair")
+        )
+        .map(input =>
+            parseFloat(input.value) || 0
+        );
+
+
+    const numeroFallos =
+        repairs.length;
+
+
+    document.getElementById(
+        "numeroFallos"
+    ).value = numeroFallos;
+
+
+    if(dias <= 0 || numeroFallos === 0){
+
+        alert(
+            "Introduce un periodo y al menos una caída."
+        );
+
+        return;
+
+    }
+
+
+    const downtime =
+        repairs.reduce(
+            (total,valor)=>total+valor,
+            0
+        );
+
+
+    const totalMinutes =
+        dias * 24 * 60;
+
+
+    const uptime =
+        Math.max(
+            0,
+            totalMinutes - downtime
+        );
+
+
+    const mttr =
+        downtime / numeroFallos;
+
+
+    const mtbf =
+        uptime / numeroFallos;
+
+
+    const disponibilidad =
+        (uptime / totalMinutes) * 100;
+
+
+    document.getElementById(
+        "mttr"
+    ).textContent =
+        formatNumber(mttr,2) + " min";
+
+
+    document.getElementById(
+        "mtbf"
+    ).textContent =
+        formatNumber(
+            mtbf / 1440,
+            2
+        ) + " días";
+
+
+    document.getElementById(
+        "mtbfMin"
+    ).textContent =
+        formatNumber(
+            mtbf,
+            0
+        ) + " minutos";
+
+
+    document.getElementById(
+        "downtime"
+    ).textContent =
+        formatTime(downtime);
+
+
+    document.getElementById(
+        "availability"
+    ).textContent =
+        formatNumber(
+            disponibilidad,
+            4
+        ) + " %";
+
+
+    document.getElementById(
+        "uptimeText"
+    ).textContent =
+        formatNumber(
+            disponibilidad,
+            4
+        ) + " %";
+
+
+    document.getElementById(
+        "uptimeBar"
+    ).style.width =
+        Math.min(
+            disponibilidad,
+            100
+        ) + "%";
+
+}
+
+
+/* ===================================== */
+/* FORMATEAR NÚMEROS                     */
+/* ===================================== */
+
+function formatNumber(numero,decimales){
+
+    return numero.toLocaleString(
+        "es-ES",
+        {
+            minimumFractionDigits:decimales,
+            maximumFractionDigits:decimales
+        }
+    );
+
+}
+
+
+/* ===================================== */
+/* FORMATEAR DOWNTIME                    */
+/* ===================================== */
+
+function formatTime(minutes){
+
+    if(minutes < 1){
+
+        return formatNumber(
+            minutes * 60,
+            2
+        ) + " s";
+
+    }
+
+
+    const horas =
+        Math.floor(minutes / 60);
+
+
+    const mins =
+        Math.round(minutes % 60);
+
+
+    if(horas === 0){
+
+        return mins + " min";
+
+    }
+
+
+    return horas +
+        " h " +
+        mins +
+        " min";
+
+}
+
+
+/* ===================================== */
+/* AÑADIR CAÍDA                          */
+/* ===================================== */
+
+function addFallo(){
+
+    const contenedor =
+        document.getElementById("fallos");
+
+
+    const numero =
+        contenedor.children.length + 1;
+
+
+    const div =
+        document.createElement("div");
+
+
+    div.className="fallo";
+
+
+    div.innerHTML = `
+
+        <span>
+            FALLO #${String(numero).padStart(2,"0")}
+        </span>
+
+        <input
+            class="repair"
+            type="number"
+            value="0"
+            min="0"
+        >
+
+    `;
+
+
+    contenedor.appendChild(div);
+
+
+    document.getElementById(
+        "numeroFallos"
+    ).value = numero;
+
+}
+
+
+/* ===================================== */
+/* SLA                                   */
+/* ===================================== */
+
+function calcularSLA(
+    porcentaje,
+    boton
+){
+
+    document
+        .querySelectorAll(".sla-button")
+        .forEach(b=>{
+            b.classList.remove("active");
+        });
+
+
+    boton.classList.add("active");
+
+
+    const downtimeRatio =
+        (100 - porcentaje) / 100;
+
+
+    /* MES DE 30 DÍAS */
+
+    const segundosMes =
+        30 *
+        24 *
+        60 *
+        60 *
+        downtimeRatio;
+
+
+    /* AÑO 365 DÍAS */
+
+    const segundosAno =
+        365 *
+        24 *
+        60 *
+        60 *
+        downtimeRatio;
+
+
+    document.getElementById(
+        "slaMes"
+    ).textContent =
+        formatSLA(segundosMes);
+
+
+    document.getElementById(
+        "slaAno"
+    ).textContent =
+        formatSLA(segundosAno);
+
+}
+
+
+/* ===================================== */
+/* FORMATO SLA                           */
+/* ===================================== */
+
+function formatSLA(segundos){
+
+    if(segundos < 60){
+
+        return formatNumber(
+            segundos,
+            2
+        ) + " segundos";
+
+    }
+
+
+    const minutos =
+        segundos / 60;
+
+
+    if(minutos < 60){
+
+        return formatNumber(
+            minutos,
+            2
+        ) + " minutos";
+
+    }
+
+
+    const horas =
+        minutos / 60;
+
+
+    if(horas < 24){
+
+        return formatNumber(
+            horas,
+            2
+        ) + " horas";
+
+    }
+
+
+    const dias =
+        horas / 24;
+
+
+    return formatNumber(
+        dias,
+        2
+    ) + " días";
+
+}
+
+
+/* ===================================== */
+/* PREGUNTAS                             */
+/* ===================================== */
+
+function togglePregunta(button){
+
+    const pregunta =
+        button.parentElement;
+
+
+    pregunta.classList.toggle(
+        "active"
+    );
+
+
+    const icon =
+        button.querySelector(".open");
+
+
+    if(
+        pregunta.classList.contains(
+            "active"
+        )
+    ){
+
+        icon.textContent="−";
+
+    }else{
+
+        icon.textContent="+";
+
+    }
+
+}
+
+
+/* ===================================== */
+/* NETWORK BACKGROUND                    */
+/* ===================================== */
+
+const canvas =
+    document.getElementById(
+        "networkCanvas"
+    );
+
+
+const ctx =
+    canvas.getContext("2d");
+
+
+let nodes=[];
+
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+}
+
+
+resizeCanvas();
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* CREAR NODOS */
+
+for(let i=0;i<55;i++){
+
+    nodes.push({
+
+        x:
+            Math.random() *
+            window.innerWidth,
+
+        y:
+            Math.random() *
+            window.innerHeight,
+
+        vx:
+            (Math.random()-.5) *
+            .22,
+
+        vy:
+            (Math.random()-.5) *
+            .22,
+
+        r:
+            Math.random() *
+            1.3 +
+            .4
+
+    });
+
+}
+
+
+/* ANIMACIÓN */
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    nodes.forEach(node=>{
+
+        node.x += node.vx;
+        node.y += node.vy;
+
+
+        if(
+            node.x < 0 ||
+            node.x > canvas.width
+        ){
+
+            node.vx *= -1;
+
+        }
+
+
+        if(
+            node.y < 0 ||
+            node.y > canvas.height
+        ){
+
+            node.vy *= -1;
+
+        }
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            node.x,
+            node.y,
+            node.r,
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.fillStyle =
+            "rgba(0,255,157,.28)";
+
+
+        ctx.fill();
+
+    });
+
+
+    /* CONEXIONES */
+
+    for(
+        let i=0;
+        i<nodes.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<nodes.length;
+            j++
+        ){
+
+            const dx =
+                nodes[i].x -
+                nodes[j].x;
+
+
+            const dy =
+                nodes[i].y -
+                nodes[j].y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
+
+
+            if(distance < 130){
+
+                ctx.beginPath();
+
+
+                ctx.moveTo(
+                    nodes[i].x,
+                    nodes[i].y
+                );
+
+
+                ctx.lineTo(
+                    nodes[j].x,
+                    nodes[j].y
+                );
+
+
+                ctx.strokeStyle =
+                    "rgba(0,255,157," +
+                    (.06 *
+                    (1-distance/130)) +
+                    ")";
+
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+animate();
+
+
+/* ===================================== */
+/* CALCULAR VALORES INICIALES            */
+/* ===================================== */
+
+calcular();
+
+</script>
+
+</body>
+</html>
