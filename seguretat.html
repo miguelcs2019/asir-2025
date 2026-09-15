@@ -1,0 +1,913 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Seguretat i Alta Disponibilitat | Crypto Security</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --gold:#f5b942;
+    --gold2:#ffcf67;
+    --cyan:#00eaff;
+    --green:#00ff9d;
+    --dark:#030609;
+    --panel:#080d12;
+    --border:rgba(245,185,66,.22);
+}
+
+body{
+    min-height:100vh;
+    background:#030609;
+    color:white;
+    font-family:'Consolas','Courier New',monospace;
+    overflow-x:hidden;
+}
+
+/* FONDO */
+
+#cryptoCanvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:-2;
+}
+
+.overlay{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+
+    background:
+        radial-gradient(circle at 20% 10%,
+        rgba(245,185,66,.08),transparent 30%),
+
+        radial-gradient(circle at 80% 80%,
+        rgba(0,234,255,.06),transparent 35%),
+
+        linear-gradient(
+        rgba(3,6,9,.55),
+        rgba(3,6,9,.92)
+        );
+}
+
+
+/* PANTALLA DE INICIO */
+
+#loading{
+    position:fixed;
+    inset:0;
+    background:#020405;
+    z-index:10000;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    animation:desaparecer .7s forwards 2.4s;
+}
+
+.loading-coin{
+    width:75px;
+    height:75px;
+
+    border:2px solid var(--gold);
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:var(--gold);
+    font-size:40px;
+    font-weight:bold;
+
+    box-shadow:
+        0 0 20px rgba(245,185,66,.5),
+        inset 0 0 20px rgba(245,185,66,.15);
+
+    margin-bottom:25px;
+
+    animation:girar 1.8s linear infinite;
+}
+
+.loading-text{
+    color:var(--gold);
+    letter-spacing:4px;
+    font-size:15px;
+}
+
+.loading-hash{
+    margin-top:12px;
+    color:#56616b;
+    font-size:11px;
+}
+
+@keyframes girar{
+    100%{transform:rotateY(360deg);}
+}
+
+@keyframes desaparecer{
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+}
+
+
+/* CABECERA */
+
+header{
+    width:92%;
+    max-width:1100px;
+    margin:auto;
+    padding:55px 0 35px;
+}
+
+.superior{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:55px;
+}
+
+.volver{
+    color:#75808a;
+    text-decoration:none;
+    font-size:13px;
+    transition:.3s;
+}
+
+.volver:hover{
+    color:var(--gold);
+}
+
+.estado{
+    color:var(--green);
+    font-size:12px;
+    letter-spacing:2px;
+}
+
+.estado::before{
+    content:"";
+    width:7px;
+    height:7px;
+    background:var(--green);
+    display:inline-block;
+    border-radius:50%;
+    margin-right:8px;
+    box-shadow:0 0 10px var(--green);
+}
+
+.badge{
+    color:var(--gold);
+    letter-spacing:4px;
+    font-size:12px;
+    margin-bottom:13px;
+}
+
+h1{
+    font-family:'Segoe UI',Arial,sans-serif;
+    font-size:48px;
+    line-height:1.05;
+    max-width:800px;
+
+    background:linear-gradient(
+        90deg,
+        #ffffff,
+        #ffd87c,
+        #f5b942
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.descripcion{
+    color:#697682;
+    margin-top:17px;
+    font-family:'Segoe UI',Arial,sans-serif;
+    font-size:16px;
+}
+
+
+/* INFORMACIÓN BLOCKCHAIN */
+
+.blockchain-info{
+    width:92%;
+    max-width:1100px;
+    margin:0 auto 45px;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.info{
+    padding:16px 18px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(8,13,18,.75);
+    border-radius:9px;
+}
+
+.info span{
+    display:block;
+    color:#56616b;
+    font-size:10px;
+    letter-spacing:2px;
+    margin-bottom:6px;
+}
+
+.info strong{
+    color:#b8c4ce;
+    font-size:13px;
+}
+
+.info .verde{
+    color:var(--green);
+}
+
+
+/* CONTENEDOR */
+
+.contenedor{
+    width:92%;
+    max-width:1100px;
+    margin:0 auto 80px;
+}
+
+
+/* CABECERA ACTIVIDADES */
+
+.titulo-seccion{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding-bottom:17px;
+    margin-bottom:18px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.titulo-seccion h2{
+    font-family:'Segoe UI',Arial,sans-serif;
+    font-size:20px;
+}
+
+.contador{
+    color:#66727c;
+    font-size:12px;
+}
+
+
+/* ACTIVIDADES */
+
+.actividades{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.actividad{
+    position:relative;
+
+    min-height:145px;
+    padding:22px;
+
+    display:flex;
+    align-items:center;
+    gap:20px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+        135deg,
+        rgba(245,185,66,.055),
+        rgba(8,13,18,.9)
+        );
+
+    text-decoration:none;
+    color:white;
+
+    overflow:hidden;
+
+    transition:
+        transform .25s,
+        border-color .25s,
+        box-shadow .25s;
+}
+
+.actividad::after{
+    content:"";
+    position:absolute;
+
+    width:90px;
+    height:90px;
+
+    right:-40px;
+    top:-40px;
+
+    border:1px solid rgba(245,185,66,.12);
+    transform:rotate(45deg);
+}
+
+.actividad:hover{
+    transform:translateY(-5px);
+
+    border-color:var(--gold);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.45),
+        0 0 20px rgba(245,185,66,.10);
+}
+
+
+/* NÚMERO COMO BLOQUE */
+
+.bloque-numero{
+    flex-shrink:0;
+
+    width:62px;
+    height:62px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:1px solid rgba(245,185,66,.35);
+    border-radius:9px;
+
+    background:#090d11;
+
+    color:var(--gold);
+    font-size:24px;
+    font-weight:bold;
+
+    box-shadow:inset 0 0 15px rgba(245,185,66,.05);
+}
+
+.contenido-actividad{
+    flex:1;
+}
+
+.hash{
+    color:#48535d;
+    font-size:9px;
+    margin-bottom:8px;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.actividad h3{
+    font-family:'Segoe UI',Arial,sans-serif;
+    font-size:17px;
+    margin-bottom:7px;
+}
+
+.actividad p{
+    color:#687580;
+    font-size:12px;
+}
+
+.abrir{
+    color:var(--gold);
+    font-size:20px;
+}
+
+
+/* ACTIVIDADES FUTURAS */
+
+.bloqueada{
+    opacity:.38;
+    cursor:not-allowed;
+    border-color:rgba(255,255,255,.08);
+}
+
+.bloqueada:hover{
+    transform:none;
+    box-shadow:none;
+    border-color:rgba(255,255,255,.08);
+}
+
+.bloqueada .bloque-numero{
+    border-color:rgba(255,255,255,.12);
+    color:#65717b;
+}
+
+.bloqueada .abrir{
+    color:#4a545d;
+}
+
+
+/* PIE */
+
+footer{
+    width:92%;
+    max-width:1100px;
+
+    margin:0 auto;
+    padding:25px 0 35px;
+
+    border-top:1px solid rgba(255,255,255,.06);
+
+    color:#414c55;
+    font-size:11px;
+
+    display:flex;
+    justify-content:space-between;
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:750px){
+
+    h1{
+        font-size:36px;
+    }
+
+    .blockchain-info{
+        grid-template-columns:1fr;
+    }
+
+    .actividades{
+        grid-template-columns:1fr;
+    }
+
+    .superior{
+        margin-bottom:40px;
+    }
+
+    footer{
+        flex-direction:column;
+        gap:8px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div id="loading">
+
+    <div class="loading-coin">
+        ₿
+    </div>
+
+    <div class="loading-text">
+        VERIFYING BLOCKCHAIN
+    </div>
+
+    <div class="loading-hash">
+        SHA-256 · SECURE CONNECTION
+    </div>
+
+</div>
+
+
+<canvas id="cryptoCanvas"></canvas>
+<div class="overlay"></div>
+
+
+<header>
+
+    <div class="superior">
+
+        <a href="index.html" class="volver">
+            ← PORTAL ASIX
+        </a>
+
+        <div class="estado">
+            BLOCKCHAIN ONLINE
+        </div>
+
+    </div>
+
+
+    <div class="badge">
+        // CRYPTO SECURITY PROTOCOL
+    </div>
+
+    <h1>
+        Seguretat i<br>
+        Alta Disponibilitat
+    </h1>
+
+    <p class="descripcion">
+        Security · Cryptography · Blockchain · High Availability
+    </p>
+
+</header>
+
+
+
+<!-- ESTADO DE LA RED -->
+
+<section class="blockchain-info">
+
+    <div class="info">
+        <span>NETWORK</span>
+        <strong class="verde">● ONLINE</strong>
+    </div>
+
+    <div class="info">
+        <span>ENCRYPTION</span>
+        <strong>SHA-256</strong>
+    </div>
+
+    <div class="info">
+        <span>ACADEMIC BLOCKS</span>
+        <strong>10 ACTIVITATS</strong>
+    </div>
+
+</section>
+
+
+
+<main class="contenedor">
+
+    <div class="titulo-seccion">
+
+        <h2>Blockchain d'Activitats</h2>
+
+        <span class="contador">
+            03 / 10 DESBLOQUEJADES
+        </span>
+
+    </div>
+
+
+    <div class="actividades">
+
+
+        <!-- ACTIVIDAD 1 -->
+
+        <a href="activitat1.html" class="actividad">
+
+            <div class="bloque-numero">
+                01
+            </div>
+
+            <div class="contenido-actividad">
+
+                <div class="hash">
+                    000000A1F8C29B73E4D901...
+                </div>
+
+                <h3>Activitat 1</h3>
+
+                <p>
+                    Bloc verificat · Disponible
+                </p>
+
+            </div>
+
+            <span class="abrir">→</span>
+
+        </a>
+
+
+
+        <!-- ACTIVIDAD 2 -->
+
+        <a href="activitat2.html" class="actividad">
+
+            <div class="bloque-numero">
+                02
+            </div>
+
+            <div class="contenido-actividad">
+
+                <div class="hash">
+                    000000B2D4E821C99A7431...
+                </div>
+
+                <h3>Activitat 2</h3>
+
+                <p>
+                    Bloc verificat · Disponible
+                </p>
+
+            </div>
+
+            <span class="abrir">→</span>
+
+        </a>
+
+
+
+        <!-- ACTIVIDAD 3 -->
+
+        <a href="activitat3.html" class="actividad">
+
+            <div class="bloque-numero">
+                03
+            </div>
+
+            <div class="contenido-actividad">
+
+                <div class="hash">
+                    000000C39F62A117D08E54...
+                </div>
+
+                <h3>Activitat 3</h3>
+
+                <p>
+                    Bloc verificat · Disponible
+                </p>
+
+            </div>
+
+            <span class="abrir">→</span>
+
+        </a>
+
+
+
+        <!-- ACTIVIDADES 4 - 10 -->
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">04</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 4</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">05</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 5</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">06</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 6</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">07</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 7</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">08</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 8</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">09</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 9</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+
+        <div class="actividad bloqueada">
+
+            <div class="bloque-numero">10</div>
+
+            <div class="contenido-actividad">
+                <div class="hash">BLOCK_PENDING...</div>
+                <h3>Activitat 10</h3>
+                <p>Pendent</p>
+            </div>
+
+            <span class="abrir">🔒</span>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <span>
+        SEGURETAT I ALTA DISPONIBILITAT
+    </span>
+
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
+
+</footer>
+
+
+
+<script>
+
+/* ===================================== */
+/*        FONDO BLOCKCHAIN DIGITAL       */
+/* ===================================== */
+
+const canvas = document.getElementById("cryptoCanvas");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+
+function resize(){
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+}
+
+resize();
+
+window.addEventListener("resize", resize);
+
+
+
+/* PARTÍCULAS */
+
+for(let i=0; i<55; i++){
+
+    particles.push({
+
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+
+        vx:(Math.random()-.5)*0.25,
+        vy:(Math.random()-.5)*0.25,
+
+        r:Math.random()*1.5+0.5
+
+    });
+
+}
+
+
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /* PUNTOS */
+
+    particles.forEach(p=>{
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+
+        if(p.x<0 || p.x>canvas.width)
+            p.vx *= -1;
+
+        if(p.y<0 || p.y>canvas.height)
+            p.vy *= -1;
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.r,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle="rgba(245,185,66,.35)";
+        ctx.fill();
+
+    });
+
+
+
+    /* CONEXIONES */
+
+    for(let i=0;i<particles.length;i++){
+
+        for(let j=i+1;j<particles.length;j++){
+
+            let dx=
+                particles[i].x-
+                particles[j].x;
+
+            let dy=
+                particles[i].y-
+                particles[j].y;
+
+            let distance=
+                Math.sqrt(dx*dx+dy*dy);
+
+
+            if(distance<130){
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    particles[i].x,
+                    particles[i].y
+                );
+
+                ctx.lineTo(
+                    particles[j].x,
+                    particles[j].y
+                );
+
+                ctx.strokeStyle=
+                    "rgba(245,185,66,"+
+                    (0.07*(1-distance/130))+
+                    ")";
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
+```
