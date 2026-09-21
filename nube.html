@@ -1,0 +1,2983 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Introducción a la Nube Pública | MCS Cloud</title>
+
+<style>
+
+/* =========================================================
+   RESET / VARIABLES
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#03070d;
+    --bg2:#07101a;
+
+    --panel:#09131e;
+    --panel2:#0d1925;
+
+    --aws:#ff9900;
+    --aws2:#ffb84d;
+
+    --cyan:#00d9ff;
+    --blue:#4285ff;
+    --green:#6dffad;
+    --purple:#b58cff;
+    --red:#ff6470;
+
+    --white:#edf5fa;
+    --muted:#748491;
+
+    --border:rgba(255,255,255,.08);
+    --border2:rgba(0,217,255,.12);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    background:var(--bg);
+    color:var(--white);
+
+    font-family:"Segoe UI",Arial,sans-serif;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   FONDO CANVAS
+   ========================================================= */
+
+#cloudCanvas{
+    position:fixed;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:-4;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+
+    z-index:-3;
+
+    pointer-events:none;
+
+    background:
+
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(0,217,255,.08),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(255,153,0,.07),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 70% 80%,
+            rgba(66,133,255,.06),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            rgba(3,7,13,.66),
+            rgba(3,7,13,.98)
+        );
+}
+
+
+/* =========================================================
+   GRID DE FONDO
+   ========================================================= */
+
+.grid-background{
+    position:fixed;
+    inset:0;
+
+    z-index:-2;
+
+    pointer-events:none;
+
+    opacity:.12;
+
+    background-image:
+
+        linear-gradient(
+            rgba(0,217,255,.10) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0,217,255,.10) 1px,
+            transparent 1px
+        );
+
+    background-size:70px 70px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            transparent,
+            black 20%,
+            black 80%,
+            transparent
+        );
+}
+
+
+/* =========================================================
+   SCANLINES
+   ========================================================= */
+
+.scanlines{
+    position:fixed;
+    inset:0;
+
+    z-index:1000;
+
+    pointer-events:none;
+
+    opacity:.055;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgba(255,255,255,.03) 4px
+        );
+}
+
+
+/* =========================================================
+   BOOT CLOUD
+   ========================================================= */
+
+#boot{
+    position:fixed;
+    inset:0;
+
+    z-index:99999;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#01050a;
+
+    animation:
+        bootExit .7s forwards 4.2s;
+}
+
+.boot-console{
+    width:90%;
+    max-width:760px;
+
+    padding:30px;
+
+    border:1px solid rgba(0,217,255,.12);
+    border-radius:10px;
+
+    background:#02070c;
+
+    box-shadow:
+        0 0 70px rgba(0,217,255,.05);
+
+    font-family:Consolas,"Courier New",monospace;
+}
+
+.boot-logo{
+    margin-bottom:25px;
+
+    color:var(--aws);
+
+    font-size:19px;
+    font-weight:bold;
+
+    letter-spacing:5px;
+}
+
+.boot-sub{
+    margin-bottom:25px;
+
+    color:#4d606d;
+
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.boot-line{
+    opacity:0;
+
+    margin:7px 0;
+
+    color:#81939f;
+
+    font-size:11px;
+
+    animation:
+        bootLine .2s forwards;
+}
+
+.boot-line:nth-child(3){
+    animation-delay:.3s;
+}
+
+.boot-line:nth-child(4){
+    animation-delay:.7s;
+}
+
+.boot-line:nth-child(5){
+    animation-delay:1.1s;
+}
+
+.boot-line:nth-child(6){
+    animation-delay:1.5s;
+}
+
+.boot-line:nth-child(7){
+    animation-delay:1.9s;
+}
+
+.boot-line:nth-child(8){
+    animation-delay:2.3s;
+}
+
+.boot-line:nth-child(9){
+    animation-delay:2.7s;
+}
+
+.boot-line:nth-child(10){
+    animation-delay:3.1s;
+}
+
+.boot-ok{
+    color:var(--green);
+}
+
+.boot-aws{
+    color:var(--aws);
+}
+
+@keyframes bootLine{
+
+    to{
+        opacity:1;
+    }
+
+}
+
+@keyframes bootExit{
+
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+    width:92%;
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:42px 0 35px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:65px;
+}
+
+.back{
+    color:#71828e;
+
+    text-decoration:none;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    transition:.25s;
+}
+
+.back:hover{
+    color:var(--aws);
+}
+
+.cloud-status{
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:2px;
+}
+
+.status-light{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 12px var(--green);
+
+    animation:pulseLight 1.7s infinite;
+}
+
+@keyframes pulseLight{
+
+    0%,100%{
+        opacity:1;
+    }
+
+    50%{
+        opacity:.35;
+    }
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.eyebrow{
+    margin-bottom:13px;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:4px;
+}
+
+h1{
+    max-width:1050px;
+
+    font-size:62px;
+    line-height:1.02;
+
+    letter-spacing:-2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #bceeff,
+            var(--cyan)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.aws-title{
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #ffd28a,
+            var(--aws)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero-text{
+    max-width:850px;
+
+    margin-top:22px;
+
+    color:#84939e;
+
+    line-height:1.8;
+
+    font-size:15px;
+}
+
+.hero-text strong{
+    color:white;
+}
+
+
+/* =========================================================
+   HERO BADGES
+   ========================================================= */
+
+.hero-badges{
+    display:flex;
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:25px;
+}
+
+.hero-badge{
+    padding:7px 11px;
+
+    border:1px solid var(--border);
+    border-radius:5px;
+
+    background:rgba(10,20,30,.65);
+
+    color:#71828e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.hero-badge.aws{
+    color:var(--aws);
+
+    border-color:
+        rgba(255,153,0,.18);
+}
+
+.hero-badge.online{
+    color:var(--green);
+
+    border-color:
+        rgba(109,255,173,.18);
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+main{
+    width:92%;
+    max-width:1250px;
+
+    margin:25px auto 80px;
+}
+
+
+/* =========================================================
+   CLOUD STATUS PANEL
+   ========================================================= */
+
+.cloud-panel{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:10px;
+
+    margin-bottom:55px;
+}
+
+.cloud-card{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:16px;
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11,24,35,.90),
+            rgba(6,13,20,.90)
+        );
+}
+
+.cloud-card::after{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    bottom:0;
+
+    width:100%;
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0,217,255,.4),
+            transparent
+        );
+}
+
+.cloud-card span{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#53636f;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.cloud-card strong{
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.aws{
+    color:var(--aws);
+}
+
+.cyan{
+    color:var(--cyan);
+}
+
+.green{
+    color:var(--green);
+}
+
+.purple{
+    color:var(--purple);
+}
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+
+    gap:20px;
+
+    margin:60px 0 22px;
+
+    padding-bottom:15px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.section-code{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.section-header h2{
+    font-size:25px;
+}
+
+.section-status{
+    color:#53636e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   ARQUITECTURA AWS
+   ========================================================= */
+
+.architecture{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:35px;
+
+    border:1px solid var(--border);
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(9,20,31,.94),
+            rgba(4,10,16,.96)
+        );
+}
+
+.architecture::before{
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    right:-120px;
+    top:-150px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,153,0,.09),
+            transparent 70%
+        );
+}
+
+.internet{
+    width:max-content;
+
+    margin:0 auto 28px;
+
+    padding:11px 25px;
+
+    position:relative;
+
+    z-index:2;
+
+    border:1px solid rgba(0,217,255,.25);
+    border-radius:30px;
+
+    background:rgba(0,217,255,.05);
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    box-shadow:
+        0 0 25px rgba(0,217,255,.05);
+}
+
+.arch-line{
+    width:1px;
+    height:25px;
+
+    margin:auto;
+
+    background:
+        linear-gradient(
+            var(--cyan),
+            rgba(0,217,255,.1)
+        );
+}
+
+.region{
+    max-width:950px;
+
+    margin:auto;
+
+    padding:25px;
+
+    border:1px solid rgba(255,153,0,.23);
+    border-radius:13px;
+
+    background:rgba(255,153,0,.025);
+}
+
+.region-title{
+    display:flex;
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.az-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+}
+
+.az{
+    position:relative;
+
+    padding:18px;
+
+    border:1px solid rgba(0,217,255,.14);
+    border-radius:9px;
+
+    background:rgba(5,14,22,.75);
+
+    transition:.3s;
+}
+
+.az:hover{
+    transform:translateY(-3px);
+
+    border-color:
+        rgba(0,217,255,.35);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.25);
+}
+
+.az-title{
+    margin-bottom:14px;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.az-service{
+    margin-top:7px;
+
+    padding:9px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+    border-radius:5px;
+
+    color:#85949e;
+
+    background:#071019;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.az-service.ec2{
+    color:var(--aws);
+
+    border-color:
+        rgba(255,153,0,.18);
+}
+
+.az-service.db{
+    color:var(--purple);
+
+    border-color:
+        rgba(181,140,255,.18);
+}
+
+
+/* =========================================================
+   SERVICIOS
+   ========================================================= */
+
+.services{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:12px;
+}
+
+.service{
+    position:relative;
+
+    min-height:180px;
+
+    padding:22px;
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:11px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12,24,35,.93),
+            rgba(5,11,17,.95)
+        );
+
+    transition:.3s;
+}
+
+.service:hover{
+    transform:translateY(-5px);
+
+    border-color:
+        rgba(0,217,255,.25);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.30);
+}
+
+.service-icon{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    width:47px;
+    height:47px;
+
+    margin-bottom:18px;
+
+    border:1px solid rgba(255,153,0,.18);
+    border-radius:9px;
+
+    background:rgba(255,153,0,.05);
+
+    font-size:24px;
+}
+
+.service-code{
+    margin-bottom:5px;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.service h3{
+    margin-bottom:8px;
+
+    font-size:16px;
+}
+
+.service p{
+    color:#71818c;
+
+    font-size:11px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   MODELOS CLOUD
+   ========================================================= */
+
+.models{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+}
+
+.model{
+    padding:24px;
+
+    border:1px solid var(--border);
+    border-radius:11px;
+
+    background:rgba(9,19,28,.82);
+
+    transition:.25s;
+}
+
+.model:hover{
+    border-color:
+        rgba(181,140,255,.25);
+}
+
+.model-number{
+    margin-bottom:14px;
+
+    color:#566875;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.model h3{
+    margin-bottom:5px;
+
+    color:var(--purple);
+
+    font-size:22px;
+}
+
+.model strong{
+    display:block;
+
+    margin-bottom:13px;
+
+    color:white;
+
+    font-size:12px;
+}
+
+.model p{
+    color:#758590;
+
+    line-height:1.7;
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   FLUJO DE NUBE
+   ========================================================= */
+
+.cloud-flow{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    gap:10px;
+
+    overflow-x:auto;
+
+    padding:25px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:rgba(6,13,20,.8);
+}
+
+.flow-node{
+    min-width:120px;
+
+    padding:14px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+    border-radius:7px;
+
+    background:#08121b;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.flow-node span{
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:22px;
+}
+
+.flow-arrow{
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+
+    animation:
+        flowPulse 1.5s infinite;
+}
+
+@keyframes flowPulse{
+
+    50%{
+        opacity:.25;
+    }
+
+}
+
+
+/* =========================================================
+   ACTIVIDADES
+   ========================================================= */
+
+.activities{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:14px;
+}
+
+.activity{
+    position:relative;
+
+    min-height:165px;
+
+    padding:22px;
+
+    display:grid;
+
+    grid-template-columns:70px 1fr 30px;
+
+    gap:18px;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(11,23,34,.95),
+            rgba(5,11,17,.96)
+        );
+
+    text-decoration:none;
+
+    color:white;
+
+    transition:.3s;
+}
+
+.activity::before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:3px;
+    height:100%;
+
+    background:#293742;
+
+    transition:.3s;
+}
+
+.activity.locked{
+    opacity:.62;
+    cursor:default;
+}
+
+.activity.locked:hover{
+    opacity:.75;
+}
+
+.activity.active::before{
+    background:var(--aws);
+}
+
+.activity.active:hover{
+    transform:translateY(-4px);
+
+    border-color:
+        rgba(255,153,0,.30);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.3);
+}
+
+.activity-number{
+    width:64px;
+    height:64px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    position:relative;
+
+    border:1px solid rgba(0,217,255,.15);
+    border-radius:9px;
+
+    background:#050c12;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:21px;
+    font-weight:bold;
+}
+
+.activity-number::before{
+    content:"";
+
+    position:absolute;
+
+    top:7px;
+    left:7px;
+
+    width:5px;
+    height:5px;
+
+    border-radius:50%;
+
+    background:#34444f;
+}
+
+.activity.active .activity-number::before{
+    background:var(--green);
+
+    box-shadow:
+        0 0 8px var(--green);
+}
+
+.activity-id{
+    margin-bottom:8px;
+
+    color:#51636f;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.activity-content h3{
+    margin-bottom:8px;
+
+    font-size:17px;
+}
+
+.activity-content p{
+    color:#71818c;
+
+    line-height:1.5;
+
+    font-size:11px;
+}
+
+.activity-status{
+    display:inline-block;
+
+    margin-top:11px;
+
+    padding:5px 8px;
+
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:4px;
+
+    color:#566773;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+}
+
+.activity-status.ready{
+    color:var(--green);
+
+    border-color:
+        rgba(109,255,173,.18);
+}
+
+.open{
+    color:#43525d;
+
+    font-size:22px;
+
+    transition:.25s;
+}
+
+.activity.active:hover .open{
+    color:var(--aws);
+
+    transform:translateX(4px);
+}
+
+.activity-cloud{
+    position:absolute;
+
+    right:12px;
+    bottom:-10px;
+
+    font-size:70px;
+
+    opacity:.025;
+
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   TERMINAL
+   ========================================================= */
+
+.terminal{
+    margin-top:50px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(0,217,255,.14);
+    border-radius:11px;
+
+    background:#02070b;
+}
+
+.terminal-bar{
+    padding:10px 14px;
+
+    display:flex;
+    align-items:center;
+
+    gap:7px;
+
+    border-bottom:1px solid var(--border);
+
+    background:#071019;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+}
+
+.red-dot{
+    background:#ff5f57;
+}
+
+.yellow-dot{
+    background:#febc2e;
+}
+
+.green-dot{
+    background:#28c840;
+}
+
+.terminal-title{
+    margin-left:8px;
+
+    color:#53636e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.terminal-content{
+    padding:20px;
+
+    color:#7c8d98;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    line-height:1.9;
+}
+
+.prompt{
+    color:var(--aws);
+}
+
+.command{
+    color:white;
+}
+
+.success{
+    color:var(--green);
+}
+
+.cloud-value{
+    color:var(--cyan);
+}
+
+.cursor{
+    display:inline-block;
+
+    width:7px;
+    height:13px;
+
+    vertical-align:middle;
+
+    background:var(--cyan);
+
+    animation:
+        cursorBlink .8s infinite;
+}
+
+@keyframes cursorBlink{
+
+    50%{
+        opacity:0;
+    }
+
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+    width:92%;
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:25px 0 40px;
+
+    display:flex;
+    justify-content:space-between;
+
+    gap:20px;
+
+    border-top:1px solid var(--border);
+
+    color:#43535e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+    .cloud-panel{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+    .services{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+}
+
+@media(max-width:850px){
+
+    h1{
+        font-size:45px;
+    }
+
+    .az-grid{
+        grid-template-columns:1fr;
+    }
+
+    .models{
+        grid-template-columns:1fr;
+    }
+
+    .activities{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:650px){
+
+    .cloud-panel{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .services{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .activity{
+        grid-template-columns:55px 1fr 20px;
+
+        padding:17px;
+
+        gap:12px;
+    }
+
+    .activity-number{
+        width:52px;
+        height:52px;
+
+        font-size:17px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+
+        gap:20px;
+    }
+
+    .section-header{
+        align-items:flex-start;
+    }
+
+    footer{
+        flex-direction:column;
+    }
+
+}
+
+@media(max-width:450px){
+
+    h1{
+        font-size:36px;
+    }
+
+    .services{
+        grid-template-columns:1fr;
+    }
+
+    .cloud-panel{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ===================================================== -->
+<!-- CLOUD BOOT                                            -->
+<!-- ===================================================== -->
+
+<div id="boot">
+
+    <div class="boot-console">
+
+        <div class="boot-logo">
+            ☁ MCS CLOUD SYSTEM
+        </div>
+
+        <div class="boot-sub">
+            CLOUD INFRASTRUCTURE INITIALIZATION
+        </div>
+
+        <div class="boot-line">
+            Initializing Cloud Console .........
+            <span class="boot-ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Authenticating IAM .................
+            <span class="boot-ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Connecting to AWS Region ...........
+            <span class="boot-ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Scanning Availability Zones ........
+            <span class="boot-ok">ONLINE</span>
+        </div>
+
+        <div class="boot-line">
+            Loading VPC ........................
+            <span class="boot-ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            EC2 Compute Nodes ..................
+            <span class="boot-ok">READY</span>
+        </div>
+
+        <div class="boot-line">
+            S3 Storage .........................
+            <span class="boot-ok">AVAILABLE</span>
+        </div>
+
+        <div class="boot-line">
+            CLOUD INFRASTRUCTURE ...............
+            <span class="boot-aws">ONLINE</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<canvas id="cloudCanvas"></canvas>
+
+<div class="background"></div>
+
+<div class="grid-background"></div>
+
+<div class="scanlines"></div>
+
+
+<!-- ===================================================== -->
+<!-- HEADER                                                -->
+<!-- ===================================================== -->
+
+<header>
+
+    <div class="topbar">
+
+        <a
+            href="index.html"
+            class="back"
+        >
+            ← PORTAL ASIX
+        </a>
+
+
+        <div class="cloud-status">
+
+            <span class="status-light"></span>
+
+            CLOUD ONLINE
+
+        </div>
+
+    </div>
+
+
+    <div class="eyebrow">
+        // MCS CLOUD COMMAND CENTER
+    </div>
+
+
+    <h1>
+        Introducción a la<br>
+        <span class="aws-title">
+            Nube Pública
+        </span>
+    </h1>
+
+
+    <p class="hero-text">
+
+        Introducción a los conceptos fundamentales de
+
+        <strong>
+            Cloud Computing
+        </strong>
+
+        y al funcionamiento de la nube pública de
+
+        <strong>
+            Amazon Web Services (AWS).
+        </strong>
+
+        Infraestructura global, regiones, zonas de disponibilidad,
+        computación, almacenamiento, redes, bases de datos,
+        seguridad y servicios cloud.
+
+    </p>
+
+
+    <div class="hero-badges">
+
+        <span class="hero-badge aws">
+            AWS
+        </span>
+
+        <span class="hero-badge">
+            PUBLIC CLOUD
+        </span>
+
+        <span class="hero-badge">
+            IaaS
+        </span>
+
+        <span class="hero-badge">
+            PaaS
+        </span>
+
+        <span class="hero-badge">
+            SaaS
+        </span>
+
+        <span class="hero-badge online">
+            ● ONLINE
+        </span>
+
+    </div>
+
+</header>
+
+
+<!-- ===================================================== -->
+<!-- MAIN                                                  -->
+<!-- ===================================================== -->
+
+<main>
+
+
+<!-- ===================================================== -->
+<!-- ESTADO CLOUD                                          -->
+<!-- ===================================================== -->
+
+<section class="cloud-panel">
+
+
+    <div class="cloud-card">
+
+        <span>
+            PROVIDER
+        </span>
+
+        <strong class="aws">
+            AMAZON WEB SERVICES
+        </strong>
+
+    </div>
+
+
+    <div class="cloud-card">
+
+        <span>
+            INFRASTRUCTURE
+        </span>
+
+        <strong class="cyan">
+            PUBLIC CLOUD
+        </strong>
+
+    </div>
+
+
+    <div class="cloud-card">
+
+        <span>
+            ARCHITECTURE
+        </span>
+
+        <strong>
+            DISTRIBUTED
+        </strong>
+
+    </div>
+
+
+    <div class="cloud-card">
+
+        <span>
+            ACTIVITIES
+        </span>
+
+        <strong class="purple">
+            10 LABS
+        </strong>
+
+    </div>
+
+
+    <div class="cloud-card">
+
+        <span>
+            STATUS
+        </span>
+
+        <strong class="green">
+            ● ONLINE
+        </strong>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- INFRAESTRUCTURA GLOBAL                                -->
+<!-- ===================================================== -->
+
+<div class="section-header">
+
+    <div>
+
+        <span class="section-code">
+            /AWS/GLOBAL-INFRASTRUCTURE
+        </span>
+
+        <h2>
+            Infraestructura Cloud
+        </h2>
+
+    </div>
+
+    <div class="section-status">
+        NETWORK STATUS · ONLINE
+    </div>
+
+</div>
+
+
+<section class="architecture">
+
+
+    <div class="internet">
+        ☁ INTERNET / PUBLIC CLOUD
+    </div>
+
+
+    <div class="arch-line"></div>
+
+
+    <div class="region">
+
+
+        <div class="region-title">
+
+            <span>
+                AWS REGION
+            </span>
+
+            <span>
+                ● ACTIVE
+            </span>
+
+        </div>
+
+
+        <div class="az-grid">
+
+
+            <div class="az">
+
+                <div class="az-title">
+                    AVAILABILITY ZONE · A
+                </div>
+
+                <div class="az-service ec2">
+                    🖥 EC2 INSTANCE
+                </div>
+
+                <div class="az-service">
+                    🌐 SUBNET
+                </div>
+
+                <div class="az-service db">
+                    🗃 DATABASE
+                </div>
+
+            </div>
+
+
+            <div class="az">
+
+                <div class="az-title">
+                    AVAILABILITY ZONE · B
+                </div>
+
+                <div class="az-service ec2">
+                    🖥 EC2 INSTANCE
+                </div>
+
+                <div class="az-service">
+                    🌐 SUBNET
+                </div>
+
+                <div class="az-service db">
+                    🗃 DATABASE
+                </div>
+
+            </div>
+
+
+            <div class="az">
+
+                <div class="az-title">
+                    AVAILABILITY ZONE · C
+                </div>
+
+                <div class="az-service ec2">
+                    🖥 EC2 INSTANCE
+                </div>
+
+                <div class="az-service">
+                    🌐 SUBNET
+                </div>
+
+                <div class="az-service db">
+                    🗃 DATABASE
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SERVICIOS FUNDAMENTALES                               -->
+<!-- ===================================================== -->
+
+<div class="section-header">
+
+    <div>
+
+        <span class="section-code">
+            /AWS/CORE-SERVICES
+        </span>
+
+        <h2>
+            Servicios fundamentales
+        </h2>
+
+    </div>
+
+    <div class="section-status">
+        05 SERVICES DETECTED
+    </div>
+
+</div>
+
+
+<section class="services">
+
+
+    <div class="service">
+
+        <div class="service-icon">
+            🖥
+        </div>
+
+        <div class="service-code">
+            AWS::EC2
+        </div>
+
+        <h3>
+            EC2
+        </h3>
+
+        <p>
+            Servicio de computación que permite
+            ejecutar servidores virtuales
+            en la nube.
+        </p>
+
+    </div>
+
+
+    <div class="service">
+
+        <div class="service-icon">
+            🪣
+        </div>
+
+        <div class="service-code">
+            AWS::S3
+        </div>
+
+        <h3>
+            S3
+        </h3>
+
+        <p>
+            Servicio de almacenamiento
+            de objetos escalable
+            en la nube.
+        </p>
+
+    </div>
+
+
+    <div class="service">
+
+        <div class="service-icon">
+            🌐
+        </div>
+
+        <div class="service-code">
+            AWS::VPC
+        </div>
+
+        <h3>
+            VPC
+        </h3>
+
+        <p>
+            Permite crear una red virtual
+            aislada dentro de AWS.
+        </p>
+
+    </div>
+
+
+    <div class="service">
+
+        <div class="service-icon">
+            🗃
+        </div>
+
+        <div class="service-code">
+            AWS::RDS
+        </div>
+
+        <h3>
+            RDS
+        </h3>
+
+        <p>
+            Servicio administrado para
+            bases de datos relacionales.
+        </p>
+
+    </div>
+
+
+    <div class="service">
+
+        <div class="service-icon">
+            🔐
+        </div>
+
+        <div class="service-code">
+            AWS::IAM
+        </div>
+
+        <h3>
+            IAM
+        </h3>
+
+        <p>
+            Gestión de identidades,
+            autenticación y permisos
+            sobre recursos AWS.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- FLUJO                                                 -->
+<!-- ===================================================== -->
+
+<div class="section-header">
+
+    <div>
+
+        <span class="section-code">
+            /CLOUD/REQUEST-FLOW
+        </span>
+
+        <h2>
+            Flujo simplificado
+        </h2>
+
+    </div>
+
+</div>
+
+
+<section class="cloud-flow">
+
+
+    <div class="flow-node">
+
+        <span>
+            👤
+        </span>
+
+        USUARIO
+
+    </div>
+
+
+    <div class="flow-arrow">
+        ───▶
+    </div>
+
+
+    <div class="flow-node">
+
+        <span>
+            🌐
+        </span>
+
+        INTERNET
+
+    </div>
+
+
+    <div class="flow-arrow">
+        ───▶
+    </div>
+
+
+    <div class="flow-node">
+
+        <span>
+            ☁
+        </span>
+
+        AWS CLOUD
+
+    </div>
+
+
+    <div class="flow-arrow">
+        ───▶
+    </div>
+
+
+    <div class="flow-node">
+
+        <span>
+            🖥
+        </span>
+
+        COMPUTE
+
+    </div>
+
+
+    <div class="flow-arrow">
+        ───▶
+    </div>
+
+
+    <div class="flow-node">
+
+        <span>
+            🗃
+        </span>
+
+        DATA
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- MODELOS                                               -->
+<!-- ===================================================== -->
+
+<div class="section-header">
+
+    <div>
+
+        <span class="section-code">
+            /CLOUD/SERVICE-MODELS
+        </span>
+
+        <h2>
+            Modelos de servicio Cloud
+        </h2>
+
+    </div>
+
+</div>
+
+
+<section class="models">
+
+
+    <div class="model">
+
+        <div class="model-number">
+            MODEL · 01
+        </div>
+
+        <h3>
+            IaaS
+        </h3>
+
+        <strong>
+            Infrastructure as a Service
+        </strong>
+
+        <p>
+            Proporciona recursos de infraestructura
+            como máquinas virtuales, redes y
+            almacenamiento.
+        </p>
+
+    </div>
+
+
+    <div class="model">
+
+        <div class="model-number">
+            MODEL · 02
+        </div>
+
+        <h3>
+            PaaS
+        </h3>
+
+        <strong>
+            Platform as a Service
+        </strong>
+
+        <p>
+            Proporciona una plataforma preparada
+            para desarrollar y ejecutar aplicaciones
+            sin administrar toda la infraestructura.
+        </p>
+
+    </div>
+
+
+    <div class="model">
+
+        <div class="model-number">
+            MODEL · 03
+        </div>
+
+        <h3>
+            SaaS
+        </h3>
+
+        <strong>
+            Software as a Service
+        </strong>
+
+        <p>
+            El usuario utiliza directamente una
+            aplicación proporcionada como servicio
+            a través de Internet.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ACTIVIDADES                                           -->
+<!-- ===================================================== -->
+
+<div class="section-header">
+
+    <div>
+
+        <span class="section-code">
+            /MCS/CLOUD/LABS
+        </span>
+
+        <h2>
+            Actividades Cloud
+        </h2>
+
+    </div>
+
+    <div class="section-status">
+        00 / 10 AVAILABLE
+    </div>
+
+</div>
+
+
+<section class="activities">
+
+
+<!-- ACTIVIDAD 01 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        01
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-001 · WAITING
+        </div>
+
+        <h3>
+            Actividad 1
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        ☁
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 02 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        02
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-002 · WAITING
+        </div>
+
+        <h3>
+            Actividad 2
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        ☁
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 03 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        03
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-003 · WAITING
+        </div>
+
+        <h3>
+            Actividad 3
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        🌐
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 04 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        04
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-004 · WAITING
+        </div>
+
+        <h3>
+            Actividad 4
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        🖥
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 05 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        05
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-005 · WAITING
+        </div>
+
+        <h3>
+            Actividad 5
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        🪣
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 06 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        06
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-006 · WAITING
+        </div>
+
+        <h3>
+            Actividad 6
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        🗃
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 07 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        07
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-007 · WAITING
+        </div>
+
+        <h3>
+            Actividad 7
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        🔐
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 08 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        08
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-008 · WAITING
+        </div>
+
+        <h3>
+            Actividad 8
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        ⚙
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 09 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        09
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-009 · WAITING
+        </div>
+
+        <h3>
+            Actividad 9
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        📊
+    </span>
+
+</div>
+
+
+<!-- ACTIVIDAD 10 -->
+
+<div class="activity locked">
+
+    <div class="activity-number">
+        10
+    </div>
+
+    <div class="activity-content">
+
+        <div class="activity-id">
+            CLOUD-ACT-010 · WAITING
+        </div>
+
+        <h3>
+            Actividad 10
+        </h3>
+
+        <p>
+            Contenido pendiente de asignar.
+        </p>
+
+        <span class="activity-status">
+            🔒 PENDIENTE
+        </span>
+
+    </div>
+
+    <span class="open">
+        →
+    </span>
+
+    <span class="activity-cloud">
+        🚀
+    </span>
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- TERMINAL CLOUD                                        -->
+<!-- ===================================================== -->
+
+<section class="terminal">
+
+
+    <div class="terminal-bar">
+
+        <span class="dot red-dot"></span>
+        <span class="dot yellow-dot"></span>
+        <span class="dot green-dot"></span>
+
+        <span class="terminal-title">
+            miguel@mcs-cloud:~
+        </span>
+
+    </div>
+
+
+    <div class="terminal-content">
+
+
+        <span class="prompt">
+            miguel@cloud:~$
+        </span>
+
+        <span class="command">
+            cloud-status
+        </span>
+
+        <br>
+
+        PROVIDER ..........
+        <span class="cloud-value">
+            AMAZON WEB SERVICES
+        </span>
+
+        <br>
+
+        INFRASTRUCTURE ....
+        <span class="cloud-value">
+            PUBLIC CLOUD
+        </span>
+
+        <br>
+
+        NETWORK ...........
+        <span class="success">
+            ONLINE
+        </span>
+
+        <br>
+
+        COMPUTE ...........
+        <span class="success">
+            READY
+        </span>
+
+        <br>
+
+        STORAGE ...........
+        <span class="success">
+            AVAILABLE
+        </span>
+
+
+        <br><br>
+
+
+        <span class="prompt">
+            miguel@cloud:~$
+        </span>
+
+        <span class="command">
+            ls /cloud-labs
+        </span>
+
+        <br>
+
+        lab01&nbsp;
+        lab02&nbsp;
+        lab03&nbsp;
+        lab04&nbsp;
+        lab05&nbsp;
+        lab06&nbsp;
+        lab07&nbsp;
+        lab08&nbsp;
+        lab09&nbsp;
+        lab10
+
+
+        <br><br>
+
+
+        <span class="prompt">
+            miguel@cloud:~$
+        </span>
+
+        <span class="cursor"></span>
+
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- ===================================================== -->
+<!-- FOOTER                                                -->
+<!-- ===================================================== -->
+
+<footer>
+
+    <span>
+        MCS CLOUD COMMAND CENTER · PUBLIC CLOUD
+    </span>
+
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   CLOUD NETWORK BACKGROUND
+   ========================================================= */
+
+const canvas =
+    document.getElementById(
+        "cloudCanvas"
+    );
+
+const ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+let nodes=[];
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   CREAR NODOS
+   ========================================================= */
+
+function createNodes(){
+
+    nodes=[];
+
+    const amount =
+        window.innerWidth < 700
+        ? 28
+        : 65;
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        nodes.push({
+
+            x:
+                Math.random() *
+                canvas.width,
+
+            y:
+                Math.random() *
+                canvas.height,
+
+            vx:
+                (Math.random()-.5) *
+                .18,
+
+            vy:
+                (Math.random()-.5) *
+                .18,
+
+            r:
+                Math.random() *
+                1.4 +
+                .4,
+
+            type:
+                Math.random() >
+                .82
+                ? "aws"
+                : "cyan"
+
+        });
+
+    }
+
+}
+
+createNodes();
+
+window.addEventListener(
+    "resize",
+    createNodes
+);
+
+
+/* =========================================================
+   ANIMAR
+   ========================================================= */
+
+function animateCloud(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /* NODOS */
+
+    nodes.forEach(node=>{
+
+        node.x += node.vx;
+
+        node.y += node.vy;
+
+
+        if(
+            node.x < 0 ||
+            node.x > canvas.width
+        ){
+
+            node.vx *= -1;
+
+        }
+
+
+        if(
+            node.y < 0 ||
+            node.y > canvas.height
+        ){
+
+            node.vy *= -1;
+
+        }
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            node.x,
+            node.y,
+            node.r,
+            0,
+            Math.PI*2
+        );
+
+
+        if(
+            node.type === "aws"
+        ){
+
+            ctx.fillStyle =
+                "rgba(255,153,0,.35)";
+
+        }
+        else{
+
+            ctx.fillStyle =
+                "rgba(0,217,255,.25)";
+
+        }
+
+
+        ctx.fill();
+
+    });
+
+
+    /* CONEXIONES */
+
+    for(
+        let i=0;
+        i<nodes.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<nodes.length;
+            j++
+        ){
+
+            const dx =
+                nodes[i].x -
+                nodes[j].x;
+
+            const dy =
+                nodes[i].y -
+                nodes[j].y;
+
+            const distance =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
+
+
+            if(
+                distance < 135
+            ){
+
+                const opacity =
+                    .045 *
+                    (1-distance/135);
+
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    nodes[i].x,
+                    nodes[i].y
+                );
+
+                ctx.lineTo(
+                    nodes[j].x,
+                    nodes[j].y
+                );
+
+                ctx.strokeStyle =
+                    "rgba(0,217,255," +
+                    opacity +
+                    ")";
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animateCloud
+    );
+
+}
+
+animateCloud();
+
+</script>
+
+
+</body>
+</html>
