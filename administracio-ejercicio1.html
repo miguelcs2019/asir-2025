@@ -1,0 +1,4088 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ejercicio 1 | Sistemas Operativos Actuales</title>
+
+<style>
+
+/* =========================================================
+   CONFIGURACIÓN GENERAL
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#06080a;
+    --panel:#0e1216;
+    --panel2:#151a20;
+
+    --amber:#ffb000;
+    --amber2:#ffd166;
+
+    --blue:#55aaff;
+    --cyan:#00d9ff;
+    --green:#5cff91;
+    --purple:#bd8cff;
+    --red:#ff626c;
+
+    --white:#eef2f5;
+    --text:#bac4cb;
+    --muted:#6f7b84;
+
+    --border:rgba(255,255,255,.08);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    background:var(--bg);
+
+    color:var(--white);
+
+    font-family:"Segoe UI",Arial,sans-serif;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   FONDO
+   ========================================================= */
+
+#bgCanvas{
+    position:fixed;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:-3;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+
+    z-index:-2;
+
+    pointer-events:none;
+
+    background:
+
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(255,176,0,.07),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 90% 60%,
+            rgba(0,217,255,.05),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            rgba(6,8,10,.60),
+            rgba(6,8,10,.97)
+        );
+}
+
+
+/* =========================================================
+   EFECTO CRT
+   ========================================================= */
+
+.scanlines{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    pointer-events:none;
+
+    opacity:.10;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgba(255,255,255,.025) 4px
+        );
+}
+
+
+/* =========================================================
+   BOOT SCREEN
+   ========================================================= */
+
+#boot{
+    position:fixed;
+    inset:0;
+
+    z-index:9999;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#010201;
+
+    animation:
+        bootExit .6s forwards 2.8s;
+}
+
+.boot-box{
+    width:90%;
+    max-width:650px;
+
+    color:var(--amber);
+
+    font-family:Consolas,monospace;
+
+    font-size:12px;
+    line-height:1.9;
+}
+
+.boot-title{
+    margin-bottom:20px;
+
+    font-size:17px;
+    font-weight:bold;
+
+    letter-spacing:4px;
+}
+
+.boot-line{
+    opacity:0;
+
+    animation:
+        showLine .2s forwards;
+}
+
+.boot-line:nth-child(2){
+    animation-delay:.3s;
+}
+
+.boot-line:nth-child(3){
+    animation-delay:.7s;
+}
+
+.boot-line:nth-child(4){
+    animation-delay:1.1s;
+}
+
+.boot-line:nth-child(5){
+    animation-delay:1.5s;
+}
+
+.boot-line:nth-child(6){
+    animation-delay:1.9s;
+}
+
+.ok{
+    color:var(--green);
+}
+
+@keyframes showLine{
+
+    to{
+        opacity:1;
+    }
+
+}
+
+@keyframes bootExit{
+
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:40px 0 45px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:60px;
+}
+
+.back{
+    color:#78838b;
+
+    text-decoration:none;
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    transition:.25s;
+}
+
+.back:hover{
+    color:var(--amber);
+}
+
+.online{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.online::before{
+    content:"";
+
+    display:inline-block;
+
+    width:7px;
+    height:7px;
+
+    margin-right:8px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 10px var(--green);
+}
+
+.code{
+    margin-bottom:13px;
+
+    color:var(--amber);
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    letter-spacing:4px;
+}
+
+h1{
+    max-width:950px;
+
+    font-size:58px;
+    line-height:1.04;
+
+    background:
+        linear-gradient(
+            90deg,
+            white,
+            #ffe2a4,
+            var(--amber)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.intro{
+    max-width:900px;
+
+    margin-top:20px;
+
+    color:#89959d;
+
+    font-size:16px;
+    line-height:1.8;
+}
+
+.intro strong{
+    color:white;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+main{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding-bottom:80px;
+}
+
+
+/* =========================================================
+   INFO SUPERIOR
+   ========================================================= */
+
+.status-grid{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:12px;
+
+    margin-bottom:50px;
+}
+
+.status-card{
+    padding:16px;
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    background:rgba(14,18,22,.85);
+}
+
+.status-card span{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#59656e;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.status-card strong{
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+.amber{color:var(--amber);}
+.green{color:var(--green);}
+.cyan{color:var(--cyan);}
+.blue{color:var(--blue);}
+.purple{color:var(--purple);}
+.red{color:var(--red);}
+
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
+
+.section-title{
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    margin:60px 0 22px;
+
+    padding-bottom:15px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.section-title span{
+    color:var(--amber);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.section-title h2{
+    font-size:24px;
+}
+
+
+/* =========================================================
+   QUÉ ES UN SO
+   ========================================================= */
+
+.definition{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.definition-text{
+    padding:28px;
+
+    border:1px solid rgba(255,176,0,.18);
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,176,0,.04),
+            rgba(14,18,22,.92)
+        );
+}
+
+.definition-text h3{
+    margin-bottom:15px;
+
+    color:var(--amber2);
+
+    font-size:21px;
+}
+
+.definition-text p{
+    color:#9ca7ae;
+
+    line-height:1.8;
+
+    font-size:14px;
+}
+
+.definition-text strong{
+    color:white;
+}
+
+
+/* =========================================================
+   ESQUEMA CAPAS
+   ========================================================= */
+
+.layers{
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:#0b0f12;
+}
+
+.layer{
+    padding:14px;
+
+    text-align:center;
+
+    border-radius:7px;
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+.layer.user{
+    border:1px solid rgba(189,140,255,.25);
+
+    color:var(--purple);
+
+    background:rgba(189,140,255,.05);
+}
+
+.layer.apps{
+    border:1px solid rgba(0,217,255,.25);
+
+    color:var(--cyan);
+
+    background:rgba(0,217,255,.05);
+}
+
+.layer.os{
+    border:1px solid rgba(255,176,0,.30);
+
+    color:var(--amber);
+
+    background:rgba(255,176,0,.07);
+}
+
+.layer.hardware{
+    border:1px solid rgba(92,255,145,.22);
+
+    color:var(--green);
+
+    background:rgba(92,255,145,.04);
+}
+
+.down{
+    padding:5px;
+
+    text-align:center;
+
+    color:#536069;
+}
+
+
+/* =========================================================
+   FUNCIONES
+   ========================================================= */
+
+.functions{
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:13px;
+}
+
+.function{
+    padding:20px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:rgba(14,18,22,.8);
+}
+
+.function-icon{
+    display:block;
+
+    margin-bottom:12px;
+
+    font-size:26px;
+}
+
+.function h3{
+    margin-bottom:7px;
+
+    font-size:15px;
+}
+
+.function p{
+    color:#7c8992;
+
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   CLASIFICACIÓN
+   ========================================================= */
+
+.classification{
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:15px;
+}
+
+.class-card{
+    padding:25px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:rgba(14,18,22,.85);
+}
+
+.class-card > span{
+    display:block;
+
+    margin-bottom:15px;
+
+    font-size:32px;
+}
+
+.class-card h3{
+    margin-bottom:14px;
+
+    font-size:18px;
+}
+
+.class-card ul{
+    list-style:none;
+}
+
+.class-card li{
+    padding:7px 0;
+
+    color:#84919a;
+
+    font-size:13px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.04);
+}
+
+
+/* =========================================================
+   SELECTOR SO
+   ========================================================= */
+
+.os-tabs{
+    display:grid;
+
+    grid-template-columns:
+        repeat(6,1fr);
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+}
+
+.os-tab{
+    padding:15px 8px;
+
+    border:0;
+    border-right:1px solid var(--border);
+
+    background:#0b0f12;
+
+    color:#6d7982;
+
+    cursor:pointer;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    transition:.25s;
+}
+
+.os-tab:hover{
+    color:white;
+
+    background:#11171c;
+}
+
+.os-tab.active{
+    color:var(--amber);
+
+    background:rgba(255,176,0,.06);
+
+    box-shadow:
+        inset 0 -2px var(--amber);
+}
+
+
+/* =========================================================
+   SISTEMA OPERATIVO
+   ========================================================= */
+
+.os-panel{
+    display:none;
+
+    animation:fadeIn .35s ease;
+}
+
+.os-panel.active{
+    display:block;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+.os-card{
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,23,28,.96),
+            rgba(8,11,13,.96)
+        );
+}
+
+.os-header{
+    padding:28px;
+
+    display:flex;
+    align-items:center;
+
+    gap:20px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.os-logo{
+    width:70px;
+    height:70px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    flex-shrink:0;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:#090c0f;
+
+    font-size:34px;
+}
+
+.os-name h3{
+    margin-bottom:5px;
+
+    font-size:27px;
+}
+
+.os-name p{
+    color:#77838c;
+
+    font-size:12px;
+}
+
+.current-version{
+    margin-left:auto;
+
+    text-align:right;
+}
+
+.current-version span{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:#5e6972;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.current-version strong{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:14px;
+}
+
+
+/* =========================================================
+   CONTENIDO DEL SO
+   ========================================================= */
+
+.os-content{
+    padding:28px;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.info-box{
+    padding:22px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:rgba(4,7,9,.35);
+}
+
+.info-box.full{
+    grid-column:1/-1;
+}
+
+.info-box h4{
+    margin-bottom:15px;
+
+    color:var(--amber2);
+
+    font-size:14px;
+}
+
+.info-box p{
+    color:#89969e;
+
+    line-height:1.7;
+
+    font-size:13px;
+}
+
+.info-list{
+    list-style:none;
+}
+
+.info-list li{
+    padding:8px 0;
+
+    color:#8b979f;
+
+    font-size:12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.04);
+}
+
+.info-list strong{
+    color:white;
+}
+
+
+/* =========================================================
+   VERSIONES
+   ========================================================= */
+
+.timeline{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    overflow-x:auto;
+
+    padding:8px 0;
+}
+
+.version{
+    min-width:100px;
+
+    padding:10px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+    border-radius:6px;
+
+    color:#78858e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    background:#080b0d;
+}
+
+.version.current{
+    color:var(--green);
+
+    border-color:
+        rgba(92,255,145,.25);
+
+    background:
+        rgba(92,255,145,.04);
+}
+
+.timeline-arrow{
+    color:#424d55;
+}
+
+
+/* =========================================================
+   REQUISITOS
+   ========================================================= */
+
+.requirements{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:10px;
+}
+
+.req{
+    padding:15px;
+
+    border:1px solid var(--border);
+    border-radius:7px;
+
+    background:#080b0d;
+}
+
+.req span{
+    display:block;
+
+    margin-bottom:6px;
+
+    color:#59656e;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:1px;
+}
+
+.req strong{
+    color:#dce3e7;
+
+    font-size:11px;
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   NOTA
+   ========================================================= */
+
+.note{
+    margin-top:15px;
+
+    padding:15px;
+
+    border-left:3px solid var(--cyan);
+
+    background:rgba(0,217,255,.035);
+
+    color:#87949c;
+
+    font-size:12px;
+    line-height:1.7;
+}
+
+.note strong{
+    color:var(--cyan);
+}
+
+
+/* =========================================================
+   TABLA FINAL
+   ========================================================= */
+
+.table-wrapper{
+    overflow-x:auto;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+
+    min-width:900px;
+
+    border-collapse:collapse;
+
+    background:rgba(12,16,19,.92);
+}
+
+th{
+    padding:15px;
+
+    text-align:left;
+
+    color:var(--amber);
+
+    background:rgba(255,176,0,.04);
+
+    border-bottom:
+        1px solid rgba(255,176,0,.15);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+td{
+    padding:15px;
+
+    color:#87949c;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.04);
+
+    font-size:12px;
+}
+
+td strong{
+    color:white;
+}
+
+
+/* =========================================================
+   IMPORTANTE
+   ========================================================= */
+
+.important{
+    margin-top:30px;
+
+    padding:24px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,176,0,.22);
+    border-radius:12px;
+
+    background:rgba(255,176,0,.04);
+}
+
+.important span{
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#737f87;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.important strong{
+    color:var(--amber2);
+
+    font-size:17px;
+}
+
+
+/* =========================================================
+   MEMORY BLOCK
+   ========================================================= */
+
+.memory{
+    padding:30px;
+
+    border:1px solid rgba(92,255,145,.23);
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(92,255,145,.04),
+            rgba(9,13,11,.95)
+        );
+}
+
+.memory-title{
+    margin-bottom:25px;
+
+    text-align:center;
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+
+    letter-spacing:4px;
+}
+
+.memory-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:8px;
+}
+
+.memory-item{
+    display:grid;
+
+    grid-template-columns:130px 1fr;
+
+    padding:13px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.05);
+}
+
+.memory-item span{
+    color:#637069;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.memory-item strong{
+    font-size:12px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:25px 0 40px;
+
+    display:flex;
+    justify-content:space-between;
+
+    border-top:1px solid var(--border);
+
+    color:#475159;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:900px){
+
+    .status-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .functions{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .classification{
+        grid-template-columns:1fr;
+    }
+
+    .os-tabs{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+    .requirements{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:700px){
+
+    h1{
+        font-size:38px;
+    }
+
+    .definition,
+    .os-content,
+    .memory-grid{
+        grid-template-columns:1fr;
+    }
+
+    .info-box.full{
+        grid-column:auto;
+    }
+
+    .functions{
+        grid-template-columns:1fr;
+    }
+
+    .os-header{
+        flex-wrap:wrap;
+    }
+
+    .current-version{
+        width:100%;
+
+        margin-left:0;
+
+        text-align:left;
+    }
+
+    .os-tabs{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .memory-item{
+        grid-template-columns:1fr;
+
+        gap:6px;
+    }
+
+    footer{
+        flex-direction:column;
+
+        gap:8px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ===================================================== -->
+<!-- BOOT                                                  -->
+<!-- ===================================================== -->
+
+<div id="boot">
+
+    <div class="boot-box">
+
+        <div class="boot-title">
+            MCS SYSTEM LOADER
+        </div>
+
+        <div class="boot-line">
+            Detecting hardware ............... <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Loading kernel ................... <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Mounting operating systems ....... <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Loading OS database .............. <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Starting ACTIVITY 01 ............. <span class="ok">READY</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="background"></div>
+
+<div class="scanlines"></div>
+
+
+<!-- ===================================================== -->
+<!-- HEADER                                                -->
+<!-- ===================================================== -->
+
+<header>
+
+
+    <div class="topbar">
+
+        <a
+            href="administracio.html"
+            class="back"
+        >
+            ← ACTIVITATS D'ADMINISTRACIÓ
+        </a>
+
+        <div class="online">
+            SYSTEM ONLINE
+        </div>
+
+    </div>
+
+
+    <div class="code">
+        // SYS-ACT-001
+    </div>
+
+
+    <h1>
+        Sistemas Operativos<br>
+        Actuales
+    </h1>
+
+
+    <p class="intro">
+
+        Estudio de los principales
+
+        <strong>
+            sistemas operativos actuales
+        </strong>,
+
+        sus características, evolución,
+
+        <strong>
+            versiones actuales
+        </strong>
+
+        y
+
+        <strong>
+            requisitos mínimos.
+        </strong>
+
+    </p>
+
+
+</header>
+
+
+<main>
+
+
+<!-- ===================================================== -->
+<!-- ESTADO                                                -->
+<!-- ===================================================== -->
+
+<section class="status-grid">
+
+
+    <div class="status-card">
+
+        <span>
+            ACTIVITY
+        </span>
+
+        <strong class="amber">
+            SYS-ACT-001
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>
+            CATEGORY
+        </span>
+
+        <strong>
+            OPERATING SYSTEMS
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>
+            SYSTEMS
+        </span>
+
+        <strong class="cyan">
+            6 ANALIZADOS
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>
+            STATUS
+        </span>
+
+        <strong class="green">
+            ● READY
+        </strong>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 01 QUÉ ES UN SO                                       -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        01 //
+    </span>
+
+    <h2>
+        ¿Qué es un Sistema Operativo?
+    </h2>
+
+</div>
+
+
+<section class="definition">
+
+
+    <div class="definition-text">
+
+        <h3>
+            Sistema Operativo · SO
+        </h3>
+
+        <p>
+
+            Un
+
+            <strong>
+                sistema operativo
+            </strong>
+
+            es el software fundamental que administra
+            los recursos de un ordenador o dispositivo.
+
+            <br><br>
+
+            Actúa como
+
+            <strong>
+                intermediario entre el hardware,
+                las aplicaciones y el usuario.
+            </strong>
+
+            <br><br>
+
+            Sin un sistema operativo, el usuario
+            tendría que controlar directamente
+            el procesador, la memoria, el almacenamiento
+            y los dispositivos.
+
+        </p>
+
+    </div>
+
+
+    <div class="layers">
+
+
+        <div class="layer user">
+            👤 USUARIO
+        </div>
+
+        <div class="down">
+            ↓
+        </div>
+
+        <div class="layer apps">
+            📦 APLICACIONES
+        </div>
+
+        <div class="down">
+            ↓
+        </div>
+
+        <div class="layer os">
+            ⚙️ SISTEMA OPERATIVO
+        </div>
+
+        <div class="down">
+            ↓
+        </div>
+
+        <div class="layer hardware">
+            🖥️ HARDWARE
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 02 FUNCIONES                                          -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        02 //
+    </span>
+
+    <h2>
+        Principales funciones
+    </h2>
+
+</div>
+
+
+<section class="functions">
+
+
+    <div class="function">
+
+        <span class="function-icon">
+            ⚙️
+        </span>
+
+        <h3>
+            Procesos
+        </h3>
+
+        <p>
+            Controla la ejecución de programas
+            y reparte el tiempo de CPU.
+        </p>
+
+    </div>
+
+
+    <div class="function">
+
+        <span class="function-icon">
+            🧠
+        </span>
+
+        <h3>
+            Memoria
+        </h3>
+
+        <p>
+            Gestiona la memoria RAM utilizada
+            por programas y procesos.
+        </p>
+
+    </div>
+
+
+    <div class="function">
+
+        <span class="function-icon">
+            📁
+        </span>
+
+        <h3>
+            Archivos
+        </h3>
+
+        <p>
+            Organiza archivos, directorios,
+            unidades y sistemas de archivos.
+        </p>
+
+    </div>
+
+
+    <div class="function">
+
+        <span class="function-icon">
+            🖨️
+        </span>
+
+        <h3>
+            Dispositivos
+        </h3>
+
+        <p>
+            Gestiona periféricos mediante
+            controladores o drivers.
+        </p>
+
+    </div>
+
+
+    <div class="function">
+
+        <span class="function-icon">
+            👥
+        </span>
+
+        <h3>
+            Usuarios
+        </h3>
+
+        <p>
+            Gestiona cuentas, grupos,
+            permisos y sesiones.
+        </p>
+
+    </div>
+
+
+    <div class="function">
+
+        <span class="function-icon">
+            🛡️
+        </span>
+
+        <h3>
+            Seguridad
+        </h3>
+
+        <p>
+            Controla autenticación,
+            permisos y protección del sistema.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 03 CLASIFICACIÓN                                      -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        03 //
+    </span>
+
+    <h2>
+        Sistemas Operativos actuales
+    </h2>
+
+</div>
+
+
+<section class="classification">
+
+
+    <div class="class-card">
+
+        <span>
+            🖥️
+        </span>
+
+        <h3>
+            Escritorio
+        </h3>
+
+        <ul>
+
+            <li>
+                Windows
+            </li>
+
+            <li>
+                macOS
+            </li>
+
+            <li>
+                GNU/Linux
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="class-card">
+
+        <span>
+            📱
+        </span>
+
+        <h3>
+            Móviles
+        </h3>
+
+        <ul>
+
+            <li>
+                Android
+            </li>
+
+            <li>
+                iOS
+            </li>
+
+            <li>
+                iPadOS
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="class-card">
+
+        <span>
+            💻
+        </span>
+
+        <h3>
+            Otros entornos
+        </h3>
+
+        <ul>
+
+            <li>
+                ChromeOS
+            </li>
+
+            <li>
+                ChromeOS Flex
+            </li>
+
+            <li>
+                Sistemas Cloud
+            </li>
+
+        </ul>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 04 FICHAS DE SISTEMAS                                 -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        04 //
+    </span>
+
+    <h2>
+        Análisis de cada Sistema Operativo
+    </h2>
+
+</div>
+
+
+<!-- SELECTOR -->
+
+<div class="os-tabs">
+
+
+    <button
+        class="os-tab active"
+        data-os="windows"
+    >
+        🪟 WINDOWS
+    </button>
+
+
+    <button
+        class="os-tab"
+        data-os="macos"
+    >
+        🍎 macOS
+    </button>
+
+
+    <button
+        class="os-tab"
+        data-os="linux"
+    >
+        🐧 LINUX
+    </button>
+
+
+    <button
+        class="os-tab"
+        data-os="android"
+    >
+        🤖 ANDROID
+    </button>
+
+
+    <button
+        class="os-tab"
+        data-os="ios"
+    >
+        📱 iOS
+    </button>
+
+
+    <button
+        class="os-tab"
+        data-os="chrome"
+    >
+        🌐 ChromeOS
+    </button>
+
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- WINDOWS                                               -->
+<!-- ===================================================== -->
+
+<section
+    class="os-panel active"
+    id="windows"
+>
+
+<div class="os-card">
+
+
+    <div class="os-header">
+
+
+        <div class="os-logo">
+            🪟
+        </div>
+
+
+        <div class="os-name">
+
+            <h3>
+                Microsoft Windows
+            </h3>
+
+            <p>
+                Microsoft · Escritorio · Portátiles · Empresas
+            </p>
+
+        </div>
+
+
+        <div class="current-version">
+
+            <span>
+                GENERACIÓN ACTUAL
+            </span>
+
+            <strong>
+                Windows 11
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="os-content">
+
+
+        <div class="info-box">
+
+            <h4>
+                PRINCIPALES CARACTERÍSTICAS
+            </h4>
+
+            <ul class="info-list">
+
+                <li>
+                    <strong>Interfaz gráfica</strong>
+                    orientada al escritorio.
+                </li>
+
+                <li>
+                    Amplia compatibilidad con
+                    <strong>hardware y software.</strong>
+                </li>
+
+                <li>
+                    Soporte para
+                    <strong>multitarea y múltiples usuarios.</strong>
+                </li>
+
+                <li>
+                    Integración con servicios Microsoft.
+                </li>
+
+                <li>
+                    Muy utilizado en
+                    <strong>hogares y empresas.</strong>
+                </li>
+
+                <li>
+                    Seguridad mediante TPM,
+                    Secure Boot, Windows Hello,
+                    Defender y BitLocker según edición.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h4>
+                VERSIONES PRINCIPALES
+            </h4>
+
+
+            <div class="timeline">
+
+                <div class="version">
+                    XP
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    Vista
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    7
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    8 / 8.1
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    10
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version current">
+                    11
+                </div>
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    ACTUAL:
+                </strong>
+
+                Windows 11 es la generación actual
+                de Windows para PC.
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box full">
+
+            <h4>
+                REQUISITOS MÍNIMOS · WINDOWS 11
+            </h4>
+
+
+            <div class="requirements">
+
+
+                <div class="req">
+
+                    <span>
+                        CPU
+                    </span>
+
+                    <strong>
+                        1 GHz o superior · 2 núcleos · CPU compatible
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        RAM
+                    </span>
+
+                    <strong>
+                        4 GB
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        STORAGE
+                    </span>
+
+                    <strong>
+                        64 GB
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        FIRMWARE
+                    </span>
+
+                    <strong>
+                        UEFI + Secure Boot
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        SECURITY
+                    </span>
+
+                    <strong>
+                        TPM 2.0
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        GPU
+                    </span>
+
+                    <strong>
+                        DirectX 12 · WDDM 2.0
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        DISPLAY
+                    </span>
+
+                    <strong>
+                        720p · >9"
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        ARCHITECTURE
+                    </span>
+
+                    <strong>
+                        64 bits
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- macOS                                                 -->
+<!-- ===================================================== -->
+
+<section
+    class="os-panel"
+    id="macos"
+>
+
+<div class="os-card">
+
+
+    <div class="os-header">
+
+
+        <div class="os-logo">
+            🍎
+        </div>
+
+
+        <div class="os-name">
+
+            <h3>
+                macOS
+            </h3>
+
+            <p>
+                Apple · Mac · Escritorio
+            </p>
+
+        </div>
+
+
+        <div class="current-version">
+
+            <span>
+                VERSIÓN ACTUAL
+            </span>
+
+            <strong>
+                macOS Tahoe 26
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="os-content">
+
+
+        <div class="info-box">
+
+            <h4>
+                PRINCIPALES CARACTERÍSTICAS
+            </h4>
+
+
+            <ul class="info-list">
+
+                <li>
+                    Sistema operativo desarrollado por
+                    <strong>Apple.</strong>
+                </li>
+
+                <li>
+                    Diseñado específicamente para
+                    ordenadores
+                    <strong>Mac.</strong>
+                </li>
+
+                <li>
+                    Base tecnológica de tipo
+                    <strong>Unix.</strong>
+                </li>
+
+                <li>
+                    Alta integración entre
+                    <strong>hardware y software.</strong>
+                </li>
+
+                <li>
+                    Integración con iPhone,
+                    iPad y otros dispositivos Apple.
+                </li>
+
+                <li>
+                    Incluye herramientas de seguridad,
+                    cifrado y protección del sistema.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h4>
+                VERSIONES RECIENTES
+            </h4>
+
+
+            <div class="timeline">
+
+                <div class="version">
+                    Big Sur 11
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    Monterey 12
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    Ventura 13
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    Sonoma 14
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    Sequoia 15
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version current">
+                    Tahoe 26
+                </div>
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    ACTUAL:
+                </strong>
+
+                macOS Tahoe 26 es la generación
+                actual del sistema operativo Mac.
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box full">
+
+            <h4>
+                REQUISITOS / COMPATIBILIDAD · macOS TAHOE 26
+            </h4>
+
+
+            <div class="requirements">
+
+
+                <div class="req">
+
+                    <span>
+                        MACBOOK AIR
+                    </span>
+
+                    <strong>
+                        Apple silicon · 2020 o posterior
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        MACBOOK PRO
+                    </span>
+
+                    <strong>
+                        Apple silicon 2020+ y algunos Intel compatibles
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        MAC MINI
+                    </span>
+
+                    <strong>
+                        2020 o posterior
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        iMAC
+                    </span>
+
+                    <strong>
+                        2020 o posterior
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        MAC STUDIO
+                    </span>
+
+                    <strong>
+                        2022 o posterior
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        MAC PRO
+                    </span>
+
+                    <strong>
+                        2019 o posterior
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    IMPORTANTE:
+                </strong>
+
+                En macOS la compatibilidad se determina
+                principalmente por el
+                <strong>modelo concreto de Mac</strong>,
+                no mediante una lista genérica de CPU/RAM
+                como ocurre en Windows.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- GNU/LINUX                                             -->
+<!-- ===================================================== -->
+
+<section
+    class="os-panel"
+    id="linux"
+>
+
+<div class="os-card">
+
+
+    <div class="os-header">
+
+
+        <div class="os-logo">
+            🐧
+        </div>
+
+
+        <div class="os-name">
+
+            <h3>
+                GNU/Linux
+            </h3>
+
+            <p>
+                Código abierto · Escritorio · Servidores
+            </p>
+
+        </div>
+
+
+        <div class="current-version">
+
+            <span>
+                EJEMPLO LTS
+            </span>
+
+            <strong>
+                Ubuntu 24.04 LTS
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="os-content">
+
+
+        <div class="info-box">
+
+            <h4>
+                PRINCIPALES CARACTERÍSTICAS
+            </h4>
+
+
+            <ul class="info-list">
+
+                <li>
+                    Kernel Linux y ecosistema
+                    de software
+                    <strong>libre / código abierto.</strong>
+                </li>
+
+                <li>
+                    Existen numerosas
+                    <strong>distribuciones.</strong>
+                </li>
+
+                <li>
+                    Sistema
+                    <strong>multiusuario y multitarea.</strong>
+                </li>
+
+                <li>
+                    Gran capacidad de
+                    <strong>personalización.</strong>
+                </li>
+
+                <li>
+                    Muy utilizado en
+                    <strong>servidores y cloud.</strong>
+                </li>
+
+                <li>
+                    Potente administración mediante
+                    <strong>terminal.</strong>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h4>
+                DISTRIBUCIONES PRINCIPALES
+            </h4>
+
+
+            <div class="timeline">
+
+                <div class="version">
+                    Debian
+                </div>
+
+                <span class="timeline-arrow">
+                    ·
+                </span>
+
+                <div class="version current">
+                    Ubuntu
+                </div>
+
+                <span class="timeline-arrow">
+                    ·
+                </span>
+
+                <div class="version">
+                    Fedora
+                </div>
+
+                <span class="timeline-arrow">
+                    ·
+                </span>
+
+                <div class="version">
+                    RHEL
+                </div>
+
+                <span class="timeline-arrow">
+                    ·
+                </span>
+
+                <div class="version">
+                    Mint
+                </div>
+
+                <span class="timeline-arrow">
+                    ·
+                </span>
+
+                <div class="version">
+                    Arch
+                </div>
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    IMPORTANTE:
+                </strong>
+
+                Linux no tiene una única
+                «versión actual» universal.
+
+                Cada distribución mantiene
+                su propio ciclo de versiones.
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box full">
+
+            <h4>
+                REQUISITOS · EJEMPLO UBUNTU DESKTOP
+            </h4>
+
+
+            <div class="requirements">
+
+
+                <div class="req">
+
+                    <span>
+                        CPU
+                    </span>
+
+                    <strong>
+                        Procesador x86-64 moderno
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        RAM
+                    </span>
+
+                    <strong>
+                        Aproximadamente 4 GB
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        STORAGE
+                    </span>
+
+                    <strong>
+                        Aproximadamente 25 GB
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        INSTALL
+                    </span>
+
+                    <strong>
+                        USB / DVD
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    RECUERDA:
+                </strong>
+
+                Los requisitos cambian según la
+                <strong>distribución</strong>
+                y el entorno gráfico utilizado.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ANDROID                                               -->
+<!-- ===================================================== -->
+
+<section
+    class="os-panel"
+    id="android"
+>
+
+<div class="os-card">
+
+
+    <div class="os-header">
+
+
+        <div class="os-logo">
+            🤖
+        </div>
+
+
+        <div class="os-name">
+
+            <h3>
+                Android
+            </h3>
+
+            <p>
+                Google / AOSP · Smartphones · Tablets
+            </p>
+
+        </div>
+
+
+        <div class="current-version">
+
+            <span>
+                GENERACIÓN ACTUAL
+            </span>
+
+            <strong>
+                Android 16
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="os-content">
+
+
+        <div class="info-box">
+
+            <h4>
+                PRINCIPALES CARACTERÍSTICAS
+            </h4>
+
+
+            <ul class="info-list">
+
+                <li>
+                    Sistema operativo orientado
+                    principalmente a
+                    <strong>dispositivos móviles.</strong>
+                </li>
+
+                <li>
+                    Basado en el
+                    <strong>kernel Linux.</strong>
+                </li>
+
+                <li>
+                    Proyecto base
+                    <strong>AOSP.</strong>
+                </li>
+
+                <li>
+                    Amplio ecosistema de aplicaciones.
+                </li>
+
+                <li>
+                    Utilizado por numerosos fabricantes.
+                </li>
+
+                <li>
+                    Gran variedad de
+                    <strong>hardware y personalizaciones.</strong>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h4>
+                VERSIONES RECIENTES
+            </h4>
+
+
+            <div class="timeline">
+
+                <div class="version">
+                    Android 11
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    12
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    13
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    14
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    15
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version current">
+                    16
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box full">
+
+            <h4>
+                REQUISITOS MÍNIMOS
+            </h4>
+
+
+            <p>
+
+                Android no se instala normalmente
+                como un sistema operativo genérico
+                de PC.
+
+                <br><br>
+
+                La compatibilidad depende del
+
+                <strong>
+                    fabricante, SoC, arquitectura,
+                    memoria, almacenamiento,
+                    pantalla y certificación del dispositivo.
+                </strong>
+
+                <br><br>
+
+                Google define requisitos técnicos
+                mediante documentos de compatibilidad
+                para fabricantes.
+
+            </p>
+
+
+            <div class="note">
+
+                <strong>
+                    IMPORTANTE:
+                </strong>
+
+                No existe un único requisito del tipo
+                «4 GB de RAM para todos los móviles Android».
+
+                La compatibilidad depende del
+                <strong>dispositivo y de su fabricante.</strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- iOS                                                   -->
+<!-- ===================================================== -->
+
+<section
+    class="os-panel"
+    id="ios"
+>
+
+<div class="os-card">
+
+
+    <div class="os-header">
+
+
+        <div class="os-logo">
+            📱
+        </div>
+
+
+        <div class="os-name">
+
+            <h3>
+                iOS
+            </h3>
+
+            <p>
+                Apple · iPhone
+            </p>
+
+        </div>
+
+
+        <div class="current-version">
+
+            <span>
+                GENERACIÓN ACTUAL
+            </span>
+
+            <strong>
+                iOS 26
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="os-content">
+
+
+        <div class="info-box">
+
+            <h4>
+                PRINCIPALES CARACTERÍSTICAS
+            </h4>
+
+
+            <ul class="info-list">
+
+                <li>
+                    Desarrollado por
+                    <strong>Apple.</strong>
+                </li>
+
+                <li>
+                    Diseñado específicamente
+                    para
+                    <strong>iPhone.</strong>
+                </li>
+
+                <li>
+                    Alta integración entre
+                    hardware y software.
+                </li>
+
+                <li>
+                    Distribución de aplicaciones
+                    mediante el ecosistema Apple.
+                </li>
+
+                <li>
+                    Fuerte modelo de
+                    <strong>seguridad y aislamiento de apps.</strong>
+                </li>
+
+                <li>
+                    Integración con
+                    macOS, iPadOS, watchOS y otros
+                    dispositivos Apple.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h4>
+                VERSIONES RECIENTES
+            </h4>
+
+
+            <div class="timeline">
+
+                <div class="version">
+                    iOS 15
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    16
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    17
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version">
+                    18
+                </div>
+
+                <span class="timeline-arrow">
+                    →
+                </span>
+
+                <div class="version current">
+                    26
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box full">
+
+            <h4>
+                REQUISITOS / COMPATIBILIDAD
+            </h4>
+
+
+            <div class="requirements">
+
+
+                <div class="req">
+
+                    <span>
+                        BASE
+                    </span>
+
+                    <strong>
+                        iPhone 11 y posteriores
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        iPHONE SE
+                    </span>
+
+                    <strong>
+                        2.ª y 3.ª generación
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        HARDWARE
+                    </span>
+
+                    <strong>
+                        Modelo compatible Apple
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        UPDATE
+                    </span>
+
+                    <strong>
+                        Actualización de software
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    IMPORTANTE:
+                </strong>
+
+                En iOS los requisitos se expresan
+                principalmente mediante
+                <strong>modelos de iPhone compatibles</strong>,
+                no mediante RAM o CPU mínima publicada
+                para el usuario.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- CHROMEOS                                              -->
+<!-- ===================================================== -->
+
+<section
+    class="os-panel"
+    id="chrome"
+>
+
+<div class="os-card">
+
+
+    <div class="os-header">
+
+
+        <div class="os-logo">
+            🌐
+        </div>
+
+
+        <div class="os-name">
+
+            <h3>
+                ChromeOS
+            </h3>
+
+            <p>
+                Google · Chromebook · Cloud
+            </p>
+
+        </div>
+
+
+        <div class="current-version">
+
+            <span>
+                ACTUALIZACIÓN
+            </span>
+
+            <strong>
+                Continua
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="os-content">
+
+
+        <div class="info-box">
+
+            <h4>
+                PRINCIPALES CARACTERÍSTICAS
+            </h4>
+
+
+            <ul class="info-list">
+
+                <li>
+                    Sistema operativo desarrollado
+                    por
+                    <strong>Google.</strong>
+                </li>
+
+                <li>
+                    Utilizado principalmente
+                    en
+                    <strong>Chromebooks.</strong>
+                </li>
+
+                <li>
+                    Basado en tecnologías Linux.
+                </li>
+
+                <li>
+                    Gran integración con
+                    servicios web y cloud.
+                </li>
+
+                <li>
+                    Actualizaciones automáticas.
+                </li>
+
+                <li>
+                    Orientado a sencillez,
+                    seguridad y administración.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h4>
+                VERSIONES
+            </h4>
+
+
+            <p>
+
+                ChromeOS utiliza un modelo de
+
+                <strong>
+                    actualización continua
+                </strong>
+
+                y recibe nuevas versiones de forma
+                periódica.
+
+                <br><br>
+
+                Por ello, en lugar de hablar de
+                grandes generaciones como Windows,
+                normalmente se identifica mediante
+                su número de versión y canal de
+                actualización.
+
+            </p>
+
+        </div>
+
+
+        <div class="info-box full">
+
+            <h4>
+                CHROMEOS FLEX · REQUISITOS MÍNIMOS
+            </h4>
+
+
+            <div class="requirements">
+
+
+                <div class="req">
+
+                    <span>
+                        CPU
+                    </span>
+
+                    <strong>
+                        Intel / AMD x86-64
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        RAM
+                    </span>
+
+                    <strong>
+                        4 GB
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        STORAGE
+                    </span>
+
+                    <strong>
+                        16 GB
+                    </strong>
+
+                </div>
+
+
+                <div class="req">
+
+                    <span>
+                        BOOT
+                    </span>
+
+                    <strong>
+                        Arranque desde USB
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    OJO:
+                </strong>
+
+                ChromeOS y ChromeOS Flex
+                <strong>no son exactamente lo mismo.</strong>
+
+                ChromeOS viene integrado en Chromebooks.
+                ChromeOS Flex permite reutilizar determinados
+                PC y Mac compatibles.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 05 COMPARATIVA                                        -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        05 //
+    </span>
+
+    <h2>
+        Comparativa rápida
+    </h2>
+
+</div>
+
+
+<div class="table-wrapper">
+
+<table>
+
+
+<thead>
+
+<tr>
+
+    <th>
+        SISTEMA
+    </th>
+
+    <th>
+        DESARROLLADOR
+    </th>
+
+    <th>
+        DISPOSITIVO
+    </th>
+
+    <th>
+        MODELO
+    </th>
+
+    <th>
+        USO PRINCIPAL
+    </th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+<tr>
+
+    <td>
+        <strong>
+            🪟 Windows
+        </strong>
+    </td>
+
+    <td>
+        Microsoft
+    </td>
+
+    <td>
+        PC
+    </td>
+
+    <td>
+        Propietario
+    </td>
+
+    <td>
+        Hogar · Empresa · Gaming
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            🍎 macOS
+        </strong>
+    </td>
+
+    <td>
+        Apple
+    </td>
+
+    <td>
+        Mac
+    </td>
+
+    <td>
+        Propietario
+    </td>
+
+    <td>
+        Escritorio · Profesional
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            🐧 GNU/Linux
+        </strong>
+    </td>
+
+    <td>
+        Comunidad / Empresas
+    </td>
+
+    <td>
+        PC · Servidor
+    </td>
+
+    <td>
+        Principalmente código abierto
+    </td>
+
+    <td>
+        Servidores · Cloud · Escritorio
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            🤖 Android
+        </strong>
+    </td>
+
+    <td>
+        Google / AOSP
+    </td>
+
+    <td>
+        Smartphone · Tablet
+    </td>
+
+    <td>
+        Base abierta + componentes propietarios
+    </td>
+
+    <td>
+        Móvil
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            📱 iOS
+        </strong>
+    </td>
+
+    <td>
+        Apple
+    </td>
+
+    <td>
+        iPhone
+    </td>
+
+    <td>
+        Propietario
+    </td>
+
+    <td>
+        Móvil
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            🌐 ChromeOS
+        </strong>
+    </td>
+
+    <td>
+        Google
+    </td>
+
+    <td>
+        Chromebook
+    </td>
+
+    <td>
+        Basado en ChromiumOS
+    </td>
+
+    <td>
+        Web · Educación · Empresa
+    </td>
+
+</tr>
+
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- IMPORTANTE                                            -->
+<!-- ===================================================== -->
+
+<div class="important">
+
+    <span>
+        CONCEPTO CLAVE
+    </span>
+
+    <strong>
+        No todos los sistemas operativos expresan
+        sus requisitos mínimos de la misma forma.
+    </strong>
+
+    <br><br>
+
+    Windows y ChromeOS Flex pueden indicar
+    CPU, RAM y almacenamiento.
+
+    <br>
+
+    Apple utiliza principalmente
+    listas de dispositivos compatibles.
+
+    <br>
+
+    GNU/Linux depende de la distribución.
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- 06 MEMORY BLOCK                                       -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        06 //
+    </span>
+
+    <h2>
+        Resumen para estudiar
+    </h2>
+
+</div>
+
+
+<section class="memory">
+
+
+    <div class="memory-title">
+        // MEMORY BLOCK · EXAM MODE
+    </div>
+
+
+    <div class="memory-grid">
+
+
+        <div class="memory-item">
+
+            <span>
+                SISTEMA OPERATIVO
+            </span>
+
+            <strong>
+                Intermediario entre usuario,
+                aplicaciones y hardware
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                WINDOWS
+            </span>
+
+            <strong>
+                Microsoft · PC
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                macOS
+            </span>
+
+            <strong>
+                Apple · Mac
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                GNU/LINUX
+            </span>
+
+            <strong>
+                Distribuciones · Open Source
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                ANDROID
+            </span>
+
+            <strong>
+                Google/AOSP · Kernel Linux · Móvil
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                iOS
+            </span>
+
+            <strong>
+                Apple · iPhone
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                ChromeOS
+            </span>
+
+            <strong>
+                Google · Chromebook
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                PROCESOS
+            </span>
+
+            <strong>
+                Gestión de CPU y ejecución
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                MEMORIA
+            </span>
+
+            <strong>
+                Gestión de RAM
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                ARCHIVOS
+            </span>
+
+            <strong>
+                Organización del almacenamiento
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                DRIVERS
+            </span>
+
+            <strong>
+                Comunicación con dispositivos
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                SEGURIDAD
+            </span>
+
+            <strong>
+                Usuarios · Permisos · Autenticación
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+<!-- ===================================================== -->
+<!-- FOOTER                                                -->
+<!-- ===================================================== -->
+
+<footer>
+
+    <span>
+        SYS-ACT-001 · SISTEMAS OPERATIVOS ACTUALES
+    </span>
+
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   SELECTOR DE SISTEMAS OPERATIVOS
+   ========================================================= */
+
+const tabs =
+    document.querySelectorAll(
+        ".os-tab"
+    );
+
+const panels =
+    document.querySelectorAll(
+        ".os-panel"
+    );
+
+
+tabs.forEach(tab=>{
+
+    tab.addEventListener(
+        "click",
+        ()=>{
+
+
+            tabs.forEach(t=>{
+
+                t.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            panels.forEach(panel=>{
+
+                panel.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            tab.classList.add(
+                "active"
+            );
+
+
+            const id =
+                tab.dataset.os;
+
+
+            document
+                .getElementById(id)
+                .classList.add(
+                    "active"
+                );
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   CANVAS DE FONDO
+   ========================================================= */
+
+const canvas =
+    document.getElementById(
+        "bgCanvas"
+    );
+
+const ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+let particles=[];
+
+
+/* =========================================================
+   AJUSTAR TAMAÑO
+   ========================================================= */
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+}
+
+resizeCanvas();
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   CREAR PARTÍCULAS
+   ========================================================= */
+
+function createParticles(){
+
+    particles=[];
+
+
+    const amount =
+        window.innerWidth < 700
+        ? 25
+        : 55;
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        particles.push({
+
+            x:
+                Math.random() *
+                canvas.width,
+
+            y:
+                Math.random() *
+                canvas.height,
+
+            vx:
+                (Math.random()-.5) *
+                .13,
+
+            vy:
+                (Math.random()-.5) *
+                .13,
+
+            size:
+                Math.random() *
+                1.3 +
+                .3
+
+        });
+
+    }
+
+}
+
+createParticles();
+
+
+window.addEventListener(
+    "resize",
+    createParticles
+);
+
+
+/* =========================================================
+   ANIMACIÓN
+   ========================================================= */
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    particles.forEach(p=>{
+
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+
+        if(
+            p.x < 0 ||
+            p.x > canvas.width
+        ){
+
+            p.vx *= -1;
+
+        }
+
+
+        if(
+            p.y < 0 ||
+            p.y > canvas.height
+        ){
+
+            p.vy *= -1;
+
+        }
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.fillStyle =
+            "rgba(255,176,0,.17)";
+
+
+        ctx.fill();
+
+    });
+
+
+    /* CONEXIONES */
+
+    for(
+        let i=0;
+        i<particles.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<particles.length;
+            j++
+        ){
+
+
+            const dx =
+                particles[i].x -
+                particles[j].x;
+
+
+            const dy =
+                particles[i].y -
+                particles[j].y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
+
+
+            if(distance < 115){
+
+
+                ctx.beginPath();
+
+
+                ctx.moveTo(
+                    particles[i].x,
+                    particles[i].y
+                );
+
+
+                ctx.lineTo(
+                    particles[j].x,
+                    particles[j].y
+                );
+
+
+                const opacity =
+                    .035 *
+                    (1-distance/115);
+
+
+                ctx.strokeStyle =
+                    "rgba(255,176,0," +
+                    opacity +
+                    ")";
+
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+animate();
+
+</script>
+
+</body>
+</html>
