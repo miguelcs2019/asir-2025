@@ -1,0 +1,4404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ejercicio 2 | Opciones de Virtualización</title>
+
+<style>
+
+/* =========================================================
+   CONFIGURACIÓN GENERAL
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#05080b;
+    --panel:#0b1116;
+    --panel2:#111a21;
+
+    --amber:#ffb000;
+    --amber2:#ffd166;
+
+    --cyan:#00e5ff;
+    --blue:#4e9cff;
+    --green:#59ff91;
+    --purple:#b98cff;
+    --red:#ff626c;
+
+    --text:#e8edf0;
+    --muted:#77848d;
+
+    --border:rgba(255,255,255,.08);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    background:var(--bg);
+    color:var(--text);
+
+    font-family:"Segoe UI",Arial,sans-serif;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   FONDO
+   ========================================================= */
+
+#networkCanvas{
+    position:fixed;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:-3;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+
+    z-index:-2;
+
+    pointer-events:none;
+
+    background:
+
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(0,229,255,.06),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 90% 70%,
+            rgba(255,176,0,.05),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            rgba(5,8,11,.60),
+            rgba(5,8,11,.97)
+        );
+}
+
+
+/* =========================================================
+   SCANLINES
+   ========================================================= */
+
+.scanlines{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    pointer-events:none;
+
+    opacity:.08;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgba(255,255,255,.025) 4px
+        );
+}
+
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+
+#boot{
+    position:fixed;
+    inset:0;
+
+    z-index:9999;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#010203;
+
+    animation:
+        bootExit .6s forwards 2.8s;
+}
+
+.boot-box{
+    width:90%;
+    max-width:700px;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+
+    font-size:12px;
+    line-height:1.9;
+}
+
+.boot-title{
+    margin-bottom:20px;
+
+    color:white;
+
+    font-size:17px;
+    font-weight:bold;
+
+    letter-spacing:4px;
+}
+
+.boot-line{
+    opacity:0;
+
+    animation:
+        showLine .2s forwards;
+}
+
+.boot-line:nth-child(2){
+    animation-delay:.3s;
+}
+
+.boot-line:nth-child(3){
+    animation-delay:.7s;
+}
+
+.boot-line:nth-child(4){
+    animation-delay:1.1s;
+}
+
+.boot-line:nth-child(5){
+    animation-delay:1.5s;
+}
+
+.boot-line:nth-child(6){
+    animation-delay:1.9s;
+}
+
+.ok{
+    color:var(--green);
+}
+
+@keyframes showLine{
+
+    to{
+        opacity:1;
+    }
+
+}
+
+@keyframes bootExit{
+
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:40px 0 45px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:60px;
+}
+
+.back{
+    color:#75828b;
+
+    text-decoration:none;
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    transition:.25s;
+}
+
+.back:hover{
+    color:var(--cyan);
+}
+
+.online{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.online::before{
+    content:"";
+
+    display:inline-block;
+
+    width:7px;
+    height:7px;
+
+    margin-right:8px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 10px var(--green);
+}
+
+.code{
+    margin-bottom:13px;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    letter-spacing:4px;
+}
+
+h1{
+    max-width:1000px;
+
+    font-size:58px;
+    line-height:1.03;
+
+    background:
+        linear-gradient(
+            90deg,
+            white,
+            #bfefff,
+            var(--cyan)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.intro{
+    max-width:900px;
+
+    margin-top:22px;
+
+    color:#89969e;
+
+    line-height:1.8;
+
+    font-size:16px;
+}
+
+.intro strong{
+    color:white;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+main{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding-bottom:80px;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-grid{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:12px;
+
+    margin-bottom:50px;
+}
+
+.status-card{
+    padding:16px;
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    background:rgba(11,17,22,.85);
+}
+
+.status-card span{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#59656e;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.status-card strong{
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+.green{color:var(--green);}
+.cyan{color:var(--cyan);}
+.amber{color:var(--amber);}
+.red{color:var(--red);}
+.purple{color:var(--purple);}
+
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
+
+.section-title{
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    margin:60px 0 22px;
+
+    padding-bottom:15px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.section-title span{
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.section-title h2{
+    font-size:24px;
+}
+
+
+/* =========================================================
+   DEFINICIÓN
+   ========================================================= */
+
+.definition{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.definition-box{
+    padding:28px;
+
+    border:1px solid rgba(0,229,255,.16);
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,229,255,.035),
+            rgba(11,17,22,.94)
+        );
+}
+
+.definition-box h3{
+    margin-bottom:15px;
+
+    color:var(--cyan);
+
+    font-size:20px;
+}
+
+.definition-box p{
+    color:#96a2aa;
+
+    line-height:1.8;
+
+    font-size:14px;
+}
+
+.definition-box strong{
+    color:white;
+}
+
+
+/* =========================================================
+   SERVIDOR VISUAL
+   ========================================================= */
+
+.server{
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:#080d11;
+}
+
+.server-title{
+    margin-bottom:15px;
+
+    text-align:center;
+
+    color:#65717a;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.vm-row{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:8px;
+}
+
+.vm{
+    padding:15px 5px;
+
+    text-align:center;
+
+    border:1px solid rgba(185,140,255,.20);
+    border-radius:7px;
+
+    background:rgba(185,140,255,.04);
+
+    color:var(--purple);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.hypervisor{
+    margin-top:8px;
+
+    padding:15px;
+
+    text-align:center;
+
+    border:1px solid rgba(0,229,255,.25);
+    border-radius:7px;
+
+    background:rgba(0,229,255,.05);
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+.hardware{
+    margin-top:8px;
+
+    padding:15px;
+
+    text-align:center;
+
+    border:1px solid rgba(89,255,145,.20);
+    border-radius:7px;
+
+    background:rgba(89,255,145,.04);
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+
+/* =========================================================
+   BENEFICIOS
+   ========================================================= */
+
+.benefits{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:12px;
+}
+
+.benefit{
+    padding:20px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:rgba(11,17,22,.8);
+}
+
+.benefit span{
+    display:block;
+
+    margin-bottom:12px;
+
+    font-size:25px;
+}
+
+.benefit h3{
+    margin-bottom:8px;
+
+    font-size:14px;
+}
+
+.benefit p{
+    color:#7b8891;
+
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   TIPO 1 / TIPO 2
+   ========================================================= */
+
+.type-selector{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:10px 10px 0 0;
+}
+
+.type-button{
+    padding:17px;
+
+    border:0;
+
+    background:#090e12;
+
+    color:#6c7982;
+
+    cursor:pointer;
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+
+    transition:.25s;
+}
+
+.type-button:first-child{
+    border-right:1px solid var(--border);
+}
+
+.type-button:hover{
+    color:white;
+}
+
+.type-button.active{
+    color:var(--cyan);
+
+    background:rgba(0,229,255,.05);
+
+    box-shadow:
+        inset 0 -2px var(--cyan);
+}
+
+.type-content{
+    display:none;
+
+    padding:30px;
+
+    border:1px solid var(--border);
+    border-top:0;
+
+    border-radius:0 0 12px 12px;
+
+    background:rgba(10,15,19,.92);
+}
+
+.type-content.active{
+    display:block;
+}
+
+
+/* =========================================================
+   ARQUITECTURA
+   ========================================================= */
+
+.architecture{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:25px;
+}
+
+.arch-info h3{
+    margin-bottom:15px;
+
+    color:white;
+
+    font-size:20px;
+}
+
+.arch-info p{
+    color:#8b989f;
+
+    line-height:1.8;
+
+    font-size:13px;
+}
+
+.arch-info ul{
+    margin-top:18px;
+
+    list-style:none;
+}
+
+.arch-info li{
+    padding:7px 0;
+
+    color:#8b989f;
+
+    font-size:12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.04);
+}
+
+.stack{
+    display:flex;
+    flex-direction:column;
+
+    gap:7px;
+}
+
+.stack-vms{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:7px;
+}
+
+.stack-box{
+    padding:15px;
+
+    text-align:center;
+
+    border-radius:6px;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.stack-vm{
+    border:1px solid rgba(185,140,255,.20);
+
+    color:var(--purple);
+
+    background:rgba(185,140,255,.04);
+}
+
+.stack-hypervisor{
+    border:1px solid rgba(0,229,255,.25);
+
+    color:var(--cyan);
+
+    background:rgba(0,229,255,.05);
+}
+
+.stack-os{
+    border:1px solid rgba(255,176,0,.25);
+
+    color:var(--amber);
+
+    background:rgba(255,176,0,.05);
+}
+
+.stack-hardware{
+    border:1px solid rgba(89,255,145,.20);
+
+    color:var(--green);
+
+    background:rgba(89,255,145,.04);
+}
+
+
+/* =========================================================
+   REGLA
+   ========================================================= */
+
+.rule{
+    margin-top:25px;
+
+    padding:18px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,176,0,.22);
+    border-radius:9px;
+
+    background:rgba(255,176,0,.035);
+}
+
+.rule span{
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#65717a;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:3px;
+}
+
+.rule strong{
+    color:var(--amber2);
+}
+
+
+/* =========================================================
+   SELECTOR DE HIPERVISORES
+   ========================================================= */
+
+.hyper-tabs{
+    display:grid;
+
+    grid-template-columns:
+        repeat(6,1fr);
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    margin-bottom:18px;
+}
+
+.hyper-tab{
+    padding:15px 6px;
+
+    border:0;
+    border-right:1px solid var(--border);
+
+    background:#090e12;
+
+    color:#6c7982;
+
+    cursor:pointer;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    transition:.25s;
+}
+
+.hyper-tab:hover{
+    color:white;
+
+    background:#10171c;
+}
+
+.hyper-tab.active{
+    color:var(--cyan);
+
+    background:rgba(0,229,255,.05);
+
+    box-shadow:
+        inset 0 -2px var(--cyan);
+}
+
+
+/* =========================================================
+   FICHA HIPERVISOR
+   ========================================================= */
+
+.hyper-panel{
+    display:none;
+}
+
+.hyper-panel.active{
+    display:block;
+
+    animation:fade .3s ease;
+}
+
+@keyframes fade{
+
+    from{
+        opacity:0;
+        transform:translateY(4px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+.product{
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,23,29,.96),
+            rgba(7,10,13,.96)
+        );
+}
+
+.product-header{
+    display:flex;
+    align-items:center;
+
+    gap:20px;
+
+    padding:25px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.product-logo{
+    width:65px;
+    height:65px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    flex-shrink:0;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:#070b0e;
+
+    font-size:30px;
+}
+
+.product-name h3{
+    margin-bottom:5px;
+
+    font-size:24px;
+}
+
+.product-name p{
+    color:#6f7c85;
+
+    font-size:11px;
+}
+
+.product-type{
+    margin-left:auto;
+
+    text-align:right;
+}
+
+.product-type span{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:#59656d;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+}
+
+.product-type strong{
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:11px;
+}
+
+
+/* =========================================================
+   INFO GRID
+   ========================================================= */
+
+.product-content{
+    padding:25px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:15px;
+}
+
+.info{
+    padding:20px;
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    background:rgba(5,8,10,.4);
+}
+
+.info.full{
+    grid-column:1/-1;
+}
+
+.info h4{
+    margin-bottom:14px;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:1px;
+}
+
+.info p{
+    color:#89969e;
+
+    line-height:1.7;
+
+    font-size:12px;
+}
+
+.info ul{
+    list-style:none;
+}
+
+.info li{
+    padding:7px 0;
+
+    color:#87949c;
+
+    font-size:12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.04);
+}
+
+.info li:last-child{
+    border-bottom:0;
+}
+
+.positive{
+    color:var(--green) !important;
+}
+
+.negative{
+    color:#ff9298 !important;
+}
+
+
+/* =========================================================
+   ETIQUETAS
+   ========================================================= */
+
+.badge{
+    display:inline-block;
+
+    margin:4px 5px 4px 0;
+
+    padding:6px 9px;
+
+    border-radius:4px;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.badge.free{
+    color:var(--green);
+
+    border:1px solid rgba(89,255,145,.20);
+
+    background:rgba(89,255,145,.04);
+}
+
+.badge.paid{
+    color:var(--amber);
+
+    border:1px solid rgba(255,176,0,.20);
+
+    background:rgba(255,176,0,.04);
+}
+
+.badge.type1{
+    color:var(--cyan);
+
+    border:1px solid rgba(0,229,255,.20);
+
+    background:rgba(0,229,255,.04);
+}
+
+.badge.type2{
+    color:var(--purple);
+
+    border:1px solid rgba(185,140,255,.20);
+
+    background:rgba(185,140,255,.04);
+}
+
+
+/* =========================================================
+   RECOMENDADO
+   ========================================================= */
+
+.recommended{
+    padding:20px;
+
+    border-left:3px solid var(--amber);
+
+    background:rgba(255,176,0,.035);
+}
+
+.recommended span{
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#6e7981;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.recommended strong{
+    color:var(--amber2);
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.table-wrap{
+    overflow-x:auto;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+
+    min-width:1000px;
+
+    border-collapse:collapse;
+
+    background:rgba(10,15,19,.93);
+}
+
+th{
+    padding:14px;
+
+    text-align:left;
+
+    color:var(--cyan);
+
+    background:rgba(0,229,255,.035);
+
+    border-bottom:
+        1px solid rgba(0,229,255,.15);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+td{
+    padding:14px;
+
+    color:#85929a;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.04);
+
+    font-size:11px;
+}
+
+td strong{
+    color:white;
+}
+
+
+/* =========================================================
+   TRAMPAS
+   ========================================================= */
+
+.trap{
+    display:grid;
+
+    grid-template-columns:45px 1fr;
+
+    gap:15px;
+
+    margin-bottom:10px;
+
+    padding:18px;
+
+    border:1px solid rgba(255,98,108,.15);
+    border-radius:9px;
+
+    background:rgba(255,98,108,.025);
+}
+
+.trap-icon{
+    width:40px;
+    height:40px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:50%;
+
+    background:rgba(255,98,108,.08);
+
+    color:var(--red);
+
+    font-weight:bold;
+}
+
+.trap h3{
+    margin-bottom:5px;
+
+    color:#ff959b;
+
+    font-size:14px;
+}
+
+.trap p{
+    color:#87939b;
+
+    line-height:1.6;
+
+    font-size:12px;
+}
+
+.trap strong{
+    color:white;
+}
+
+
+/* =========================================================
+   MEMORY
+   ========================================================= */
+
+.memory{
+    padding:30px;
+
+    border:1px solid rgba(89,255,145,.23);
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(89,255,145,.04),
+            rgba(8,13,10,.94)
+        );
+}
+
+.memory-title{
+    margin-bottom:25px;
+
+    text-align:center;
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+
+    letter-spacing:4px;
+}
+
+.memory-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:7px;
+}
+
+.memory-item{
+    display:grid;
+
+    grid-template-columns:150px 1fr;
+
+    gap:10px;
+
+    padding:13px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.05);
+}
+
+.memory-item span{
+    color:#637069;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.memory-item strong{
+    font-size:12px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+    width:92%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:25px 0 40px;
+
+    display:flex;
+    justify-content:space-between;
+
+    border-top:1px solid var(--border);
+
+    color:#475159;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:950px){
+
+    .benefits{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .hyper-tabs{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+}
+
+@media(max-width:750px){
+
+    h1{
+        font-size:39px;
+    }
+
+    .status-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .definition,
+    .architecture,
+    .product-content,
+    .memory-grid{
+        grid-template-columns:1fr;
+    }
+
+    .info.full{
+        grid-column:auto;
+    }
+
+    .type-selector{
+        grid-template-columns:1fr;
+    }
+
+    .type-button:first-child{
+        border-right:0;
+        border-bottom:1px solid var(--border);
+    }
+
+    .memory-item{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:550px){
+
+    .benefits{
+        grid-template-columns:1fr;
+    }
+
+    .hyper-tabs{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .product-header{
+        flex-wrap:wrap;
+    }
+
+    .product-type{
+        width:100%;
+
+        margin-left:0;
+
+        text-align:left;
+    }
+
+    footer{
+        flex-direction:column;
+
+        gap:8px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ===================================================== -->
+<!-- BOOT                                                  -->
+<!-- ===================================================== -->
+
+<div id="boot">
+
+    <div class="boot-box">
+
+        <div class="boot-title">
+            MCS VIRTUALIZATION ENGINE
+        </div>
+
+        <div class="boot-line">
+            Detecting CPU virtualization ........ <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Intel VT-x / AMD-V ................... <span class="ok">READY</span>
+        </div>
+
+        <div class="boot-line">
+            Loading hypervisor database .......... <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Initializing virtual machines ........ <span class="ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Starting VIRTUALIZATION LAB .......... <span class="ok">ONLINE</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<canvas id="networkCanvas"></canvas>
+
+<div class="background"></div>
+
+<div class="scanlines"></div>
+
+
+<!-- ===================================================== -->
+<!-- HEADER                                                -->
+<!-- ===================================================== -->
+
+<header>
+
+
+    <div class="topbar">
+
+        <a
+            href="administracio.html"
+            class="back"
+        >
+            ← ACTIVITATS D'ADMINISTRACIÓ
+        </a>
+
+
+        <div class="online">
+            HYPERVISOR ONLINE
+        </div>
+
+    </div>
+
+
+    <div class="code">
+        // SYS-ACT-002 · VIRTUALIZATION
+    </div>
+
+
+    <h1>
+        Opciones de<br>
+        Virtualización
+    </h1>
+
+
+    <p class="intro">
+
+        Comparativa de las principales tecnologías
+        para la
+
+        <strong>
+            virtualización de equipos
+        </strong>,
+
+        analizando el tipo de hipervisor,
+        desarrollador, modelo de licencia,
+
+        <strong>
+            ventajas, inconvenientes
+        </strong>
+
+        y los escenarios donde resulta recomendable
+        utilizar cada solución.
+
+    </p>
+
+
+</header>
+
+
+<!-- ===================================================== -->
+<!-- MAIN                                                  -->
+<!-- ===================================================== -->
+
+<main>
+
+
+<!-- ===================================================== -->
+<!-- STATUS                                                -->
+<!-- ===================================================== -->
+
+<section class="status-grid">
+
+
+    <div class="status-card">
+
+        <span>
+            ACTIVITY
+        </span>
+
+        <strong class="cyan">
+            SYS-ACT-002
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>
+            TECHNOLOGY
+        </span>
+
+        <strong>
+            VIRTUALIZATION
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>
+            HYPERVISORS
+        </span>
+
+        <strong class="amber">
+            TYPE 1 + TYPE 2
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>
+            STATUS
+        </span>
+
+        <strong class="green">
+            ● READY
+        </strong>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 01 VIRTUALIZACIÓN                                     -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        01 //
+    </span>
+
+    <h2>
+        ¿Qué es la virtualización?
+    </h2>
+
+</div>
+
+
+<section class="definition">
+
+
+    <div class="definition-box">
+
+        <h3>
+            Virtualización
+        </h3>
+
+        <p>
+
+            La
+
+            <strong>
+                virtualización
+            </strong>
+
+            permite crear varios sistemas informáticos
+            virtuales sobre una misma máquina física.
+
+            <br><br>
+
+            Cada
+
+            <strong>
+                máquina virtual o VM
+            </strong>
+
+            puede disponer de CPU virtual, memoria,
+            almacenamiento, red y su propio sistema
+            operativo.
+
+            <br><br>
+
+            El componente encargado de gestionar
+            y aislar estas máquinas virtuales es el
+
+            <strong>
+                hipervisor.
+            </strong>
+
+        </p>
+
+    </div>
+
+
+    <div class="server">
+
+        <div class="server-title">
+            PHYSICAL SERVER · NODE-01
+        </div>
+
+
+        <div class="vm-row">
+
+            <div class="vm">
+                🪟<br><br>
+                VM 01<br>
+                WINDOWS
+            </div>
+
+            <div class="vm">
+                🐧<br><br>
+                VM 02<br>
+                LINUX
+            </div>
+
+            <div class="vm">
+                🗄️<br><br>
+                VM 03<br>
+                SERVER
+            </div>
+
+        </div>
+
+
+        <div class="hypervisor">
+            HYPERVISOR
+        </div>
+
+
+        <div class="hardware">
+            CPU · RAM · STORAGE · NETWORK
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 02 VENTAJAS GENERALES                                 -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        02 //
+    </span>
+
+    <h2>
+        ¿Para qué sirve?
+    </h2>
+
+</div>
+
+
+<section class="benefits">
+
+
+    <div class="benefit">
+
+        <span>
+            🗄️
+        </span>
+
+        <h3>
+            Consolidación
+        </h3>
+
+        <p>
+            Ejecutar varios servidores virtuales
+            utilizando un único servidor físico.
+        </p>
+
+    </div>
+
+
+    <div class="benefit">
+
+        <span>
+            💰
+        </span>
+
+        <h3>
+            Ahorro
+        </h3>
+
+        <p>
+            Reduce hardware, consumo eléctrico,
+            espacio y costes de mantenimiento.
+        </p>
+
+    </div>
+
+
+    <div class="benefit">
+
+        <span>
+            🧪
+        </span>
+
+        <h3>
+            Laboratorios
+        </h3>
+
+        <p>
+            Permite crear entornos aislados
+            para pruebas y aprendizaje.
+        </p>
+
+    </div>
+
+
+    <div class="benefit">
+
+        <span>
+            ⚡
+        </span>
+
+        <h3>
+            Flexibilidad
+        </h3>
+
+        <p>
+            Crear, clonar, mover y recuperar
+            máquinas virtuales con rapidez.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 03 TIPO 1 VS TIPO 2                                   -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        03 //
+    </span>
+
+    <h2>
+        Hipervisor Tipo 1 vs Tipo 2
+    </h2>
+
+</div>
+
+
+<div class="type-selector">
+
+    <button
+        class="type-button active"
+        data-type="type1"
+    >
+        🗄️ TIPO 1 · NATIVO / BARE-METAL
+    </button>
+
+
+    <button
+        class="type-button"
+        data-type="type2"
+    >
+        💻 TIPO 2 · ALOJADO
+    </button>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- TIPO 1                                                -->
+<!-- ===================================================== -->
+
+<section
+    class="type-content active"
+    id="type1"
+>
+
+
+<div class="architecture">
+
+
+    <div class="arch-info">
+
+        <h3>
+            Hipervisor Tipo 1
+        </h3>
+
+        <p>
+
+            El hipervisor se ejecuta sobre
+            el hardware y controla directamente
+            los recursos utilizados por las
+            máquinas virtuales.
+
+            <br><br>
+
+            Está especialmente orientado a
+
+            <strong>
+                servidores, centros de datos,
+                alta disponibilidad y producción.
+            </strong>
+
+        </p>
+
+
+        <ul>
+
+            <li>
+                ⚡ Alto rendimiento
+            </li>
+
+            <li>
+                🛡️ Buen aislamiento
+            </li>
+
+            <li>
+                🗄️ Orientado a servidores
+            </li>
+
+            <li>
+                🔄 Clustering y alta disponibilidad
+            </li>
+
+            <li>
+                📈 Escalable
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="stack">
+
+
+        <div class="stack-vms">
+
+            <div class="stack-box stack-vm">
+                VM 01
+            </div>
+
+            <div class="stack-box stack-vm">
+                VM 02
+            </div>
+
+            <div class="stack-box stack-vm">
+                VM 03
+            </div>
+
+        </div>
+
+
+        <div class="stack-box stack-hypervisor">
+            HYPERVISOR · TYPE 1
+        </div>
+
+
+        <div class="stack-box stack-hardware">
+            HARDWARE FÍSICO
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<div class="rule">
+
+    <span>
+        PARA MEMORIZAR
+    </span>
+
+    <strong>
+        TIPO 1 → HARDWARE → HIPERVISOR → MÁQUINAS VIRTUALES
+    </strong>
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- TIPO 2                                                -->
+<!-- ===================================================== -->
+
+<section
+    class="type-content"
+    id="type2"
+>
+
+
+<div class="architecture">
+
+
+    <div class="arch-info">
+
+        <h3>
+            Hipervisor Tipo 2
+        </h3>
+
+        <p>
+
+            Funciona como una aplicación instalada
+            sobre un
+
+            <strong>
+                sistema operativo anfitrión.
+            </strong>
+
+            <br><br>
+
+            Es especialmente útil para
+
+            <strong>
+                aprendizaje, desarrollo,
+                pruebas y laboratorios personales.
+            </strong>
+
+        </p>
+
+
+        <ul>
+
+            <li>
+                🧑‍🎓 Fácil para aprender
+            </li>
+
+            <li>
+                💻 Ideal para PC personal
+            </li>
+
+            <li>
+                🧪 Excelente para laboratorios
+            </li>
+
+            <li>
+                ⚙️ Instalación sencilla
+            </li>
+
+            <li>
+                📉 Más capas entre VM y hardware
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <div class="stack">
+
+
+        <div class="stack-vms">
+
+            <div class="stack-box stack-vm">
+                VM 01
+            </div>
+
+            <div class="stack-box stack-vm">
+                VM 02
+            </div>
+
+            <div class="stack-box stack-vm">
+                VM 03
+            </div>
+
+        </div>
+
+
+        <div class="stack-box stack-hypervisor">
+            VIRTUALBOX / WORKSTATION
+        </div>
+
+
+        <div class="stack-box stack-os">
+            WINDOWS / LINUX / macOS
+        </div>
+
+
+        <div class="stack-box stack-hardware">
+            HARDWARE FÍSICO
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<div class="rule">
+
+    <span>
+        PARA MEMORIZAR
+    </span>
+
+    <strong>
+        TIPO 2 → HARDWARE → SO ANFITRIÓN → HIPERVISOR → VM
+    </strong>
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 04 SOLUCIONES                                         -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        04 //
+    </span>
+
+    <h2>
+        Principales soluciones
+    </h2>
+
+</div>
+
+
+<div class="hyper-tabs">
+
+
+    <button
+        class="hyper-tab active"
+        data-hyper="proxmox"
+    >
+        PROXMOX
+    </button>
+
+
+    <button
+        class="hyper-tab"
+        data-hyper="vmware"
+    >
+        VMWARE
+    </button>
+
+
+    <button
+        class="hyper-tab"
+        data-hyper="hyperv"
+    >
+        HYPER-V
+    </button>
+
+
+    <button
+        class="hyper-tab"
+        data-hyper="kvm"
+    >
+        KVM
+    </button>
+
+
+    <button
+        class="hyper-tab"
+        data-hyper="xcp"
+    >
+        XCP-NG
+    </button>
+
+
+    <button
+        class="hyper-tab"
+        data-hyper="virtualbox"
+    >
+        VIRTUALBOX
+    </button>
+
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- PROXMOX                                               -->
+<!-- ===================================================== -->
+
+<section
+    class="hyper-panel active"
+    id="proxmox"
+>
+
+
+<div class="product">
+
+
+    <div class="product-header">
+
+
+        <div class="product-logo">
+            🟧
+        </div>
+
+
+        <div class="product-name">
+
+            <h3>
+                Proxmox VE
+            </h3>
+
+            <p>
+                Proxmox Server Solutions GmbH
+            </p>
+
+        </div>
+
+
+        <div class="product-type">
+
+            <span>
+                PLATFORM
+            </span>
+
+            <strong>
+                KVM + LXC
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="product-content">
+
+
+        <div class="info">
+
+            <h4>
+                LICENCIA / COSTE
+            </h4>
+
+            <span class="badge free">
+                OPEN SOURCE
+            </span>
+
+            <span class="badge paid">
+                SOPORTE OPCIONAL
+            </span>
+
+            <span class="badge type1">
+                SERVIDOR
+            </span>
+
+            <p style="margin-top:15px;">
+
+                Proxmox VE es una plataforma
+                de virtualización de código abierto.
+
+                Puede utilizarse sin adquirir una
+                suscripción comercial.
+
+                Las suscripciones proporcionan,
+                entre otras cosas, acceso al repositorio
+                empresarial y diferentes niveles de soporte.
+
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                TECNOLOGÍA
+            </h4>
+
+            <ul>
+
+                <li>
+                    KVM para máquinas virtuales
+                </li>
+
+                <li>
+                    LXC para contenedores
+                </li>
+
+                <li>
+                    Interfaz web integrada
+                </li>
+
+                <li>
+                    Clustering
+                </li>
+
+                <li>
+                    Alta disponibilidad
+                </li>
+
+                <li>
+                    Migración de máquinas
+                </li>
+
+                <li>
+                    Gestión de almacenamiento y red
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✓ VENTAJAS
+            </h4>
+
+            <ul>
+
+                <li class="positive">
+                    ✓ Código abierto
+                </li>
+
+                <li class="positive">
+                    ✓ Interfaz web muy completa
+                </li>
+
+                <li class="positive">
+                    ✓ VM + contenedores
+                </li>
+
+                <li class="positive">
+                    ✓ Clustering integrado
+                </li>
+
+                <li class="positive">
+                    ✓ Excelente para homelab
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✕ INCONVENIENTES
+            </h4>
+
+            <ul>
+
+                <li class="negative">
+                    ✕ Requiere conocimientos de redes,
+                    Linux y almacenamiento para escenarios avanzados
+                </li>
+
+                <li class="negative">
+                    ✕ El soporte profesional requiere suscripción
+                </li>
+
+                <li class="negative">
+                    ✕ Algunas empresas dependen de ecosistemas
+                    VMware o Microsoft ya implantados
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info full recommended">
+
+            <span>
+                ¿CUÁNDO LO UTILIZARÍA?
+            </span>
+
+            <strong>
+                Homelab · Formación · PYME · Servidores propios ·
+                Clusters · Laboratorios ASIX · Infraestructura virtual
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- VMWARE                                                -->
+<!-- ===================================================== -->
+
+<section
+    class="hyper-panel"
+    id="vmware"
+>
+
+
+<div class="product">
+
+
+    <div class="product-header">
+
+
+        <div class="product-logo">
+            ◈
+        </div>
+
+
+        <div class="product-name">
+
+            <h3>
+                VMware vSphere / ESXi
+            </h3>
+
+            <p>
+                VMware · Broadcom
+            </p>
+
+        </div>
+
+
+        <div class="product-type">
+
+            <span>
+                TYPE
+            </span>
+
+            <strong>
+                TYPE 1
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="product-content">
+
+
+        <div class="info">
+
+            <h4>
+                LICENCIA / COSTE
+            </h4>
+
+            <span class="badge paid">
+                COMERCIAL
+            </span>
+
+            <span class="badge type1">
+                TYPE 1
+            </span>
+
+            <p style="margin-top:15px;">
+
+                Plataforma empresarial de virtualización.
+
+                VMware ESXi es el hipervisor y
+                vSphere engloba las herramientas y
+                tecnologías utilizadas para administrar
+                infraestructuras virtualizadas.
+
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                CARACTERÍSTICAS
+            </h4>
+
+            <ul>
+
+                <li>
+                    Hipervisor bare-metal
+                </li>
+
+                <li>
+                    Administración centralizada
+                </li>
+
+                <li>
+                    Migración de máquinas
+                </li>
+
+                <li>
+                    Alta disponibilidad
+                </li>
+
+                <li>
+                    Clustering empresarial
+                </li>
+
+                <li>
+                    Amplio ecosistema profesional
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✓ VENTAJAS
+            </h4>
+
+            <ul>
+
+                <li class="positive">
+                    ✓ Tecnología madura
+                </li>
+
+                <li class="positive">
+                    ✓ Alto rendimiento
+                </li>
+
+                <li class="positive">
+                    ✓ Administración empresarial
+                </li>
+
+                <li class="positive">
+                    ✓ Amplio ecosistema
+                </li>
+
+                <li class="positive">
+                    ✓ Adecuado para grandes infraestructuras
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✕ INCONVENIENTES
+            </h4>
+
+            <ul>
+
+                <li class="negative">
+                    ✕ Licenciamiento comercial
+                </li>
+
+                <li class="negative">
+                    ✕ Coste superior a alternativas abiertas
+                </li>
+
+                <li class="negative">
+                    ✕ Mayor complejidad en despliegues empresariales
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info full recommended">
+
+            <span>
+                ¿CUÁNDO LO UTILIZARÍA?
+            </span>
+
+            <strong>
+                Empresas con infraestructura VMware ·
+                Centros de datos · Entornos empresariales
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- HYPER-V                                               -->
+<!-- ===================================================== -->
+
+<section
+    class="hyper-panel"
+    id="hyperv"
+>
+
+
+<div class="product">
+
+
+    <div class="product-header">
+
+
+        <div class="product-logo">
+            🪟
+        </div>
+
+
+        <div class="product-name">
+
+            <h3>
+                Microsoft Hyper-V
+            </h3>
+
+            <p>
+                Microsoft
+            </p>
+
+        </div>
+
+
+        <div class="product-type">
+
+            <span>
+                TYPE
+            </span>
+
+            <strong>
+                TYPE 1
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="product-content">
+
+
+        <div class="info">
+
+            <h4>
+                LICENCIA / COSTE
+            </h4>
+
+            <span class="badge type1">
+                TYPE 1
+            </span>
+
+            <span class="badge paid">
+                INCLUIDO EN EDICIONES COMPATIBLES
+            </span>
+
+            <p style="margin-top:15px;">
+
+                Hyper-V es la tecnología de
+                virtualización de Microsoft.
+
+                Está integrada en Windows Server
+                y disponible en determinadas
+                ediciones profesionales de Windows.
+
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                CARACTERÍSTICAS
+            </h4>
+
+            <ul>
+
+                <li>
+                    Hipervisor Tipo 1
+                </li>
+
+                <li>
+                    Máquinas Windows y Linux
+                </li>
+
+                <li>
+                    Hyper-V Manager
+                </li>
+
+                <li>
+                    PowerShell
+                </li>
+
+                <li>
+                    Virtual Switch
+                </li>
+
+                <li>
+                    Migración en vivo en Windows Server
+                </li>
+
+                <li>
+                    Failover Clustering
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✓ VENTAJAS
+            </h4>
+
+            <ul>
+
+                <li class="positive">
+                    ✓ Integración con Windows
+                </li>
+
+                <li class="positive">
+                    ✓ Integración con Active Directory
+                </li>
+
+                <li class="positive">
+                    ✓ Administración con PowerShell
+                </li>
+
+                <li class="positive">
+                    ✓ Adecuado para Windows Server
+                </li>
+
+                <li class="positive">
+                    ✓ Buen soporte empresarial
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✕ INCONVENIENTES
+            </h4>
+
+            <ul>
+
+                <li class="negative">
+                    ✕ Muy vinculado al ecosistema Microsoft
+                </li>
+
+                <li class="negative">
+                    ✕ Algunas funciones avanzadas dependen
+                    del entorno Windows Server
+                </li>
+
+                <li class="negative">
+                    ✕ En Windows cliente no está disponible
+                    en todas las ediciones
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info full recommended">
+
+            <span>
+                ¿CUÁNDO LO UTILIZARÍA?
+            </span>
+
+            <strong>
+                Empresas Microsoft · Active Directory ·
+                Windows Server · Desarrollo y laboratorios Windows
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- KVM                                                   -->
+<!-- ===================================================== -->
+
+<section
+    class="hyper-panel"
+    id="kvm"
+>
+
+
+<div class="product">
+
+
+    <div class="product-header">
+
+
+        <div class="product-logo">
+            🐧
+        </div>
+
+
+        <div class="product-name">
+
+            <h3>
+                KVM
+            </h3>
+
+            <p>
+                Kernel-based Virtual Machine · Linux
+            </p>
+
+        </div>
+
+
+        <div class="product-type">
+
+            <span>
+                TECHNOLOGY
+            </span>
+
+            <strong>
+                LINUX KERNEL
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="product-content">
+
+
+        <div class="info">
+
+            <h4>
+                LICENCIA / COSTE
+            </h4>
+
+            <span class="badge free">
+                OPEN SOURCE
+            </span>
+
+            <span class="badge type1">
+                HYPERVISOR
+            </span>
+
+            <p style="margin-top:15px;">
+
+                KVM significa
+
+                <strong>
+                    Kernel-based Virtual Machine.
+                </strong>
+
+                Es una tecnología de virtualización
+                integrada en Linux que permite que
+                el sistema actúe como hipervisor.
+
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                CARACTERÍSTICAS
+            </h4>
+
+            <ul>
+
+                <li>
+                    Integrado en el kernel Linux
+                </li>
+
+                <li>
+                    Virtualización asistida por hardware
+                </li>
+
+                <li>
+                    Utiliza habitualmente QEMU
+                </li>
+
+                <li>
+                    Compatible con libvirt
+                </li>
+
+                <li>
+                    Base de numerosas plataformas cloud
+                </li>
+
+                <li>
+                    Utilizado por Proxmox VE
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✓ VENTAJAS
+            </h4>
+
+            <ul>
+
+                <li class="positive">
+                    ✓ Código abierto
+                </li>
+
+                <li class="positive">
+                    ✓ Alto rendimiento
+                </li>
+
+                <li class="positive">
+                    ✓ Integración con Linux
+                </li>
+
+                <li class="positive">
+                    ✓ Muy flexible
+                </li>
+
+                <li class="positive">
+                    ✓ Excelente para automatización
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✕ INCONVENIENTES
+            </h4>
+
+            <ul>
+
+                <li class="negative">
+                    ✕ Requiere conocimientos Linux
+                </li>
+
+                <li class="negative">
+                    ✕ KVM por sí solo no proporciona
+                    una plataforma gráfica completa
+                    como Proxmox
+                </li>
+
+                <li class="negative">
+                    ✕ Su administración depende
+                    de herramientas adicionales
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info full recommended">
+
+            <span>
+                ¿CUÁNDO LO UTILIZARÍA?
+            </span>
+
+            <strong>
+                Servidores Linux · Cloud · Automatización ·
+                Infraestructura personalizada · Plataformas de virtualización
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- XCP-NG                                                -->
+<!-- ===================================================== -->
+
+<section
+    class="hyper-panel"
+    id="xcp"
+>
+
+
+<div class="product">
+
+
+    <div class="product-header">
+
+
+        <div class="product-logo">
+            ❎
+        </div>
+
+
+        <div class="product-name">
+
+            <h3>
+                XCP-ng
+            </h3>
+
+            <p>
+                Vates · Xen Project
+            </p>
+
+        </div>
+
+
+        <div class="product-type">
+
+            <span>
+                TYPE
+            </span>
+
+            <strong>
+                TYPE 1
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="product-content">
+
+
+        <div class="info">
+
+            <h4>
+                LICENCIA / COSTE
+            </h4>
+
+            <span class="badge free">
+                OPEN SOURCE
+            </span>
+
+            <span class="badge type1">
+                TYPE 1
+            </span>
+
+            <span class="badge paid">
+                SOPORTE OPCIONAL
+            </span>
+
+            <p style="margin-top:15px;">
+
+                XCP-ng es una plataforma
+                de virtualización de código abierto
+                basada en el hipervisor Xen.
+
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                CARACTERÍSTICAS
+            </h4>
+
+            <ul>
+
+                <li>
+                    Basado en Xen
+                </li>
+
+                <li>
+                    Hipervisor bare-metal
+                </li>
+
+                <li>
+                    Gestión centralizada
+                </li>
+
+                <li>
+                    Migración de máquinas
+                </li>
+
+                <li>
+                    Snapshots
+                </li>
+
+                <li>
+                    Integración con Xen Orchestra
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✓ VENTAJAS
+            </h4>
+
+            <ul>
+
+                <li class="positive">
+                    ✓ Código abierto
+                </li>
+
+                <li class="positive">
+                    ✓ Orientado a servidores
+                </li>
+
+                <li class="positive">
+                    ✓ Buenas funciones empresariales
+                </li>
+
+                <li class="positive">
+                    ✓ Alternativa en ecosistemas Xen
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✕ INCONVENIENTES
+            </h4>
+
+            <ul>
+
+                <li class="negative">
+                    ✕ Menor presencia que VMware
+                    o Hyper-V en algunas empresas
+                </li>
+
+                <li class="negative">
+                    ✕ Xen Orchestra es importante
+                    para una gestión cómoda
+                </li>
+
+                <li class="negative">
+                    ✕ Curva de aprendizaje
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info full recommended">
+
+            <span>
+                ¿CUÁNDO LO UTILIZARÍA?
+            </span>
+
+            <strong>
+                Servidores · Homelab avanzado ·
+                Infraestructura Xen · Alternativa open source empresarial
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- VIRTUALBOX                                            -->
+<!-- ===================================================== -->
+
+<section
+    class="hyper-panel"
+    id="virtualbox"
+>
+
+
+<div class="product">
+
+
+    <div class="product-header">
+
+
+        <div class="product-logo">
+            📦
+        </div>
+
+
+        <div class="product-name">
+
+            <h3>
+                Oracle VirtualBox
+            </h3>
+
+            <p>
+                Oracle
+            </p>
+
+        </div>
+
+
+        <div class="product-type">
+
+            <span>
+                TYPE
+            </span>
+
+            <strong>
+                TYPE 2
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="product-content">
+
+
+        <div class="info">
+
+            <h4>
+                LICENCIA / COSTE
+            </h4>
+
+            <span class="badge free">
+                BASE OPEN SOURCE
+            </span>
+
+            <span class="badge type2">
+                TYPE 2
+            </span>
+
+            <p style="margin-top:15px;">
+
+                VirtualBox es una solución de
+                virtualización multiplataforma
+                que funciona sobre un sistema
+                operativo anfitrión.
+
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                CARACTERÍSTICAS
+            </h4>
+
+            <ul>
+
+                <li>
+                    Interfaz gráfica
+                </li>
+
+                <li>
+                    Windows, Linux y otros invitados
+                </li>
+
+                <li>
+                    Snapshots
+                </li>
+
+                <li>
+                    Redes virtuales
+                </li>
+
+                <li>
+                    Discos virtuales
+                </li>
+
+                <li>
+                    Fácil creación de laboratorios
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✓ VENTAJAS
+            </h4>
+
+            <ul>
+
+                <li class="positive">
+                    ✓ Fácil de instalar
+                </li>
+
+                <li class="positive">
+                    ✓ Muy adecuado para estudiantes
+                </li>
+
+                <li class="positive">
+                    ✓ Multiplataforma
+                </li>
+
+                <li class="positive">
+                    ✓ Ideal para laboratorios
+                </li>
+
+                <li class="positive">
+                    ✓ Interfaz gráfica sencilla
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                ✕ INCONVENIENTES
+            </h4>
+
+            <ul>
+
+                <li class="negative">
+                    ✕ No está orientado a grandes
+                    centros de datos
+                </li>
+
+                <li class="negative">
+                    ✕ Depende del sistema operativo anfitrión
+                </li>
+
+                <li class="negative">
+                    ✕ No sustituye a una plataforma
+                    de clustering empresarial
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="info full recommended">
+
+            <span>
+                ¿CUÁNDO LO UTILIZARÍA?
+            </span>
+
+            <strong>
+                Estudiantes · ASIX · Pruebas ·
+                Desarrollo · Laboratorios en PC personal
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 05 COMPARATIVA                                        -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        05 //
+    </span>
+
+    <h2>
+        Comparativa general
+    </h2>
+
+</div>
+
+
+<div class="table-wrap">
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+    <th>
+        SOLUCIÓN
+    </th>
+
+    <th>
+        EMPRESA / PROYECTO
+    </th>
+
+    <th>
+        TIPO
+    </th>
+
+    <th>
+        MODELO
+    </th>
+
+    <th>
+        IDEAL PARA
+    </th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+<tr>
+
+    <td>
+        <strong>
+            Proxmox VE
+        </strong>
+    </td>
+
+    <td>
+        Proxmox
+    </td>
+
+    <td>
+        Servidor · KVM
+    </td>
+
+    <td>
+        Open Source + suscripción opcional
+    </td>
+
+    <td>
+        Homelab · PYME · Servidores · Cluster
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            VMware vSphere / ESXi
+        </strong>
+    </td>
+
+    <td>
+        VMware / Broadcom
+    </td>
+
+    <td>
+        Tipo 1
+    </td>
+
+    <td>
+        Comercial
+    </td>
+
+    <td>
+        Empresa · Datacenter
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            Hyper-V
+        </strong>
+    </td>
+
+    <td>
+        Microsoft
+    </td>
+
+    <td>
+        Tipo 1
+    </td>
+
+    <td>
+        Integrado en productos Windows compatibles
+    </td>
+
+    <td>
+        Windows Server · Ecosistema Microsoft
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            KVM
+        </strong>
+    </td>
+
+    <td>
+        Linux
+    </td>
+
+    <td>
+        Kernel Hypervisor
+    </td>
+
+    <td>
+        Open Source
+    </td>
+
+    <td>
+        Linux · Cloud · Servidores
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            XCP-ng
+        </strong>
+    </td>
+
+    <td>
+        Vates / Xen
+    </td>
+
+    <td>
+        Tipo 1
+    </td>
+
+    <td>
+        Open Source + soporte opcional
+    </td>
+
+    <td>
+        Servidores · Xen
+    </td>
+
+</tr>
+
+
+<tr>
+
+    <td>
+        <strong>
+            VirtualBox
+        </strong>
+    </td>
+
+    <td>
+        Oracle
+    </td>
+
+    <td>
+        Tipo 2
+    </td>
+
+    <td>
+        Base Open Source
+    </td>
+
+    <td>
+        Formación · Laboratorios
+    </td>
+
+</tr>
+
+
+</tbody>
+
+</table>
+
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- 06 QUÉ UTILIZAR                                       -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        06 //
+    </span>
+
+    <h2>
+        ¿Qué solución utilizar según el escenario?
+    </h2>
+
+</div>
+
+
+<section class="benefits">
+
+
+    <div class="benefit">
+
+        <span>
+            🎓
+        </span>
+
+        <h3>
+            Estudiante
+        </h3>
+
+        <p>
+            VirtualBox permite crear laboratorios
+            rápidamente sobre un PC existente.
+        </p>
+
+    </div>
+
+
+    <div class="benefit">
+
+        <span>
+            🏠
+        </span>
+
+        <h3>
+            Homelab
+        </h3>
+
+        <p>
+            Proxmox VE permite construir un
+            servidor de virtualización completo
+            con VM, contenedores y clustering.
+        </p>
+
+    </div>
+
+
+    <div class="benefit">
+
+        <span>
+            🪟
+        </span>
+
+        <h3>
+            Empresa Microsoft
+        </h3>
+
+        <p>
+            Hyper-V encaja especialmente bien
+            en infraestructuras Windows Server
+            y Active Directory.
+        </p>
+
+    </div>
+
+
+    <div class="benefit">
+
+        <span>
+            🐧
+        </span>
+
+        <h3>
+            Linux / Cloud
+        </h3>
+
+        <p>
+            KVM proporciona una base potente
+            y flexible para servidores Linux
+            e infraestructuras cloud.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 07 TRAMPAS                                            -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        07 //
+    </span>
+
+    <h2>
+        ⚠ Conceptos que suelen confundirse
+    </h2>
+
+</div>
+
+
+<div class="trap">
+
+    <div class="trap-icon">
+        !
+    </div>
+
+
+    <div>
+
+        <h3>
+            Hyper-V NO debe memorizarse como Tipo 2
+        </h3>
+
+        <p>
+
+            Aunque se habilite desde Windows,
+
+            <strong>
+                Hyper-V utiliza una arquitectura
+                de hipervisor Tipo 1.
+            </strong>
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="trap">
+
+    <div class="trap-icon">
+        !
+    </div>
+
+
+    <div>
+
+        <h3>
+            Proxmox y KVM no son lo mismo
+        </h3>
+
+        <p>
+
+            <strong>
+                KVM
+            </strong>
+
+            es la tecnología de virtualización
+            integrada en Linux.
+
+            <strong>
+                Proxmox VE
+            </strong>
+
+            es una plataforma completa que utiliza,
+            entre otras tecnologías, KVM para
+            ejecutar máquinas virtuales.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="trap">
+
+    <div class="trap-icon">
+        !
+    </div>
+
+
+    <div>
+
+        <h3>
+            Una VM no es lo mismo que un contenedor
+        </h3>
+
+        <p>
+
+            Una máquina virtual dispone de un
+
+            <strong>
+                sistema operativo invitado completo.
+            </strong>
+
+            Los contenedores comparten el kernel
+            del host y tienen una arquitectura diferente.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="trap">
+
+    <div class="trap-icon">
+        !
+    </div>
+
+
+    <div>
+
+        <h3>
+            Tipo 1 y Tipo 2 dependen de la arquitectura
+        </h3>
+
+        <p>
+
+            <strong>
+                Tipo 1:
+            </strong>
+
+            hipervisor directamente sobre el hardware.
+
+            <br>
+
+            <strong>
+                Tipo 2:
+            </strong>
+
+            hipervisor ejecutado sobre un sistema
+            operativo anfitrión.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- 08 MEMORY BLOCK                                       -->
+<!-- ===================================================== -->
+
+<div class="section-title">
+
+    <span>
+        08 //
+    </span>
+
+    <h2>
+        Resumen para estudiar
+    </h2>
+
+</div>
+
+
+<section class="memory">
+
+
+    <div class="memory-title">
+        // MEMORY BLOCK · EXAM MODE
+    </div>
+
+
+    <div class="memory-grid">
+
+
+        <div class="memory-item">
+
+            <span>
+                VIRTUALIZACIÓN
+            </span>
+
+            <strong>
+                Varias máquinas virtuales
+                sobre un equipo físico
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                HIPERVISOR
+            </span>
+
+            <strong>
+                Gestiona las máquinas virtuales
+                y sus recursos
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                TIPO 1
+            </span>
+
+            <strong class="cyan">
+                Hardware → Hipervisor → VM
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                TIPO 2
+            </span>
+
+            <strong class="purple">
+                Hardware → SO → Hipervisor → VM
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                PROXMOX
+            </span>
+
+            <strong>
+                Plataforma Open Source · KVM + LXC
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                VMWARE ESXi
+            </span>
+
+            <strong>
+                Tipo 1 · Entorno empresarial
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                HYPER-V
+            </span>
+
+            <strong>
+                Microsoft · Tipo 1
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                KVM
+            </span>
+
+            <strong>
+                Virtualización integrada en Linux
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                XCP-NG
+            </span>
+
+            <strong>
+                Open Source · Xen · Tipo 1
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                VIRTUALBOX
+            </span>
+
+            <strong>
+                Tipo 2 · Laboratorios
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                VM
+            </span>
+
+            <strong>
+                Sistema operativo invitado completo
+            </strong>
+
+        </div>
+
+
+        <div class="memory-item">
+
+            <span>
+                CONTENEDOR
+            </span>
+
+            <strong>
+                Comparte kernel con el host
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+<!-- ===================================================== -->
+<!-- FOOTER                                                -->
+<!-- ===================================================== -->
+
+<footer>
+
+    <span>
+        SYS-ACT-002 · VIRTUALIZATION LAB
+    </span>
+
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   TIPO 1 / TIPO 2
+   ========================================================= */
+
+const typeButtons =
+    document.querySelectorAll(
+        ".type-button"
+    );
+
+const typeContents =
+    document.querySelectorAll(
+        ".type-content"
+    );
+
+
+typeButtons.forEach(button=>{
+
+    button.addEventListener(
+        "click",
+        ()=>{
+
+
+            typeButtons.forEach(b=>{
+
+                b.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            typeContents.forEach(c=>{
+
+                c.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            button.classList.add(
+                "active"
+            );
+
+
+            document
+                .getElementById(
+                    button.dataset.type
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   SELECTOR HIPERVISORES
+   ========================================================= */
+
+const hyperTabs =
+    document.querySelectorAll(
+        ".hyper-tab"
+    );
+
+const hyperPanels =
+    document.querySelectorAll(
+        ".hyper-panel"
+    );
+
+
+hyperTabs.forEach(tab=>{
+
+    tab.addEventListener(
+        "click",
+        ()=>{
+
+
+            hyperTabs.forEach(t=>{
+
+                t.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            hyperPanels.forEach(panel=>{
+
+                panel.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            tab.classList.add(
+                "active"
+            );
+
+
+            document
+                .getElementById(
+                    tab.dataset.hyper
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   FONDO ANIMADO
+   ========================================================= */
+
+const canvas =
+    document.getElementById(
+        "networkCanvas"
+    );
+
+const ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+let nodes=[];
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+}
+
+resizeCanvas();
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   NODOS
+   ========================================================= */
+
+function createNodes(){
+
+    nodes=[];
+
+
+    const amount =
+        window.innerWidth < 700
+        ? 25
+        : 55;
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        nodes.push({
+
+            x:
+                Math.random() *
+                canvas.width,
+
+            y:
+                Math.random() *
+                canvas.height,
+
+            vx:
+                (Math.random()-.5) *
+                .15,
+
+            vy:
+                (Math.random()-.5) *
+                .15,
+
+            r:
+                Math.random() *
+                1.3 +
+                .3
+
+        });
+
+    }
+
+}
+
+createNodes();
+
+
+window.addEventListener(
+    "resize",
+    createNodes
+);
+
+
+/* =========================================================
+   ANIMACIÓN
+   ========================================================= */
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    nodes.forEach(node=>{
+
+
+        node.x += node.vx;
+
+        node.y += node.vy;
+
+
+        if(
+            node.x < 0 ||
+            node.x > canvas.width
+        ){
+
+            node.vx *= -1;
+
+        }
+
+
+        if(
+            node.y < 0 ||
+            node.y > canvas.height
+        ){
+
+            node.vy *= -1;
+
+        }
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            node.x,
+            node.y,
+            node.r,
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.fillStyle =
+            "rgba(0,229,255,.20)";
+
+
+        ctx.fill();
+
+    });
+
+
+    /* CONEXIONES */
+
+    for(
+        let i=0;
+        i<nodes.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<nodes.length;
+            j++
+        ){
+
+
+            const dx =
+                nodes[i].x -
+                nodes[j].x;
+
+
+            const dy =
+                nodes[i].y -
+                nodes[j].y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
+
+
+            if(distance < 120){
+
+
+                ctx.beginPath();
+
+
+                ctx.moveTo(
+                    nodes[i].x,
+                    nodes[i].y
+                );
+
+
+                ctx.lineTo(
+                    nodes[j].x,
+                    nodes[j].y
+                );
+
+
+                const opacity =
+                    .045 *
+                    (1-distance/120);
+
+
+                ctx.strokeStyle =
+                    "rgba(0,229,255," +
+                    opacity +
+                    ")";
+
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+animate();
+
+</script>
+
+</body>
+</html>
