@@ -1,0 +1,4087 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tarea 1 · Mi primer EC2 | MCS Cloud Lab</title>
+
+<style>
+
+/* =========================================================
+   RESET / VARIABLES
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#03070d;
+    --bg2:#07101a;
+    --panel:#09131e;
+    --panel2:#0d1925;
+
+    --aws:#ff9900;
+    --aws2:#ffb84d;
+
+    --cyan:#00d9ff;
+    --blue:#4285ff;
+    --green:#6dffad;
+    --purple:#b68cff;
+    --red:#ff6470;
+
+    --white:#edf5fa;
+    --muted:#7c8d98;
+
+    --border:rgba(255,255,255,.08);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    background:var(--bg);
+    color:var(--white);
+
+    font-family:"Segoe UI",Arial,sans-serif;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   FONDO
+   ========================================================= */
+
+#cloudCanvas{
+    position:fixed;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:-4;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+
+    z-index:-3;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(0,217,255,.08),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(255,153,0,.08),
+            transparent 30%
+        ),
+
+        linear-gradient(
+            rgba(3,7,13,.72),
+            rgba(3,7,13,.98)
+        );
+}
+
+.grid-background{
+    position:fixed;
+    inset:0;
+
+    z-index:-2;
+
+    pointer-events:none;
+
+    opacity:.10;
+
+    background-image:
+        linear-gradient(
+            rgba(0,217,255,.10) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0,217,255,.10) 1px,
+            transparent 1px
+        );
+
+    background-size:70px 70px;
+}
+
+.scanlines{
+    position:fixed;
+    inset:0;
+
+    z-index:1000;
+
+    pointer-events:none;
+
+    opacity:.045;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgba(255,255,255,.03) 4px
+        );
+}
+
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+
+#boot{
+    position:fixed;
+    inset:0;
+
+    z-index:99999;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#01050a;
+
+    animation:
+        bootExit .7s forwards 4s;
+}
+
+.boot-console{
+    width:90%;
+    max-width:760px;
+
+    padding:30px;
+
+    border:1px solid rgba(0,217,255,.12);
+    border-radius:10px;
+
+    background:#02070c;
+
+    font-family:Consolas,"Courier New",monospace;
+}
+
+.boot-logo{
+    margin-bottom:25px;
+
+    color:var(--aws);
+
+    font-size:19px;
+    font-weight:bold;
+
+    letter-spacing:5px;
+}
+
+.boot-sub{
+    margin-bottom:25px;
+
+    color:#4d606d;
+
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.boot-line{
+    opacity:0;
+
+    margin:7px 0;
+
+    color:#81939f;
+
+    font-size:11px;
+
+    animation:
+        bootLine .2s forwards;
+}
+
+.boot-line:nth-child(3){animation-delay:.3s;}
+.boot-line:nth-child(4){animation-delay:.7s;}
+.boot-line:nth-child(5){animation-delay:1.1s;}
+.boot-line:nth-child(6){animation-delay:1.5s;}
+.boot-line:nth-child(7){animation-delay:1.9s;}
+.boot-line:nth-child(8){animation-delay:2.3s;}
+.boot-line:nth-child(9){animation-delay:2.7s;}
+
+.boot-ok{
+    color:var(--green);
+}
+
+.boot-aws{
+    color:var(--aws);
+}
+
+@keyframes bootLine{
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes bootExit{
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+    width:94%;
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:42px 0 35px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:60px;
+}
+
+.back{
+    color:#71828e;
+
+    text-decoration:none;
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    transition:.25s;
+}
+
+.back:hover{
+    color:var(--aws);
+}
+
+.lab-status{
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:2px;
+}
+
+.status-light{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 12px var(--green);
+
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        opacity:.3;
+    }
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.eyebrow{
+    margin-bottom:13px;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:4px;
+}
+
+h1{
+    max-width:1000px;
+
+    font-size:64px;
+    line-height:1;
+
+    letter-spacing:-2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #d9f7ff,
+            var(--cyan)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.ec2-title{
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #ffd28a,
+            var(--aws)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero-text{
+    max-width:900px;
+
+    margin-top:22px;
+
+    color:#84939e;
+
+    line-height:1.8;
+
+    font-size:14px;
+}
+
+.hero-text strong{
+    color:white;
+}
+
+.badges{
+    display:flex;
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:25px;
+}
+
+.badge{
+    padding:7px 11px;
+
+    border:1px solid var(--border);
+    border-radius:5px;
+
+    background:rgba(10,20,30,.65);
+
+    color:#71828e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.badge.aws{
+    color:var(--aws);
+
+    border-color:
+        rgba(255,153,0,.20);
+}
+
+.badge.cyan{
+    color:var(--cyan);
+
+    border-color:
+        rgba(0,217,255,.20);
+}
+
+.badge.green{
+    color:var(--green);
+
+    border-color:
+        rgba(109,255,173,.20);
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+main{
+    width:94%;
+    max-width:1250px;
+
+    margin:20px auto 80px;
+}
+
+
+/* =========================================================
+   STATUS PANEL
+   ========================================================= */
+
+.status-panel{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:10px;
+
+    margin-bottom:55px;
+}
+
+.status-card{
+    padding:16px;
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11,24,35,.90),
+            rgba(6,13,20,.90)
+        );
+}
+
+.status-card span{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#53636f;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.status-card strong{
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.aws-color{
+    color:var(--aws);
+}
+
+.cyan-color{
+    color:var(--cyan);
+}
+
+.green-color{
+    color:var(--green);
+}
+
+.purple-color{
+    color:var(--purple);
+}
+
+
+/* =========================================================
+   PROGRESO
+   ========================================================= */
+
+.progress{
+    display:grid;
+
+    grid-template-columns:
+        1fr 45px 1fr 45px 1fr;
+
+    align-items:center;
+
+    margin:40px 0 65px;
+}
+
+.progress-step{
+    padding:20px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:rgba(9,19,29,.85);
+}
+
+.progress-number{
+    margin-bottom:8px;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+}
+
+.progress-step strong{
+    display:block;
+
+    margin-bottom:6px;
+
+    font-size:13px;
+}
+
+.progress-step small{
+    color:#60717c;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+}
+
+.progress-arrow{
+    text-align:center;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+
+    animation:arrowPulse 1.5s infinite;
+}
+
+@keyframes arrowPulse{
+    50%{
+        opacity:.25;
+    }
+}
+
+
+/* =========================================================
+   SECCIONES
+   ========================================================= */
+
+.phase{
+    margin-top:80px;
+}
+
+.phase-header{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:25px;
+
+    margin-bottom:25px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(12,25,36,.96),
+            rgba(5,12,18,.96)
+        );
+}
+
+.phase-header::before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:4px;
+    height:100%;
+
+    background:var(--aws);
+}
+
+.phase-code{
+    margin-bottom:8px;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.phase-header h2{
+    margin-bottom:8px;
+
+    font-size:27px;
+}
+
+.phase-header p{
+    max-width:850px;
+
+    color:#82919b;
+
+    line-height:1.7;
+
+    font-size:12px;
+}
+
+.phase-score{
+    position:absolute;
+
+    right:25px;
+    top:25px;
+
+    padding:7px 10px;
+
+    border:1px solid rgba(109,255,173,.18);
+    border-radius:5px;
+
+    color:var(--green);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   BLOQUES DE PASOS
+   ========================================================= */
+
+.step{
+    margin:22px 0 45px;
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,21,31,.96),
+            rgba(5,11,17,.97)
+        );
+}
+
+.step-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:20px;
+
+    padding:17px 20px;
+
+    border-bottom:1px solid var(--border);
+
+    background:rgba(255,255,255,.015);
+}
+
+.step-left{
+    display:flex;
+    align-items:center;
+
+    gap:13px;
+}
+
+.step-number{
+    width:40px;
+    height:40px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:1px solid rgba(255,153,0,.22);
+    border-radius:7px;
+
+    background:#060b10;
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.step-title h3{
+    margin-bottom:4px;
+
+    font-size:16px;
+}
+
+.step-title small{
+    color:#596a75;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:1px;
+}
+
+.points{
+    white-space:nowrap;
+
+    padding:6px 9px;
+
+    border:1px solid rgba(182,140,255,.18);
+    border-radius:5px;
+
+    color:var(--purple);
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.step-body{
+    padding:22px;
+}
+
+
+/* =========================================================
+   CAPTURAS
+   ========================================================= */
+
+.captura{
+    margin:10px 0 22px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(0,217,255,.13);
+    border-radius:10px;
+
+    background:#03080c;
+}
+
+.captura-cabecera{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:15px;
+
+    padding:10px 14px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.05);
+
+    background:#071019;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.captura-cabecera span:first-child{
+    color:var(--cyan);
+}
+
+.captura-cabecera span:last-child{
+    color:#5f707b;
+}
+
+.captura img{
+    display:block;
+
+    width:100%;
+    height:auto;
+
+    cursor:zoom-in;
+
+    transition:.25s;
+}
+
+.captura img:hover{
+    opacity:.92;
+}
+
+.pie{
+    padding:10px 15px;
+
+    border-top:
+        1px solid rgba(255,255,255,.05);
+
+    color:#657681;
+
+    background:#050c11;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   EXPLICACIÓN
+   ========================================================= */
+
+.explicacion{
+    margin-top:17px;
+
+    padding:18px;
+
+    border-left:3px solid var(--cyan);
+
+    background:rgba(0,217,255,.025);
+}
+
+.explicacion strong{
+    display:block;
+
+    margin-bottom:9px;
+
+    color:var(--cyan);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:1px;
+}
+
+.explicacion p{
+    margin:7px 0;
+
+    color:#8b9aa4;
+
+    line-height:1.75;
+
+    font-size:12px;
+}
+
+.explicacion b{
+    color:#dce8ee;
+}
+
+
+/* =========================================================
+   COMANDOS
+   ========================================================= */
+
+.command{
+    position:relative;
+
+    margin:15px 0;
+
+    padding:15px 18px;
+
+    overflow-x:auto;
+
+    border:1px solid rgba(109,255,173,.14);
+    border-radius:7px;
+
+    background:#020704;
+
+    color:var(--green);
+
+    font-family:Consolas,"Courier New",monospace;
+    font-size:11px;
+    line-height:1.7;
+}
+
+.command::before{
+    content:"$";
+
+    margin-right:10px;
+
+    color:var(--aws);
+}
+
+
+/* =========================================================
+   INFO BOXES
+   ========================================================= */
+
+.info{
+    margin-top:15px;
+
+    padding:13px 15px;
+
+    border-left:3px solid var(--aws);
+
+    background:rgba(255,153,0,.035);
+
+    color:#a79a81;
+
+    line-height:1.7;
+
+    font-size:11px;
+}
+
+.info strong{
+    color:var(--aws2);
+}
+
+.success{
+    margin-top:15px;
+
+    padding:13px 15px;
+
+    border-left:3px solid var(--green);
+
+    background:rgba(109,255,173,.025);
+
+    color:#91bfa2;
+
+    line-height:1.7;
+
+    font-size:11px;
+}
+
+.success strong{
+    color:var(--green);
+}
+
+
+/* =========================================================
+   CONCEPTOS
+   ========================================================= */
+
+.concepts{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:10px;
+
+    margin-top:18px;
+}
+
+.concept{
+    padding:15px;
+
+    border:1px solid var(--border);
+    border-radius:7px;
+
+    background:#071019;
+}
+
+.concept small{
+    display:block;
+
+    margin-bottom:6px;
+
+    color:#50616d;
+
+    font-family:Consolas,monospace;
+    font-size:8px;
+}
+
+.concept strong{
+    display:block;
+
+    margin-bottom:6px;
+
+    color:var(--aws2);
+
+    font-size:11px;
+}
+
+.concept p{
+    color:#71828c;
+
+    font-size:10px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   DIAGRAMA
+   ========================================================= */
+
+.diagram{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin:25px 0;
+
+    padding:25px;
+
+    border:1px solid var(--border);
+    border-radius:10px;
+
+    background:#050b10;
+}
+
+.diagram-node{
+    min-width:125px;
+
+    padding:14px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+    border-radius:7px;
+
+    background:#08121a;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+.diagram-node.aws{
+    color:var(--aws);
+
+    border-color:
+        rgba(255,153,0,.20);
+}
+
+.diagram-node.cyan{
+    color:var(--cyan);
+
+    border-color:
+        rgba(0,217,255,.20);
+}
+
+.diagram-node.green{
+    color:var(--green);
+
+    border-color:
+        rgba(109,255,173,.20);
+}
+
+.diagram-arrow{
+    color:#50616d;
+
+    font-family:Consolas,monospace;
+}
+
+
+/* =========================================================
+   MEMORY BLOCK
+   ========================================================= */
+
+.memory{
+    margin-top:80px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,153,0,.28);
+    border-radius:12px;
+
+    background:#050806;
+
+    box-shadow:
+        0 0 35px rgba(255,153,0,.04);
+}
+
+.memory-header{
+    padding:14px 18px;
+
+    border-bottom:
+        1px solid rgba(255,153,0,.15);
+
+    background:
+        rgba(255,153,0,.045);
+
+    color:var(--aws);
+
+    font-family:Consolas,monospace;
+    font-size:10px;
+
+    letter-spacing:3px;
+}
+
+.memory-content{
+    padding:22px;
+
+    font-family:Consolas,monospace;
+
+    font-size:11px;
+    line-height:2;
+}
+
+.memory-line{
+    display:grid;
+
+    grid-template-columns:190px 1fr;
+
+    gap:20px;
+
+    border-bottom:
+        1px dashed rgba(255,255,255,.05);
+}
+
+.memory-key{
+    color:var(--aws2);
+}
+
+.memory-value{
+    color:#83929b;
+}
+
+.memory-value strong{
+    color:var(--green);
+}
+
+
+/* =========================================================
+   RESULTADO FINAL
+   ========================================================= */
+
+.final-result{
+    margin-top:50px;
+
+    padding:28px;
+
+    text-align:center;
+
+    border:1px solid rgba(109,255,173,.20);
+    border-radius:12px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(109,255,173,.045),
+            transparent 70%
+        ),
+        #050a08;
+}
+
+.final-result .icon{
+    margin-bottom:10px;
+
+    font-size:35px;
+}
+
+.final-result h2{
+    margin-bottom:10px;
+
+    color:var(--green);
+}
+
+.final-result p{
+    max-width:750px;
+
+    margin:auto;
+
+    color:#83928b;
+
+    line-height:1.7;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   VISOR DE IMÁGENES
+   ========================================================= */
+
+#visor{
+    position:fixed;
+    inset:0;
+
+    z-index:999999;
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    padding:25px;
+
+    background:rgba(0,0,0,.93);
+
+    cursor:zoom-out;
+}
+
+#visor.activo{
+    display:flex;
+}
+
+#visor img{
+    max-width:96vw;
+    max-height:92vh;
+
+    object-fit:contain;
+
+    border:1px solid rgba(0,217,255,.25);
+    border-radius:6px;
+
+    box-shadow:
+        0 0 60px rgba(0,217,255,.10);
+}
+
+.close-viewer{
+    position:absolute;
+
+    right:25px;
+    top:20px;
+
+    color:white;
+
+    font-family:Consolas,monospace;
+    font-size:30px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+    width:94%;
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:25px 0 40px;
+
+    display:flex;
+    justify-content:space-between;
+
+    gap:20px;
+
+    border-top:1px solid var(--border);
+
+    color:#43535e;
+
+    font-family:Consolas,monospace;
+    font-size:9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:900px){
+
+    h1{
+        font-size:48px;
+    }
+
+    .status-panel{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+    .concepts{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:750px){
+
+    .progress{
+        grid-template-columns:1fr;
+
+        gap:10px;
+    }
+
+    .progress-arrow{
+        transform:rotate(90deg);
+    }
+
+    .phase-score{
+        position:static;
+
+        display:inline-block;
+
+        margin-top:15px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    h1{
+        font-size:38px;
+    }
+
+    .status-panel{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .step-header{
+        align-items:flex-start;
+    }
+
+    .memory-line{
+        grid-template-columns:1fr;
+
+        gap:2px;
+
+        padding:7px 0;
+    }
+
+    footer{
+        flex-direction:column;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ===================================================== -->
+<!-- BOOT                                                  -->
+<!-- ===================================================== -->
+
+<div id="boot">
+
+    <div class="boot-console">
+
+        <div class="boot-logo">
+            ☁ MCS CLOUD LAB
+        </div>
+
+        <div class="boot-sub">
+            CLOUD-ACT-001 · EC2 DEPLOYMENT
+        </div>
+
+        <div class="boot-line">
+            Loading AWS Environment ............
+            <span class="boot-ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Checking AWS CLI ...................
+            <span class="boot-ok">READY</span>
+        </div>
+
+        <div class="boot-line">
+            Authenticating AWS Identity ........
+            <span class="boot-ok">OK</span>
+        </div>
+
+        <div class="boot-line">
+            Loading EC2 Service ................
+            <span class="boot-ok">READY</span>
+        </div>
+
+        <div class="boot-line">
+            Loading SSH Environment ............
+            <span class="boot-ok">READY</span>
+        </div>
+
+        <div class="boot-line">
+            Loading CLI Deployment .............
+            <span class="boot-ok">READY</span>
+        </div>
+
+        <div class="boot-line">
+            CLOUD LAB STATUS ...................
+            <span class="boot-aws">ONLINE</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<canvas id="cloudCanvas"></canvas>
+
+<div class="background"></div>
+<div class="grid-background"></div>
+<div class="scanlines"></div>
+
+
+<!-- ===================================================== -->
+<!-- VISOR                                                 -->
+<!-- ===================================================== -->
+
+<div id="visor" onclick="cerrarImagen()">
+
+    <span class="close-viewer">
+        ×
+    </span>
+
+    <img id="visorImagen" src="" alt="Captura ampliada">
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- HEADER                                                -->
+<!-- ===================================================== -->
+
+<header>
+
+    <div class="topbar">
+
+        <a href="nube.html" class="back">
+            ← MCS CLOUD COMMAND CENTER
+        </a>
+
+        <div class="lab-status">
+
+            <span class="status-light"></span>
+
+            CLOUD LAB ONLINE
+
+        </div>
+
+    </div>
+
+
+    <div class="eyebrow">
+        // CLOUD-ACT-001 · AMAZON EC2
+    </div>
+
+
+    <h1>
+        Tarea 1.<br>
+        <span class="ec2-title">
+            Mi primer EC2
+        </span>
+    </h1>
+
+
+    <p class="hero-text">
+
+        Preparación del entorno de trabajo con
+
+        <strong>AWS CLI</strong>,
+
+        creación y configuración de una instancia
+
+        <strong>Amazon EC2</strong>
+
+        desde la consola de administración, conexión mediante
+
+        <strong>SSH</strong>
+
+        y despliegue posterior de una nueva instancia utilizando
+
+        <strong>AWS CLI</strong>.
+
+    </p>
+
+
+    <div class="badges">
+
+        <span class="badge aws">
+            AMAZON EC2
+        </span>
+
+        <span class="badge cyan">
+            AWS CLI
+        </span>
+
+        <span class="badge">
+            SSH
+        </span>
+
+        <span class="badge">
+            UBUNTU
+        </span>
+
+        <span class="badge">
+            DEBIAN
+        </span>
+
+        <span class="badge green">
+            ● LAB ONLINE
+        </span>
+
+    </div>
+
+</header>
+
+
+<!-- ===================================================== -->
+<!-- MAIN                                                  -->
+<!-- ===================================================== -->
+
+<main>
+
+
+<!-- ===================================================== -->
+<!-- ESTADO                                                -->
+<!-- ===================================================== -->
+
+<section class="status-panel">
+
+    <div class="status-card">
+
+        <span>ACTIVITY</span>
+
+        <strong class="aws-color">
+            CLOUD-ACT-001
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>SERVICE</span>
+
+        <strong class="aws-color">
+            AMAZON EC2
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>INTERFACES</span>
+
+        <strong class="cyan-color">
+            CONSOLE + CLI
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>CAPTURES</span>
+
+        <strong class="purple-color">
+            19
+        </strong>
+
+    </div>
+
+
+    <div class="status-card">
+
+        <span>TOTAL SCORE</span>
+
+        <strong class="green-color">
+            10 PUNTOS
+        </strong>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- PROGRESO                                              -->
+<!-- ===================================================== -->
+
+<section class="progress">
+
+    <div class="progress-step">
+
+        <div class="progress-number">
+            PHASE 01
+        </div>
+
+        <strong>
+            Preparación
+        </strong>
+
+        <small>
+            AWS CLI · 1 PUNTO
+        </small>
+
+    </div>
+
+
+    <div class="progress-arrow">
+        ──▶
+    </div>
+
+
+    <div class="progress-step">
+
+        <div class="progress-number">
+            PHASE 02
+        </div>
+
+        <strong>
+            EC2 Console
+        </strong>
+
+        <small>
+            AWS MANAGEMENT · 5 PUNTOS
+        </small>
+
+    </div>
+
+
+    <div class="progress-arrow">
+        ──▶
+    </div>
+
+
+    <div class="progress-step">
+
+        <div class="progress-number">
+            PHASE 03
+        </div>
+
+        <strong>
+            AWS CLI
+        </strong>
+
+        <small>
+            SCRIPT DEPLOYMENT · 4 PUNTOS
+        </small>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- FASE 1                                                -->
+<!-- ===================================================== -->
+
+<section class="phase">
+
+    <div class="phase-header">
+
+        <div class="phase-code">
+            /PHASE-01/ENVIRONMENT
+        </div>
+
+        <h2>
+            1. Preparación del entorno
+        </h2>
+
+        <p>
+            Preparación del equipo para poder administrar AWS desde
+            la línea de comandos y comprobación de la identidad con
+            la que estamos trabajando.
+        </p>
+
+        <div class="phase-score">
+            1 PUNTO
+        </div>
+
+    </div>
+
+
+<!-- ===================================================== -->
+<!-- AWS01                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <div class="step-title">
+
+                <h3>
+                    Instalación de AWS CLI
+                </h3>
+
+                <small>
+                    AWS01 · PREPARACIÓN DEL ENTORNO
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,4 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+
+                <span>AWS01</span>
+
+                <span>
+                    AWS CLI INSTALLATION
+                </span>
+
+            </div>
+
+            <img
+                src="media/aws01.PNG"
+                alt="Instalación de AWS CLI"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 1 · Inicio del proceso de instalación de AWS CLI desde PowerShell.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                ¿QUÉ ESTAMOS HACIENDO?
+            </strong>
+
+            <p>
+                Se prepara el entorno instalando
+                <b>AWS Command Line Interface (AWS CLI)</b>.
+                Esta herramienta permite administrar servicios y
+                recursos de Amazon Web Services directamente mediante
+                comandos desde una terminal.
+            </p>
+
+            <p>
+                En Windows el proceso se inicia desde PowerShell,
+                descargando y ejecutando el instalador de AWS CLI v2.
+            </p>
+
+        </div>
+
+
+        <div class="command">
+irm https://awscli.amazonaws.com/v2/install.ps1 | iex
+        </div>
+
+
+        <div class="info">
+
+            <strong>AWS CLI</strong> permite realizar desde terminal
+            muchas de las operaciones que también podemos ejecutar
+            desde AWS Management Console.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS02                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <div class="step-title">
+
+                <h3>
+                    Finalización de la instalación
+                </h3>
+
+                <small>
+                    AWS02 · AWS CLI INSTALLED
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+
+                <span>AWS02</span>
+
+                <span>
+                    INSTALLATION SUCCESS
+                </span>
+
+            </div>
+
+            <img
+                src="media/aws02.PNG"
+                alt="AWS CLI instalado correctamente"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 2 · Finalización correcta de la instalación de AWS CLI.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                RESULTADO
+            </strong>
+
+            <p>
+                El instalador descarga el paquete necesario,
+                verifica la firma digital y completa la instalación
+                de AWS CLI en Windows.
+            </p>
+
+            <p>
+                Una vez finalizado este proceso, el sistema dispone
+                de la herramienta necesaria para ejecutar comandos
+                contra los servicios de AWS.
+            </p>
+
+        </div>
+
+
+        <div class="success">
+            <strong>✓ AWS CLI INSTALLED</strong> ·
+            El entorno queda preparado para trabajar mediante línea de comandos.
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS03                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <div class="step-title">
+
+                <h3>
+                    Comprobación de la versión
+                </h3>
+
+                <small>
+                    AWS03 · AWS CLI VERSION
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+
+                <span>AWS03</span>
+
+                <span>
+                    VERSION CHECK
+                </span>
+
+            </div>
+
+            <img
+                src="media/aws03.PNG"
+                alt="Versión instalada de AWS CLI"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 3 · Comprobación de la versión de AWS CLI instalada.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                COMPROBACIÓN
+            </strong>
+
+            <p>
+                Se verifica que AWS CLI está correctamente instalado
+                ejecutando el comando de versión.
+            </p>
+
+            <p>
+                Si el sistema devuelve información de la versión de
+                <b>AWS CLI</b>, significa que la herramienta está
+                disponible desde la terminal y puede utilizarse para
+                continuar con la práctica.
+            </p>
+
+        </div>
+
+
+        <div class="command">
+aws --version
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS04                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <div class="step-title">
+
+                <h3>
+                    Verificación de identidad AWS
+                </h3>
+
+                <small>
+                    AWS04 · STS GET-CALLER-IDENTITY
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,6 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+
+                <span>AWS04</span>
+
+                <span>
+                    AWS IDENTITY
+                </span>
+
+            </div>
+
+            <img
+                src="media/aws04.PNG"
+                alt="aws sts get-caller-identity"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 4 · Ejecución del comando aws sts get-caller-identity.
+            </p>
+
+        </div>
+
+
+        <div class="command">
+aws sts get-caller-identity
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                ¿PARA QUÉ SIRVE?
+            </strong>
+
+            <p>
+                Este comando consulta el servicio
+                <b>AWS Security Token Service (STS)</b>
+                para comprobar qué identidad está utilizando
+                actualmente AWS CLI.
+            </p>
+
+            <p>
+                La respuesta permite identificar la cuenta y la
+                identidad asociada a las credenciales activas.
+                Es una comprobación muy útil antes de comenzar
+                a crear recursos en AWS.
+            </p>
+
+        </div>
+
+
+        <div class="concepts">
+
+            <div class="concept">
+
+                <small>FIELD</small>
+
+                <strong>UserId</strong>
+
+                <p>
+                    Identificador de la identidad utilizada.
+                </p>
+
+            </div>
+
+
+            <div class="concept">
+
+                <small>FIELD</small>
+
+                <strong>Account</strong>
+
+                <p>
+                    Identificador de la cuenta AWS.
+                </p>
+
+            </div>
+
+
+            <div class="concept">
+
+                <small>FIELD</small>
+
+                <strong>Arn</strong>
+
+                <p>
+                    Amazon Resource Name asociado a la identidad.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- FASE 2                                                -->
+<!-- ===================================================== -->
+
+<section class="phase">
+
+    <div class="phase-header">
+
+        <div class="phase-code">
+            /PHASE-02/EC2-CONSOLE
+        </div>
+
+        <h2>
+            2. Instanciando un EC2 desde el panel
+        </h2>
+
+        <p>
+            Creación completa de una instancia Amazon EC2 utilizando
+            AWS Management Console: AMI, tipo de instancia, claves,
+            seguridad, almacenamiento, lanzamiento, conexión SSH
+            y eliminación.
+        </p>
+
+        <div class="phase-score">
+            5 PUNTOS
+        </div>
+
+    </div>
+
+
+<!-- ===================================================== -->
+<!-- AWS05                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">05</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Selección de una AMI Ubuntu
+                </h3>
+
+                <small>
+                    AWS05 · AMAZON MACHINE IMAGE
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,4 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS05</span>
+                <span>UBUNTU AMI</span>
+            </div>
+
+            <img
+                src="media/aws05.PNG"
+                alt="Selección de AMI Ubuntu"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 5 · Selección de una Amazon Machine Image basada en Ubuntu.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                AMAZON MACHINE IMAGE
+            </strong>
+
+            <p>
+                En este paso seleccionamos una
+                <b>AMI de Ubuntu</b>.
+                Una AMI es la plantilla que AWS utilizará como
+                punto de partida para crear la nueva instancia EC2.
+            </p>
+
+            <p>
+                La imagen contiene el sistema operativo y la
+                información necesaria para iniciar el servidor
+                virtual.
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>AMI →</strong>
+            plantilla utilizada para crear una instancia EC2.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS06                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">06</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Tipo de instancia
+                </h3>
+
+                <small>
+                    AWS06 · INSTANCE TYPE
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,5 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS06</span>
+                <span>FREE TIER INSTANCE</span>
+            </div>
+
+            <img
+                src="media/aws06.PNG"
+                alt="Selección del tipo de instancia EC2"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 6 · Selección de un tipo de instancia permitido por la práctica.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                INSTANCE TYPE
+            </strong>
+
+            <p>
+                El tipo de instancia determina los recursos de
+                hardware virtual que tendrá nuestro EC2, como
+                capacidad de procesamiento, memoria y otras
+                características.
+            </p>
+
+            <p>
+                En esta práctica se selecciona una opción indicada
+                como compatible con la
+                <b>capa gratuita (Free Tier)</b>,
+                evitando utilizar una configuración superior a la
+                requerida.
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>INSTANCE TYPE →</strong>
+            define principalmente los recursos de computación
+            disponibles para la máquina virtual.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS07                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">07</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Selección del par de claves vockey
+                </h3>
+
+                <small>
+                    AWS07 · KEY PAIR
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,4 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS07</span>
+                <span>KEY PAIR · VOCKEY</span>
+            </div>
+
+            <img
+                src="media/aws07.PNG"
+                alt="Selección del par de claves vockey"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 7 · Selección del par de claves vockey.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                AUTENTICACIÓN SSH
+            </strong>
+
+            <p>
+                Se selecciona el par de claves
+                <b>vockey</b>, que posteriormente permitirá
+                autenticarnos cuando realicemos una conexión SSH
+                con la instancia.
+            </p>
+
+            <p>
+                La clave privada se mantiene en nuestro equipo y
+                debe protegerse, ya que forma parte del mecanismo
+                de autenticación utilizado para acceder al servidor.
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>KEY PAIR →</strong>
+            mecanismo de claves utilizado para autenticar el acceso
+            a la instancia.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS08                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">08</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Grupo de seguridad y SSH
+                </h3>
+
+                <small>
+                    AWS08 · SECURITY GROUP
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,7 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS08</span>
+                <span>SSH SECURITY RULE</span>
+            </div>
+
+            <img
+                src="media/aws08.PNG"
+                alt="Grupo de seguridad SSH"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 8 · Creación del grupo de seguridad permitiendo tráfico SSH.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                SECURITY GROUP
+            </strong>
+
+            <p>
+                Se crea un grupo de seguridad para controlar el
+                tráfico de red permitido hacia la instancia EC2.
+            </p>
+
+            <p>
+                Para esta práctica se añade una regla de entrada
+                que permite conexiones mediante
+                <b>SSH</b>.
+                SSH utiliza normalmente el protocolo TCP y el
+                <b>puerto 22</b>.
+            </p>
+
+        </div>
+
+
+        <div class="concepts">
+
+            <div class="concept">
+                <small>SERVICE</small>
+                <strong>SSH</strong>
+                <p>Administración remota segura.</p>
+            </div>
+
+            <div class="concept">
+                <small>PROTOCOL</small>
+                <strong>TCP</strong>
+                <p>Protocolo de transporte utilizado.</p>
+            </div>
+
+            <div class="concept">
+                <small>PORT</small>
+                <strong>22</strong>
+                <p>Puerto habitual utilizado por SSH.</p>
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>SECURITY GROUP →</strong>
+            actúa como firewall virtual para controlar el tráfico
+            entrante y saliente asociado a los recursos.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS09                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">09</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Configuración del almacenamiento
+                </h3>
+
+                <small>
+                    AWS09 · STORAGE
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,4 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS09</span>
+                <span>EC2 STORAGE</span>
+            </div>
+
+            <img
+                src="media/aws09.PNG"
+                alt="Configuración de almacenamiento EC2"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 9 · Selección del almacenamiento asociado a la instancia.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                ALMACENAMIENTO
+            </strong>
+
+            <p>
+                En este apartado se configura el almacenamiento
+                que utilizará la instancia EC2.
+            </p>
+
+            <p>
+                El volumen contiene el sistema operativo y los
+                datos almacenados por el servidor. Para la práctica
+                se utiliza la configuración indicada sin asignar
+                recursos innecesarios.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS10                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">10</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Lanzamiento correcto de EC2
+                </h3>
+
+                <small>
+                    AWS10 · INSTANCE LAUNCHED
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,3 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS10</span>
+                <span>DEPLOYMENT SUCCESS</span>
+            </div>
+
+            <img
+                src="media/aws10.PNG"
+                alt="Instancia EC2 lanzada correctamente"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 10 · Mensaje de éxito después de lanzar la instancia EC2.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                INSTANCE LAUNCHED
+            </strong>
+
+            <p>
+                AWS confirma que la solicitud de creación de la
+                instancia se ha procesado correctamente.
+            </p>
+
+            <p>
+                A partir de este momento AWS comienza a aprovisionar
+                los recursos necesarios para arrancar el servidor
+                virtual utilizando la AMI y la configuración
+                seleccionadas.
+            </p>
+
+        </div>
+
+
+        <div class="success">
+            <strong>✓ EC2 DEPLOYMENT SUCCESS</strong> ·
+            La instancia ha sido lanzada correctamente.
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS11                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">11</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Datos de configuración de la instancia
+                </h3>
+
+                <small>
+                    AWS11 · INSTANCE DETAILS
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,7 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS11</span>
+                <span>INSTANCE CONFIGURATION</span>
+            </div>
+
+            <img
+                src="media/aws11.PNG"
+                alt="Configuración de la instancia EC2"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 11 · Información y datos de configuración de la instancia EC2.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                INSTANCE DETAILS
+            </strong>
+
+            <p>
+                Desde el panel de EC2 podemos consultar la
+                información de la instancia creada.
+            </p>
+
+            <p>
+                Entre los datos disponibles se encuentran el
+                identificador de la instancia, estado,
+                tipo de instancia, información de red,
+                direcciones IP y otros parámetros utilizados
+                para administrar el servidor.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS12                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">12</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Grupos de seguridad
+                </h3>
+
+                <small>
+                    AWS12 · SECURITY GROUP LIST
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,4 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS12</span>
+                <span>SECURITY GROUPS</span>
+            </div>
+
+            <img
+                src="media/aws12.PNG"
+                alt="Listado de grupos de seguridad"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 12 · Listado de grupos de seguridad creados al lanzar la instancia.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                CONTROL DE RED
+            </strong>
+
+            <p>
+                Se comprueba desde el panel de AWS el grupo de
+                seguridad utilizado por la instancia.
+            </p>
+
+            <p>
+                Este grupo contiene las reglas que determinan qué
+                tráfico puede alcanzar el servidor, incluida la
+                regla SSH configurada anteriormente.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS13                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">13</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Conexión SSH e IP privada
+                </h3>
+
+                <small>
+                    AWS13 · SSH CONNECTION
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,9 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS13</span>
+                <span>SSH · PRIVATE IP</span>
+            </div>
+
+            <img
+                src="media/aws13.PNG"
+                alt="Conexión SSH y dirección IP privada"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 13 · Conexión mediante SSH utilizando el fichero .pem y comprobación de la IP privada.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                ADMINISTRACIÓN REMOTA
+            </strong>
+
+            <p>
+                Se establece una conexión remota con la instancia
+                EC2 mediante <b>SSH</b>, utilizando el fichero
+                de clave privada <b>.pem</b> correspondiente al
+                par de claves configurado.
+            </p>
+
+            <p>
+                Una vez dentro del servidor se muestra su
+                <b>dirección IP privada</b>. Esta dirección se
+                utiliza para la comunicación interna de la
+                instancia dentro de su red virtual.
+            </p>
+
+        </div>
+
+
+        <div class="diagram">
+
+            <div class="diagram-node cyan">
+                💻 EQUIPO LOCAL
+            </div>
+
+            <div class="diagram-arrow">
+                SSH / TCP 22 →
+            </div>
+
+            <div class="diagram-node aws">
+                ☁ AWS
+            </div>
+
+            <div class="diagram-arrow">
+                →
+            </div>
+
+            <div class="diagram-node green">
+                🖥 EC2 UBUNTU
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>IP pública →</strong>
+            permite alcanzar la instancia desde redes externas cuando
+            la configuración lo permite.
+            <br><br>
+
+            <strong>IP privada →</strong>
+            identifica la instancia dentro de su red privada en AWS.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS14                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">14</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Eliminación de la instancia
+                </h3>
+
+                <small>
+                    AWS14 · TERMINATE INSTANCE
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,3 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS14</span>
+                <span>INSTANCE TERMINATION</span>
+            </div>
+
+            <img
+                src="media/aws14.PNG"
+                alt="Eliminación de la instancia EC2"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 14 · Eliminación de la instancia EC2 creada desde el panel.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                LIBERACIÓN DEL RECURSO
+            </strong>
+
+            <p>
+                Una vez terminadas las comprobaciones se procede
+                a eliminar la instancia creada durante esta fase.
+            </p>
+
+            <p>
+                La terminación de una instancia implica dejar de
+                utilizar ese servidor EC2. Es importante controlar
+                los recursos cloud que permanecen activos para
+                evitar mantener infraestructura que ya no necesitamos.
+            </p>
+
+        </div>
+
+
+        <div class="success">
+            <strong>✓ PHASE 02 COMPLETE</strong> ·
+            Primera instancia EC2 creada, administrada y eliminada.
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- FASE 3                                                -->
+<!-- ===================================================== -->
+
+<section class="phase">
+
+    <div class="phase-header">
+
+        <div class="phase-code">
+            /PHASE-03/AWS-CLI
+        </div>
+
+        <h2>
+            3. Creación de EC2 mediante AWS CLI
+        </h2>
+
+        <p>
+            En esta fase repetimos el despliegue de infraestructura,
+            pero abandonamos la creación manual desde el panel y
+            utilizamos un script ejecutado desde línea de comandos.
+        </p>
+
+        <div class="phase-score">
+            4 PUNTOS
+        </div>
+
+    </div>
+
+
+<!-- ===================================================== -->
+<!-- AWS15                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">15</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Listado inicial de instancias
+                </h3>
+
+                <small>
+                    AWS15 · EMPTY INSTANCE LIST
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,4 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS15</span>
+                <span>INITIAL STATE</span>
+            </div>
+
+            <img
+                src="media/aws15.PNG"
+                alt="Listado de instancias vacío"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 15 · Listado inicial de instancias antes del despliegue mediante AWS CLI.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                ESTADO INICIAL
+            </strong>
+
+            <p>
+                Antes de ejecutar el nuevo despliegue se comprueba
+                desde AWS Management Console el estado de las
+                instancias.
+            </p>
+
+            <p>
+                De esta forma queda documentado el estado previo a
+                la ejecución del script y podremos comprobar
+                posteriormente que la nueva instancia ha sido
+                creada mediante AWS CLI.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS16                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">16</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Creación del script .sh
+                </h3>
+
+                <small>
+                    AWS16 · EC2 DEPLOYMENT SCRIPT
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            1,6 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS16</span>
+                <span>SHELL SCRIPT</span>
+            </div>
+
+            <img
+                src="media/aws16.PNG"
+                alt="Creación del script para lanzar EC2"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 16 · Creación del archivo .sh utilizado para desplegar la instancia EC2.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                INFRAESTRUCTURA DESDE LÍNEA DE COMANDOS
+            </strong>
+
+            <p>
+                Se crea un archivo de tipo
+                <b>.sh</b> que contiene los comandos necesarios
+                para solicitar a AWS la creación de una nueva
+                instancia EC2.
+            </p>
+
+            <p>
+                Este procedimiento permite automatizar operaciones
+                que anteriormente realizamos manualmente desde
+                AWS Management Console.
+            </p>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>VENTAJA →</strong>
+            un script permite repetir y automatizar una secuencia
+            de comandos sin configurar manualmente cada recurso
+            desde la interfaz gráfica.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS17                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">17</div>
+
+            <div class="step-title">
+
+                <h3>
+                    AMI Debian y parámetros
+                </h3>
+
+                <small>
+                    AWS17 · --IMAGE-ID
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS17</span>
+                <span>DEBIAN AMI CONFIGURATION</span>
+            </div>
+
+            <img
+                src="media/aws17.PNG"
+                alt="Configuración del identificador AMI Debian"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 17 · Configuración del script utilizando el identificador de una AMI Debian.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                PARÁMETRO --IMAGE-ID
+            </strong>
+
+            <p>
+                Dentro del script se configura el parámetro
+                <b>--image-id</b> con el identificador de la
+                AMI de Debian que se utilizará como imagen base
+                para la nueva instancia.
+            </p>
+
+            <p>
+                Este parámetro cumple la misma función conceptual
+                que la selección de Ubuntu realizada anteriormente
+                desde la interfaz gráfica: indicar a EC2 qué imagen
+                debe utilizar para crear el servidor.
+            </p>
+
+        </div>
+
+
+        <div class="command">
+--image-id ID_DE_LA_AMI_DEBIAN
+        </div>
+
+
+        <div class="concepts">
+
+            <div class="concept">
+
+                <small>PARAMETER</small>
+
+                <strong>--image-id</strong>
+
+                <p>
+                    Selecciona la AMI utilizada por la instancia.
+                </p>
+
+            </div>
+
+
+            <div class="concept">
+
+                <small>IMAGE</small>
+
+                <strong>Debian</strong>
+
+                <p>
+                    Sistema operativo solicitado para esta fase.
+                </p>
+
+            </div>
+
+
+            <div class="concept">
+
+                <small>METHOD</small>
+
+                <strong>AWS CLI</strong>
+
+                <p>
+                    Creación del recurso mediante comandos.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS18                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">18</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Ejecución del fichero
+                </h3>
+
+                <small>
+                    AWS18 · SCRIPT EXECUTION
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            1,2 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS18</span>
+                <span>DEPLOYMENT EXECUTION</span>
+            </div>
+
+            <img
+                src="media/aws18.PNG"
+                alt="Ejecución del script AWS CLI"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 18 · Ejecución del fichero y resultado devuelto por AWS CLI.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                EJECUCIÓN DEL DESPLIEGUE
+            </strong>
+
+            <p>
+                Se ejecuta el archivo preparado anteriormente.
+                Los comandos incluidos en el script son enviados
+                a AWS mediante AWS CLI.
+            </p>
+
+            <p>
+                AWS procesa la solicitud y devuelve información
+                relacionada con el recurso creado. Esto permite
+                comprobar desde terminal que la operación se ha
+                ejecutado.
+            </p>
+
+        </div>
+
+
+        <div class="success">
+
+            <strong>✓ AWS CLI REQUEST EXECUTED</strong> ·
+            La creación de la instancia se solicita mediante
+            línea de comandos.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- AWS19                                                 -->
+<!-- ===================================================== -->
+
+<div class="step">
+
+    <div class="step-header">
+
+        <div class="step-left">
+
+            <div class="step-number">19</div>
+
+            <div class="step-title">
+
+                <h3>
+                    Comprobación final en AWS
+                </h3>
+
+                <small>
+                    AWS19 · INSTANCE RUNNING
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="points">
+            0,8 PUNTOS
+        </div>
+
+    </div>
+
+
+    <div class="step-body">
+
+        <div class="captura">
+
+            <div class="captura-cabecera">
+                <span>AWS19</span>
+                <span>FINAL EC2 LIST</span>
+            </div>
+
+            <img
+                src="media/aws19.PNG"
+                alt="Instancia creada mediante AWS CLI"
+                onclick="abrirImagen(this)"
+            >
+
+            <p class="pie">
+                Captura 19 · Listado final de instancias después del despliegue mediante AWS CLI.
+            </p>
+
+        </div>
+
+
+        <div class="explicacion">
+
+            <strong>
+                VERIFICACIÓN FINAL
+            </strong>
+
+            <p>
+                Regresamos al panel de administración de EC2 y
+                comprobamos que aparece la nueva instancia creada
+                desde la línea de comandos.
+            </p>
+
+            <p>
+                Esto demuestra que
+                <b>AWS Management Console y AWS CLI son dos
+                interfaces diferentes para administrar los mismos
+                recursos de nuestra infraestructura AWS.</b>
+            </p>
+
+        </div>
+
+
+        <div class="diagram">
+
+            <div class="diagram-node cyan">
+                💻 AWS CLI
+            </div>
+
+            <div class="diagram-arrow">
+                →
+            </div>
+
+            <div class="diagram-node aws">
+                ☁ AWS
+            </div>
+
+            <div class="diagram-arrow">
+                →
+            </div>
+
+            <div class="diagram-node green">
+                🖥 EC2 DEBIAN
+            </div>
+
+        </div>
+
+
+        <div class="success">
+
+            <strong>✓ PHASE 03 COMPLETE</strong> ·
+            Instancia EC2 desplegada mediante AWS CLI y
+            verificada desde AWS Management Console.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- MEMORY BLOCK                                          -->
+<!-- ===================================================== -->
+
+<section class="memory">
+
+    <div class="memory-header">
+        MEMORY BLOCK · EXAM MODE
+    </div>
+
+
+    <div class="memory-content">
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                EC2
+            </span>
+
+            <span class="memory-value">
+                Servicio de <strong>computación</strong>
+                para ejecutar instancias virtuales en AWS.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                AMI
+            </span>
+
+            <span class="memory-value">
+                <strong>Imagen base</strong>
+                utilizada para crear una instancia.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                INSTANCE TYPE
+            </span>
+
+            <span class="memory-value">
+                Determina los
+                <strong>recursos de computación</strong>
+                asignados a la instancia.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                KEY PAIR
+            </span>
+
+            <span class="memory-value">
+                Claves utilizadas para la
+                <strong>autenticación</strong>.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                .PEM
+            </span>
+
+            <span class="memory-value">
+                Archivo que puede contener la
+                <strong>clave privada</strong>
+                utilizada para la conexión SSH.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                SECURITY GROUP
+            </span>
+
+            <span class="memory-value">
+                <strong>Firewall virtual</strong>
+                que controla tráfico entrante y saliente.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                SSH
+            </span>
+
+            <span class="memory-value">
+                Administración remota segura.
+                Normalmente utiliza <strong>TCP/22</strong>.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                AWS CLI
+            </span>
+
+            <span class="memory-value">
+                Administración de AWS mediante
+                <strong>línea de comandos</strong>.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                AWS STS
+            </span>
+
+            <span class="memory-value">
+                Servicio relacionado con
+                <strong>credenciales temporales e identidad</strong>.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                get-caller-identity
+            </span>
+
+            <span class="memory-value">
+                Permite comprobar
+                <strong>qué identidad AWS estamos utilizando</strong>.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                --image-id
+            </span>
+
+            <span class="memory-value">
+                Indica la <strong>AMI</strong>
+                utilizada para crear la instancia.
+            </span>
+
+        </div>
+
+
+        <div class="memory-line">
+
+            <span class="memory-key">
+                IP PRIVADA
+            </span>
+
+            <span class="memory-value">
+                Dirección utilizada para comunicación
+                <strong>interna</strong>
+                dentro de la infraestructura de red.
+            </span>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- RESULTADO FINAL                                       -->
+<!-- ===================================================== -->
+
+<section class="final-result">
+
+    <div class="icon">
+        ☁️
+    </div>
+
+    <h2>
+        CLOUD LAB COMPLETADO
+    </h2>
+
+    <p>
+        Se ha preparado AWS CLI, verificado la identidad utilizada,
+        creado una instancia EC2 desde AWS Management Console,
+        configurado su acceso SSH, conectado al servidor y,
+        finalmente, desplegado una nueva instancia desde línea de
+        comandos utilizando AWS CLI.
+    </p>
+
+</section>
+
+
+</main>
+
+
+<!-- ===================================================== -->
+<!-- FOOTER                                                -->
+<!-- ===================================================== -->
+
+<footer>
+
+    <span>
+        MCS CLOUD LAB · CLOUD-ACT-001 · AMAZON EC2
+    </span>
+
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   VISOR DE CAPTURAS
+   ========================================================= */
+
+function abrirImagen(imagen){
+
+    const visor =
+        document.getElementById("visor");
+
+    const visorImagen =
+        document.getElementById("visorImagen");
+
+    visorImagen.src =
+        imagen.src;
+
+    visor.classList.add("activo");
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function cerrarImagen(){
+
+    const visor =
+        document.getElementById("visor");
+
+    visor.classList.remove("activo");
+
+    document.body.style.overflow =
+        "";
+}
+
+
+/* ESC CIERRA EL VISOR */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Escape"){
+            cerrarImagen();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CLOUD NETWORK BACKGROUND
+   ========================================================= */
+
+const canvas =
+    document.getElementById("cloudCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+let nodes=[];
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+}
+
+resizeCanvas();
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   CREAR NODOS
+   ========================================================= */
+
+function createNodes(){
+
+    nodes=[];
+
+    const amount =
+        window.innerWidth < 700
+        ? 28
+        : 60;
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        nodes.push({
+
+            x:
+                Math.random() *
+                canvas.width,
+
+            y:
+                Math.random() *
+                canvas.height,
+
+            vx:
+                (Math.random()-.5) *
+                .16,
+
+            vy:
+                (Math.random()-.5) *
+                .16,
+
+            r:
+                Math.random() *
+                1.3 +
+                .4,
+
+            aws:
+                Math.random() > .83
+
+        });
+
+    }
+
+}
+
+createNodes();
+
+window.addEventListener(
+    "resize",
+    createNodes
+);
+
+
+/* =========================================================
+   ANIMACIÓN
+   ========================================================= */
+
+function animateCloud(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    nodes.forEach(node=>{
+
+        node.x += node.vx;
+        node.y += node.vy;
+
+
+        if(
+            node.x < 0 ||
+            node.x > canvas.width
+        ){
+            node.vx *= -1;
+        }
+
+
+        if(
+            node.y < 0 ||
+            node.y > canvas.height
+        ){
+            node.vy *= -1;
+        }
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            node.x,
+            node.y,
+            node.r,
+            0,
+            Math.PI*2
+        );
+
+
+        ctx.fillStyle =
+            node.aws
+            ? "rgba(255,153,0,.32)"
+            : "rgba(0,217,255,.23)";
+
+
+        ctx.fill();
+
+    });
+
+
+    /* CONEXIONES */
+
+    for(
+        let i=0;
+        i<nodes.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<nodes.length;
+            j++
+        ){
+
+            const dx =
+                nodes[i].x -
+                nodes[j].x;
+
+            const dy =
+                nodes[i].y -
+                nodes[j].y;
+
+            const distance =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
+
+
+            if(distance < 135){
+
+                const opacity =
+                    .045 *
+                    (1-distance/135);
+
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    nodes[i].x,
+                    nodes[i].y
+                );
+
+                ctx.lineTo(
+                    nodes[j].x,
+                    nodes[j].y
+                );
+
+                ctx.strokeStyle =
+                    "rgba(0,217,255," +
+                    opacity +
+                    ")";
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animateCloud
+    );
+
+}
+
+animateCloud();
+
+</script>
+
+
+</body>
+</html>
