@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Actividad 4 · Autenticación | MCS Security</title>
+
+    <style>
+        :root {
+            --bg: #030607;
+            --panel: #071014;
+            --panel2: #0a171b;
+            --green: #00ff88;
+            --cyan: #00eaff;
+            --gold: #ffc857;
+            --red: #ff4d6d;
+            --purple: #b388ff;
+            --text: #e8fff4;
+            --muted: #8ca7a0;
+            --border: rgba(0, 255, 136, .20);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(0,255,136,.08), transparent 25%),
+                radial-gradient(circle at 80% 30%, rgba(0,234,255,.07), transparent 25%),
+                linear-gradient(180deg, #020405, #030809 50%, #020405);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           FONDO MATRIX
+        ========================================= */
+
+        .matrix {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .15;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .matrix span {
+            position: absolute;
+            color: var(--green);
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            animation: fall linear infinite;
+            text-shadow: 0 0 8px var(--green);
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-120px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+
+        /* =========================================
+           BOOT SCREEN
+        ========================================= */
+
+        #boot {
+            position: fixed;
+            inset: 0;
+            background: #010303;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .7s ease, visibility .7s ease;
+        }
+
+        #boot.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .boot-box {
+            width: min(700px, 90%);
+            font-family: Consolas, monospace;
+            color: var(--green);
+        }
+
+        .boot-title {
+            font-size: clamp(25px, 5vw, 44px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0,255,136,.6);
+            margin-bottom: 25px;
+        }
+
+        .boot-line {
+            margin: 8px 0;
+            opacity: 0;
+            animation: bootText .3s forwards;
+        }
+
+        .boot-line:nth-child(2) { animation-delay: .2s; }
+        .boot-line:nth-child(3) { animation-delay: .5s; }
+        .boot-line:nth-child(4) { animation-delay: .8s; }
+        .boot-line:nth-child(5) { animation-delay: 1.1s; }
+        .boot-line:nth-child(6) { animation-delay: 1.4s; }
+
+        @keyframes bootText {
+            to { opacity: 1; }
+        }
+
+        .ok {
+            color: var(--cyan);
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(2, 6, 7, .88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav {
+            width: min(1200px, 92%);
+            margin: auto;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            font-family: Consolas, monospace;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--green);
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .back {
+            color: var(--text);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-family: Consolas, monospace;
+            transition: .25s;
+        }
+
+        .back:hover {
+            color: #00100a;
+            background: var(--green);
+            box-shadow: 0 0 20px rgba(0,255,136,.35);
+        }
+
+        /* =========================================
+           GENERAL
+        ========================================= */
+
+        main {
+            width: min(1150px, 92%);
+            margin: auto;
+            padding: 75px 0 100px;
+        }
+
+        .tag {
+            display: inline-block;
+            color: var(--green);
+            border: 1px solid var(--green);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 18px rgba(0,255,136,.15);
+        }
+
+        h1 {
+            font-size: clamp(40px, 7vw, 78px);
+            line-height: 1;
+            margin-bottom: 18px;
+            letter-spacing: -3px;
+        }
+
+        h1 span {
+            color: var(--green);
+            text-shadow: 0 0 25px rgba(0,255,136,.4);
+        }
+
+        .subtitle {
+            max-width: 850px;
+            color: var(--muted);
+            font-size: 19px;
+            margin-bottom: 45px;
+        }
+
+        .section {
+            margin-top: 70px;
+        }
+
+        .section-label {
+            font-family: Consolas, monospace;
+            color: var(--cyan);
+            font-size: 13px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: clamp(27px, 4vw, 42px);
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            background:
+                linear-gradient(145deg, rgba(10,23,27,.92), rgba(4,10,12,.95));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(var(--green), var(--cyan));
+        }
+
+        /* =========================================
+           ENUNCIADO
+        ========================================= */
+
+        .question {
+            font-size: clamp(21px, 3vw, 29px);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .question-mark {
+            color: var(--green);
+            font-family: Consolas, monospace;
+        }
+
+        /* =========================================
+           RESPUESTA PRINCIPAL
+        ========================================= */
+
+        .answer-main {
+            border-color: rgba(0,255,136,.45);
+            box-shadow: 0 0 40px rgba(0,255,136,.07);
+        }
+
+        .yes {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: Consolas, monospace;
+            font-size: 25px;
+            font-weight: 900;
+            color: var(--green);
+            margin-bottom: 20px;
+        }
+
+        .yes-dot {
+            width: 13px;
+            height: 13px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 16px var(--green);
+        }
+
+        .answer-main p {
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+
+        .highlight {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .cyan {
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        /* =========================================
+           FLUJO
+        ========================================= */
+
+        .flow {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 14px;
+            margin-top: 35px;
+        }
+
+        .flow-box {
+            min-height: 145px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,.28);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .flow-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .flow-box strong {
+            color: var(--green);
+            font-family: Consolas, monospace;
+            margin-bottom: 5px;
+        }
+
+        .flow-box small {
+            color: var(--muted);
+        }
+
+        .arrow {
+            color: var(--cyan);
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        /* =========================================
+           FACTORES
+        ========================================= */
+
+        .factor-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .factor {
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(6,16,19,.85);
+            padding: 25px;
+            transition: .3s;
+        }
+
+        .factor:hover {
+            transform: translateY(-5px);
+            border-color: var(--green);
+            box-shadow: 0 15px 40px rgba(0,255,136,.08);
+        }
+
+        .factor-icon {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .factor-id {
+            color: var(--cyan);
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .factor h3 {
+            font-size: 21px;
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+
+        .factor p {
+            color: var(--muted);
+        }
+
+        .factor-example {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--text);
+            background: rgba(0,255,136,.07);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+        }
+
+        /* =========================================
+           MFA
+        ========================================= */
+
+        .mfa {
+            display: grid;
+            grid-template-columns: .8fr 1.2fr;
+            gap: 25px;
+        }
+
+        .mfa-visual {
+            border: 1px solid rgba(0,234,255,.25);
+            background: rgba(0,234,255,.04);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            position: relative;
+        }
+
+        .shield {
+            width: 145px;
+            height: 165px;
+            clip-path: polygon(50% 0, 95% 17%, 87% 70%, 50% 100%, 13% 70%, 5% 17%);
+            background: linear-gradient(145deg, var(--cyan), var(--green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00120e;
+            font-size: 42px;
+            font-weight: 900;
+            box-shadow: 0 0 40px var(--cyan);
+        }
+
+        .mfa-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .mfa-content h3 {
+            color: var(--cyan);
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .mfa-content p {
+            color: var(--muted);
+            font-size: 17px;
+            margin-bottom: 15px;
+        }
+
+        /* =========================================
+           AUTH VS AUTHORIZATION
+        ========================================= */
+
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .compare-card {
+            padding: 28px;
+            border-radius: 15px;
+            background: rgba(0,0,0,.25);
+            border: 1px solid var(--border);
+        }
+
+        .compare-card:first-child {
+            border-top: 3px solid var(--green);
+        }
+
+        .compare-card:last-child {
+            border-top: 3px solid var(--purple);
+        }
+
+        .compare-card h3 {
+            margin-bottom: 10px;
+            font-size: 23px;
+        }
+
+        .compare-card:first-child h3 {
+            color: var(--green);
+        }
+
+        .compare-card:last-child h3 {
+            color: var(--purple);
+        }
+
+        .compare-question {
+            display: block;
+            font-family: Consolas, monospace;
+            margin: 15px 0;
+            color: var(--cyan);
+            font-size: 17px;
+        }
+
+        /* =========================================
+           EXAM
+        ========================================= */
+
+        .exam {
+            border: 1px solid rgba(255,200,87,.4);
+            background:
+                linear-gradient(145deg, rgba(255,200,87,.08), rgba(0,0,0,.25));
+        }
+
+        .exam::before {
+            background: var(--gold);
+        }
+
+        .exam-title {
+            color: var(--gold);
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .exam ul {
+            list-style: none;
+        }
+
+        .exam li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .exam li:last-child {
+            border: 0;
+        }
+
+        .exam li::before {
+            content: ">";
+            color: var(--gold);
+            font-family: Consolas, monospace;
+            margin-right: 12px;
+        }
+
+        /* =========================================
+           RESPUESTA CORTA
+        ========================================= */
+
+        .short-answer {
+            border-color: rgba(0,234,255,.35);
+        }
+
+        .short-answer::before {
+            background: var(--cyan);
+        }
+
+        .short-answer p {
+            font-size: 19px;
+        }
+
+        /* =========================================
+           TERMINAL
+        ========================================= */
+
+        .terminal {
+            margin-top: 70px;
+            background: #010303;
+            border: 1px solid #17342b;
+            border-radius: 13px;
+            overflow: hidden;
+            font-family: Consolas, monospace;
+        }
+
+        .terminal-top {
+            padding: 11px 15px;
+            background: #09100f;
+            border-bottom: 1px solid #17342b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #355047;
+        }
+
+        .terminal-title {
+            margin-left: 8px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .terminal-body {
+            padding: 23px;
+            color: var(--green);
+            min-height: 170px;
+        }
+
+        .prompt {
+            color: var(--cyan);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 17px;
+            background: var(--green);
+            vertical-align: middle;
+            animation: blink .8s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 35px 5%;
+            color: var(--muted);
+            font-family: Consolas, monospace;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+
+            .factor-grid,
+            .compare,
+            .mfa {
+                grid-template-columns: 1fr;
+            }
+
+            .flow {
+                grid-template-columns: 1fr;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+                text-align: center;
+            }
+
+            h1 {
+                letter-spacing: -1px;
+            }
+
+            .nav {
+                min-height: 65px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================================
+     MATRIX BACKGROUND
+========================================= -->
+
+<div class="matrix" id="matrix"></div>
+
+
+<!-- =========================================
+     BOOT
+========================================= -->
+
+<div id="boot">
+
+    <div class="boot-box">
+
+        <div class="boot-title">
+            MCS SECURITY
+        </div>
+
+        <div class="boot-line">
+            [BOOT] Inicializando módulo de seguridad...
+        </div>
+
+        <div class="boot-line">
+            [LOAD] Identity Management Engine
+            <span class="ok">[OK]</span>
+        </div>
+
+        <div class="boot-line">
+            [LOAD] Authentication Service
+            <span class="ok">[OK]</span>
+        </div>
+
+        <div class="boot-line">
+            [LOAD] Access Control
+            <span class="ok">[OK]</span>
+        </div>
+
+        <div class="boot-line">
+            [MFA] Multi-Factor Authentication
+            <span class="ok">[ACTIVE]</span>
+        </div>
+
+        <div class="boot-line">
+            ACCESS CONTROL SYSTEM READY_
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header>
+
+    <div class="nav">
+
+        <div class="brand">
+            MCS::<span>SECURITY</span>
+        </div>
+
+        <a href="seguretat.html" class="back">
+            ← VOLVER A SEGURIDAD
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- =========================================
+         HERO
+    ========================================= -->
+
+    <section>
+
+        <span class="tag">
+            SEC-ACT-004 · MECANISMOS BÁSICOS DE SEGURIDAD
+        </span>
+
+        <h1>
+            Actividad 4<br>
+            <span>Autenticación</span>
+        </h1>
+
+        <p class="subtitle">
+            Identificación de usuarios, prevención de accesos no
+            autorizados y utilización de múltiples factores de
+            autenticación para aumentar la seguridad de los sistemas.
+        </p>
+
+    </section>
+
+
+    <!-- =========================================
+         ENUNCIADO
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            01 // ENUNCIADO
+        </div>
+
+        <h2>
+            ¿Qué nos pregunta la actividad?
+        </h2>
+
+        <div class="panel">
+
+            <div class="question">
+
+                <span class="question-mark">></span>
+
+                ¿Podríamos decir que las técnicas de autenticación
+                son un mecanismo de prevención en términos de
+                seguridad informática?
+
+            </div>
+
+            <p>
+                Explica la respuesta.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         RESPUESTA
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            02 // RESPUESTA
+        </div>
+
+        <h2>
+            Sí. La autenticación es un mecanismo preventivo.
+        </h2>
+
+        <div class="panel answer-main">
+
+            <div class="yes">
+                <span class="yes-dot"></span>
+                SÍ
+            </div>
+
+            <p>
+                Las técnicas de
+                <span class="highlight">autenticación</span>
+                pueden considerarse mecanismos de
+                <span class="highlight">prevención</span>
+                porque permiten comprobar la identidad de una persona
+                antes de concederle acceso a un sistema, aplicación,
+                servicio o recurso.
+            </p>
+
+            <p>
+                Su objetivo es evitar que una persona que
+                <span class="cyan">no está autorizada</span>
+                pueda acceder utilizando una identidad que no le
+                pertenece.
+            </p>
+
+            <p>
+                Por ejemplo, cuando introducimos un nombre de usuario
+                y una contraseña, el sistema comprueba las credenciales
+                antes de permitir el acceso. Si las credenciales no son
+                válidas, el acceso es rechazado.
+            </p>
+
+            <p>
+                Por tanto, la autenticación actúa
+                <strong>antes de que se produzca el acceso</strong>,
+                reduciendo la posibilidad de accesos no autorizados.
+                Por este motivo tiene una función principalmente
+                preventiva.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         FLUJO
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            03 // PROCESO
+        </div>
+
+        <h2>
+            ¿Cómo funciona?
+        </h2>
+
+        <div class="flow">
+
+            <div class="flow-box">
+
+                <div class="flow-icon">👤</div>
+
+                <strong>
+                    IDENTIDAD
+                </strong>
+
+                <small>
+                    El usuario indica quién es
+                </small>
+
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="flow-box">
+
+                <div class="flow-icon">🔐</div>
+
+                <strong>
+                    AUTENTICACIÓN
+                </strong>
+
+                <small>
+                    El sistema comprueba su identidad
+                </small>
+
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="flow-box">
+
+                <div class="flow-icon">✓</div>
+
+                <strong>
+                    ACCESO
+                </strong>
+
+                <small>
+                    Se permite o se rechaza
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         FACTORES
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            04 // FACTORES DE AUTENTICACIÓN
+        </div>
+
+        <h2>
+            Tres formas de demostrar quién eres
+        </h2>
+
+        <div class="factor-grid">
+
+            <article class="factor">
+
+                <div class="factor-icon">
+                    🔑
+                </div>
+
+                <div class="factor-id">
+                    FACTOR_01
+                </div>
+
+                <h3>
+                    Algo que sabes
+                </h3>
+
+                <p>
+                    Información secreta que solamente debería
+                    conocer el usuario.
+                </p>
+
+                <span class="factor-example">
+                    Contraseña · PIN
+                </span>
+
+            </article>
+
+
+            <article class="factor">
+
+                <div class="factor-icon">
+                    📱
+                </div>
+
+                <div class="factor-id">
+                    FACTOR_02
+                </div>
+
+                <h3>
+                    Algo que tienes
+                </h3>
+
+                <p>
+                    Un objeto o dispositivo que se encuentra
+                    en posesión del usuario.
+                </p>
+
+                <span class="factor-example">
+                    Móvil · Token · Tarjeta
+                </span>
+
+            </article>
+
+
+            <article class="factor">
+
+                <div class="factor-icon">
+                    👁
+                </div>
+
+                <div class="factor-id">
+                    FACTOR_03
+                </div>
+
+                <h3>
+                    Algo que eres
+                </h3>
+
+                <p>
+                    Una característica biométrica propia
+                    de la persona.
+                </p>
+
+                <span class="factor-example">
+                    Huella · Rostro · Iris
+                </span>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         MFA
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            05 // MFA
+        </div>
+
+        <h2>
+            Autenticación multifactor
+        </h2>
+
+        <div class="mfa">
+
+            <div class="mfa-visual">
+
+                <div class="shield">
+                    2FA
+                </div>
+
+            </div>
+
+            <div class="panel mfa-content">
+
+                <h3>
+                    MFA / 2FA
+                </h3>
+
+                <p>
+                    La seguridad puede aumentarse utilizando
+                    <strong>más de un factor de autenticación</strong>.
+                </p>
+
+                <p>
+                    Por ejemplo, podemos utilizar una
+                    <span class="highlight">contraseña</span>
+                    junto con un
+                    <span class="cyan">código generado en el teléfono móvil</span>.
+                </p>
+
+                <p>
+                    De esta forma, conocer únicamente la contraseña
+                    puede no ser suficiente para acceder a la cuenta.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         AUTENTICACIÓN VS AUTORIZACIÓN
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            06 // CONCEPTO IMPORTANTE
+        </div>
+
+        <h2>
+            Autenticación ≠ Autorización
+        </h2>
+
+        <div class="compare">
+
+            <div class="compare-card">
+
+                <h3>
+                    🔐 Autenticación
+                </h3>
+
+                <span class="compare-question">
+                    ¿QUIÉN ERES?
+                </span>
+
+                <p>
+                    Comprueba que el usuario es realmente
+                    quien afirma ser.
+                </p>
+
+                <p>
+                    Ejemplo: iniciar sesión utilizando
+                    usuario y contraseña.
+                </p>
+
+            </div>
+
+
+            <div class="compare-card">
+
+                <h3>
+                    🛡 Autorización
+                </h3>
+
+                <span class="compare-question">
+                    ¿QUÉ PUEDES HACER?
+                </span>
+
+                <p>
+                    Determina qué recursos y operaciones puede
+                    utilizar un usuario una vez identificado.
+                </p>
+
+                <p>
+                    Ejemplo: un administrador puede crear usuarios,
+                    mientras que un usuario normal no.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         EXAM MODE
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            07 // MEMORY BLOCK
+        </div>
+
+        <h2>
+            EXAM MODE
+        </h2>
+
+        <div class="panel exam">
+
+            <div class="exam-title">
+                ⚠ CONCEPTOS PARA RECORDAR
+            </div>
+
+            <ul>
+
+                <li>
+                    La <strong>autenticación</strong> comprueba
+                    la identidad de un usuario.
+                </li>
+
+                <li>
+                    Se considera un mecanismo
+                    <strong>preventivo</strong> porque intenta evitar
+                    accesos no autorizados antes de que se produzcan.
+                </li>
+
+                <li>
+                    Los factores pueden basarse en
+                    <strong>algo que sabes, algo que tienes o algo que eres</strong>.
+                </li>
+
+                <li>
+                    Utilizar varios factores aumenta la seguridad:
+                    <strong>MFA / 2FA</strong>.
+                </li>
+
+                <li>
+                    <strong>Autenticación</strong> responde
+                    «¿quién eres?» y
+                    <strong>autorización</strong> responde
+                    «¿qué puedes hacer?».
+                </li>
+
+                <li>
+                    La autenticación es una medida importante,
+                    pero <strong>no garantiza por sí sola toda la
+                    seguridad de un sistema</strong>.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         RESPUESTA CORTA EXAMEN
+    ========================================= -->
+
+    <section class="section">
+
+        <div class="section-label">
+            08 // RESPUESTA DIRECTA
+        </div>
+
+        <h2>
+            Si apareciera en un examen...
+        </h2>
+
+        <div class="panel short-answer">
+
+            <p>
+                <strong class="cyan">Sí.</strong>
+                Las técnicas de autenticación pueden considerarse
+                mecanismos de prevención porque permiten
+                <strong>verificar la identidad de un usuario antes de
+                concederle acceso</strong> a un sistema o recurso.
+                De esta manera ayudan a impedir accesos no autorizados.
+                La autenticación puede realizarse mediante factores
+                como contraseñas, dispositivos o datos biométricos,
+                y su seguridad aumenta cuando se combinan varios
+                factores mediante MFA o 2FA.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         TERMINAL
+    ========================================= -->
+
+    <div class="terminal">
+
+        <div class="terminal-top">
+
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+
+            <span class="terminal-title">
+                mcs-security@authentication
+            </span>
+
+        </div>
+
+        <div class="terminal-body">
+
+            <div>
+                <span class="prompt">mcs@security:~$</span>
+                check-authentication
+            </div>
+
+            <div>
+                > Identity............... VERIFIED
+            </div>
+
+            <div>
+                > Authentication......... SUCCESS
+            </div>
+
+            <div>
+                > MFA.................... ENABLED
+            </div>
+
+            <div>
+                > Unauthorized access.... BLOCKED
+            </div>
+
+            <br>
+
+            <div>
+                <span class="prompt">mcs@security:~$</span>
+                <span class="cursor"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div>
+        MCS SECURITY SYSTEM · SEC-ACT-004
+    </div>
+
+    <div>
+        MIGUEL · ASIX 2026/2027
+    </div>
+
+</footer>
+
+
+<script>
+
+    /* =========================================
+       BOOT
+    ========================================= */
+
+    window.addEventListener("load", function () {
+
+        setTimeout(function () {
+
+            document.getElementById("boot").classList.add("hide");
+
+        }, 2300);
+
+    });
+
+
+    /* =========================================
+       MATRIX BACKGROUND
+    ========================================= */
+
+    const matrix = document.getElementById("matrix");
+
+    const chars = [
+        "0","1","A","F","7","9",
+        "AUTH","MFA","ID","ACL",
+        "01","10"
+    ];
+
+    for (let i = 0; i < 55; i++) {
+
+        const item = document.createElement("span");
+
+        item.innerText =
+            chars[Math.floor(Math.random() * chars.length)];
+
+        item.style.left =
+            Math.random() * 100 + "%";
+
+        item.style.animationDuration =
+            (5 + Math.random() * 10) + "s";
+
+        item.style.animationDelay =
+            (-Math.random() * 12) + "s";
+
+        item.style.opacity =
+            Math.random();
+
+        matrix.appendChild(item);
+
+    }
+
+</script>
+
+</body>
+</html>
