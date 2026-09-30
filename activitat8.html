@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Actividad 8 · Técnica Salami | MCS Security</title>
+
+<style>
+:root{
+    --bg:#030607;
+    --panel:#071014;
+    --green:#00ff88;
+    --cyan:#00eaff;
+    --red:#ff4d6d;
+    --gold:#ffc857;
+    --purple:#b388ff;
+    --text:#e8fff4;
+    --muted:#8ca7a0;
+    --border:rgba(0,255,136,.20);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    color:var(--text);
+    font-family:"Segoe UI",Arial,sans-serif;
+    line-height:1.7;
+    overflow-x:hidden;
+
+    background:
+        radial-gradient(circle at 15% 10%,rgba(0,255,136,.08),transparent 25%),
+        radial-gradient(circle at 85% 30%,rgba(255,77,109,.07),transparent 25%),
+        linear-gradient(180deg,#020405,#030809 50%,#020405);
+}
+
+/* =====================================================
+   MATRIX BACKGROUND
+===================================================== */
+
+.matrix{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    opacity:.13;
+    z-index:-2;
+}
+
+.matrix span{
+    position:absolute;
+    color:var(--green);
+    font:12px Consolas,monospace;
+    text-shadow:0 0 8px var(--green);
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    from{
+        transform:translateY(-150px);
+        opacity:0;
+    }
+
+    10%{
+        opacity:1;
+    }
+
+    to{
+        transform:translateY(110vh);
+        opacity:0;
+    }
+}
+
+/* =====================================================
+   BOOT
+===================================================== */
+
+#boot{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+
+    background:#010303;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    transition:opacity .7s ease,visibility .7s ease;
+}
+
+#boot.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.boot-box{
+    width:min(760px,90%);
+    color:var(--green);
+    font-family:Consolas,monospace;
+}
+
+.boot-title{
+    font-size:clamp(26px,5vw,44px);
+    font-weight:900;
+    letter-spacing:4px;
+    margin-bottom:25px;
+
+    text-shadow:
+        0 0 20px rgba(0,255,136,.6);
+}
+
+.boot-line{
+    margin:8px 0;
+    opacity:0;
+    animation:bootText .3s forwards;
+}
+
+.boot-line:nth-child(2){animation-delay:.20s;}
+.boot-line:nth-child(3){animation-delay:.45s;}
+.boot-line:nth-child(4){animation-delay:.70s;}
+.boot-line:nth-child(5){animation-delay:.95s;}
+.boot-line:nth-child(6){animation-delay:1.20s;}
+.boot-line:nth-child(7){animation-delay:1.45s;}
+
+@keyframes bootText{
+    to{opacity:1;}
+}
+
+.ok{
+    color:var(--cyan);
+}
+
+.alert{
+    color:var(--red);
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    background:rgba(2,6,7,.88);
+    backdrop-filter:blur(16px);
+
+    border-bottom:1px solid var(--border);
+}
+
+.nav{
+    width:min(1200px,92%);
+    min-height:72px;
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.brand{
+    color:var(--green);
+    font:bold 16px Consolas,monospace;
+    letter-spacing:2px;
+}
+
+.brand span{
+    color:var(--cyan);
+}
+
+.back{
+    color:var(--text);
+    text-decoration:none;
+
+    border:1px solid var(--border);
+    padding:9px 15px;
+    border-radius:8px;
+
+    font-family:Consolas,monospace;
+
+    transition:.25s;
+}
+
+.back:hover{
+    color:#00100a;
+    background:var(--green);
+
+    box-shadow:
+        0 0 20px rgba(0,255,136,.35);
+}
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+main{
+    width:min(1150px,92%);
+    margin:auto;
+    padding:75px 0 100px;
+}
+
+.tag{
+    display:inline-block;
+
+    color:var(--green);
+    border:1px solid var(--green);
+
+    padding:6px 12px;
+    border-radius:30px;
+
+    margin-bottom:20px;
+
+    font:13px Consolas,monospace;
+    letter-spacing:1px;
+
+    box-shadow:
+        0 0 18px rgba(0,255,136,.15);
+}
+
+h1{
+    font-size:clamp(40px,7vw,78px);
+    line-height:1;
+    letter-spacing:-3px;
+    margin-bottom:18px;
+}
+
+h1 span{
+    color:var(--red);
+
+    text-shadow:
+        0 0 25px rgba(255,77,109,.35);
+}
+
+.subtitle{
+    max-width:850px;
+    color:var(--muted);
+    font-size:19px;
+}
+
+.section{
+    margin-top:75px;
+}
+
+.section-label{
+    color:var(--cyan);
+    font:13px Consolas,monospace;
+    letter-spacing:2px;
+    margin-bottom:8px;
+}
+
+h2{
+    font-size:clamp(27px,4vw,42px);
+    margin-bottom:25px;
+}
+
+.panel{
+    position:relative;
+    overflow:hidden;
+
+    padding:30px;
+
+    border:1px solid var(--border);
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,23,27,.92),
+            rgba(4,10,12,.95)
+        );
+}
+
+.panel::before{
+    content:"";
+
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:4px;
+    height:100%;
+
+    background:
+        linear-gradient(var(--green),var(--cyan));
+}
+
+.green{
+    color:var(--green);
+    font-weight:700;
+}
+
+.cyan{
+    color:var(--cyan);
+    font-weight:700;
+}
+
+.red{
+    color:var(--red);
+    font-weight:700;
+}
+
+.gold{
+    color:var(--gold);
+    font-weight:700;
+}
+
+/* =====================================================
+   ENUNCIADO
+===================================================== */
+
+.statement{
+    font-size:18px;
+}
+
+.statement strong{
+    color:var(--green);
+}
+
+.question{
+    margin-top:20px;
+    padding:18px;
+
+    background:rgba(0,0,0,.25);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:10px;
+}
+
+.question span{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    margin-right:8px;
+}
+
+/* =====================================================
+   CONCEPTO
+===================================================== */
+
+.definition{
+    display:grid;
+    grid-template-columns:.65fr 1.35fr;
+    gap:25px;
+}
+
+.definition-visual{
+    min-height:330px;
+
+    border:
+        1px solid rgba(255,77,109,.28);
+
+    border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,77,109,.12),
+            transparent 55%
+        ),
+        rgba(0,0,0,.25);
+}
+
+.salami-core{
+    width:190px;
+    height:190px;
+
+    border:2px solid var(--red);
+    border-radius:50%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    box-shadow:
+        0 0 35px rgba(255,77,109,.25);
+
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        box-shadow:
+            0 0 65px rgba(255,77,109,.42);
+    }
+}
+
+.salami-icon{
+    font-size:55px;
+}
+
+.salami-core strong{
+    margin-top:8px;
+
+    color:var(--red);
+
+    font-family:Consolas,monospace;
+    letter-spacing:2px;
+}
+
+.definition-content{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.definition-content h3{
+    color:var(--red);
+    font-size:29px;
+    margin-bottom:15px;
+}
+
+.definition-content p{
+    font-size:17px;
+    margin-bottom:16px;
+}
+
+/* =====================================================
+   MICRO OPERATIONS
+===================================================== */
+
+.micro-flow{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:15px;
+}
+
+.micro{
+    padding:23px 15px;
+
+    text-align:center;
+
+    border:
+        1px solid rgba(0,234,255,.20);
+
+    border-radius:14px;
+
+    background:
+        rgba(0,0,0,.25);
+
+    transition:.3s;
+}
+
+.micro:hover{
+    transform:translateY(-5px);
+
+    border-color:var(--cyan);
+}
+
+.micro-number{
+    color:var(--muted);
+    font:12px Consolas,monospace;
+}
+
+.micro-value{
+    color:var(--cyan);
+
+    font:bold 27px Consolas,monospace;
+
+    margin:8px 0;
+}
+
+.micro small{
+    color:var(--muted);
+}
+
+.total{
+    margin-top:22px;
+
+    padding:22px;
+
+    border:
+        1px solid rgba(255,77,109,.35);
+
+    border-radius:13px;
+
+    background:
+        rgba(255,77,109,.05);
+
+    text-align:center;
+}
+
+.total strong{
+    color:var(--red);
+    font-size:23px;
+}
+
+/* =====================================================
+   FLOW
+===================================================== */
+
+.attack-flow{
+    display:grid;
+    grid-template-columns:
+        1fr auto 1fr auto 1fr auto 1fr;
+    gap:12px;
+    align-items:center;
+}
+
+.flow-box{
+    min-height:155px;
+
+    padding:20px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:rgba(0,0,0,.25);
+}
+
+.flow-icon{
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.flow-box strong{
+    color:var(--green);
+    font-family:Consolas,monospace;
+    margin-bottom:5px;
+}
+
+.flow-box:last-child{
+    border-color:rgba(255,77,109,.35);
+}
+
+.flow-box:last-child strong{
+    color:var(--red);
+}
+
+.flow-box small{
+    color:var(--muted);
+}
+
+.arrow{
+    color:var(--cyan);
+    font-size:26px;
+    font-weight:900;
+}
+
+/* =====================================================
+   EJEMPLO
+===================================================== */
+
+.example-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.example-card{
+    padding:27px;
+
+    border:1px solid var(--border);
+    border-radius:15px;
+
+    background:rgba(5,15,18,.8);
+}
+
+.example-id{
+    color:var(--cyan);
+    font:12px Consolas,monospace;
+}
+
+.example-icon{
+    font-size:37px;
+    margin:10px 0;
+}
+
+.example-card h3{
+    color:var(--green);
+    margin-bottom:10px;
+}
+
+.example-card p{
+    color:var(--muted);
+}
+
+.example-card.danger-card{
+    border-color:rgba(255,77,109,.3);
+}
+
+.example-card.danger-card h3{
+    color:var(--red);
+}
+
+/* =====================================================
+   PROPIEDADES
+===================================================== */
+
+.security-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.security-card{
+    position:relative;
+    overflow:hidden;
+
+    padding:27px;
+
+    border:1px solid var(--border);
+    border-radius:15px;
+
+    background:rgba(0,0,0,.25);
+}
+
+.security-letter{
+    position:absolute;
+    top:-10px;
+    right:15px;
+
+    color:rgba(0,255,136,.08);
+
+    font:bold 80px Consolas,monospace;
+}
+
+.security-card h3{
+    color:var(--green);
+    margin-bottom:10px;
+}
+
+.security-card p{
+    color:var(--muted);
+}
+
+.security-card.main-impact{
+    border-color:rgba(255,77,109,.4);
+}
+
+.security-card.main-impact h3{
+    color:var(--red);
+}
+
+/* =====================================================
+   DETECCIÓN
+===================================================== */
+
+.controls{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.control{
+    padding:24px;
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    background:rgba(5,15,18,.8);
+}
+
+.control-icon{
+    font-size:33px;
+    margin-bottom:10px;
+}
+
+.control h3{
+    color:var(--cyan);
+    margin-bottom:8px;
+    font-size:18px;
+}
+
+.control p{
+    color:var(--muted);
+    font-size:15px;
+}
+
+/* =====================================================
+   EXAM MODE
+===================================================== */
+
+.exam{
+    border-color:rgba(255,200,87,.4);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,200,87,.07),
+            rgba(0,0,0,.25)
+        );
+}
+
+.exam::before{
+    background:var(--gold);
+}
+
+.exam-title{
+    color:var(--gold);
+
+    font-family:Consolas,monospace;
+    letter-spacing:2px;
+
+    margin-bottom:18px;
+}
+
+.exam ul{
+    list-style:none;
+}
+
+.exam li{
+    padding:11px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+}
+
+.exam li:last-child{
+    border:none;
+}
+
+.exam li::before{
+    content:">";
+
+    color:var(--gold);
+
+    font-family:Consolas,monospace;
+
+    margin-right:12px;
+}
+
+/* =====================================================
+   RESPUESTA
+===================================================== */
+
+.answer{
+    border-color:rgba(0,234,255,.35);
+}
+
+.answer::before{
+    background:var(--cyan);
+}
+
+.answer h3{
+    color:var(--cyan);
+    margin-bottom:15px;
+}
+
+.answer p{
+    font-size:18px;
+    margin-bottom:15px;
+}
+
+/* =====================================================
+   TERMINAL
+===================================================== */
+
+.terminal{
+    margin-top:75px;
+
+    background:#010303;
+
+    border:1px solid #17342b;
+    border-radius:13px;
+
+    overflow:hidden;
+
+    font-family:Consolas,monospace;
+}
+
+.terminal-top{
+    padding:11px 15px;
+
+    background:#09100f;
+
+    border-bottom:1px solid #17342b;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.dot{
+    width:11px;
+    height:11px;
+
+    border-radius:50%;
+
+    background:#355047;
+}
+
+.terminal-title{
+    color:var(--muted);
+    font-size:12px;
+    margin-left:8px;
+}
+
+.terminal-body{
+    padding:23px;
+    color:var(--green);
+}
+
+.prompt{
+    color:var(--cyan);
+}
+
+.term-red{
+    color:var(--red);
+}
+
+.term-gold{
+    color:var(--gold);
+}
+
+.cursor{
+    display:inline-block;
+
+    width:8px;
+    height:17px;
+
+    background:var(--green);
+
+    vertical-align:middle;
+
+    animation:blink .8s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0;}
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+    border-top:1px solid var(--border);
+
+    padding:35px 5%;
+
+    color:var(--muted);
+
+    font:13px Consolas,monospace;
+
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:950px){
+
+    .definition{
+        grid-template-columns:1fr;
+    }
+
+    .micro-flow{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .attack-flow{
+        grid-template-columns:1fr;
+    }
+
+    .arrow{
+        transform:rotate(90deg);
+        text-align:center;
+    }
+
+    .controls{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .micro-flow,
+    .example-grid,
+    .security-grid,
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    h1{
+        letter-spacing:-1px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     MATRIX
+===================================================== -->
+
+<div class="matrix" id="matrix"></div>
+
+
+<!-- =====================================================
+     BOOT
+===================================================== -->
+
+<div id="boot">
+
+<div class="boot-box">
+
+    <div class="boot-title">
+        MCS FRAUD DETECTION
+    </div>
+
+    <div class="boot-line">
+        [SCAN] Analizando transacciones...
+    </div>
+
+    <div class="boot-line">
+        [TX] Micro-alteration #001
+        <span class="ok">[0.01]</span>
+    </div>
+
+    <div class="boot-line">
+        [TX] Micro-alteration #002
+        <span class="ok">[0.01]</span>
+    </div>
+
+    <div class="boot-line">
+        [PATTERN] Repetitive modifications
+        <span class="alert">[DETECTED]</span>
+    </div>
+
+    <div class="boot-line">
+        [THREAT] Salami Technique
+        <span class="alert">[ALERT]</span>
+    </div>
+
+    <div class="boot-line">
+        [INTEGRITY] Financial Data
+        <span class="alert">[COMPROMISED]</span>
+    </div>
+
+    <div class="boot-line">
+        FRAUD ANALYSIS READY_
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+<div class="nav">
+
+    <div class="brand">
+        MCS::<span>SECURITY</span>
+    </div>
+
+    <a href="seguretat.html" class="back">
+        ← VOLVER A SEGURIDAD
+    </a>
+
+</div>
+
+</header>
+
+
+<main>
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section>
+
+<span class="tag">
+    SEC-ACT-008 · TÉCNICA SALAMI
+</span>
+
+<h1>
+    Actividad 8<br>
+    <span>Técnica Salami</span>
+</h1>
+
+<p class="subtitle">
+    Análisis de una técnica basada en realizar pequeñas
+    alteraciones repetidas que, individualmente, pueden resultar
+    difíciles de detectar pero cuyo efecto acumulado puede llegar
+    a ser significativo.
+</p>
+
+</section>
+
+
+<!-- =====================================================
+     ENUNCIADO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    01 // ENUNCIADO
+</div>
+
+<h2>
+    ¿Qué debemos analizar?
+</h2>
+
+<div class="panel statement">
+
+    <p>
+        La <strong>técnica Salami</strong> consiste en realizar
+        pequeñas acciones o modificaciones que individualmente
+        tienen un valor muy reducido, pero que repetidas sobre
+        numerosas operaciones pueden generar un efecto importante.
+    </p>
+
+    <div class="question">
+        <span>01 ></span>
+        Explica en qué consiste esta técnica.
+    </div>
+
+    <div class="question">
+        <span>02 ></span>
+        Explica por qué pequeñas cantidades pueden pasar
+        desapercibidas.
+    </div>
+
+    <div class="question">
+        <span>03 ></span>
+        Indica qué consecuencias puede producir.
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     DEFINICIÓN
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    02 // DEFINICIÓN
+</div>
+
+<h2>
+    ¿Qué es la técnica Salami?
+</h2>
+
+<div class="definition">
+
+    <div class="definition-visual">
+
+        <div class="salami-core">
+
+            <div class="salami-icon">
+                🪙
+            </div>
+
+            <strong>
+                0.01 + 0.01 + ...
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel definition-content">
+
+        <h3>
+            Muchas pequeñas alteraciones
+        </h3>
+
+        <p>
+            La técnica Salami consiste en realizar
+            <span class="red">
+                pequeñas modificaciones de forma repetida
+            </span>
+            sobre un gran número de operaciones.
+        </p>
+
+        <p>
+            Cada modificación puede ser tan pequeña que
+            individualmente resulte difícil de apreciar.
+        </p>
+
+        <p>
+            Sin embargo, cuando la misma acción se realiza
+            muchas veces, la
+            <span class="green">
+                suma de todas las pequeñas cantidades
+            </span>
+            puede convertirse en un valor significativo.
+        </p>
+
+        <p>
+            El nombre hace referencia a la idea de obtener
+            pequeñas «lonchas» de muchas operaciones en lugar
+            de realizar una única modificación de gran tamaño.
+        </p>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     EJEMPLO NUMÉRICO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    03 // EJEMPLO VISUAL
+</div>
+
+<h2>
+    Pequeño individualmente, grande al acumularse
+</h2>
+
+<div class="micro-flow">
+
+    <div class="micro">
+        <div class="micro-number">OPERACIÓN 001</div>
+        <div class="micro-value">0,01 €</div>
+        <small>cantidad mínima</small>
+    </div>
+
+    <div class="micro">
+        <div class="micro-number">OPERACIÓN 002</div>
+        <div class="micro-value">0,01 €</div>
+        <small>cantidad mínima</small>
+    </div>
+
+    <div class="micro">
+        <div class="micro-number">OPERACIÓN 003</div>
+        <div class="micro-value">0,01 €</div>
+        <small>cantidad mínima</small>
+    </div>
+
+    <div class="micro">
+        <div class="micro-number">...</div>
+        <div class="micro-value">0,01 €</div>
+        <small>miles de veces</small>
+    </div>
+
+    <div class="micro">
+        <div class="micro-number">OPERACIÓN N</div>
+        <div class="micro-value">0,01 €</div>
+        <small>acumulación</small>
+    </div>
+
+</div>
+
+<div class="total">
+
+    0,01 € × 100.000 operaciones =
+    <strong>1.000 €</strong>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     PROCESO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    04 // FUNCIONAMIENTO
+</div>
+
+<h2>
+    Esquema conceptual
+</h2>
+
+<div class="attack-flow">
+
+    <div class="flow-box">
+
+        <div class="flow-icon">
+            💳
+        </div>
+
+        <strong>
+            OPERACIONES
+        </strong>
+
+        <small>
+            Muchas transacciones
+        </small>
+
+    </div>
+
+    <div class="arrow">
+        →
+    </div>
+
+    <div class="flow-box">
+
+        <div class="flow-icon">
+            ✂️
+        </div>
+
+        <strong>
+            MICROCAMBIO
+        </strong>
+
+        <small>
+            Cantidad muy pequeña
+        </small>
+
+    </div>
+
+    <div class="arrow">
+        →
+    </div>
+
+    <div class="flow-box">
+
+        <div class="flow-icon">
+            🔁
+        </div>
+
+        <strong>
+            REPETICIÓN
+        </strong>
+
+        <small>
+            Miles de operaciones
+        </small>
+
+    </div>
+
+    <div class="arrow">
+        →
+    </div>
+
+    <div class="flow-box">
+
+        <div class="flow-icon">
+            💰
+        </div>
+
+        <strong>
+            ACUMULACIÓN
+        </strong>
+
+        <small>
+            Resultado significativo
+        </small>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     EJEMPLO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    05 // EJEMPLO
+</div>
+
+<h2>
+    Ejemplo conceptual
+</h2>
+
+<div class="example-grid">
+
+    <article class="example-card">
+
+        <div class="example-id">
+            NORMAL_OPERATION
+        </div>
+
+        <div class="example-icon">
+            🧾
+        </div>
+
+        <h3>
+            Operación legítima
+        </h3>
+
+        <p>
+            Un sistema procesa una gran cantidad de operaciones
+            económicas con importes diferentes.
+        </p>
+
+    </article>
+
+
+    <article class="example-card danger-card">
+
+        <div class="example-id">
+            UNAUTHORIZED_MODIFICATION
+        </div>
+
+        <div class="example-icon">
+            ⚠️
+        </div>
+
+        <h3>
+            Alteración no autorizada
+        </h3>
+
+        <p>
+            Una cantidad mínima es desviada o modificada
+            repetidamente. Cada cambio aislado puede parecer
+            insignificante, pero la suma final puede ser elevada.
+        </p>
+
+    </article>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     POR QUÉ PUEDE PASAR DESAPERCIBIDA
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    06 // DETECCIÓN
+</div>
+
+<h2>
+    ¿Por qué puede pasar desapercibida?
+</h2>
+
+<div class="panel">
+
+    <p>
+        La característica principal de esta técnica es que
+        <span class="cyan">
+            cada modificación individual tiene un valor muy pequeño.
+        </span>
+    </p>
+
+    <br>
+
+    <p>
+        Una alteración de unos pocos céntimos puede no llamar la
+        atención de un usuario si observa una operación de manera
+        aislada.
+    </p>
+
+    <br>
+
+    <p>
+        El problema aparece cuando el mismo patrón se repite
+        sobre un número muy elevado de operaciones. Por ello,
+        para detectarlo no basta con analizar únicamente una
+        transacción: es necesario observar
+        <span class="green">
+            patrones repetitivos y acumulaciones.
+        </span>
+    </p>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     CID
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    07 // SEGURIDAD DE LA INFORMACIÓN
+</div>
+
+<h2>
+    ¿Qué propiedad se compromete?
+</h2>
+
+<div class="security-grid">
+
+    <article class="security-card">
+
+        <span class="security-letter">
+            C
+        </span>
+
+        <h3>
+            Confidencialidad
+        </h3>
+
+        <p>
+            No es necesariamente el objetivo principal de la
+            técnica, aunque podría verse afectada dependiendo
+            del incidente.
+        </p>
+
+    </article>
+
+
+    <article class="security-card main-impact">
+
+        <span class="security-letter">
+            I
+        </span>
+
+        <h3>
+            ⚠ Integridad
+        </h3>
+
+        <p>
+            Es la propiedad principalmente comprometida porque
+            se producen modificaciones no autorizadas sobre
+            datos u operaciones.
+        </p>
+
+    </article>
+
+
+    <article class="security-card">
+
+        <span class="security-letter">
+            D
+        </span>
+
+        <h3>
+            Disponibilidad
+        </h3>
+
+        <p>
+            El sistema puede continuar funcionando, por lo que
+            normalmente no es la propiedad directamente atacada.
+        </p>
+
+    </article>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTROLES
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    08 // PREVENCIÓN Y DETECCIÓN
+</div>
+
+<h2>
+    ¿Cómo puede detectarse?
+</h2>
+
+<div class="controls">
+
+    <article class="control">
+
+        <div class="control-icon">
+            📋
+        </div>
+
+        <h3>
+            Auditoría
+        </h3>
+
+        <p>
+            Registrar y revisar las operaciones realizadas
+            sobre sistemas y datos.
+        </p>
+
+    </article>
+
+
+    <article class="control">
+
+        <div class="control-icon">
+            📊
+        </div>
+
+        <h3>
+            Análisis de patrones
+        </h3>
+
+        <p>
+            Detectar pequeñas modificaciones que se repiten
+            de forma anormal.
+        </p>
+
+    </article>
+
+
+    <article class="control">
+
+        <div class="control-icon">
+            👥
+        </div>
+
+        <h3>
+            Control de acceso
+        </h3>
+
+        <p>
+            Limitar quién puede modificar información
+            sensible y operaciones.
+        </p>
+
+    </article>
+
+
+    <article class="control">
+
+        <div class="control-icon">
+            🧾
+        </div>
+
+        <h3>
+            Trazabilidad
+        </h3>
+
+        <p>
+            Poder identificar quién realizó una operación,
+            cuándo se produjo y qué información fue modificada.
+        </p>
+
+    </article>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     EXAM MODE
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    09 // MEMORY BLOCK
+</div>
+
+<h2>
+    EXAM MODE
+</h2>
+
+<div class="panel exam">
+
+    <div class="exam-title">
+        ⚠ CONCEPTOS PARA RECORDAR
+    </div>
+
+    <ul>
+
+        <li>
+            La <strong>técnica Salami</strong> se basa en realizar
+            pequeñas alteraciones repetidas.
+        </li>
+
+        <li>
+            Cada modificación individual puede ser
+            <strong>muy pequeña</strong> y difícil de apreciar.
+        </li>
+
+        <li>
+            El beneficio o perjuicio aparece por la
+            <strong>acumulación</strong> de muchas operaciones.
+        </li>
+
+        <li>
+            Un ejemplo típico es modificar o desviar
+            <strong>pequeñas cantidades económicas</strong>
+            en numerosas transacciones.
+        </li>
+
+        <li>
+            En términos de CID, la propiedad más claramente
+            afectada es la <strong>INTEGRIDAD</strong>.
+        </li>
+
+        <li>
+            Para detectar este tipo de comportamiento es
+            importante analizar <strong>patrones</strong>, no
+            solamente operaciones aisladas.
+        </li>
+
+        <li>
+            Auditoría, trazabilidad y control de acceso ayudan
+            a prevenir y detectar modificaciones no autorizadas.
+        </li>
+
+    </ul>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     RESPUESTA DIRECTA
+===================================================== -->
+
+<section class="section">
+
+<div class="section-label">
+    10 // RESPUESTA DIRECTA
+</div>
+
+<h2>
+    Respuesta de la actividad
+</h2>
+
+<div class="panel answer">
+
+    <h3>
+        Técnica Salami
+    </h3>
+
+    <p>
+        La técnica Salami consiste en realizar
+        <strong>
+            pequeñas modificaciones o sustracciones de forma
+            repetida sobre un gran número de operaciones.
+        </strong>
+        Cada modificación individual tiene un valor tan reducido
+        que puede resultar difícil de detectar, pero la suma de
+        todas ellas puede producir un resultado considerable.
+    </p>
+
+    <p>
+        Por ejemplo, una alteración de unos pocos céntimos puede
+        parecer insignificante en una única operación. Sin embargo,
+        si se repite automáticamente sobre miles de operaciones,
+        el valor acumulado puede llegar a ser elevado.
+    </p>
+
+    <p>
+        Esta técnica compromete principalmente la
+        <strong>integridad de la información</strong>, ya que
+        supone modificar datos u operaciones sin autorización.
+        Para prevenirla y detectarla son importantes mecanismos
+        como la auditoría, la trazabilidad, el control de acceso
+        y el análisis de patrones anómalos.
+    </p>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     TERMINAL
+===================================================== -->
+
+<div class="terminal">
+
+<div class="terminal-top">
+
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+
+    <span class="terminal-title">
+        mcs-security@fraud-monitor
+    </span>
+
+</div>
+
+<div class="terminal-body">
+
+    <div>
+        <span class="prompt">mcs@security:~$</span>
+        analyse --transactions --pattern
+    </div>
+
+    <br>
+
+    <div>
+        > Transaction 00001......
+        0.01
+    </div>
+
+    <div>
+        > Transaction 00002......
+        0.01
+    </div>
+
+    <div>
+        > Transaction 00003......
+        0.01
+    </div>
+
+    <div>
+        > Repeated operations.....
+        100000
+    </div>
+
+    <br>
+
+    <div class="term-red">
+        > SALAMI PATTERN...........
+        DETECTED
+    </div>
+
+    <div class="term-red">
+        > INTEGRITY...............
+        COMPROMISED
+    </div>
+
+    <div class="term-gold">
+        > ACTION..................
+        AUDIT REQUIRED
+    </div>
+
+    <br>
+
+    <div>
+        <span class="prompt">mcs@security:~$</span>
+        <span class="cursor"></span>
+    </div>
+
+</div>
+
+</div>
+
+</main>
+
+
+<footer>
+
+<div>
+    MCS SECURITY SYSTEM · SEC-ACT-008
+</div>
+
+<div>
+    MIGUEL · ASIX 2026/2027
+</div>
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   BOOT
+===================================================== */
+
+window.addEventListener("load",function(){
+
+    setTimeout(function(){
+
+        document
+            .getElementById("boot")
+            .classList.add("hide");
+
+    },2300);
+
+});
+
+
+/* =====================================================
+   MATRIX
+===================================================== */
+
+const matrix =
+    document.getElementById("matrix");
+
+const chars = [
+    "0",
+    "1",
+    "0.01",
+    "TX",
+    "SALAMI",
+    "DATA",
+    "AUDIT",
+    "LOG",
+    "CID",
+    "I",
+    "01",
+    "10"
+];
+
+for(let i=0;i<55;i++){
+
+    const item =
+        document.createElement("span");
+
+    item.innerText =
+        chars[
+            Math.floor(
+                Math.random()*chars.length
+            )
+        ];
+
+    item.style.left =
+        Math.random()*100+"%";
+
+    item.style.animationDuration =
+        (5+Math.random()*10)+"s";
+
+    item.style.animationDelay =
+        (-Math.random()*12)+"s";
+
+    item.style.opacity =
+        Math.random();
+
+    matrix.appendChild(item);
+
+}
+
+</script>
+
+</body>
+</html>
