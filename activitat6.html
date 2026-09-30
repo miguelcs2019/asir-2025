@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Actividad 6 · Vulnerabilidad | MCS Security</title>
+
+    <style>
+        :root {
+            --bg: #030607;
+            --panel: #071014;
+            --panel2: #0a171b;
+            --green: #00ff88;
+            --cyan: #00eaff;
+            --red: #ff3b5c;
+            --gold: #ffc857;
+            --purple: #b388ff;
+            --text: #e8fff4;
+            --muted: #8ca7a0;
+            --border: rgba(0,255,136,.20);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+
+            background:
+                radial-gradient(circle at 15% 15%, rgba(255,59,92,.08), transparent 25%),
+                radial-gradient(circle at 85% 35%, rgba(0,234,255,.07), transparent 25%),
+                linear-gradient(180deg, #020405, #030809 50%, #020405);
+        }
+
+        /* =========================================
+           MATRIX
+        ========================================= */
+
+        .matrix {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: .14;
+            z-index: -2;
+        }
+
+        .matrix span {
+            position: absolute;
+            color: var(--green);
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            text-shadow: 0 0 8px var(--green);
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-150px);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+
+        /* =========================================
+           BOOT
+        ========================================= */
+
+        #boot {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #010303;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: opacity .7s ease, visibility .7s ease;
+        }
+
+        #boot.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .boot-box {
+            width: min(760px, 90%);
+            font-family: Consolas, monospace;
+            color: var(--green);
+        }
+
+        .boot-title {
+            font-size: clamp(25px, 5vw, 44px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+
+            text-shadow:
+                0 0 20px rgba(0,255,136,.6);
+        }
+
+        .boot-line {
+            margin: 8px 0;
+            opacity: 0;
+            animation: bootText .3s forwards;
+        }
+
+        .boot-line:nth-child(2) { animation-delay: .2s; }
+        .boot-line:nth-child(3) { animation-delay: .45s; }
+        .boot-line:nth-child(4) { animation-delay: .7s; }
+        .boot-line:nth-child(5) { animation-delay: .95s; }
+        .boot-line:nth-child(6) { animation-delay: 1.2s; }
+        .boot-line:nth-child(7) { animation-delay: 1.45s; }
+
+        @keyframes bootText {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .ok {
+            color: var(--cyan);
+        }
+
+        .danger {
+            color: var(--red);
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            background: rgba(2,6,7,.88);
+            backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav {
+            width: min(1200px, 92%);
+            min-height: 72px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            color: var(--green);
+            font-family: Consolas, monospace;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .back {
+            color: var(--text);
+            text-decoration: none;
+
+            border: 1px solid var(--border);
+            padding: 9px 15px;
+            border-radius: 8px;
+
+            font-family: Consolas, monospace;
+            transition: .25s;
+        }
+
+        .back:hover {
+            color: #00100a;
+            background: var(--green);
+
+            box-shadow:
+                0 0 20px rgba(0,255,136,.35);
+        }
+
+        /* =========================================
+           GENERAL
+        ========================================= */
+
+        main {
+            width: min(1150px, 92%);
+            margin: auto;
+            padding: 75px 0 100px;
+        }
+
+        .tag {
+            display: inline-block;
+
+            color: var(--green);
+            border: 1px solid var(--green);
+
+            padding: 6px 12px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            letter-spacing: 1px;
+
+            box-shadow:
+                0 0 18px rgba(0,255,136,.15);
+        }
+
+        h1 {
+            font-size: clamp(40px, 7vw, 78px);
+            line-height: 1;
+            letter-spacing: -3px;
+            margin-bottom: 18px;
+        }
+
+        h1 span {
+            color: var(--red);
+
+            text-shadow:
+                0 0 25px rgba(255,59,92,.35);
+        }
+
+        .subtitle {
+            max-width: 850px;
+            color: var(--muted);
+            font-size: 19px;
+        }
+
+        .section {
+            margin-top: 75px;
+        }
+
+        .section-label {
+            color: var(--cyan);
+
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            letter-spacing: 2px;
+
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: clamp(27px, 4vw, 42px);
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+
+            padding: 30px;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(10,23,27,.92),
+                    rgba(4,10,12,.95)
+                );
+        }
+
+        .panel::before {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            top: 0;
+
+            width: 4px;
+            height: 100%;
+
+            background:
+                linear-gradient(var(--green), var(--cyan));
+        }
+
+        .highlight {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .cyan {
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        .red {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        /* =========================================
+           ENUNCIADO
+        ========================================= */
+
+        .statement {
+            font-size: 19px;
+        }
+
+        .statement strong {
+            color: var(--green);
+        }
+
+        /* =========================================
+           CONCEPT
+        ========================================= */
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .concept {
+            padding: 27px;
+
+            border: 1px solid var(--border);
+            border-radius: 15px;
+
+            background:
+                rgba(5,15,18,.85);
+
+            transition: .3s;
+        }
+
+        .concept:hover {
+            transform: translateY(-5px);
+            border-color: var(--green);
+
+            box-shadow:
+                0 15px 35px rgba(0,255,136,.07);
+        }
+
+        .concept-number {
+            color: var(--cyan);
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .concept-icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .concept h3 {
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+
+        .concept p {
+            color: var(--muted);
+        }
+
+        /* =========================================
+           VULNERABILITY
+        ========================================= */
+
+        .vulnerability {
+            border-color: rgba(255,59,92,.4);
+        }
+
+        .vulnerability::before {
+            background: var(--red);
+        }
+
+        .vuln-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .vuln-name {
+            font-family: Consolas, monospace;
+            font-size: clamp(25px, 4vw, 38px);
+            color: var(--red);
+        }
+
+        .critical {
+            color: var(--red);
+            border: 1px solid var(--red);
+            border-radius: 30px;
+            padding: 5px 12px;
+
+            font-family: Consolas, monospace;
+            font-size: 12px;
+        }
+
+        .vuln-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .vuln-data {
+            background: rgba(0,0,0,.25);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 10px;
+            padding: 17px;
+        }
+
+        .vuln-data small {
+            display: block;
+
+            color: var(--muted);
+            font-family: Consolas, monospace;
+
+            margin-bottom: 4px;
+        }
+
+        .vuln-data strong {
+            color: var(--cyan);
+        }
+
+        /* =========================================
+           ATTACK FLOW
+        ========================================= */
+
+        .attack-flow {
+            display: grid;
+            grid-template-columns:
+                1fr auto 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .attack-box {
+            min-height: 155px;
+
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            background:
+                rgba(0,0,0,.28);
+
+            padding: 20px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+        }
+
+        .attack-icon {
+            font-size: 37px;
+            margin-bottom: 10px;
+        }
+
+        .attack-box strong {
+            color: var(--green);
+            font-family: Consolas, monospace;
+            margin-bottom: 5px;
+        }
+
+        .attack-box:last-child {
+            border-color: rgba(255,59,92,.4);
+        }
+
+        .attack-box:last-child strong {
+            color: var(--red);
+        }
+
+        .attack-box small {
+            color: var(--muted);
+        }
+
+        .arrow {
+            color: var(--cyan);
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        /* =========================================
+           WANNACRY
+        ========================================= */
+
+        .wannacry-grid {
+            display: grid;
+            grid-template-columns: .75fr 1.25fr;
+            gap: 25px;
+        }
+
+        .malware-visual {
+            min-height: 340px;
+
+            border:
+                1px solid rgba(255,59,92,.3);
+
+            border-radius: 18px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255,59,92,.14),
+                    transparent 55%
+                ),
+                rgba(0,0,0,.25);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .malware-core {
+            width: 185px;
+            height: 185px;
+
+            border-radius: 50%;
+
+            border: 2px solid var(--red);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow:
+                0 0 40px rgba(255,59,92,.25);
+
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                box-shadow:
+                    0 0 70px rgba(255,59,92,.45);
+            }
+        }
+
+        .malware-icon {
+            font-size: 57px;
+        }
+
+        .malware-core strong {
+            color: var(--red);
+            font-family: Consolas, monospace;
+            margin-top: 10px;
+        }
+
+        .wannacry-content h3 {
+            color: var(--red);
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .wannacry-content p {
+            font-size: 17px;
+            margin-bottom: 16px;
+        }
+
+        /* =========================================
+           CONSEQUENCES
+        ========================================= */
+
+        .consequence-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .consequence {
+            padding: 25px;
+
+            border: 1px solid rgba(255,59,92,.20);
+            border-radius: 15px;
+
+            background:
+                rgba(255,59,92,.035);
+        }
+
+        .consequence-icon {
+            font-size: 35px;
+            margin-bottom: 12px;
+        }
+
+        .consequence h3 {
+            color: var(--red);
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .consequence p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* =========================================
+           PATCH
+        ========================================= */
+
+        .patch {
+            border-color: rgba(0,255,136,.35);
+        }
+
+        .patch h3 {
+            color: var(--green);
+            margin-bottom: 15px;
+            font-size: 25px;
+        }
+
+        /* =========================================
+           EXAM
+        ========================================= */
+
+        .exam {
+            border-color: rgba(255,200,87,.4);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,200,87,.07),
+                    rgba(0,0,0,.25)
+                );
+        }
+
+        .exam::before {
+            background: var(--gold);
+        }
+
+        .exam-title {
+            color: var(--gold);
+            font-family: Consolas, monospace;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .exam ul {
+            list-style: none;
+        }
+
+        .exam li {
+            padding: 12px 0;
+            border-bottom:
+                1px solid rgba(255,255,255,.06);
+        }
+
+        .exam li:last-child {
+            border: 0;
+        }
+
+        .exam li::before {
+            content: ">";
+
+            color: var(--gold);
+            font-family: Consolas, monospace;
+
+            margin-right: 12px;
+        }
+
+        /* =========================================
+           ANSWER
+        ========================================= */
+
+        .answer {
+            border-color: rgba(0,234,255,.35);
+        }
+
+        .answer::before {
+            background: var(--cyan);
+        }
+
+        .answer h3 {
+            color: var(--cyan);
+            margin-bottom: 15px;
+        }
+
+        .answer p {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        /* =========================================
+           TERMINAL
+        ========================================= */
+
+        .terminal {
+            margin-top: 75px;
+
+            background: #010303;
+
+            border: 1px solid #17342b;
+            border-radius: 13px;
+
+            overflow: hidden;
+
+            font-family: Consolas, monospace;
+        }
+
+        .terminal-top {
+            padding: 11px 15px;
+
+            background: #09100f;
+
+            border-bottom: 1px solid #17342b;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 11px;
+            height: 11px;
+
+            border-radius: 50%;
+            background: #355047;
+        }
+
+        .terminal-title {
+            margin-left: 8px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .terminal-body {
+            padding: 23px;
+            color: var(--green);
+        }
+
+        .prompt {
+            color: var(--cyan);
+        }
+
+        .terminal-red {
+            color: var(--red);
+        }
+
+        .cursor {
+            display: inline-block;
+
+            width: 8px;
+            height: 17px;
+
+            background: var(--green);
+
+            vertical-align: middle;
+
+            animation: blink .8s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+
+            padding: 35px 5%;
+
+            color: var(--muted);
+
+            font-family: Consolas, monospace;
+            font-size: 13px;
+
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        @media (max-width: 950px) {
+
+            .concept-grid,
+            .consequence-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .wannacry-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .attack-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .arrow {
+                text-align: center;
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .concept-grid,
+            .consequence-grid,
+            .vuln-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                letter-spacing: -1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================================
+     MATRIX BACKGROUND
+========================================= -->
+
+<div class="matrix" id="matrix"></div>
+
+
+<!-- =========================================
+     BOOT
+========================================= -->
+
+<div id="boot">
+
+    <div class="boot-box">
+
+        <div class="boot-title">
+            MCS VULNERABILITY LAB
+        </div>
+
+        <div class="boot-line">
+            [SCAN] Analizando sistema...
+        </div>
+
+        <div class="boot-line">
+            [SERVICE] SMB
+            <span class="ok">[DETECTED]</span>
+        </div>
+
+        <div class="boot-line">
+            [VULN] MS17-010
+            <span class="danger">[CRITICAL]</span>
+        </div>
+
+        <div class="boot-line">
+            [EXPLOIT] EternalBlue
+            <span class="danger">[DETECTED]</span>
+        </div>
+
+        <div class="boot-line">
+            [THREAT] WannaCry
+            <span class="danger">[RANSOMWARE]</span>
+        </div>
+
+        <div class="boot-line">
+            [PATCH] Security Update
+            <span class="ok">[AVAILABLE]</span>
+        </div>
+
+        <div class="boot-line">
+            SECURITY ANALYSIS READY_
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<header>
+
+    <div class="nav">
+
+        <div class="brand">
+            MCS::<span>SECURITY</span>
+        </div>
+
+        <a href="seguretat.html" class="back">
+            ← VOLVER A SEGURIDAD
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+
+    <section>
+
+        <span class="tag">
+            SEC-ACT-006 · VULNERABILIDADES
+        </span>
+
+        <h1>
+            Actividad 6<br>
+            <span>Vulnerabilidad</span>
+        </h1>
+
+        <p class="subtitle">
+            Análisis de una vulnerabilidad real y de un ataque
+            documentado que aprovechó un fallo de seguridad para
+            afectar a sistemas informáticos.
+        </p>
+
+    </section>
+
+
+    <!-- =========================================
+         ENUNCIADO
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            01 // ENUNCIADO
+        </div>
+
+        <h2>
+            ¿Qué pide la actividad?
+        </h2>
+
+        <div class="panel statement">
+
+            <p>
+                Escoge una
+                <strong>vulnerabilidad concreta</strong>
+                y busca un
+                <strong>caso real documentado de ataque</strong>
+                que la utilizara.
+            </p>
+
+            <br>
+
+            <p>
+                Explica brevemente qué consecuencias tuvo.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         CONCEPTOS
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            02 // CONCEPTOS
+        </div>
+
+        <h2>
+            Antes de analizar el caso
+        </h2>
+
+        <div class="concept-grid">
+
+            <article class="concept">
+
+                <div class="concept-number">
+                    CONCEPT_01
+                </div>
+
+                <div class="concept-icon">
+                    ⚠️
+                </div>
+
+                <h3>
+                    Vulnerabilidad
+                </h3>
+
+                <p>
+                    Debilidad o fallo de un sistema que puede
+                    ser aprovechado para comprometer su seguridad.
+                </p>
+
+            </article>
+
+
+            <article class="concept">
+
+                <div class="concept-number">
+                    CONCEPT_02
+                </div>
+
+                <div class="concept-icon">
+                    🧨
+                </div>
+
+                <h3>
+                    Exploit
+                </h3>
+
+                <p>
+                    Técnica o código utilizado para aprovechar
+                    una vulnerabilidad existente.
+                </p>
+
+            </article>
+
+
+            <article class="concept">
+
+                <div class="concept-number">
+                    CONCEPT_03
+                </div>
+
+                <div class="concept-icon">
+                    ☣️
+                </div>
+
+                <h3>
+                    Amenaza
+                </h3>
+
+                <p>
+                    Circunstancia o agente capaz de aprovechar
+                    una vulnerabilidad y provocar un daño.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         VULNERABILIDAD
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            03 // VULNERABILIDAD ELEGIDA
+        </div>
+
+        <h2>
+            MS17-010 · SMB
+        </h2>
+
+        <div class="panel vulnerability">
+
+            <div class="vuln-header">
+
+                <div class="vuln-name">
+                    ETERNALBLUE
+                </div>
+
+                <div class="critical">
+                    CRITICAL VULNERABILITY
+                </div>
+
+            </div>
+
+            <p>
+                La vulnerabilidad conocida mediante el boletín
+                <span class="red">MS17-010</span>
+                afectaba a determinadas versiones de Microsoft
+                Windows y estaba relacionada con el protocolo
+                <strong>SMB</strong>.
+            </p>
+
+            <br>
+
+            <p>
+                SMB se utiliza para funciones como compartir
+                archivos y otros recursos a través de una red.
+                La vulnerabilidad podía permitir
+                <strong>ejecución remota de código</strong>
+                mediante paquetes especialmente preparados.
+            </p>
+
+            <br>
+
+            <div class="vuln-grid">
+
+                <div class="vuln-data">
+
+                    <small>
+                        SISTEMA
+                    </small>
+
+                    <strong>
+                        Microsoft Windows
+                    </strong>
+
+                </div>
+
+
+                <div class="vuln-data">
+
+                    <small>
+                        COMPONENTE
+                    </small>
+
+                    <strong>
+                        SMB
+                    </strong>
+
+                </div>
+
+
+                <div class="vuln-data">
+
+                    <small>
+                        BOLETÍN
+                    </small>
+
+                    <strong>
+                        MS17-010
+                    </strong>
+
+                </div>
+
+
+                <div class="vuln-data">
+
+                    <small>
+                        IMPACTO
+                    </small>
+
+                    <strong>
+                        Ejecución remota de código
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         CADENA
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            04 // ATTACK CHAIN
+        </div>
+
+        <h2>
+            Del fallo al ataque
+        </h2>
+
+        <div class="attack-flow">
+
+            <div class="attack-box">
+
+                <div class="attack-icon">
+                    🖥️
+                </div>
+
+                <strong>
+                    WINDOWS
+                </strong>
+
+                <small>
+                    Sistema vulnerable
+                </small>
+
+            </div>
+
+
+            <div class="arrow">
+                →
+            </div>
+
+
+            <div class="attack-box">
+
+                <div class="attack-icon">
+                    ⚠️
+                </div>
+
+                <strong>
+                    MS17-010
+                </strong>
+
+                <small>
+                    Vulnerabilidad SMB
+                </small>
+
+            </div>
+
+
+            <div class="arrow">
+                →
+            </div>
+
+
+            <div class="attack-box">
+
+                <div class="attack-icon">
+                    💥
+                </div>
+
+                <strong>
+                    ETERNALBLUE
+                </strong>
+
+                <small>
+                    Aprovechamiento del fallo
+                </small>
+
+            </div>
+
+
+            <div class="arrow">
+                →
+            </div>
+
+
+            <div class="attack-box">
+
+                <div class="attack-icon">
+                    🔒
+                </div>
+
+                <strong>
+                    WANNACRY
+                </strong>
+
+                <small>
+                    Ransomware
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         WANNACRY
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            05 // CASO REAL
+        </div>
+
+        <h2>
+            WannaCry · 2017
+        </h2>
+
+        <div class="wannacry-grid">
+
+            <div class="malware-visual">
+
+                <div class="malware-core">
+
+                    <div class="malware-icon">
+                        🔒
+                    </div>
+
+                    <strong>
+                        WANNACRY
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel wannacry-content">
+
+                <h3>
+                    Un ataque real
+                </h3>
+
+                <p>
+                    En mayo de 2017 apareció
+                    <span class="red">WannaCry</span>,
+                    un ataque de ransomware que afectó a
+                    numerosos sistemas Windows.
+                </p>
+
+                <p>
+                    WannaCry utilizó EternalBlue para aprovechar
+                    la vulnerabilidad de SMB y propagarse entre
+                    sistemas vulnerables.
+                </p>
+
+                <p>
+                    Una vez infectado un equipo, el ransomware
+                    podía <strong>cifrar archivos</strong> y mostrar
+                    una petición de pago para intentar recuperar
+                    el acceso a la información.
+                </p>
+
+                <p>
+                    Una característica especialmente importante
+                    fue su capacidad de propagación, que permitió
+                    que el incidente alcanzara rápidamente sistemas
+                    de múltiples organizaciones.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         CONSECUENCIAS
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            06 // IMPACTO
+        </div>
+
+        <h2>
+            Consecuencias del ataque
+        </h2>
+
+        <div class="consequence-grid">
+
+            <article class="consequence">
+
+                <div class="consequence-icon">
+                    🔐
+                </div>
+
+                <h3>
+                    Archivos cifrados
+                </h3>
+
+                <p>
+                    Los usuarios podían perder el acceso a
+                    información almacenada en los equipos
+                    afectados.
+                </p>
+
+            </article>
+
+
+            <article class="consequence">
+
+                <div class="consequence-icon">
+                    🛑
+                </div>
+
+                <h3>
+                    Servicios afectados
+                </h3>
+
+                <p>
+                    Organizaciones tuvieron problemas para
+                    utilizar con normalidad determinados
+                    sistemas y servicios.
+                </p>
+
+            </article>
+
+
+            <article class="consequence">
+
+                <div class="consequence-icon">
+                    🌍
+                </div>
+
+                <h3>
+                    Alcance internacional
+                </h3>
+
+                <p>
+                    El incidente se extendió por numerosos
+                    sistemas y organizaciones de diferentes
+                    países.
+                </p>
+
+            </article>
+
+
+            <article class="consequence">
+
+                <div class="consequence-icon">
+                    💰
+                </div>
+
+                <h3>
+                    Costes
+                </h3>
+
+                <p>
+                    La recuperación de equipos y la interrupción
+                    de la actividad provocaron costes para las
+                    organizaciones afectadas.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         PREVENCIÓN
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            07 // PREVENCIÓN
+        </div>
+
+        <h2>
+            La importancia de actualizar
+        </h2>
+
+        <div class="panel patch">
+
+            <h3>
+                🛡️ Parche de seguridad
+            </h3>
+
+            <p>
+                Microsoft había publicado una actualización de
+                seguridad para corregir las vulnerabilidades
+                tratadas en
+                <strong>MS17-010</strong>.
+            </p>
+
+            <br>
+
+            <p>
+                El caso demuestra la importancia de mantener los
+                sistemas <span class="highlight">actualizados</span>
+                y aplicar los parches de seguridad disponibles.
+            </p>
+
+            <br>
+
+            <p>
+                Un sistema que mantiene vulnerabilidades conocidas
+                sin corregir puede quedar expuesto incluso cuando
+                ya existe una actualización que soluciona el problema.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         EXAM MODE
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            08 // MEMORY BLOCK
+        </div>
+
+        <h2>
+            EXAM MODE
+        </h2>
+
+        <div class="panel exam">
+
+            <div class="exam-title">
+                ⚠ CONCEPTOS PARA RECORDAR
+            </div>
+
+            <ul>
+
+                <li>
+                    <strong>Vulnerabilidad</strong> =
+                    debilidad que puede ser aprovechada.
+                </li>
+
+                <li>
+                    <strong>Exploit</strong> =
+                    técnica o código que aprovecha una vulnerabilidad.
+                </li>
+
+                <li>
+                    <strong>Amenaza</strong> =
+                    aquello que puede aprovechar una vulnerabilidad
+                    y causar daño.
+                </li>
+
+                <li>
+                    <strong>MS17-010</strong> estaba relacionado
+                    con vulnerabilidades de SMB en Windows.
+                </li>
+
+                <li>
+                    <strong>EternalBlue</strong> aprovechaba
+                    vulnerabilidades de SMB.
+                </li>
+
+                <li>
+                    <strong>WannaCry</strong> fue ransomware y
+                    utilizó EternalBlue para facilitar su propagación.
+                </li>
+
+                <li>
+                    El ransomware busca impedir el acceso a los
+                    datos, normalmente mediante
+                    <strong>cifrado</strong>, y exige un rescate.
+                </li>
+
+                <li>
+                    Los <strong>parches y actualizaciones</strong>
+                    son fundamentales para corregir vulnerabilidades
+                    conocidas.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         RESPUESTA ENTREGA
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-label">
+            09 // RESPUESTA DIRECTA
+        </div>
+
+        <h2>
+            Respuesta de la actividad
+        </h2>
+
+        <div class="panel answer">
+
+            <h3>
+                Vulnerabilidad elegida: MS17-010 / EternalBlue
+            </h3>
+
+            <p>
+                Un caso real de explotación de una vulnerabilidad
+                fue el ataque de ransomware
+                <strong>WannaCry en mayo de 2017</strong>.
+                El ataque afectó a sistemas Windows y utilizó
+                EternalBlue para aprovechar vulnerabilidades
+                relacionadas con el protocolo SMB.
+            </p>
+
+            <p>
+                WannaCry podía propagarse entre sistemas vulnerables
+                y cifrar archivos, impidiendo que los usuarios
+                accedieran normalmente a su información y mostrando
+                una petición de rescate.
+            </p>
+
+            <p>
+                Como consecuencia, numerosas organizaciones de
+                distintos países sufrieron equipos afectados,
+                interrupciones de servicios y costes asociados
+                a la recuperación de los sistemas.
+            </p>
+
+            <p>
+                Este caso demuestra la importancia de
+                <strong>mantener los sistemas actualizados y aplicar
+                los parches de seguridad</strong> para corregir
+                vulnerabilidades conocidas.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         TERMINAL
+    ========================================== -->
+
+    <div class="terminal">
+
+        <div class="terminal-top">
+
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+
+            <span class="terminal-title">
+                mcs-security@vulnerability-scanner
+            </span>
+
+        </div>
+
+        <div class="terminal-body">
+
+            <div>
+                <span class="prompt">mcs@security:~$</span>
+                vulnerability --analyse MS17-010
+            </div>
+
+            <br>
+
+            <div>
+                > Platform.............. Windows
+            </div>
+
+            <div>
+                > Protocol.............. SMB
+            </div>
+
+            <div class="terminal-red">
+                > Vulnerability......... DETECTED
+            </div>
+
+            <div class="terminal-red">
+                > Exploit............... EternalBlue
+            </div>
+
+            <div class="terminal-red">
+                > Real attack........... WannaCry
+            </div>
+
+            <div>
+                > Mitigation............ SECURITY PATCH
+            </div>
+
+            <br>
+
+            <div>
+                <span class="prompt">mcs@security:~$</span>
+                <span class="cursor"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div>
+        MCS SECURITY SYSTEM · SEC-ACT-006
+    </div>
+
+    <div>
+        MIGUEL · ASIX 2026/2027
+    </div>
+
+</footer>
+
+
+<script>
+
+    /* =========================================
+       BOOT
+    ========================================= */
+
+    window.addEventListener("load", function () {
+
+        setTimeout(function () {
+
+            document
+                .getElementById("boot")
+                .classList.add("hide");
+
+        }, 2300);
+
+    });
+
+
+    /* =========================================
+       MATRIX
+    ========================================= */
+
+    const matrix = document.getElementById("matrix");
+
+    const chars = [
+        "0",
+        "1",
+        "SMB",
+        "MS17",
+        "010",
+        "CVE",
+        "PATCH",
+        "RCE",
+        "WCRY",
+        "01",
+        "10"
+    ];
+
+    for (let i = 0; i < 55; i++) {
+
+        const item =
+            document.createElement("span");
+
+        item.innerText =
+            chars[
+                Math.floor(
+                    Math.random() * chars.length
+                )
+            ];
+
+        item.style.left =
+            Math.random() * 100 + "%";
+
+        item.style.animationDuration =
+            (5 + Math.random() * 10) + "s";
+
+        item.style.animationDelay =
+            (-Math.random() * 12) + "s";
+
+        item.style.opacity =
+            Math.random();
+
+        matrix.appendChild(item);
+
+    }
+
+</script>
+
+</body>
+</html>
