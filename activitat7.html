@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Actividad 7 · Tipos de amenazas | MCS Security</title>
+
+<style>
+:root{
+    --bg:#030607;
+    --panel:#071014;
+    --green:#00ff88;
+    --cyan:#00eaff;
+    --red:#ff4d6d;
+    --gold:#ffc857;
+    --purple:#b388ff;
+    --text:#e8fff4;
+    --muted:#8ca7a0;
+    --border:rgba(0,255,136,.20);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{scroll-behavior:smooth;}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 15% 10%,rgba(0,255,136,.08),transparent 25%),
+        radial-gradient(circle at 85% 30%,rgba(0,234,255,.07),transparent 25%),
+        linear-gradient(180deg,#020405,#030809 50%,#020405);
+    color:var(--text);
+    font-family:"Segoe UI",Arial,sans-serif;
+    line-height:1.7;
+}
+
+/* MATRIX */
+
+.matrix{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    opacity:.13;
+    z-index:-2;
+}
+
+.matrix span{
+    position:absolute;
+    color:var(--green);
+    font:12px Consolas,monospace;
+    text-shadow:0 0 8px var(--green);
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    from{transform:translateY(-120px);opacity:0;}
+    10%{opacity:1;}
+    to{transform:translateY(110vh);opacity:0;}
+}
+
+/* BOOT */
+
+#boot{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#010303;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:.7s;
+}
+
+#boot.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.boot-box{
+    width:min(760px,90%);
+    color:var(--green);
+    font-family:Consolas,monospace;
+}
+
+.boot-title{
+    font-size:clamp(26px,5vw,44px);
+    font-weight:900;
+    letter-spacing:4px;
+    margin-bottom:25px;
+    text-shadow:0 0 20px rgba(0,255,136,.6);
+}
+
+.boot-line{
+    margin:8px 0;
+    opacity:0;
+    animation:boot .3s forwards;
+}
+
+.boot-line:nth-child(2){animation-delay:.2s}
+.boot-line:nth-child(3){animation-delay:.45s}
+.boot-line:nth-child(4){animation-delay:.7s}
+.boot-line:nth-child(5){animation-delay:.95s}
+.boot-line:nth-child(6){animation-delay:1.2s}
+.boot-line:nth-child(7){animation-delay:1.45s}
+
+@keyframes boot{to{opacity:1}}
+
+.ok{color:var(--cyan);}
+.alert{color:var(--red);}
+
+/* HEADER */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(2,6,7,.88);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+}
+
+.nav{
+    width:min(1200px,92%);
+    min-height:72px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.brand{
+    color:var(--green);
+    font:bold 16px Consolas,monospace;
+    letter-spacing:2px;
+}
+
+.brand span{color:var(--cyan);}
+
+.back{
+    color:var(--text);
+    text-decoration:none;
+    border:1px solid var(--border);
+    padding:9px 15px;
+    border-radius:8px;
+    font-family:Consolas,monospace;
+    transition:.25s;
+}
+
+.back:hover{
+    color:#00100a;
+    background:var(--green);
+    box-shadow:0 0 20px rgba(0,255,136,.35);
+}
+
+/* GENERAL */
+
+main{
+    width:min(1150px,92%);
+    margin:auto;
+    padding:75px 0 100px;
+}
+
+.tag{
+    display:inline-block;
+    color:var(--green);
+    border:1px solid var(--green);
+    padding:6px 12px;
+    border-radius:30px;
+    margin-bottom:20px;
+    font:13px Consolas,monospace;
+    letter-spacing:1px;
+}
+
+h1{
+    font-size:clamp(40px,7vw,78px);
+    line-height:1;
+    letter-spacing:-3px;
+    margin-bottom:18px;
+}
+
+h1 span{
+    color:var(--green);
+    text-shadow:0 0 25px rgba(0,255,136,.4);
+}
+
+.subtitle{
+    max-width:850px;
+    color:var(--muted);
+    font-size:19px;
+}
+
+.section{margin-top:75px;}
+
+.section-label{
+    color:var(--cyan);
+    font:13px Consolas,monospace;
+    letter-spacing:2px;
+    margin-bottom:8px;
+}
+
+h2{
+    font-size:clamp(27px,4vw,42px);
+    margin-bottom:25px;
+}
+
+.panel{
+    position:relative;
+    overflow:hidden;
+    padding:30px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:linear-gradient(145deg,rgba(10,23,27,.92),rgba(4,10,12,.95));
+}
+
+.panel::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:4px;
+    height:100%;
+    background:linear-gradient(var(--green),var(--cyan));
+}
+
+/* ENUNCIADO */
+
+.statement{
+    font-size:18px;
+}
+
+.statement strong{color:var(--green);}
+
+.cases{
+    margin-top:22px;
+    display:grid;
+    gap:9px;
+}
+
+.case-line{
+    padding:12px 15px;
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:8px;
+}
+
+.case-line span{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    margin-right:10px;
+}
+
+/* CLASSIFICATION */
+
+.classification{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.class-card{
+    padding:25px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:rgba(5,15,18,.85);
+}
+
+.class-id{
+    color:var(--cyan);
+    font:12px Consolas,monospace;
+}
+
+.class-icon{
+    font-size:35px;
+    margin:10px 0;
+}
+
+.class-card h3{
+    color:var(--green);
+    margin-bottom:10px;
+}
+
+.class-card p{
+    color:var(--muted);
+}
+
+/* TABLE */
+
+.table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+table{
+    width:100%;
+    min-width:1000px;
+    border-collapse:collapse;
+    background:rgba(5,13,15,.92);
+}
+
+th{
+    padding:16px;
+    background:rgba(0,255,136,.09);
+    color:var(--green);
+    text-align:left;
+    font-family:Consolas,monospace;
+    border-bottom:1px solid var(--border);
+}
+
+td{
+    padding:17px 16px;
+    vertical-align:top;
+    border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+tbody tr:hover{
+    background:rgba(0,234,255,.035);
+}
+
+tbody tr:last-child td{
+    border-bottom:none;
+}
+
+.case-name{
+    color:var(--cyan);
+    font-weight:700;
+}
+
+.internal{color:var(--purple);font-weight:700;}
+.external{color:var(--red);font-weight:700;}
+.accidental{color:var(--gold);font-weight:700;}
+.intentional{color:var(--red);font-weight:700;}
+.physical{color:var(--gold);font-weight:700;}
+.logical{color:var(--cyan);font-weight:700;}
+
+/* CID */
+
+.cia{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.cia-card{
+    position:relative;
+    padding:28px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    background:rgba(0,0,0,.25);
+    overflow:hidden;
+}
+
+.cia-letter{
+    position:absolute;
+    right:18px;
+    top:-5px;
+    font:bold 80px Consolas,monospace;
+    color:rgba(0,255,136,.09);
+}
+
+.cia-card h3{
+    color:var(--green);
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+.cia-card p{color:var(--muted);}
+
+/* CASE DETAILS */
+
+.detail-grid{
+    display:grid;
+    gap:18px;
+}
+
+.detail{
+    display:grid;
+    grid-template-columns:70px 1fr;
+    gap:20px;
+    align-items:start;
+    padding:24px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:rgba(5,15,18,.75);
+}
+
+.detail-number{
+    width:60px;
+    height:60px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:1px solid var(--green);
+    border-radius:50%;
+    color:var(--green);
+    font:bold 22px Consolas,monospace;
+}
+
+.detail h3{
+    color:var(--cyan);
+    margin-bottom:7px;
+}
+
+.detail-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:12px 0;
+}
+
+.mini-tag{
+    padding:4px 9px;
+    border:1px solid rgba(0,234,255,.25);
+    border-radius:20px;
+    font:12px Consolas,monospace;
+    color:var(--cyan);
+}
+
+.detail strong{color:var(--green);}
+
+/* EXAM */
+
+.exam{
+    border-color:rgba(255,200,87,.4);
+    background:linear-gradient(145deg,rgba(255,200,87,.07),rgba(0,0,0,.25));
+}
+
+.exam::before{background:var(--gold);}
+
+.exam-title{
+    color:var(--gold);
+    font-family:Consolas,monospace;
+    letter-spacing:2px;
+    margin-bottom:18px;
+}
+
+.exam ul{list-style:none;}
+
+.exam li{
+    padding:11px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.exam li:last-child{border:none;}
+
+.exam li::before{
+    content:">";
+    color:var(--gold);
+    margin-right:12px;
+    font-family:Consolas,monospace;
+}
+
+/* TERMINAL */
+
+.terminal{
+    margin-top:75px;
+    background:#010303;
+    border:1px solid #17342b;
+    border-radius:13px;
+    overflow:hidden;
+    font-family:Consolas,monospace;
+}
+
+.terminal-top{
+    padding:11px 15px;
+    background:#09100f;
+    border-bottom:1px solid #17342b;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.dot{
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:#355047;
+}
+
+.terminal-title{
+    color:var(--muted);
+    font-size:12px;
+    margin-left:8px;
+}
+
+.terminal-body{
+    padding:23px;
+    color:var(--green);
+}
+
+.prompt{color:var(--cyan);}
+.term-red{color:var(--red);}
+.term-gold{color:var(--gold);}
+
+.cursor{
+    display:inline-block;
+    width:8px;
+    height:17px;
+    background:var(--green);
+    vertical-align:middle;
+    animation:blink .8s infinite;
+}
+
+@keyframes blink{50%{opacity:0}}
+
+footer{
+    border-top:1px solid var(--border);
+    padding:35px 5%;
+    color:var(--muted);
+    font:13px Consolas,monospace;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+@media(max-width:900px){
+    .classification{grid-template-columns:repeat(2,1fr);}
+    .cia{grid-template-columns:1fr;}
+}
+
+@media(max-width:600px){
+    .classification{grid-template-columns:1fr;}
+    .detail{grid-template-columns:1fr;}
+    h1{letter-spacing:-1px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="matrix" id="matrix"></div>
+
+<!-- BOOT -->
+
+<div id="boot">
+    <div class="boot-box">
+
+        <div class="boot-title">
+            MCS THREAT ANALYZER
+        </div>
+
+        <div class="boot-line">
+            [SCAN] Analizando amenazas...
+        </div>
+
+        <div class="boot-line">
+            [SOURCE] Internal / External
+            <span class="ok">[READY]</span>
+        </div>
+
+        <div class="boot-line">
+            [INTENT] Intentional / Accidental
+            <span class="ok">[READY]</span>
+        </div>
+
+        <div class="boot-line">
+            [NATURE] Physical / Logical
+            <span class="ok">[READY]</span>
+        </div>
+
+        <div class="boot-line">
+            [CIA] Confidentiality · Integrity · Availability
+            <span class="ok">[ACTIVE]</span>
+        </div>
+
+        <div class="boot-line">
+            [THREATS] 5 CASES
+            <span class="alert">[DETECTED]</span>
+        </div>
+
+        <div class="boot-line">
+            THREAT ANALYSIS READY_
+        </div>
+
+    </div>
+</div>
+
+<!-- HEADER -->
+
+<header>
+    <div class="nav">
+
+        <div class="brand">
+            MCS::<span>SECURITY</span>
+        </div>
+
+        <a href="seguretat.html" class="back">
+            ← VOLVER A SEGURIDAD
+        </a>
+
+    </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+
+<section>
+
+    <span class="tag">
+        SEC-ACT-007 · CLASIFICACIÓN DE AMENAZAS
+    </span>
+
+    <h1>
+        Actividad 7<br>
+        <span>Tipos de amenazas</span>
+    </h1>
+
+    <p class="subtitle">
+        Clasificación de amenazas según su origen,
+        intencionalidad, naturaleza y el factor de seguridad
+        comprometido: confidencialidad, integridad o disponibilidad.
+    </p>
+
+</section>
+
+<!-- ENUNCIADO -->
+
+<section class="section">
+
+    <div class="section-label">
+        01 // ENUNCIADO
+    </div>
+
+    <h2>
+        Casos que debemos analizar
+    </h2>
+
+    <div class="panel statement">
+
+        <p>
+            Las amenazas pueden clasificarse según
+            <strong>origen, intencionalidad, naturaleza</strong>
+            y también según el factor de seguridad comprometido
+            <strong>(CID)</strong>.
+        </p>
+
+        <div class="cases">
+
+            <div class="case-line">
+                <span>01</span>
+                Un incendio en el CPD.
+            </div>
+
+            <div class="case-line">
+                <span>02</span>
+                Un empleado descontento que borra datos.
+            </div>
+
+            <div class="case-line">
+                <span>03</span>
+                Un atacante externo que modifica registros de una base de datos.
+            </div>
+
+            <div class="case-line">
+                <span>04</span>
+                La caída del suministro eléctrico.
+            </div>
+
+            <div class="case-line">
+                <span>05</span>
+                Copias ilícitas de programas en una empresa.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CRITERIOS -->
+
+<section class="section">
+
+    <div class="section-label">
+        02 // CRITERIOS
+    </div>
+
+    <h2>
+        ¿Cómo clasificamos una amenaza?
+    </h2>
+
+    <div class="classification">
+
+        <article class="class-card">
+            <div class="class-id">CLASS_01</div>
+            <div class="class-icon">🌐</div>
+            <h3>Origen</h3>
+            <p>
+                Determina si la amenaza procede del
+                interior o del exterior de la organización.
+            </p>
+        </article>
+
+        <article class="class-card">
+            <div class="class-id">CLASS_02</div>
+            <div class="class-icon">🎯</div>
+            <h3>Intencionalidad</h3>
+            <p>
+                Permite diferenciar entre una acción
+                intencionada y un suceso accidental.
+            </p>
+        </article>
+
+        <article class="class-card">
+            <div class="class-id">CLASS_03</div>
+            <div class="class-icon">⚡</div>
+            <h3>Naturaleza</h3>
+            <p>
+                Podemos distinguir amenazas físicas
+                y amenazas lógicas.
+            </p>
+        </article>
+
+        <article class="class-card">
+            <div class="class-id">CLASS_04</div>
+            <div class="class-icon">🛡️</div>
+            <h3>CID</h3>
+            <p>
+                Analizamos qué propiedad de seguridad
+                queda comprometida.
+            </p>
+        </article>
+
+    </div>
+
+</section>
+
+<!-- TABLA -->
+
+<section class="section">
+
+    <div class="section-label">
+        03 // CLASIFICACIÓN
+    </div>
+
+    <h2>
+        Tabla de amenazas
+    </h2>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>CASO</th>
+                    <th>ORIGEN</th>
+                    <th>INTENCIONALIDAD</th>
+                    <th>NATURALEZA</th>
+                    <th>CID COMPROMETIDA</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td class="case-name">
+                        🔥 Incendio en el CPD
+                    </td>
+
+                    <td>
+                        <span class="external">
+                            Externo / entorno
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="accidental">
+                            Accidental
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="physical">
+                            Física
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>Disponibilidad</strong>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="case-name">
+                        👤 Empleado descontento que borra datos
+                    </td>
+
+                    <td>
+                        <span class="internal">
+                            Interno
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="intentional">
+                            Intencionada
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="logical">
+                            Lógica
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>
+                            Integridad / Disponibilidad
+                        </strong>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="case-name">
+                        💻 Atacante externo modifica registros
+                    </td>
+
+                    <td>
+                        <span class="external">
+                            Externo
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="intentional">
+                            Intencionada
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="logical">
+                            Lógica
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>Integridad</strong>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="case-name">
+                        ⚡ Caída del suministro eléctrico
+                    </td>
+
+                    <td>
+                        <span class="external">
+                            Externo / entorno
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="accidental">
+                            Accidental
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="physical">
+                            Física
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>Disponibilidad</strong>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="case-name">
+                        📀 Copias ilícitas de programas
+                    </td>
+
+                    <td>
+                        <span class="internal">
+                            Interno
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="intentional">
+                            Intencionada
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="logical">
+                            Lógica
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>Confidencialidad</strong>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+<!-- CID -->
+
+<section class="section">
+
+    <div class="section-label">
+        04 // MODELO CID
+    </div>
+
+    <h2>
+        Propiedades de seguridad
+    </h2>
+
+    <div class="cia">
+
+        <article class="cia-card">
+
+            <span class="cia-letter">C</span>
+
+            <h3>
+                🔒 Confidencialidad
+            </h3>
+
+            <p>
+                Garantiza que la información solamente pueda
+                ser conocida o utilizada por las personas
+                autorizadas.
+            </p>
+
+        </article>
+
+        <article class="cia-card">
+
+            <span class="cia-letter">I</span>
+
+            <h3>
+                ✓ Integridad
+            </h3>
+
+            <p>
+                Garantiza que los datos permanezcan correctos
+                y no sean modificados o destruidos de forma
+                no autorizada.
+            </p>
+
+        </article>
+
+        <article class="cia-card">
+
+            <span class="cia-letter">D</span>
+
+            <h3>
+                ⚡ Disponibilidad
+            </h3>
+
+            <p>
+                Garantiza que los sistemas, servicios y datos
+                estén accesibles cuando los usuarios autorizados
+                los necesiten.
+            </p>
+
+        </article>
+
+    </div>
+
+</section>
+
+<!-- EXPLICACIÓN CASOS -->
+
+<section class="section">
+
+    <div class="section-label">
+        05 // ANÁLISIS
+    </div>
+
+    <h2>
+        Explicación de cada caso
+    </h2>
+
+    <div class="detail-grid">
+
+        <article class="detail">
+
+            <div class="detail-number">01</div>
+
+            <div>
+                <h3>
+                    🔥 Incendio en el CPD
+                </h3>
+
+                <div class="detail-tags">
+                    <span class="mini-tag">ENTORNO</span>
+                    <span class="mini-tag">ACCIDENTAL</span>
+                    <span class="mini-tag">FÍSICA</span>
+                    <span class="mini-tag">DISPONIBILIDAD</span>
+                </div>
+
+                <p>
+                    Un incendio puede destruir servidores,
+                    dispositivos de red y otros equipos del CPD.
+                    La propiedad principalmente comprometida es la
+                    <strong>disponibilidad</strong>, ya que los
+                    sistemas pueden dejar de prestar servicio.
+                </p>
+            </div>
+
+        </article>
+
+        <article class="detail">
+
+            <div class="detail-number">02</div>
+
+            <div>
+                <h3>
+                    👤 Empleado descontento que borra datos
+                </h3>
+
+                <div class="detail-tags">
+                    <span class="mini-tag">INTERNO</span>
+                    <span class="mini-tag">INTENCIONADO</span>
+                    <span class="mini-tag">LÓGICA</span>
+                    <span class="mini-tag">I + D</span>
+                </div>
+
+                <p>
+                    Es una amenaza interna e intencionada.
+                    El borrado altera o destruye la información,
+                    afectando a su <strong>integridad</strong>,
+                    y además puede impedir que esté disponible,
+                    afectando también a la
+                    <strong>disponibilidad</strong>.
+                </p>
+            </div>
+
+        </article>
+
+        <article class="detail">
+
+            <div class="detail-number">03</div>
+
+            <div>
+                <h3>
+                    💻 Atacante externo modifica registros
+                </h3>
+
+                <div class="detail-tags">
+                    <span class="mini-tag">EXTERNO</span>
+                    <span class="mini-tag">INTENCIONADO</span>
+                    <span class="mini-tag">LÓGICA</span>
+                    <span class="mini-tag">INTEGRIDAD</span>
+                </div>
+
+                <p>
+                    Se trata de una amenaza externa,
+                    intencionada y lógica. Al modificar registros
+                    de una base de datos se compromete directamente
+                    la <strong>integridad</strong>, porque la
+                    información deja de ser fiable y correcta.
+                </p>
+            </div>
+
+        </article>
+
+        <article class="detail">
+
+            <div class="detail-number">04</div>
+
+            <div>
+                <h3>
+                    ⚡ Caída del suministro eléctrico
+                </h3>
+
+                <div class="detail-tags">
+                    <span class="mini-tag">ENTORNO</span>
+                    <span class="mini-tag">ACCIDENTAL</span>
+                    <span class="mini-tag">FÍSICA</span>
+                    <span class="mini-tag">DISPONIBILIDAD</span>
+                </div>
+
+                <p>
+                    Una interrupción eléctrica puede provocar
+                    que servidores y equipos de comunicaciones
+                    dejen de funcionar. Por ello afecta
+                    principalmente a la
+                    <strong>disponibilidad</strong>.
+                </p>
+            </div>
+
+        </article>
+
+        <article class="detail">
+
+            <div class="detail-number">05</div>
+
+            <div>
+                <h3>
+                    📀 Copias ilícitas de programas
+                </h3>
+
+                <div class="detail-tags">
+                    <span class="mini-tag">INTERNO</span>
+                    <span class="mini-tag">INTENCIONADO</span>
+                    <span class="mini-tag">LÓGICA</span>
+                    <span class="mini-tag">CONFIDENCIALIDAD</span>
+                </div>
+
+                <p>
+                    La realización o utilización no autorizada de
+                    copias de software supone un uso indebido del
+                    programa. Dentro de la clasificación propuesta,
+                    se relaciona con la
+                    <strong>confidencialidad</strong> al producirse
+                    un acceso, utilización o distribución sin
+                    autorización.
+                </p>
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+<!-- EXAM MODE -->
+
+<section class="section">
+
+    <div class="section-label">
+        06 // MEMORY BLOCK
+    </div>
+
+    <h2>
+        EXAM MODE
+    </h2>
+
+    <div class="panel exam">
+
+        <div class="exam-title">
+            ⚠ CONCEPTOS PARA RECORDAR
+        </div>
+
+        <ul>
+
+            <li>
+                <strong>Origen:</strong>
+                amenaza interna o externa.
+            </li>
+
+            <li>
+                <strong>Intencionalidad:</strong>
+                intencionada o accidental.
+            </li>
+
+            <li>
+                <strong>Naturaleza:</strong>
+                física o lógica.
+            </li>
+
+            <li>
+                <strong>Confidencialidad:</strong>
+                evitar acceso o divulgación no autorizada.
+            </li>
+
+            <li>
+                <strong>Integridad:</strong>
+                evitar modificaciones o destrucciones
+                no autorizadas.
+            </li>
+
+            <li>
+                <strong>Disponibilidad:</strong>
+                mantener sistemas y datos accesibles
+                cuando sean necesarios.
+            </li>
+
+            <li>
+                Si alguien <strong>modifica registros</strong>,
+                piensa primero en INTEGRIDAD.
+            </li>
+
+            <li>
+                Si un servicio <strong>deja de funcionar</strong>,
+                piensa primero en DISPONIBILIDAD.
+            </li>
+
+            <li>
+                Una misma amenaza puede comprometer
+                <strong>más de una propiedad CID</strong>.
+            </li>
+
+        </ul>
+
+    </div>
+
+</section>
+
+<!-- TERMINAL -->
+
+<div class="terminal">
+
+    <div class="terminal-top">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+
+        <span class="terminal-title">
+            mcs-security@threat-analyzer
+        </span>
+    </div>
+
+    <div class="terminal-body">
+
+        <div>
+            <span class="prompt">mcs@security:~$</span>
+            analyse-threats --cid
+        </div>
+
+        <br>
+
+        <div>
+            [01] FIRE..............
+            <span class="term-gold">AVAILABILITY</span>
+        </div>
+
+        <div>
+            [02] INSIDER DELETE....
+            <span class="term-red">INTEGRITY + AVAILABILITY</span>
+        </div>
+
+        <div>
+            [03] DATABASE ATTACK...
+            <span class="term-red">INTEGRITY</span>
+        </div>
+
+        <div>
+            [04] POWER FAILURE.....
+            <span class="term-gold">AVAILABILITY</span>
+        </div>
+
+        <div>
+            [05] ILLEGAL COPIES....
+            CONFIDENTIALITY
+        </div>
+
+        <br>
+
+        <div>
+            > Threat classification completed.
+        </div>
+
+        <br>
+
+        <div>
+            <span class="prompt">mcs@security:~$</span>
+            <span class="cursor"></span>
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+<footer>
+
+    <div>
+        MCS SECURITY SYSTEM · SEC-ACT-007
+    </div>
+
+    <div>
+        MIGUEL · ASIX 2026/2027
+    </div>
+
+</footer>
+
+<script>
+
+/* BOOT */
+
+window.addEventListener("load",function(){
+
+    setTimeout(function(){
+
+        document
+            .getElementById("boot")
+            .classList.add("hide");
+
+    },2300);
+
+});
+
+/* MATRIX */
+
+const matrix=document.getElementById("matrix");
+
+const chars=[
+    "0","1","CIA","CID","C","I","D",
+    "THREAT","RISK","FIRE","DB","01","10"
+];
+
+for(let i=0;i<55;i++){
+
+    const item=document.createElement("span");
+
+    item.innerText=
+        chars[Math.floor(Math.random()*chars.length)];
+
+    item.style.left=
+        Math.random()*100+"%";
+
+    item.style.animationDuration=
+        (5+Math.random()*10)+"s";
+
+    item.style.animationDelay=
+        (-Math.random()*12)+"s";
+
+    item.style.opacity=Math.random();
+
+    matrix.appendChild(item);
+}
+
+</script>
+
+</body>
+</html>
