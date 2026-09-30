@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Actividad 5 · Consolas MMC | Administració de Sistemes</title>
+
+<style>
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root{
+    --bg:#050708;
+    --panel:#0b0f11;
+    --panel2:#101619;
+    --amber:#ffb000;
+    --amber2:#ffd166;
+    --cyan:#00e5ff;
+    --green:#3cff9a;
+    --red:#ff5364;
+    --text:#e7edf0;
+    --muted:#7d8b92;
+    --line:rgba(255,176,0,.22);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 15% 10%,rgba(255,176,0,.07),transparent 25%),
+        radial-gradient(circle at 85% 30%,rgba(0,229,255,.05),transparent 28%),
+        linear-gradient(180deg,#040607,#080b0d 50%,#040607);
+
+    color:var(--text);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    line-height:1.7;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   CRT / SCANLINES
+========================================================= */
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:999;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.012) 0,
+            rgba(255,255,255,.012) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
+
+
+/* =========================================================
+   FONDO DIGITAL
+========================================================= */
+
+#network{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:-2;
+}
+
+.overlay{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            rgba(5,7,8,.35),
+            rgba(5,7,8,.94)
+        );
+}
+
+
+/* =========================================================
+   BOOT SCREEN
+========================================================= */
+
+#boot{
+    position:fixed;
+    inset:0;
+
+    background:#010202;
+
+    z-index:10000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-family:Consolas,monospace;
+
+    transition:
+        opacity .7s,
+        visibility .7s;
+}
+
+#boot.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.boot-box{
+    width:min(780px,90%);
+}
+
+.boot-title{
+    color:var(--amber);
+
+    font-size:
+        clamp(25px,5vw,45px);
+
+    font-weight:bold;
+
+    letter-spacing:4px;
+
+    margin-bottom:25px;
+
+    text-shadow:
+        0 0 20px rgba(255,176,0,.45);
+}
+
+.boot-line{
+    color:#91a097;
+
+    margin:8px 0;
+
+    opacity:0;
+
+    animation:
+        bootline .25s forwards;
+}
+
+.boot-line:nth-child(2){
+    animation-delay:.2s;
+}
+
+.boot-line:nth-child(3){
+    animation-delay:.4s;
+}
+
+.boot-line:nth-child(4){
+    animation-delay:.6s;
+}
+
+.boot-line:nth-child(5){
+    animation-delay:.8s;
+}
+
+.boot-line:nth-child(6){
+    animation-delay:1s;
+}
+
+.boot-line:nth-child(7){
+    animation-delay:1.2s;
+}
+
+@keyframes bootline{
+    to{
+        opacity:1;
+    }
+}
+
+.boot-ok{
+    color:var(--green);
+}
+
+.boot-cyan{
+    color:var(--cyan);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    background:
+        rgba(4,7,8,.90);
+
+    backdrop-filter:
+        blur(15px);
+
+    border-bottom:
+        1px solid var(--line);
+}
+
+.nav{
+    width:min(1200px,92%);
+
+    min-height:72px;
+
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:20px;
+}
+
+.logo{
+    color:var(--amber);
+
+    font:
+        bold 15px Consolas,
+        monospace;
+
+    letter-spacing:2px;
+}
+
+.logo span{
+    color:var(--cyan);
+}
+
+.back{
+    text-decoration:none;
+
+    color:#abb7bc;
+
+    border:
+        1px solid var(--line);
+
+    padding:9px 15px;
+
+    border-radius:7px;
+
+    font:
+        12px Consolas,
+        monospace;
+
+    transition:.25s;
+}
+
+.back:hover{
+    color:#111;
+
+    background:var(--amber);
+
+    border-color:var(--amber);
+}
+
+
+/* =========================================================
+   GENERAL
+========================================================= */
+
+main{
+    width:min(1150px,92%);
+
+    margin:auto;
+
+    padding:
+        75px 0
+        100px;
+}
+
+.tag{
+    display:inline-block;
+
+    padding:
+        6px 12px;
+
+    border:
+        1px solid var(--amber);
+
+    border-radius:30px;
+
+    color:var(--amber);
+
+    font:
+        12px Consolas,
+        monospace;
+
+    letter-spacing:1px;
+
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:
+        clamp(42px,7vw,78px);
+
+    line-height:1;
+
+    letter-spacing:-3px;
+
+    margin-bottom:20px;
+}
+
+h1 span{
+    color:var(--amber);
+
+    text-shadow:
+        0 0 30px
+        rgba(255,176,0,.20);
+}
+
+.subtitle{
+    max-width:850px;
+
+    color:var(--muted);
+
+    font-size:18px;
+}
+
+.section{
+    margin-top:80px;
+}
+
+.section-id{
+    color:var(--cyan);
+
+    font:
+        12px Consolas,
+        monospace;
+
+    letter-spacing:2px;
+
+    margin-bottom:7px;
+}
+
+h2{
+    font-size:
+        clamp(27px,4vw,41px);
+
+    margin-bottom:25px;
+}
+
+h3{
+    line-height:1.3;
+}
+
+.amber{
+    color:var(--amber);
+}
+
+.cyan{
+    color:var(--cyan);
+}
+
+.green{
+    color:var(--green);
+}
+
+.red{
+    color:var(--red);
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.panel{
+    position:relative;
+
+    padding:30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,21,24,.94),
+            rgba(6,9,10,.96)
+        );
+
+    border:
+        1px solid var(--line);
+
+    border-radius:17px;
+
+    overflow:hidden;
+}
+
+.panel::before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:4px;
+    height:100%;
+
+    background:
+        linear-gradient(
+            var(--amber),
+            var(--cyan)
+        );
+}
+
+
+/* =========================================================
+   OBJETIVO
+========================================================= */
+
+.objective{
+    display:grid;
+
+    grid-template-columns:
+        170px 1fr;
+
+    gap:30px;
+
+    align-items:center;
+}
+
+.objective-icon{
+    height:160px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:
+        1px solid
+        rgba(255,176,0,.28);
+
+    border-radius:13px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,176,0,.10),
+            transparent 65%
+        );
+
+    font-size:65px;
+}
+
+.objective h3{
+    color:var(--amber);
+
+    font-size:24px;
+
+    margin-bottom:12px;
+}
+
+.objective p{
+    color:#a5b0b5;
+}
+
+
+/* =========================================================
+   MMC DIAGRAM
+========================================================= */
+
+.mmc-diagram{
+    display:grid;
+
+    grid-template-columns:
+        1fr auto 1fr auto 1fr;
+
+    gap:15px;
+
+    align-items:center;
+}
+
+.mmc-box{
+    min-height:155px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    padding:20px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:14px;
+
+    background:
+        rgba(0,0,0,.28);
+}
+
+.mmc-icon{
+    font-size:37px;
+
+    margin-bottom:10px;
+}
+
+.mmc-box strong{
+    color:var(--amber);
+
+    font-family:
+        Consolas,
+        monospace;
+}
+
+.mmc-box small{
+    color:var(--muted);
+
+    margin-top:7px;
+}
+
+.arrow{
+    color:var(--cyan);
+
+    font-size:25px;
+}
+
+
+/* =========================================================
+   COMMAND
+========================================================= */
+
+.command{
+    margin-top:25px;
+
+    padding:20px;
+
+    background:#020303;
+
+    border:
+        1px solid
+        rgba(0,229,255,.22);
+
+    border-radius:9px;
+
+    font:
+        15px Consolas,
+        monospace;
+}
+
+.prompt{
+    color:var(--cyan);
+}
+
+.command-text{
+    color:var(--green);
+}
+
+
+/* =========================================================
+   CAPTURAS
+========================================================= */
+
+.capture{
+    margin-top:28px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    background:#030405;
+}
+
+.capture-header{
+    padding:
+        12px 17px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:15px;
+
+    background:#0d1214;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.07);
+
+    font:
+        11px Consolas,
+        monospace;
+
+    color:#77868d;
+}
+
+.capture-header strong{
+    color:var(--amber);
+}
+
+.capture img{
+    display:block;
+
+    width:100%;
+
+    height:auto;
+}
+
+.capture-description{
+    padding:20px;
+
+    color:#9aa7ac;
+
+    font-size:15px;
+}
+
+
+/* =========================================================
+   STEPS
+========================================================= */
+
+.steps{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:18px;
+
+    margin-top:25px;
+}
+
+.step{
+    padding:25px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:14px;
+
+    background:
+        rgba(8,13,15,.82);
+}
+
+.step-number{
+    color:var(--cyan);
+
+    font:
+        bold 28px Consolas,
+        monospace;
+
+    margin-bottom:12px;
+}
+
+.step h3{
+    color:var(--amber);
+
+    margin-bottom:8px;
+}
+
+.step p{
+    color:var(--muted);
+
+    font-size:14px;
+}
+
+
+/* =========================================================
+   DOS CONSOLAS
+========================================================= */
+
+.level-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:20px;
+}
+
+.level{
+    padding:27px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:15px;
+
+    background:
+        rgba(8,13,15,.85);
+}
+
+.level-badge{
+    display:inline-block;
+
+    padding:
+        5px 10px;
+
+    border-radius:5px;
+
+    margin-bottom:15px;
+
+    font:
+        11px Consolas,
+        monospace;
+}
+
+.l1{
+    color:var(--green);
+
+    border:
+        1px solid
+        rgba(60,255,154,.35);
+}
+
+.l2{
+    color:var(--amber);
+
+    border:
+        1px solid
+        rgba(255,176,0,.4);
+}
+
+.level h3{
+    font-size:23px;
+
+    margin-bottom:13px;
+}
+
+.level p{
+    color:var(--muted);
+}
+
+
+/* =========================================================
+   SNAP-INS
+========================================================= */
+
+.snap-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:17px;
+}
+
+.snap{
+    position:relative;
+
+    min-height:210px;
+
+    padding:24px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13,19,22,.95),
+            rgba(6,9,10,.95)
+        );
+
+    transition:
+        transform .25s,
+        border-color .25s;
+}
+
+.snap:hover{
+    transform:
+        translateY(-5px);
+
+    border-color:
+        var(--cyan);
+}
+
+.snap-icon{
+    font-size:33px;
+
+    margin-bottom:12px;
+}
+
+.snap-code{
+    color:#4d5c62;
+
+    font:
+        10px Consolas,
+        monospace;
+
+    margin-bottom:8px;
+}
+
+.snap h3{
+    color:var(--cyan);
+
+    margin-bottom:9px;
+
+    font-size:17px;
+}
+
+.snap p{
+    color:var(--muted);
+
+    font-size:14px;
+}
+
+
+/* =========================================================
+   LEVEL COMPARISON
+========================================================= */
+
+.comparison{
+    overflow-x:auto;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:14px;
+}
+
+table{
+    width:100%;
+
+    min-width:750px;
+
+    border-collapse:collapse;
+}
+
+th{
+    padding:16px;
+
+    text-align:left;
+
+    color:var(--amber);
+
+    background:
+        rgba(255,176,0,.06);
+
+    font:
+        12px Consolas,
+        monospace;
+}
+
+td{
+    padding:15px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.06);
+
+    color:#a3afb4;
+}
+
+.yes{
+    color:var(--green);
+
+    font-weight:bold;
+}
+
+.advanced{
+    color:var(--amber);
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   EXAM
+========================================================= */
+
+.exam{
+    border-color:
+        rgba(255,176,0,.4);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,176,0,.07),
+            rgba(5,8,9,.96)
+        );
+}
+
+.exam::before{
+    background:var(--amber);
+}
+
+.exam-title{
+    color:var(--amber);
+
+    font:
+        bold 15px Consolas,
+        monospace;
+
+    letter-spacing:2px;
+
+    margin-bottom:20px;
+}
+
+.exam ul{
+    list-style:none;
+}
+
+.exam li{
+    padding:11px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.06);
+}
+
+.exam li:last-child{
+    border:none;
+}
+
+.exam li::before{
+    content:">";
+
+    color:var(--amber);
+
+    margin-right:12px;
+
+    font-family:
+        Consolas,
+        monospace;
+}
+
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+.terminal{
+    margin-top:80px;
+
+    background:#010202;
+
+    border:
+        1px solid
+        #2c2a20;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    font-family:
+        Consolas,
+        monospace;
+}
+
+.terminal-top{
+    padding:
+        11px 15px;
+
+    background:#10100d;
+
+    border-bottom:
+        1px solid
+        #2c2a20;
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+
+    border-radius:50%;
+
+    background:#625e47;
+}
+
+.terminal-name{
+    color:#797767;
+
+    font-size:11px;
+
+    margin-left:7px;
+}
+
+.terminal-body{
+    padding:22px;
+
+    color:var(--green);
+}
+
+.term-amber{
+    color:var(--amber);
+}
+
+.term-cyan{
+    color:var(--cyan);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+    padding:
+        32px 5%;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.06);
+
+    color:#4d595e;
+
+    font:
+        11px Consolas,
+        monospace;
+
+    display:flex;
+    justify-content:space-between;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px){
+
+    .objective{
+        grid-template-columns:1fr;
+    }
+
+    .mmc-diagram{
+        grid-template-columns:1fr;
+    }
+
+    .arrow{
+        transform:rotate(90deg);
+
+        text-align:center;
+    }
+
+    .steps,
+    .snap-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .steps,
+    .snap-grid,
+    .level-grid{
+        grid-template-columns:1fr;
+    }
+
+    h1{
+        letter-spacing:-1px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     BOOT
+===================================================== -->
+
+<div id="boot">
+
+<div class="boot-box">
+
+    <div class="boot-title">
+        MCS ADMIN SYSTEM
+    </div>
+
+    <div class="boot-line">
+        BIOS POST........................
+        <span class="boot-ok">OK</span>
+    </div>
+
+    <div class="boot-line">
+        Loading Microsoft Management Console...
+        <span class="boot-ok">OK</span>
+    </div>
+
+    <div class="boot-line">
+        MMC AUTHOR MODE..................
+        <span class="boot-cyan">ENABLED</span>
+    </div>
+
+    <div class="boot-line">
+        Loading Level 1 Console..........
+        <span class="boot-ok">OK</span>
+    </div>
+
+    <div class="boot-line">
+        Loading Level 2 Console..........
+        <span class="boot-ok">OK</span>
+    </div>
+
+    <div class="boot-line">
+        Snap-ins.........................
+        <span class="boot-cyan">READY</span>
+    </div>
+
+    <div class="boot-line">
+        ADMINISTRATION ENVIRONMENT READY_
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
+<canvas id="network"></canvas>
+<div class="overlay"></div>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+<div class="nav">
+
+    <div class="logo">
+        MCS::<span>ADMIN_SYSTEMS</span>
+    </div>
+
+    <a
+        href="administracio.html"
+        class="back"
+    >
+        ← VOLVER A ADMINISTRACIÓ
+    </a>
+
+</div>
+
+</header>
+
+
+<main>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section>
+
+<span class="tag">
+    ADMIN-ACT-005 · MICROSOFT MMC
+</span>
+
+<h1>
+    Actividad 5<br>
+    <span>Consolas MMC</span>
+</h1>
+
+<p class="subtitle">
+    Creación de dos consolas personalizadas de Microsoft
+    Management Console para técnicos de soporte de Nivel 1
+    y Nivel 2, trabajando sobre el equipo local.
+</p>
+
+</section>
+
+
+<!-- =====================================================
+     OBJETIVO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-id">
+    01 // OBJETIVO
+</div>
+
+<h2>
+    ¿Qué vamos a realizar?
+</h2>
+
+<div class="panel objective">
+
+    <div class="objective-icon">
+        🖥️
+    </div>
+
+    <div>
+
+        <h3>
+            Dos consolas de administración personalizadas
+        </h3>
+
+        <p>
+            La actividad consiste en crear
+            <strong class="amber">
+                dos consolas MMC
+            </strong>
+            para administrar el equipo local desde
+            dos perfiles de soporte diferentes:
+            un técnico de
+            <strong class="green">
+                Nivel 1
+            </strong>
+            y otro de
+            <strong class="amber">
+                Nivel 2
+            </strong>.
+        </p>
+
+        <br>
+
+        <p>
+            Cada consola agrupa diferentes herramientas
+            administrativas de Windows en función de las
+            tareas que necesita realizar cada técnico.
+        </p>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     QUÉ ES MMC
+===================================================== -->
+
+<section class="section">
+
+<div class="section-id">
+    02 // CONCEPTO
+</div>
+
+<h2>
+    Microsoft Management Console
+</h2>
+
+<div class="panel">
+
+    <p>
+        <strong class="amber">
+            MMC
+        </strong>
+        significa
+        <strong>
+            Microsoft Management Console
+        </strong>.
+    </p>
+
+    <br>
+
+    <p>
+        Es el entorno de Windows que permite reunir
+        distintas herramientas administrativas dentro
+        de una misma consola.
+    </p>
+
+    <br>
+
+    <p>
+        Estas herramientas se incorporan mediante
+        <strong class="cyan">
+            complementos o snap-ins
+        </strong>.
+    </p>
+
+</div>
+
+
+<div class="mmc-diagram"
+     style="margin-top:25px;">
+
+    <div class="mmc-box">
+
+        <div class="mmc-icon">
+            🖥️
+        </div>
+
+        <strong>
+            MMC
+        </strong>
+
+        <small>
+            Consola base
+        </small>
+
+    </div>
+
+    <div class="arrow">
+        +
+    </div>
+
+    <div class="mmc-box">
+
+        <div class="mmc-icon">
+            🧩
+        </div>
+
+        <strong>
+            SNAP-INS
+        </strong>
+
+        <small>
+            Herramientas administrativas
+        </small>
+
+    </div>
+
+    <div class="arrow">
+        =
+    </div>
+
+    <div class="mmc-box">
+
+        <div class="mmc-icon">
+            ⚙️
+        </div>
+
+        <strong>
+            .MSC
+        </strong>
+
+        <small>
+            Consola personalizada
+        </small>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     MODO AUTOR
+===================================================== -->
+
+<section class="section">
+
+<div class="section-id">
+    03 // INICIO
+</div>
+
+<h2>
+    Abrir MMC en modo autor
+</h2>
+
+<div class="panel">
+
+    <p>
+        Para crear una nueva consola personalizada,
+        MMC se inicia en
+        <strong class="amber">
+            modo autor
+        </strong>.
+    </p>
+
+    <div class="command">
+
+        <span class="prompt">
+            PS C:\Users\Miguel&gt;
+        </span>
+
+        <span class="command-text">
+            mmc.exe /a
+        </span>
+
+    </div>
+
+    <br>
+
+    <p>
+        Una vez abierta la consola, podemos utilizar:
+    </p>
+
+    <br>
+
+    <p>
+        <strong class="cyan">
+            Ctrl + M
+        </strong>
+        → Agregar o quitar complementos
+    </p>
+
+    <p>
+        <strong class="cyan">
+            Ctrl + S
+        </strong>
+        → Guardar la consola
+    </p>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     PROCESO
+===================================================== -->
+
+<section class="section">
+
+<div class="section-id">
+    04 // PROCEDIMIENTO
+</div>
+
+<h2>
+    Creación de las consolas
+</h2>
+
+<div class="steps">
+
+    <article class="step">
+
+        <div class="step-number">
+            01
+        </div>
+
+        <h3>
+            Abrir MMC
+        </h3>
+
+        <p>
+            Ejecutamos
+            <strong>mmc.exe /a</strong>
+            para iniciar una consola vacía
+            en modo autor.
+        </p>
+
+    </article>
+
+
+    <article class="step">
+
+        <div class="step-number">
+            02
+        </div>
+
+        <h3>
+            Añadir complementos
+        </h3>
+
+        <p>
+            Desde Archivo → Agregar o quitar
+            complemento seleccionamos las
+            herramientas necesarias.
+        </p>
+
+    </article>
+
+
+    <article class="step">
+
+        <div class="step-number">
+            03
+        </div>
+
+        <h3>
+            Guardar
+        </h3>
+
+        <p>
+            Finalmente guardamos cada
+            configuración como un archivo
+            con extensión
+            <strong>.msc</strong>.
+        </p>
+
+    </article>
+
+</div>
+
+
+<!-- CAPTURA 2 -->
+
+<div class="capture">
+
+    <div class="capture-header">
+
+        <strong>
+            CAPTURA 02
+        </strong>
+
+        <span>
+            ESTRUCTURA DE UNA CONSOLA MMC
+        </span>
+
+    </div>
+
+    <img
+        src="02-Consola-Nivel-2.PNG"
+        alt="Estructura de la consola MMC"
+    >
+
+    <div class="capture-description">
+
+        En esta captura se observa la estructura
+        jerárquica de una consola MMC personalizada.
+        Los complementos pueden agruparse en carpetas
+        para separar las herramientas según su función,
+        por ejemplo atención a usuarios y equipos o
+        diagnóstico rápido y red.
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     AGREGAR COMPLEMENTOS
+===================================================== -->
+
+<section class="section">
+
+<div class="section-id">
+    05 // SNAP-IN MANAGER
+</div>
+
+<h2>
+    Agregar o quitar complementos
+</h2>
+
+<div class="capture">
+
+    <div class="capture-header">
+
+        <strong>
+            CAPTURA 03
+        </strong>
+
+        <span>
+            COMPLEMENTOS DISPONIBLES
+        </span>
+
+    </div>
+
+    <img
+        src="03-Consola-Nivel-3.PNG"
+        alt="Lista de complementos MMC"
+    >
+
+    <div class="capture-description">
+
+        MMC ofrece numerosos complementos de Microsoft.
+        Desde esta lista podemos seleccionar las
+        herramientas administrativas que formarán
+        parte de nuestra consola personalizada.
+
+    </div>
+
+</div>
+
+
+<div class="capture">
+
+    <div class="capture-header">
+
+        <strong>
+            CAPTURA 04
+        </strong>
+
+        <span>
+            SELECCIÓN Y ORGANIZACIÓN
+        </span>
+
+    </div>
+
+    <img
+        src="04-Consola-Nivel-4.PNG"
+        alt="Agregar o quitar complementos MMC"
+    >
+
+    <div class="capture-description">
+
+        Una vez seleccionados los complementos,
+        podemos organizarlos dentro del árbol
+        de la consola. Esto permite construir
+        una MMC específica para las funciones
+        de cada perfil de soporte.
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     BIBLIOTECA SNAP-INS
+===================================================== -->
+
+<section class="section">
+
+<div class="section-id">
+    06 // MMC TOOL LIBRARY
+</div>
+
+<h2>
+    ¿Para qué sirve cada complemento?
+</h2>
+
+<div class="snap-grid">
+
+
+<!-- VISOR EVENTOS -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        📋
+    </div>
+
+    <div class="snap-code">
+        MMC::EVENT_VIEWER
+    </div>
+
+    <h3>
+        Visor de eventos
+    </h3>
+
+    <p>
+        Permite consultar los registros de
+        Windows para analizar errores,
+        advertencias, eventos del sistema,
+        aplicaciones y seguridad.
+    </p>
+
+</article>
+
+
+<!-- SERVICIOS -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        ⚙️
+    </div>
+
+    <div class="snap-code">
+        MMC::SERVICES
+    </div>
+
+    <h3>
+        Servicios
+    </h3>
+
+    <p>
+        Permite consultar, iniciar, detener
+        y configurar los servicios que se
+        ejecutan en Windows.
+    </p>
+
+</article>
+
+
+<!-- DEVICE MANAGER -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🖥️
+    </div>
+
+    <div class="snap-code">
+        MMC::DEVICE_MANAGER
+    </div>
+
+    <h3>
+        Administrador de dispositivos
+    </h3>
+
+    <p>
+        Muestra el hardware instalado y
+        permite comprobar dispositivos,
+        controladores y posibles errores
+        de hardware.
+    </p>
+
+</article>
+
+
+<!-- TASK SCHEDULER -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🕒
+    </div>
+
+    <div class="snap-code">
+        MMC::TASK_SCHEDULER
+    </div>
+
+    <h3>
+        Programador de tareas
+    </h3>
+
+    <p>
+        Permite crear y administrar tareas
+        que Windows ejecutará automáticamente
+        en una fecha, hora o condición determinada.
+    </p>
+
+</article>
+
+
+<!-- PERFORMANCE -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        📈
+    </div>
+
+    <div class="snap-code">
+        MMC::PERFORMANCE
+    </div>
+
+    <h3>
+        Monitor de rendimiento
+    </h3>
+
+    <p>
+        Permite observar métricas y contadores
+        relacionados con CPU, memoria, disco,
+        red y otros recursos del sistema.
+    </p>
+
+</article>
+
+
+<!-- DISK -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        💾
+    </div>
+
+    <div class="snap-code">
+        MMC::DISK_MANAGEMENT
+    </div>
+
+    <h3>
+        Administración de discos
+    </h3>
+
+    <p>
+        Permite administrar discos, particiones,
+        volúmenes, letras de unidad y diferentes
+        operaciones relacionadas con almacenamiento.
+    </p>
+
+</article>
+
+
+<!-- SHARED FOLDERS -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        📁
+    </div>
+
+    <div class="snap-code">
+        MMC::SHARED_FOLDERS
+    </div>
+
+    <h3>
+        Carpetas compartidas
+    </h3>
+
+    <p>
+        Permite consultar los recursos compartidos,
+        las sesiones abiertas y los archivos que
+        están siendo utilizados a través de la red.
+    </p>
+
+</article>
+
+
+<!-- FIREWALL -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🧱
+    </div>
+
+    <div class="snap-code">
+        MMC::FIREWALL
+    </div>
+
+    <h3>
+        Windows Defender Firewall
+    </h3>
+
+    <p>
+        Permite administrar reglas de entrada
+        y salida y controlar las comunicaciones
+        permitidas o bloqueadas por el firewall.
+    </p>
+
+</article>
+
+
+<!-- CERTIFICATES -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        📜
+    </div>
+
+    <div class="snap-code">
+        MMC::CERTIFICATES
+    </div>
+
+    <h3>
+        Certificados
+    </h3>
+
+    <p>
+        Permite consultar y administrar
+        certificados digitales utilizados
+        por usuarios, equipos y diferentes
+        servicios de Windows.
+    </p>
+
+</article>
+
+
+<!-- LOCAL USERS -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        👥
+    </div>
+
+    <div class="snap-code">
+        MMC::LOCAL_USERS
+    </div>
+
+    <h3>
+        Usuarios y grupos locales
+    </h3>
+
+    <p>
+        Permite administrar las cuentas
+        y grupos locales existentes en
+        el equipo cuando la edición de
+        Windows dispone de este complemento.
+    </p>
+
+</article>
+
+
+<!-- WMI -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🔧
+    </div>
+
+    <div class="snap-code">
+        MMC::WMI_CONTROL
+    </div>
+
+    <h3>
+        Control WMI
+    </h3>
+
+    <p>
+        Permite consultar y administrar
+        determinados aspectos de Windows
+        Management Instrumentation, utilizado
+        para gestión y monitorización del sistema.
+    </p>
+
+</article>
+
+
+<!-- TPM -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🔐
+    </div>
+
+    <div class="snap-code">
+        MMC::TPM
+    </div>
+
+    <h3>
+        Administración de TPM
+    </h3>
+
+    <p>
+        Permite consultar y administrar el
+        Trusted Platform Module, componente
+        relacionado con funciones de seguridad
+        y protección de claves criptográficas.
+    </p>
+
+</article>
+
+
+<!-- AUTH -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🛡️
+    </div>
+
+    <div class="snap-code">
+        MMC::AUTHORIZATION
+    </div>
+
+    <h3>
+        Administrador de autorización
+    </h3>
+
+    <p>
+        Herramienta administrativa relacionada
+        con la definición y administración de
+        políticas y mecanismos de autorización.
+    </p>
+
+</article>
+
+
+<!-- SECURITY -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🔍
+    </div>
+
+    <div class="snap-code">
+        MMC::SECURITY_CONFIG
+    </div>
+
+    <h3>
+        Configuración y análisis de seguridad
+    </h3>
+
+    <p>
+        Permite analizar configuraciones
+        de seguridad del sistema y compararlas
+        con configuraciones definidas.
+    </p>
+
+</article>
+
+
+<!-- ACTIVE X -->
+
+<article class="snap">
+
+    <div class="snap-icon">
+        🧩
+    </div>
+
+    <div class="snap-code">
+        MMC::ACTIVEX
+    </div>
+
+    <h3>
+        Control ActiveX
+    </h3>
+
+    <p>
+        Permite incorporar determinados
+        controles ActiveX compatibles
+        dentro de una consola MMC.
+    </p>
+
+</article>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     NIVEL 1 / NIVEL 2
+========================================================= -->
+
+<section class="section">
+
+<div class="section-id">
+    07 // SUPPORT LEVELS
+</div>
+
+<h2>
+    Nivel 1 frente a Nivel 2
+</h2>
+
+<div class="level-grid">
+
+    <article class="level">
+
+        <span class="level-badge l1">
+            SUPPORT LEVEL 1
+        </span>
+
+        <h3>
+            Soporte Nivel 1
+        </h3>
+
+        <p>
+            Consola orientada a tareas de
+            soporte y diagnóstico habituales,
+            proporcionando acceso a las
+            herramientas necesarias para
+            realizar una primera intervención
+            sobre el equipo.
+        </p>
+
+    </article>
+
+
+    <article class="level">
+
+        <span class="level-badge l2">
+            SUPPORT LEVEL 2
+        </span>
+
+        <h3>
+            Soporte Nivel 2
+        </h3>
+
+        <p>
+            Consola con herramientas adicionales
+            para realizar tareas de diagnóstico,
+            monitorización y administración
+            más avanzadas sobre el sistema local.
+        </p>
+
+    </article>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     RESULTADO FINAL
+========================================================= -->
+
+<section class="section">
+
+<div class="section-id">
+    08 // RESULTADO
+</div>
+
+<h2>
+    Consolas creadas
+</h2>
+
+<div class="capture">
+
+    <div class="capture-header">
+
+        <strong>
+            CAPTURA 05
+        </strong>
+
+        <span>
+            CONSOLA PERSONALIZADA
+        </span>
+
+    </div>
+
+    <img
+        src="05-Consola-Nivel-5.PNG"
+        alt="Consola MMC personalizada"
+    >
+
+    <div class="capture-description">
+
+        Resultado de una de las consolas
+        personalizadas. En el árbol de MMC
+        aparecen agrupadas diferentes
+        herramientas de diagnóstico,
+        monitorización, seguridad y recursos
+        de red.
+
+    </div>
+
+</div>
+
+
+<div class="capture">
+
+    <div class="capture-header">
+
+        <strong>
+            CAPTURA 01
+        </strong>
+
+        <span>
+            ARCHIVOS .MSC GUARDADOS
+        </span>
+
+    </div>
+
+    <img
+        src="01-Consola-Nivel-1.PNG"
+        alt="Archivos MMC Nivel 1 y Nivel 2"
+    >
+
+    <div class="capture-description">
+
+        Resultado final de la actividad:
+        se han creado y guardado las dos
+        consolas personalizadas correspondientes
+        a los perfiles de soporte.
+
+        <br><br>
+
+        <strong class="green">
+            Consola Nivel 1 - Miguel Castillo.msc
+        </strong>
+
+        <br>
+
+        <strong class="amber">
+            Consola Nivel 2 - Miguel Castillo.msc
+        </strong>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     COMPARATIVA
+========================================================= -->
+
+<section class="section">
+
+<div class="section-id">
+    09 // COMPARATIVA
+</div>
+
+<h2>
+    Herramientas por nivel
+</h2>
+
+<div class="comparison">
+
+<table>
+
+<thead>
+
+<tr>
+    <th>COMPLEMENTO</th>
+    <th>NIVEL 1</th>
+    <th>NIVEL 2</th>
+    <th>FUNCIÓN PRINCIPAL</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+    <td>Visor de eventos</td>
+    <td class="yes">✓</td>
+    <td class="yes">✓</td>
+    <td>Diagnóstico de eventos y errores</td>
+</tr>
+
+<tr>
+    <td>Servicios</td>
+    <td class="yes">✓</td>
+    <td class="yes">✓</td>
+    <td>Administración de servicios</td>
+</tr>
+
+<tr>
+    <td>Administrador de dispositivos</td>
+    <td class="yes">✓</td>
+    <td class="yes">✓</td>
+    <td>Hardware y controladores</td>
+</tr>
+
+<tr>
+    <td>Programador de tareas</td>
+    <td class="yes">✓</td>
+    <td class="yes">✓</td>
+    <td>Automatización de tareas</td>
+</tr>
+
+<tr>
+    <td>Carpetas compartidas</td>
+    <td>—</td>
+    <td class="advanced">✓ AVANZADO</td>
+    <td>Recursos compartidos y sesiones</td>
+</tr>
+
+<tr>
+    <td>Administración de discos</td>
+    <td>—</td>
+    <td class="advanced">✓ AVANZADO</td>
+    <td>Discos y particiones</td>
+</tr>
+
+<tr>
+    <td>Monitor de rendimiento</td>
+    <td>—</td>
+    <td class="advanced">✓ AVANZADO</td>
+    <td>Rendimiento del sistema</td>
+</tr>
+
+<tr>
+    <td>Firewall avanzado</td>
+    <td>—</td>
+    <td class="advanced">✓ AVANZADO</td>
+    <td>Seguridad de red</td>
+</tr>
+
+<tr>
+    <td>Certificados</td>
+    <td>—</td>
+    <td class="advanced">✓ AVANZADO</td>
+    <td>Certificados digitales</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     EXAM MODE
+========================================================= -->
+
+<section class="section">
+
+<div class="section-id">
+    10 // MEMORY BLOCK
+</div>
+
+<h2>
+    EXAM MODE
+</h2>
+
+<div class="panel exam">
+
+<div class="exam-title">
+    ⚠ CONCEPTOS IMPORTANTES
+</div>
+
+<ul>
+
+    <li>
+        <strong>MMC</strong> =
+        Microsoft Management Console.
+    </li>
+
+    <li>
+        Una consola MMC permite agrupar
+        diferentes herramientas administrativas.
+    </li>
+
+    <li>
+        Las herramientas que se incorporan
+        a MMC se denominan
+        <strong>complementos o snap-ins</strong>.
+    </li>
+
+    <li>
+        <strong>mmc.exe /a</strong>
+        abre MMC en modo autor.
+    </li>
+
+    <li>
+        <strong>Ctrl + M</strong>
+        abre Agregar o quitar complementos.
+    </li>
+
+    <li>
+        <strong>Ctrl + S</strong>
+        permite guardar la consola.
+    </li>
+
+    <li>
+        Las consolas MMC guardadas utilizan
+        la extensión
+        <strong>.msc</strong>.
+    </li>
+
+    <li>
+        El Nivel 1 dispone de herramientas
+        para soporte y diagnóstico habitual.
+    </li>
+
+    <li>
+        El Nivel 2 incorpora herramientas
+        adicionales de administración,
+        seguridad y diagnóstico avanzado.
+    </li>
+
+    <li>
+        El <strong>Visor de eventos</strong>
+        es fundamental para investigar
+        errores registrados por Windows.
+    </li>
+
+    <li>
+        <strong>Servicios</strong>
+        permite controlar servicios
+        ejecutados por Windows.
+    </li>
+
+    <li>
+        El <strong>Monitor de rendimiento</strong>
+        permite analizar el consumo y
+        comportamiento de los recursos.
+    </li>
+
+</ul>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     CONCLUSIÓN
+========================================================= -->
+
+<section class="section">
+
+<div class="section-id">
+    11 // CONCLUSIÓN
+</div>
+
+<h2>
+    Resultado de la práctica
+</h2>
+
+<div class="panel">
+
+    <p>
+        Mediante Microsoft Management Console
+        se han creado dos entornos de administración
+        diferentes para los técnicos de soporte
+        de
+        <strong class="green">Nivel 1</strong>
+        y
+        <strong class="amber">Nivel 2</strong>.
+    </p>
+
+    <br>
+
+    <p>
+        La utilización de complementos permite
+        personalizar las herramientas disponibles
+        en cada consola y agruparlas dentro de una
+        única interfaz de administración.
+    </p>
+
+    <br>
+
+    <p>
+        Finalmente, las configuraciones se han
+        guardado como archivos
+        <strong class="cyan">.msc</strong>,
+        permitiendo volver a abrir posteriormente
+        cada consola personalizada.
+    </p>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     TERMINAL
+========================================================= -->
+
+<div class="terminal">
+
+<div class="terminal-top">
+
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+
+    <span class="terminal-name">
+        MCS-Terminal · Windows Administration
+    </span>
+
+</div>
+
+<div class="terminal-body">
+
+<div>
+<span class="term-cyan">
+PS C:\Users\Miguel&gt;
+</span>
+mmc.exe /a
+</div>
+
+<br>
+
+<div>
+[MMC] Author mode..............
+<span class="term-amber">
+ENABLED
+</span>
+</div>
+
+<div>
+[MMC] Level 1 Console..........
+<span class="green">
+CREATED
+</span>
+</div>
+
+<div>
+[MMC] Level 2 Console..........
+<span class="green">
+CREATED
+</span>
+</div>
+
+<div>
+[MMC] Snap-ins.................
+<span class="green">
+LOADED
+</span>
+</div>
+
+<div>
+[MMC] File extension...........
+<span class="term-cyan">
+.MSC
+</span>
+</div>
+
+<br>
+
+<div>
+<span class="term-cyan">
+PS C:\Users\Miguel&gt;
+</span>
+<span class="green">
+_
+</span>
+</div>
+
+</div>
+
+</div>
+
+
+</main>
+
+
+<footer>
+
+<span>
+    ADMINISTRACIÓ DE SISTEMES · ACT-005
+</span>
+
+<span>
+    MIGUEL · ASIX 2026/2027
+</span>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   BOOT
+========================================================= */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        setTimeout(
+            function(){
+
+                document
+                    .getElementById("boot")
+                    .classList.add("hide");
+
+            },
+            2200
+        );
+
+    }
+);
+
+
+/* =========================================================
+   DIGITAL NETWORK BACKGROUND
+========================================================= */
+
+const canvas =
+    document.getElementById("network");
+
+const ctx =
+    canvas.getContext("2d");
+
+let nodes = [];
+
+
+function resize(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+}
+
+resize();
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+for(
+    let i=0;
+    i<45;
+    i++
+){
+
+    nodes.push({
+
+        x:
+            Math.random()*
+            window.innerWidth,
+
+        y:
+            Math.random()*
+            window.innerHeight,
+
+        vx:
+            (Math.random()-.5)*
+            .18,
+
+        vy:
+            (Math.random()-.5)*
+            .18,
+
+        r:
+            Math.random()*
+            1.3+.4
+
+    });
+
+}
+
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    nodes.forEach(
+        node=>{
+
+            node.x += node.vx;
+            node.y += node.vy;
+
+
+            if(
+                node.x<0 ||
+                node.x>canvas.width
+            ){
+                node.vx *= -1;
+            }
+
+
+            if(
+                node.y<0 ||
+                node.y>canvas.height
+            ){
+                node.vy *= -1;
+            }
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                node.x,
+                node.y,
+                node.r,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fillStyle =
+                "rgba(255,176,0,.28)";
+
+            ctx.fill();
+
+        }
+    );
+
+
+    for(
+        let i=0;
+        i<nodes.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<nodes.length;
+            j++
+        ){
+
+            let dx =
+                nodes[i].x -
+                nodes[j].x;
+
+            let dy =
+                nodes[i].y -
+                nodes[j].y;
+
+            let distance =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
+
+
+            if(distance<130){
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    nodes[i].x,
+                    nodes[i].y
+                );
+
+                ctx.lineTo(
+                    nodes[j].x,
+                    nodes[j].y
+                );
+
+                ctx.strokeStyle =
+                    "rgba(255,176,0,"+
+                    (
+                        .06*
+                        (
+                            1-
+                            distance/130
+                        )
+                    )+
+                    ")";
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
