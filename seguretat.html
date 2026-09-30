@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,6 +32,7 @@ body{
     overflow-x:hidden;
 }
 
+
 /* FONDO */
 
 #cryptoCanvas{
@@ -50,15 +50,21 @@ body{
     pointer-events:none;
 
     background:
-        radial-gradient(circle at 20% 10%,
-        rgba(245,185,66,.08),transparent 30%),
+        radial-gradient(
+            circle at 20% 10%,
+            rgba(245,185,66,.08),
+            transparent 30%
+        ),
 
-        radial-gradient(circle at 80% 80%,
-        rgba(0,234,255,.06),transparent 35%),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(0,234,255,.06),
+            transparent 35%
+        ),
 
         linear-gradient(
-        rgba(3,6,9,.55),
-        rgba(3,6,9,.92)
+            rgba(3,6,9,.55),
+            rgba(3,6,9,.92)
         );
 }
 
@@ -116,7 +122,9 @@ body{
 }
 
 @keyframes girar{
-    100%{transform:rotateY(360deg);}
+    100%{
+        transform:rotateY(360deg);
+    }
 }
 
 @keyframes desaparecer{
@@ -296,9 +304,9 @@ h1{
 
     background:
         linear-gradient(
-        135deg,
-        rgba(245,185,66,.055),
-        rgba(8,13,18,.9)
+            135deg,
+            rgba(245,185,66,.055),
+            rgba(8,13,18,.9)
         );
 
     text-decoration:none;
@@ -358,7 +366,8 @@ h1{
     font-size:24px;
     font-weight:bold;
 
-    box-shadow:inset 0 0 15px rgba(245,185,66,.05);
+    box-shadow:
+        inset 0 0 15px rgba(245,185,66,.05);
 }
 
 .contenido-actividad{
@@ -467,6 +476,9 @@ footer{
 
 <body>
 
+
+<!-- PANTALLA DE CARGA -->
+
 <div id="loading">
 
     <div class="loading-coin">
@@ -484,9 +496,13 @@ footer{
 </div>
 
 
+<!-- FONDO -->
+
 <canvas id="cryptoCanvas"></canvas>
 <div class="overlay"></div>
 
+
+<!-- CABECERA -->
 
 <header>
 
@@ -543,6 +559,8 @@ footer{
 
 
 
+<!-- ACTIVIDADES -->
+
 <main class="contenedor">
 
     <div class="titulo-seccion">
@@ -550,7 +568,7 @@ footer{
         <h2>Blockchain d'Activitats</h2>
 
         <span class="contador">
-            03 / 10 DESBLOQUEJADES
+            09 / 10 DESBLOQUEJADES
         </span>
 
     </div>
@@ -559,7 +577,9 @@ footer{
     <div class="actividades">
 
 
+        <!-- ===================================== -->
         <!-- ACTIVIDAD 1 -->
+        <!-- ===================================== -->
 
         <a href="activitat1.html" class="actividad">
 
@@ -587,7 +607,9 @@ footer{
 
 
 
+        <!-- ===================================== -->
         <!-- ACTIVIDAD 2 -->
+        <!-- ===================================== -->
 
         <a href="activitat2.html" class="actividad">
 
@@ -615,7 +637,9 @@ footer{
 
 
 
+        <!-- ===================================== -->
         <!-- ACTIVIDAD 3 -->
+        <!-- ===================================== -->
 
         <a href="activitat3.html" class="actividad">
 
@@ -643,116 +667,221 @@ footer{
 
 
 
-        <!-- ACTIVIDADES 4 - 10 -->
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 4 -->
+        <!-- ===================================== -->
 
-        <div class="actividad bloqueada">
+        <a href="activitat4.html" class="actividad">
 
-            <div class="bloque-numero">04</div>
+            <div class="bloque-numero">
+                04
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    000000D4A7F91C28E6B403...
+                </div>
+
                 <h3>Activitat 4</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Autenticació · Bloc verificat
+                </p>
+
             </div>
 
-            <span class="abrir">🔒</span>
+            <span class="abrir">→</span>
 
-        </div>
+        </a>
 
 
-        <div class="actividad bloqueada">
 
-            <div class="bloque-numero">05</div>
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 5 -->
+        <!-- ===================================== -->
+
+        <a href="activitat5.html" class="actividad">
+
+            <div class="bloque-numero">
+                05
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    000000E51B83F0A4D92765...
+                </div>
+
                 <h3>Activitat 5</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Elements vulnerables · Bloc verificat
+                </p>
+
             </div>
 
-            <span class="abrir">🔒</span>
+            <span class="abrir">→</span>
 
-        </div>
+        </a>
 
 
-        <div class="actividad bloqueada">
 
-            <div class="bloque-numero">06</div>
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 6 -->
+        <!-- ===================================== -->
+
+        <a href="activitat6.html" class="actividad">
+
+            <div class="bloque-numero">
+                06
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    000000F6C921A75E38D410...
+                </div>
+
                 <h3>Activitat 6</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Vulnerabilitat · Bloc verificat
+                </p>
+
             </div>
 
-            <span class="abrir">🔒</span>
+            <span class="abrir">→</span>
 
-        </div>
+        </a>
 
 
-        <div class="actividad bloqueada">
 
-            <div class="bloque-numero">07</div>
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 7 -->
+        <!-- ===================================== -->
+
+        <a href="activitat7.html" class="actividad">
+
+            <div class="bloque-numero">
+                07
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    000000A7D62F91B8C45037...
+                </div>
+
                 <h3>Activitat 7</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Tipus d'amenaces · Bloc verificat
+                </p>
+
             </div>
 
-            <span class="abrir">🔒</span>
+            <span class="abrir">→</span>
 
-        </div>
+        </a>
 
 
-        <div class="actividad bloqueada">
 
-            <div class="bloque-numero">08</div>
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 8 -->
+        <!-- ===================================== -->
+
+        <a href="activitat8.html" class="actividad">
+
+            <div class="bloque-numero">
+                08
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    000000B8E43C720F9A1562...
+                </div>
+
                 <h3>Activitat 8</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Tècnica Salami · Bloc verificat
+                </p>
+
             </div>
 
-            <span class="abrir">🔒</span>
+            <span class="abrir">→</span>
 
-        </div>
+        </a>
 
 
-        <div class="actividad bloqueada">
 
-            <div class="bloque-numero">09</div>
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 9 -->
+        <!-- ===================================== -->
+
+        <a href="activitat9.html" class="actividad">
+
+            <div class="bloque-numero">
+                09
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    000000C9F715B4D82E603A...
+                </div>
+
                 <h3>Activitat 9</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Política de Seguretat · Bloc verificat
+                </p>
+
             </div>
 
-            <span class="abrir">🔒</span>
+            <span class="abrir">→</span>
 
-        </div>
+        </a>
 
+
+
+        <!-- ===================================== -->
+        <!-- ACTIVIDAD 10 - BLOQUEADA -->
+        <!-- ===================================== -->
 
         <div class="actividad bloqueada">
 
-            <div class="bloque-numero">10</div>
+            <div class="bloque-numero">
+                10
+            </div>
 
             <div class="contenido-actividad">
-                <div class="hash">BLOCK_PENDING...</div>
+
+                <div class="hash">
+                    BLOCK_PENDING...
+                </div>
+
                 <h3>Activitat 10</h3>
-                <p>Pendent</p>
+
+                <p>
+                    Pendent
+                </p>
+
             </div>
 
             <span class="abrir">🔒</span>
 
         </div>
+
 
     </div>
 
 </main>
 
+
+<!-- PIE -->
 
 <footer>
 
@@ -779,6 +908,7 @@ const ctx = canvas.getContext("2d");
 
 let particles = [];
 
+
 function resize(){
 
     canvas.width = window.innerWidth;
@@ -788,7 +918,7 @@ function resize(){
 
 resize();
 
-window.addEventListener("resize", resize);
+window.addEventListener("resize",resize);
 
 
 
@@ -830,11 +960,13 @@ function animate(){
         p.y += p.vy;
 
 
-        if(p.x<0 || p.x>canvas.width)
+        if(p.x<0 || p.x>canvas.width){
             p.vx *= -1;
+        }
 
-        if(p.y<0 || p.y>canvas.height)
+        if(p.y<0 || p.y>canvas.height){
             p.vy *= -1;
+        }
 
 
         ctx.beginPath();
@@ -847,7 +979,9 @@ function animate(){
             Math.PI*2
         );
 
-        ctx.fillStyle="rgba(245,185,66,.35)";
+        ctx.fillStyle=
+            "rgba(245,185,66,.35)";
+
         ctx.fill();
 
     });
@@ -860,15 +994,15 @@ function animate(){
 
         for(let j=i+1;j<particles.length;j++){
 
-            let dx=
-                particles[i].x-
+            let dx =
+                particles[i].x -
                 particles[j].x;
 
-            let dy=
-                particles[i].y-
+            let dy =
+                particles[i].y -
                 particles[j].y;
 
-            let distance=
+            let distance =
                 Math.sqrt(dx*dx+dy*dy);
 
 
@@ -886,7 +1020,7 @@ function animate(){
                     particles[j].y
                 );
 
-                ctx.strokeStyle=
+                ctx.strokeStyle =
                     "rgba(245,185,66,"+
                     (0.07*(1-distance/130))+
                     ")";
@@ -910,4 +1044,3 @@ animate();
 
 </body>
 </html>
-```
