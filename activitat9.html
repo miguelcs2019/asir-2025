@@ -4,26 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Actividad 8 · Técnica Salami | MCS Security</title>
+<title>Actividad 9 · Política de Seguridad | Seguretat i Alta Disponibilitat</title>
 
 <style>
-:root{
-    --bg:#030607;
-    --panel:#071014;
-    --green:#00ff88;
-    --cyan:#00eaff;
-    --red:#ff4d6d;
-    --gold:#ffc857;
-    --purple:#b388ff;
-    --text:#e8fff4;
-    --muted:#8ca7a0;
-    --border:rgba(0,255,136,.20);
-}
+
+/* =========================================================
+   VARIABLES
+========================================================= */
 
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
+}
+
+:root{
+    --bg:#030609;
+    --panel:#080d12;
+    --panel2:#0c1319;
+
+    --gold:#f5b942;
+    --gold2:#ffd66b;
+
+    --cyan:#00eaff;
+    --green:#00ff9d;
+    --red:#ff4f64;
+
+    --white:#edf4f6;
+    --muted:#71808a;
+
+    --border:rgba(245,185,66,.20);
 }
 
 html{
@@ -32,492 +42,676 @@ html{
 
 body{
     min-height:100vh;
-    color:var(--text);
-    font-family:"Segoe UI",Arial,sans-serif;
-    line-height:1.7;
-    overflow-x:hidden;
 
-    background:
-        radial-gradient(circle at 15% 10%,rgba(0,255,136,.08),transparent 25%),
-        radial-gradient(circle at 85% 30%,rgba(255,77,109,.07),transparent 25%),
-        linear-gradient(180deg,#020405,#030809 50%,#020405);
+    background:#030609;
+
+    color:var(--white);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    overflow-x:hidden;
 }
 
-/* =====================================================
-   MATRIX BACKGROUND
-===================================================== */
 
-.matrix{
+/* =========================================================
+   FONDO
+========================================================= */
+
+#securityCanvas{
     position:fixed;
     inset:0;
-    overflow:hidden;
-    pointer-events:none;
-    opacity:.13;
+
+    width:100%;
+    height:100%;
+
+    z-index:-3;
+}
+
+.background{
+    position:fixed;
+    inset:0;
+
     z-index:-2;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(245,185,66,.08),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 85% 75%,
+            rgba(0,234,255,.06),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            rgba(3,6,9,.65),
+            rgba(3,6,9,.96)
+        );
 }
 
-.matrix span{
-    position:absolute;
-    color:var(--green);
-    font:12px Consolas,monospace;
-    text-shadow:0 0 8px var(--green);
-    animation:fall linear infinite;
+
+/* =========================================================
+   SCANLINES
+========================================================= */
+
+.scanlines{
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:999;
+
+    opacity:.12;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 3px,
+            rgba(255,255,255,.025) 4px
+        );
 }
 
-@keyframes fall{
-    from{
-        transform:translateY(-150px);
-        opacity:0;
-    }
 
-    10%{
-        opacity:1;
-    }
-
-    to{
-        transform:translateY(110vh);
-        opacity:0;
-    }
-}
-
-/* =====================================================
+/* =========================================================
    BOOT
-===================================================== */
+========================================================= */
 
 #boot{
     position:fixed;
     inset:0;
-    z-index:9999;
 
-    background:#010303;
+    z-index:10000;
 
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
 
-    transition:opacity .7s ease,visibility .7s ease;
-}
+    background:#010304;
 
-#boot.hide{
-    opacity:0;
-    visibility:hidden;
+    animation:
+        bootOut .7s forwards 2.8s;
 }
 
 .boot-box{
-    width:min(760px,90%);
-    color:var(--green);
-    font-family:Consolas,monospace;
+    width:min(700px,90%);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:13px;
+
+    line-height:2;
 }
 
 .boot-title{
-    font-size:clamp(26px,5vw,44px);
-    font-weight:900;
-    letter-spacing:4px;
-    margin-bottom:25px;
+    color:var(--gold);
 
-    text-shadow:
-        0 0 20px rgba(0,255,136,.6);
+    font-size:20px;
+    font-weight:bold;
+
+    letter-spacing:4px;
+
+    margin-bottom:20px;
 }
 
 .boot-line{
-    margin:8px 0;
     opacity:0;
-    animation:bootText .3s forwards;
+
+    color:#7f8d94;
+
+    animation:
+        showLine .2s forwards;
 }
 
-.boot-line:nth-child(2){animation-delay:.20s;}
-.boot-line:nth-child(3){animation-delay:.45s;}
-.boot-line:nth-child(4){animation-delay:.70s;}
-.boot-line:nth-child(5){animation-delay:.95s;}
-.boot-line:nth-child(6){animation-delay:1.20s;}
-.boot-line:nth-child(7){animation-delay:1.45s;}
+.boot-line:nth-child(2){
+    animation-delay:.3s;
+}
 
-@keyframes bootText{
-    to{opacity:1;}
+.boot-line:nth-child(3){
+    animation-delay:.6s;
+}
+
+.boot-line:nth-child(4){
+    animation-delay:.9s;
+}
+
+.boot-line:nth-child(5){
+    animation-delay:1.2s;
+}
+
+.boot-line:nth-child(6){
+    animation-delay:1.5s;
+}
+
+.boot-line:nth-child(7){
+    animation-delay:1.8s;
 }
 
 .ok{
-    color:var(--cyan);
+    color:var(--green);
 }
 
-.alert{
-    color:var(--red);
+.warn{
+    color:var(--gold);
 }
 
-/* =====================================================
+@keyframes showLine{
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes bootOut{
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+}
+
+
+/* =========================================================
    HEADER
-===================================================== */
+========================================================= */
 
 header{
-    position:sticky;
-    top:0;
-    z-index:100;
+    width:92%;
+    max-width:1150px;
 
-    background:rgba(2,6,7,.88);
-    backdrop-filter:blur(16px);
-
-    border-bottom:1px solid var(--border);
-}
-
-.nav{
-    width:min(1200px,92%);
-    min-height:72px;
     margin:auto;
 
+    padding:
+        45px 0
+        40px;
+}
+
+.topbar{
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    gap:20px;
-}
+    align-items:center;
 
-.brand{
-    color:var(--green);
-    font:bold 16px Consolas,monospace;
-    letter-spacing:2px;
-}
-
-.brand span{
-    color:var(--cyan);
+    margin-bottom:65px;
 }
 
 .back{
-    color:var(--text);
+    color:#75828a;
+
     text-decoration:none;
 
-    border:1px solid var(--border);
-    padding:9px 15px;
-    border-radius:8px;
+    font-family:
+        Consolas,
+        monospace;
 
-    font-family:Consolas,monospace;
+    font-size:12px;
 
     transition:.25s;
 }
 
 .back:hover{
-    color:#00100a;
+    color:var(--gold);
+}
+
+.status{
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    color:var(--green);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.status-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
     background:var(--green);
 
     box-shadow:
-        0 0 20px rgba(0,255,136,.35);
+        0 0 10px var(--green);
 }
 
-/* =====================================================
-   GENERAL
-===================================================== */
 
-main{
-    width:min(1150px,92%);
-    margin:auto;
-    padding:75px 0 100px;
-}
+/* =========================================================
+   HERO
+========================================================= */
 
 .tag{
-    display:inline-block;
+    color:var(--gold);
 
-    color:var(--green);
-    border:1px solid var(--green);
+    font-family:
+        Consolas,
+        monospace;
 
-    padding:6px 12px;
-    border-radius:30px;
+    font-size:11px;
 
-    margin-bottom:20px;
+    letter-spacing:4px;
 
-    font:13px Consolas,monospace;
-    letter-spacing:1px;
-
-    box-shadow:
-        0 0 18px rgba(0,255,136,.15);
+    margin-bottom:15px;
 }
 
 h1{
-    font-size:clamp(40px,7vw,78px);
-    line-height:1;
-    letter-spacing:-3px;
-    margin-bottom:18px;
-}
+    max-width:900px;
 
-h1 span{
-    color:var(--red);
+    font-size:
+        clamp(43px,7vw,72px);
 
-    text-shadow:
-        0 0 25px rgba(255,77,109,.35);
+    line-height:1.02;
+
+    letter-spacing:-2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #ffe09a,
+            var(--gold)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
 .subtitle{
     max-width:850px;
-    color:var(--muted);
-    font-size:19px;
+
+    margin-top:22px;
+
+    color:#7c8991;
+
+    font-size:17px;
+
+    line-height:1.8;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+main{
+    width:92%;
+    max-width:1150px;
+
+    margin:
+        20px auto
+        90px;
 }
 
 .section{
     margin-top:75px;
 }
 
-.section-label{
-    color:var(--cyan);
-    font:13px Consolas,monospace;
-    letter-spacing:2px;
+.section-code{
     margin-bottom:8px;
+
+    color:var(--cyan);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:10px;
+
+    letter-spacing:3px;
 }
 
 h2{
-    font-size:clamp(27px,4vw,42px);
     margin-bottom:25px;
+
+    font-size:
+        clamp(27px,4vw,39px);
 }
+
+
+/* =========================================================
+   PANEL
+========================================================= */
 
 .panel{
     position:relative;
-    overflow:hidden;
 
     padding:30px;
 
-    border:1px solid var(--border);
-    border-radius:18px;
+    border:
+        1px solid var(--border);
+
+    border-radius:15px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(10,23,27,.92),
-            rgba(4,10,12,.95)
+            rgba(11,17,22,.95),
+            rgba(5,9,12,.95)
         );
+
+    overflow:hidden;
 }
 
 .panel::before{
     content:"";
 
     position:absolute;
-    left:0;
+
     top:0;
+    left:0;
 
     width:4px;
     height:100%;
 
     background:
-        linear-gradient(var(--green),var(--cyan));
+        linear-gradient(
+            var(--gold),
+            var(--cyan)
+        );
 }
 
-.green{
-    color:var(--green);
-    font-weight:700;
-}
 
-.cyan{
-    color:var(--cyan);
-    font-weight:700;
-}
-
-.red{
-    color:var(--red);
-    font-weight:700;
-}
-
-.gold{
-    color:var(--gold);
-    font-weight:700;
-}
-
-/* =====================================================
+/* =========================================================
    ENUNCIADO
-===================================================== */
+========================================================= */
 
-.statement{
-    font-size:18px;
+.assignment{
+    border-color:
+        rgba(245,185,66,.35);
 }
 
-.statement strong{
-    color:var(--green);
-}
+.assignment-title{
+    margin-bottom:18px;
 
-.question{
-    margin-top:20px;
-    padding:18px;
+    color:var(--gold);
 
-    background:rgba(0,0,0,.25);
+    font-family:
+        Consolas,
+        monospace;
 
-    border:
-        1px solid rgba(255,255,255,.07);
+    font-size:13px;
 
-    border-radius:10px;
-}
-
-.question span{
-    color:var(--cyan);
-    font-family:Consolas,monospace;
-    margin-right:8px;
-}
-
-/* =====================================================
-   CONCEPTO
-===================================================== */
-
-.definition{
-    display:grid;
-    grid-template-columns:.65fr 1.35fr;
-    gap:25px;
-}
-
-.definition-visual{
-    min-height:330px;
-
-    border:
-        1px solid rgba(255,77,109,.28);
-
-    border-radius:18px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,77,109,.12),
-            transparent 55%
-        ),
-        rgba(0,0,0,.25);
-}
-
-.salami-core{
-    width:190px;
-    height:190px;
-
-    border:2px solid var(--red);
-    border-radius:50%;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-
-    box-shadow:
-        0 0 35px rgba(255,77,109,.25);
-
-    animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-    50%{
-        box-shadow:
-            0 0 65px rgba(255,77,109,.42);
-    }
-}
-
-.salami-icon{
-    font-size:55px;
-}
-
-.salami-core strong{
-    margin-top:8px;
-
-    color:var(--red);
-
-    font-family:Consolas,monospace;
     letter-spacing:2px;
 }
 
-.definition-content{
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
+.assignment p{
+    color:#aab5ba;
+
+    line-height:1.8;
 }
 
-.definition-content h3{
-    color:var(--red);
-    font-size:29px;
-    margin-bottom:15px;
-}
+.questions{
+    margin-top:25px;
 
-.definition-content p{
-    font-size:17px;
-    margin-bottom:16px;
-}
-
-/* =====================================================
-   MICRO OPERATIONS
-===================================================== */
-
-.micro-flow{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:15px;
+
+    gap:12px;
 }
 
-.micro{
-    padding:23px 15px;
+.question{
+    display:grid;
 
-    text-align:center;
+    grid-template-columns:
+        42px 1fr;
+
+    gap:15px;
+
+    padding:16px;
 
     border:
-        1px solid rgba(0,234,255,.20);
+        1px solid
+        rgba(255,255,255,.07);
 
-    border-radius:14px;
+    border-radius:9px;
 
     background:
-        rgba(0,0,0,.25);
-
-    transition:.3s;
+        rgba(0,0,0,.22);
 }
 
-.micro:hover{
-    transform:translateY(-5px);
+.question-number{
+    width:36px;
+    height:36px;
 
-    border-color:var(--cyan);
-}
-
-.micro-number{
-    color:var(--muted);
-    font:12px Consolas,monospace;
-}
-
-.micro-value{
-    color:var(--cyan);
-
-    font:bold 27px Consolas,monospace;
-
-    margin:8px 0;
-}
-
-.micro small{
-    color:var(--muted);
-}
-
-.total{
-    margin-top:22px;
-
-    padding:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     border:
-        1px solid rgba(255,77,109,.35);
+        1px solid var(--gold);
+
+    border-radius:50%;
+
+    color:var(--gold);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-weight:bold;
+}
+
+.question p{
+    color:#a6b2b8;
+}
+
+
+/* =========================================================
+   POLICY INTRO
+========================================================= */
+
+.policy-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:16px;
+}
+
+.policy-card{
+    padding:25px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
 
     border-radius:13px;
 
     background:
-        rgba(255,77,109,.05);
-
-    text-align:center;
+        rgba(9,14,18,.80);
 }
 
-.total strong{
-    color:var(--red);
-    font-size:23px;
+.policy-icon{
+    font-size:34px;
+
+    margin-bottom:13px;
 }
 
-/* =====================================================
-   FLOW
-===================================================== */
+.policy-card h3{
+    color:var(--gold2);
 
-.attack-flow{
+    margin-bottom:9px;
+}
+
+.policy-card p{
+    color:var(--muted);
+
+    font-size:14px;
+
+    line-height:1.65;
+}
+
+
+/* =========================================================
+   RESPUESTAS
+========================================================= */
+
+.answer{
+    margin-bottom:18px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12,18,23,.96),
+            rgba(5,9,12,.96)
+        );
+
+    overflow:hidden;
+}
+
+.answer-header{
+    padding:18px 22px;
+
+    display:flex;
+    align-items:center;
+
+    gap:15px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.06);
+
+    background:
+        rgba(255,255,255,.015);
+}
+
+.answer-number{
+    min-width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:8px;
+
+    background:
+        rgba(245,185,66,.08);
+
+    border:
+        1px solid
+        rgba(245,185,66,.30);
+
+    color:var(--gold);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-weight:bold;
+}
+
+.answer-header h3{
+    font-size:17px;
+}
+
+.answer-body{
+    padding:23px;
+}
+
+.answer-result{
+    display:inline-block;
+
+    margin-bottom:16px;
+
+    padding:
+        6px 11px;
+
+    border-radius:5px;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:11px;
+
+    letter-spacing:1px;
+}
+
+.no{
+    color:#ff7b89;
+
+    border:
+        1px solid
+        rgba(255,79,100,.30);
+
+    background:
+        rgba(255,79,100,.05);
+}
+
+.conditional{
+    color:var(--gold);
+
+    border:
+        1px solid
+        rgba(245,185,66,.30);
+
+    background:
+        rgba(245,185,66,.05);
+}
+
+.required{
+    color:var(--green);
+
+    border:
+        1px solid
+        rgba(0,255,157,.30);
+
+    background:
+        rgba(0,255,157,.05);
+}
+
+.answer-body p{
+    color:#98a6ac;
+
+    line-height:1.8;
+}
+
+.answer-body strong{
+    color:white;
+}
+
+
+/* =========================================================
+   FLUJO
+========================================================= */
+
+.flow{
     display:grid;
+
     grid-template-columns:
-        1fr auto 1fr auto 1fr auto 1fr;
+        repeat(5,1fr);
+
     gap:12px;
+
     align-items:center;
 }
 
 .flow-box{
-    min-height:155px;
+    min-height:135px;
 
-    padding:20px;
+    padding:18px;
 
     display:flex;
     flex-direction:column;
@@ -526,183 +720,169 @@ h2{
 
     text-align:center;
 
-    border:1px solid var(--border);
-    border-radius:14px;
+    border:
+        1px solid
+        rgba(245,185,66,.20);
 
-    background:rgba(0,0,0,.25);
+    border-radius:12px;
+
+    background:
+        rgba(8,13,17,.85);
 }
 
 .flow-icon{
-    font-size:36px;
-    margin-bottom:10px;
+    font-size:30px;
+
+    margin-bottom:8px;
 }
 
 .flow-box strong{
-    color:var(--green);
-    font-family:Consolas,monospace;
-    margin-bottom:5px;
-}
+    color:var(--gold);
 
-.flow-box:last-child{
-    border-color:rgba(255,77,109,.35);
-}
-
-.flow-box:last-child strong{
-    color:var(--red);
+    font-size:13px;
 }
 
 .flow-box small{
+    margin-top:6px;
+
     color:var(--muted);
 }
 
-.arrow{
-    color:var(--cyan);
-    font-size:26px;
-    font-weight:900;
+.flow-arrow{
+    display:none;
 }
 
-/* =====================================================
-   EJEMPLO
-===================================================== */
 
-.example-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:20px;
-}
-
-.example-card{
-    padding:27px;
-
-    border:1px solid var(--border);
-    border-radius:15px;
-
-    background:rgba(5,15,18,.8);
-}
-
-.example-id{
-    color:var(--cyan);
-    font:12px Consolas,monospace;
-}
-
-.example-icon{
-    font-size:37px;
-    margin:10px 0;
-}
-
-.example-card h3{
-    color:var(--green);
-    margin-bottom:10px;
-}
-
-.example-card p{
-    color:var(--muted);
-}
-
-.example-card.danger-card{
-    border-color:rgba(255,77,109,.3);
-}
-
-.example-card.danger-card h3{
-    color:var(--red);
-}
-
-/* =====================================================
-   PROPIEDADES
-===================================================== */
+/* =========================================================
+   PRINCIPIOS
+========================================================= */
 
 .security-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:16px;
 }
 
 .security-card{
-    position:relative;
-    overflow:hidden;
+    padding:25px;
 
-    padding:27px;
+    border:
+        1px solid
+        rgba(255,255,255,.08);
 
-    border:1px solid var(--border);
-    border-radius:15px;
+    border-radius:13px;
 
-    background:rgba(0,0,0,.25);
+    background:#080d11;
 }
 
-.security-letter{
-    position:absolute;
-    top:-10px;
-    right:15px;
+.security-card span{
+    display:block;
 
-    color:rgba(0,255,136,.08);
+    color:#53616a;
 
-    font:bold 80px Consolas,monospace;
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:9px;
+
+    letter-spacing:2px;
+
+    margin-bottom:10px;
 }
 
 .security-card h3{
-    color:var(--green);
+    color:var(--cyan);
+
     margin-bottom:10px;
 }
 
 .security-card p{
     color:var(--muted);
+
+    font-size:14px;
 }
 
-.security-card.main-impact{
-    border-color:rgba(255,77,109,.4);
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.table-container{
+    overflow-x:auto;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:13px;
 }
 
-.security-card.main-impact h3{
-    color:var(--red);
+table{
+    width:100%;
+
+    min-width:800px;
+
+    border-collapse:collapse;
 }
 
-/* =====================================================
-   DETECCIÓN
-===================================================== */
+th{
+    padding:16px;
 
-.controls{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
+    text-align:left;
+
+    background:
+        rgba(245,185,66,.06);
+
+    color:var(--gold);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:11px;
+}
+
+td{
+    padding:16px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.06);
+
+    color:#98a6ac;
+
+    font-size:14px;
+}
+
+.good{
+    color:var(--green);
+}
+
+.bad{
+    color:#ff6f7f;
 }
 
 .control{
-    padding:24px;
-
-    border:1px solid var(--border);
-    border-radius:14px;
-
-    background:rgba(5,15,18,.8);
+    color:var(--gold);
 }
 
-.control-icon{
-    font-size:33px;
-    margin-bottom:10px;
-}
 
-.control h3{
-    color:var(--cyan);
-    margin-bottom:8px;
-    font-size:18px;
-}
-
-.control p{
-    color:var(--muted);
-    font-size:15px;
-}
-
-/* =====================================================
+/* =========================================================
    EXAM MODE
-===================================================== */
+========================================================= */
 
 .exam{
-    border-color:rgba(255,200,87,.4);
+    border-color:
+        rgba(245,185,66,.38);
 
     background:
         linear-gradient(
             145deg,
-            rgba(255,200,87,.07),
-            rgba(0,0,0,.25)
+            rgba(245,185,66,.07),
+            rgba(5,9,12,.97)
         );
 }
 
@@ -711,12 +891,18 @@ h2{
 }
 
 .exam-title{
+    margin-bottom:20px;
+
     color:var(--gold);
 
-    font-family:Consolas,monospace;
-    letter-spacing:2px;
+    font-family:
+        Consolas,
+        monospace;
 
-    margin-bottom:18px;
+    font-size:14px;
+    font-weight:bold;
+
+    letter-spacing:2px;
 }
 
 .exam ul{
@@ -727,7 +913,10 @@ h2{
     padding:11px 0;
 
     border-bottom:
-        1px solid rgba(255,255,255,.06);
+        1px solid
+        rgba(255,255,255,.06);
+
+    color:#a8b3b8;
 }
 
 .exam li:last-child{
@@ -737,185 +926,210 @@ h2{
 .exam li::before{
     content:">";
 
+    margin-right:12px;
+
     color:var(--gold);
 
-    font-family:Consolas,monospace;
-
-    margin-right:12px;
+    font-family:
+        Consolas,
+        monospace;
 }
 
-/* =====================================================
-   RESPUESTA
-===================================================== */
 
-.answer{
-    border-color:rgba(0,234,255,.35);
+/* =========================================================
+   RESPUESTA DIRECTA
+========================================================= */
+
+.direct-answer{
+    font-size:15px;
+
+    line-height:1.9;
+
+    color:#a7b3b8;
 }
 
-.answer::before{
-    background:var(--cyan);
+.direct-answer strong{
+    color:var(--gold2);
 }
 
-.answer h3{
+.direct-answer .num{
     color:var(--cyan);
-    margin-bottom:15px;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-weight:bold;
 }
 
-.answer p{
-    font-size:18px;
-    margin-bottom:15px;
-}
 
-/* =====================================================
+/* =========================================================
    TERMINAL
-===================================================== */
+========================================================= */
 
 .terminal{
     margin-top:75px;
 
-    background:#010303;
-
-    border:1px solid #17342b;
-    border-radius:13px;
-
     overflow:hidden;
 
-    font-family:Consolas,monospace;
+    border:
+        1px solid
+        rgba(0,255,157,.18);
+
+    border-radius:12px;
+
+    background:#020403;
 }
 
-.terminal-top{
-    padding:11px 15px;
-
-    background:#09100f;
-
-    border-bottom:1px solid #17342b;
+.terminal-bar{
+    padding:10px 14px;
 
     display:flex;
     align-items:center;
-    gap:8px;
+
+    gap:7px;
+
+    background:#0a0f0c;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.05);
 }
 
 .dot{
-    width:11px;
-    height:11px;
+    width:8px;
+    height:8px;
 
     border-radius:50%;
+}
 
-    background:#355047;
+.red-dot{
+    background:#ff5f57;
+}
+
+.yellow-dot{
+    background:#febc2e;
+}
+
+.green-dot{
+    background:#28c840;
 }
 
 .terminal-title{
-    color:var(--muted);
-    font-size:12px;
     margin-left:8px;
+
+    color:#536059;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:10px;
 }
 
 .terminal-body{
-    padding:23px;
+    padding:22px;
+
     color:var(--green);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:12px;
+
+    line-height:1.9;
 }
 
 .prompt{
+    color:var(--gold);
+}
+
+.term-cyan{
     color:var(--cyan);
 }
 
 .term-red{
-    color:var(--red);
+    color:#ff6575;
 }
 
-.term-gold{
-    color:var(--gold);
-}
 
-.cursor{
-    display:inline-block;
-
-    width:8px;
-    height:17px;
-
-    background:var(--green);
-
-    vertical-align:middle;
-
-    animation:blink .8s infinite;
-}
-
-@keyframes blink{
-    50%{opacity:0;}
-}
-
-/* =====================================================
+/* =========================================================
    FOOTER
-===================================================== */
+========================================================= */
 
 footer{
-    border-top:1px solid var(--border);
+    width:92%;
+    max-width:1150px;
 
-    padding:35px 5%;
+    margin:auto;
 
-    color:var(--muted);
-
-    font:13px Consolas,monospace;
+    padding:
+        27px 0
+        40px;
 
     display:flex;
     justify-content:space-between;
-    flex-wrap:wrap;
+
     gap:15px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.06);
+
+    color:#455159;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size:10px;
 }
 
-/* =====================================================
+
+/* =========================================================
    RESPONSIVE
-===================================================== */
+========================================================= */
 
-@media(max-width:950px){
+@media(max-width:850px){
 
-    .definition{
+    .policy-grid,
+    .security-grid{
         grid-template-columns:1fr;
     }
 
-    .micro-flow{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .attack-flow{
+    .flow{
         grid-template-columns:1fr;
     }
 
-    .arrow{
-        transform:rotate(90deg);
-        text-align:center;
-    }
-
-    .controls{
-        grid-template-columns:repeat(2,1fr);
+    .flow-box{
+        min-height:auto;
     }
 
 }
 
-@media(max-width:650px){
+@media(max-width:600px){
 
-    .micro-flow,
-    .example-grid,
-    .security-grid,
-    .controls{
+    .topbar{
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .question{
         grid-template-columns:1fr;
     }
 
-    h1{
-        letter-spacing:-1px;
+    footer{
+        flex-direction:column;
     }
 
 }
+
 </style>
 </head>
 
+
 <body>
-
-<!-- =====================================================
-     MATRIX
-===================================================== -->
-
-<div class="matrix" id="matrix"></div>
 
 
 <!-- =====================================================
@@ -924,48 +1138,56 @@ footer{
 
 <div id="boot">
 
-<div class="boot-box">
+    <div class="boot-box">
 
-    <div class="boot-title">
-        MCS FRAUD DETECTION
-    </div>
+        <div class="boot-title">
+            MCS SECURITY POLICY
+        </div>
 
-    <div class="boot-line">
-        [SCAN] Analizando transacciones...
-    </div>
+        <div class="boot-line">
+            Loading security policies ........
+            <span class="ok">OK</span>
+        </div>
 
-    <div class="boot-line">
-        [TX] Micro-alteration #001
-        <span class="ok">[0.01]</span>
-    </div>
+        <div class="boot-line">
+            Checking user permissions ........
+            <span class="ok">OK</span>
+        </div>
 
-    <div class="boot-line">
-        [TX] Micro-alteration #002
-        <span class="ok">[0.01]</span>
-    </div>
+        <div class="boot-line">
+            Loading access controls ..........
+            <span class="ok">OK</span>
+        </div>
 
-    <div class="boot-line">
-        [PATTERN] Repetitive modifications
-        <span class="alert">[DETECTED]</span>
-    </div>
+        <div class="boot-line">
+            Software installation policy .....
+            <span class="warn">RESTRICTED</span>
+        </div>
 
-    <div class="boot-line">
-        [THREAT] Salami Technique
-        <span class="alert">[ALERT]</span>
-    </div>
+        <div class="boot-line">
+            Network security policy ..........
+            <span class="warn">CONTROLLED</span>
+        </div>
 
-    <div class="boot-line">
-        [INTEGRITY] Financial Data
-        <span class="alert">[COMPROMISED]</span>
-    </div>
+        <div class="boot-line">
+            SECURITY POLICY ENGINE ...........
+            <span class="ok">READY</span>
+        </div>
 
-    <div class="boot-line">
-        FRAUD ANALYSIS READY_
     </div>
 
 </div>
 
-</div>
+
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
+<canvas id="securityCanvas"></canvas>
+
+<div class="background"></div>
+
+<div class="scanlines"></div>
 
 
 <!-- =====================================================
@@ -974,46 +1196,50 @@ footer{
 
 <header>
 
-<div class="nav">
+    <div class="topbar">
 
-    <div class="brand">
-        MCS::<span>SECURITY</span>
+        <a
+            href="seguretat.html"
+            class="back"
+        >
+            ← SEGURETAT
+        </a>
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            POLICY ACTIVE
+
+        </div>
+
     </div>
 
-    <a href="seguretat.html" class="back">
-        ← VOLVER A SEGURIDAD
-    </a>
 
-</div>
+    <div class="tag">
+        // SEC-ACT-009 · SECURITY POLICY
+    </div>
+
+
+    <h1>
+        Actividad 9<br>
+        Política de Seguridad
+    </h1>
+
+
+    <p class="subtitle">
+
+        Análisis de las normas que deben seguir los
+        usuarios de una organización para proteger
+        los equipos, la información y los recursos
+        informáticos.
+
+    </p>
 
 </header>
 
 
 <main>
-
-<!-- =====================================================
-     HERO
-===================================================== -->
-
-<section>
-
-<span class="tag">
-    SEC-ACT-008 · TÉCNICA SALAMI
-</span>
-
-<h1>
-    Actividad 8<br>
-    <span>Técnica Salami</span>
-</h1>
-
-<p class="subtitle">
-    Análisis de una técnica basada en realizar pequeñas
-    alteraciones repetidas que, individualmente, pueden resultar
-    difíciles de detectar pero cuyo efecto acumulado puede llegar
-    a ser significativo.
-</p>
-
-</section>
 
 
 <!-- =====================================================
@@ -1022,550 +1248,737 @@ footer{
 
 <section class="section">
 
-<div class="section-label">
-    01 // ENUNCIADO
-</div>
-
-<h2>
-    ¿Qué debemos analizar?
-</h2>
-
-<div class="panel statement">
-
-    <p>
-        La <strong>técnica Salami</strong> consiste en realizar
-        pequeñas acciones o modificaciones que individualmente
-        tienen un valor muy reducido, pero que repetidas sobre
-        numerosas operaciones pueden generar un efecto importante.
-    </p>
-
-    <div class="question">
-        <span>01 ></span>
-        Explica en qué consiste esta técnica.
+    <div class="section-code">
+        01 // ENUNCIADO
     </div>
 
-    <div class="question">
-        <span>02 ></span>
-        Explica por qué pequeñas cantidades pueden pasar
-        desapercibidas.
-    </div>
+    <h2>
+        Manual de políticas de seguridad
+    </h2>
 
-    <div class="question">
-        <span>03 ></span>
-        Indica qué consecuencias puede producir.
-    </div>
 
-</div>
+    <div class="panel assignment">
+
+        <div class="assignment-title">
+            ACTIVIDAD PROPUESTA
+        </div>
+
+        <p>
+
+            Leer el documento
+            <strong>
+                “Manual de políticas y estándares de
+                seguridad Informática para usuarios”
+            </strong>
+            y contestar a las siguientes cuestiones:
+
+        </p>
+
+
+        <div class="questions">
+
+
+            <div class="question">
+
+                <div class="question-number">
+                    1
+                </div>
+
+                <p>
+                    ¿El usuario puede/debe comer cuando
+                    trabaja con el ordenador?
+                </p>
+
+            </div>
+
+
+            <div class="question">
+
+                <div class="question-number">
+                    2
+                </div>
+
+                <p>
+                    ¿Un ordenador se puede sacar de la
+                    organización? ¿Qué hay que hacer?
+                </p>
+
+            </div>
+
+
+            <div class="question">
+
+                <div class="question-number">
+                    3
+                </div>
+
+                <p>
+                    Para comenzar a trabajar en la organización,
+                    un usuario nuevo ¿de qué debe disponer,
+                    además de su equipo?
+                </p>
+
+            </div>
+
+
+            <div class="question">
+
+                <div class="question-number">
+                    4
+                </div>
+
+                <p>
+                    ¿Cualquier usuario podría instalar
+                    nuevo software?
+                </p>
+
+            </div>
+
+
+            <div class="question">
+
+                <div class="question-number">
+                    5
+                </div>
+
+                <p>
+                    ¿Los usuarios de la organización pueden
+                    libremente explorar la red en busca
+                    de vulnerabilidades?
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
 
 </section>
 
 
 <!-- =====================================================
-     DEFINICIÓN
+     QUÉ ES UNA POLÍTICA
 ===================================================== -->
 
 <section class="section">
 
-<div class="section-label">
-    02 // DEFINICIÓN
-</div>
+    <div class="section-code">
+        02 // SECURITY POLICY
+    </div>
 
-<h2>
-    ¿Qué es la técnica Salami?
-</h2>
+    <h2>
+        ¿Qué es una política de seguridad?
+    </h2>
 
-<div class="definition">
 
-    <div class="definition-visual">
+    <div class="policy-grid">
 
-        <div class="salami-core">
 
-            <div class="salami-icon">
-                🪙
+        <article class="policy-card">
+
+            <div class="policy-icon">
+                📜
+            </div>
+
+            <h3>
+                Normas
+            </h3>
+
+            <p>
+                Define las reglas que deben seguir los
+                usuarios cuando utilizan los sistemas
+                y recursos de la organización.
+            </p>
+
+        </article>
+
+
+        <article class="policy-card">
+
+            <div class="policy-icon">
+                🔐
+            </div>
+
+            <h3>
+                Protección
+            </h3>
+
+            <p>
+                Su finalidad es reducir riesgos y proteger
+                los equipos, servicios, cuentas y datos
+                de la organización.
+            </p>
+
+        </article>
+
+
+        <article class="policy-card">
+
+            <div class="policy-icon">
+                👤
+            </div>
+
+            <h3>
+                Responsabilidad
+            </h3>
+
+            <p>
+                Cada usuario debe utilizar únicamente
+                los recursos y permisos que le hayan
+                sido asignados.
+            </p>
+
+        </article>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     RESPUESTAS
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-code">
+        03 // POLICY ANALYSIS
+    </div>
+
+    <h2>
+        Resolución de las cuestiones
+    </h2>
+
+
+    <!-- PREGUNTA 1 -->
+
+    <article class="answer">
+
+        <div class="answer-header">
+
+            <div class="answer-number">
+                01
+            </div>
+
+            <h3>
+                ¿Se puede comer mientras se trabaja
+                con el ordenador?
+            </h3>
+
+        </div>
+
+
+        <div class="answer-body">
+
+            <span class="answer-result no">
+                ✕ NO RECOMENDADO / NO PERMITIDO
+            </span>
+
+            <p>
+
+                No se debe comer ni consumir alimentos
+                mientras se trabaja directamente con
+                los equipos informáticos.
+
+                Los restos de comida y, especialmente,
+                los líquidos pueden provocar daños
+                físicos en teclados, ordenadores y
+                otros dispositivos.
+
+            </p>
+
+        </div>
+
+    </article>
+
+
+    <!-- PREGUNTA 2 -->
+
+    <article class="answer">
+
+        <div class="answer-header">
+
+            <div class="answer-number">
+                02
+            </div>
+
+            <h3>
+                ¿Se puede sacar un ordenador
+                de la organización?
+            </h3>
+
+        </div>
+
+
+        <div class="answer-body">
+
+            <span class="answer-result conditional">
+                ⚠ SOLO CON AUTORIZACIÓN
+            </span>
+
+            <p>
+
+                Un equipo informático perteneciente
+                a la organización no debe retirarse
+                libremente de sus instalaciones.
+
+                Cuando sea necesario sacar el equipo,
+                debe existir la
+                <strong>
+                    autorización correspondiente
+                </strong>
+                y seguirse el procedimiento establecido
+                por la organización.
+
+            </p>
+
+        </div>
+
+    </article>
+
+
+    <!-- PREGUNTA 3 -->
+
+    <article class="answer">
+
+        <div class="answer-header">
+
+            <div class="answer-number">
+                03
+            </div>
+
+            <h3>
+                ¿Qué necesita un nuevo usuario,
+                además de su equipo?
+            </h3>
+
+        </div>
+
+
+        <div class="answer-body">
+
+            <span class="answer-result required">
+                ✓ IDENTIFICACIÓN Y ACCESO
+            </span>
+
+            <p>
+
+                Para comenzar a utilizar los sistemas,
+                el nuevo usuario debe disponer de una
+                <strong>
+                    cuenta de usuario
+                </strong>
+                y de las
+                <strong>
+                    credenciales de acceso
+                </strong>
+                correspondientes.
+
+                Los permisos deben ajustarse a las
+                funciones que vaya a desempeñar
+                dentro de la organización.
+
+            </p>
+
+        </div>
+
+    </article>
+
+
+    <!-- PREGUNTA 4 -->
+
+    <article class="answer">
+
+        <div class="answer-header">
+
+            <div class="answer-number">
+                04
+            </div>
+
+            <h3>
+                ¿Cualquier usuario puede instalar software?
+            </h3>
+
+        </div>
+
+
+        <div class="answer-body">
+
+            <span class="answer-result no">
+                ✕ ACCESO RESTRINGIDO
+            </span>
+
+            <p>
+
+                No. La instalación de programas debe
+                estar controlada por la organización.
+
+                El software debe estar
+                <strong>
+                    autorizado
+                </strong>
+                y su instalación debe realizarse por
+                usuarios con los permisos adecuados
+                o por el personal responsable de
+                los sistemas.
+
+            </p>
+
+        </div>
+
+    </article>
+
+
+    <!-- PREGUNTA 5 -->
+
+    <article class="answer">
+
+        <div class="answer-header">
+
+            <div class="answer-number">
+                05
+            </div>
+
+            <h3>
+                ¿Puede cualquier usuario buscar
+                vulnerabilidades en la red?
+            </h3>
+
+        </div>
+
+
+        <div class="answer-body">
+
+            <span class="answer-result no">
+                ✕ NO AUTORIZADO
+            </span>
+
+            <p>
+
+                No. Los usuarios no deben realizar
+                libremente exploraciones, escaneos
+                o pruebas destinadas a descubrir
+                vulnerabilidades en los sistemas
+                de la organización.
+
+                Estas operaciones deben ser realizadas
+                únicamente por
+                <strong>
+                    personal expresamente autorizado
+                </strong>
+                y dentro de los procedimientos
+                establecidos.
+
+            </p>
+
+        </div>
+
+    </article>
+
+
+</section>
+
+
+<!-- =====================================================
+     CICLO DE ACCESO
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-code">
+        04 // USER ACCESS FLOW
+    </div>
+
+    <h2>
+        Incorporación de un usuario
+    </h2>
+
+
+    <div class="flow">
+
+
+        <div class="flow-box">
+
+            <div class="flow-icon">
+                👤
             </div>
 
             <strong>
-                0.01 + 0.01 + ...
+                USUARIO
             </strong>
 
+            <small>
+                Nueva incorporación
+            </small>
+
         </div>
+
+
+        <div class="flow-box">
+
+            <div class="flow-icon">
+                🖥️
+            </div>
+
+            <strong>
+                EQUIPO
+            </strong>
+
+            <small>
+                Puesto de trabajo
+            </small>
+
+        </div>
+
+
+        <div class="flow-box">
+
+            <div class="flow-icon">
+                🔑
+            </div>
+
+            <strong>
+                CUENTA
+            </strong>
+
+            <small>
+                Identidad digital
+            </small>
+
+        </div>
+
+
+        <div class="flow-box">
+
+            <div class="flow-icon">
+                🛡️
+            </div>
+
+            <strong>
+                PERMISOS
+            </strong>
+
+            <small>
+                Acceso autorizado
+            </small>
+
+        </div>
+
+
+        <div class="flow-box">
+
+            <div class="flow-icon">
+                ✓
+            </div>
+
+            <strong>
+                ACCESO
+            </strong>
+
+            <small>
+                Recursos permitidos
+            </small>
+
+        </div>
+
 
     </div>
 
+</section>
 
-    <div class="panel definition-content">
 
-        <h3>
-            Muchas pequeñas alteraciones
-        </h3>
+<!-- =====================================================
+     PRINCIPIOS
+===================================================== -->
 
-        <p>
-            La técnica Salami consiste en realizar
-            <span class="red">
-                pequeñas modificaciones de forma repetida
+<section class="section">
+
+    <div class="section-code">
+        05 // ACCESS CONTROL
+    </div>
+
+    <h2>
+        Principios relacionados
+    </h2>
+
+
+    <div class="security-grid">
+
+
+        <article class="security-card">
+
+            <span>
+                PRINCIPLE_01
             </span>
-            sobre un gran número de operaciones.
-        </p>
 
-        <p>
-            Cada modificación puede ser tan pequeña que
-            individualmente resulte difícil de apreciar.
-        </p>
+            <h3>
+                Mínimo privilegio
+            </h3>
 
-        <p>
-            Sin embargo, cuando la misma acción se realiza
-            muchas veces, la
-            <span class="green">
-                suma de todas las pequeñas cantidades
+            <p>
+                Cada usuario debe disponer únicamente
+                de los permisos necesarios para realizar
+                sus funciones.
+            </p>
+
+        </article>
+
+
+        <article class="security-card">
+
+            <span>
+                PRINCIPLE_02
             </span>
-            puede convertirse en un valor significativo.
-        </p>
 
-        <p>
-            El nombre hace referencia a la idea de obtener
-            pequeñas «lonchas» de muchas operaciones en lugar
-            de realizar una única modificación de gran tamaño.
-        </p>
+            <h3>
+                Autorización
+            </h3>
+
+            <p>
+                Disponer de acceso al sistema no significa
+                estar autorizado para realizar cualquier
+                operación.
+            </p>
+
+        </article>
+
+
+        <article class="security-card">
+
+            <span>
+                PRINCIPLE_03
+            </span>
+
+            <h3>
+                Trazabilidad
+            </h3>
+
+            <p>
+                Las operaciones importantes deben poder
+                asociarse al usuario que las ha realizado.
+            </p>
+
+        </article>
+
 
     </div>
-
-</div>
 
 </section>
 
 
 <!-- =====================================================
-     EJEMPLO NUMÉRICO
+     TABLA RESUMEN
 ===================================================== -->
 
 <section class="section">
 
-<div class="section-label">
-    03 // EJEMPLO VISUAL
-</div>
-
-<h2>
-    Pequeño individualmente, grande al acumularse
-</h2>
-
-<div class="micro-flow">
-
-    <div class="micro">
-        <div class="micro-number">OPERACIÓN 001</div>
-        <div class="micro-value">0,01 €</div>
-        <small>cantidad mínima</small>
+    <div class="section-code">
+        06 // POLICY MATRIX
     </div>
 
-    <div class="micro">
-        <div class="micro-number">OPERACIÓN 002</div>
-        <div class="micro-value">0,01 €</div>
-        <small>cantidad mínima</small>
-    </div>
-
-    <div class="micro">
-        <div class="micro-number">OPERACIÓN 003</div>
-        <div class="micro-value">0,01 €</div>
-        <small>cantidad mínima</small>
-    </div>
-
-    <div class="micro">
-        <div class="micro-number">...</div>
-        <div class="micro-value">0,01 €</div>
-        <small>miles de veces</small>
-    </div>
-
-    <div class="micro">
-        <div class="micro-number">OPERACIÓN N</div>
-        <div class="micro-value">0,01 €</div>
-        <small>acumulación</small>
-    </div>
-
-</div>
-
-<div class="total">
-
-    0,01 € × 100.000 operaciones =
-    <strong>1.000 €</strong>
-
-</div>
-
-</section>
+    <h2>
+        Tabla resumen
+    </h2>
 
 
-<!-- =====================================================
-     PROCESO
-===================================================== -->
+    <div class="table-container">
 
-<section class="section">
+        <table>
 
-<div class="section-label">
-    04 // FUNCIONAMIENTO
-</div>
+            <thead>
 
-<h2>
-    Esquema conceptual
-</h2>
+                <tr>
+                    <th>ACCIÓN</th>
+                    <th>¿PERMITIDA?</th>
+                    <th>CONTROL</th>
+                </tr>
 
-<div class="attack-flow">
+            </thead>
 
-    <div class="flow-box">
 
-        <div class="flow-icon">
-            💳
-        </div>
+            <tbody>
 
-        <strong>
-            OPERACIONES
-        </strong>
+                <tr>
+                    <td>
+                        Comer junto al equipo
+                    </td>
 
-        <small>
-            Muchas transacciones
-        </small>
+                    <td class="bad">
+                        NO
+                    </td>
 
-    </div>
+                    <td>
+                        Protección física
+                    </td>
+                </tr>
 
-    <div class="arrow">
-        →
-    </div>
 
-    <div class="flow-box">
+                <tr>
+                    <td>
+                        Sacar un ordenador
+                    </td>
 
-        <div class="flow-icon">
-            ✂️
-        </div>
+                    <td class="control">
+                        CON AUTORIZACIÓN
+                    </td>
 
-        <strong>
-            MICROCAMBIO
-        </strong>
+                    <td>
+                        Control de activos
+                    </td>
+                </tr>
 
-        <small>
-            Cantidad muy pequeña
-        </small>
 
-    </div>
+                <tr>
+                    <td>
+                        Acceder al sistema
+                    </td>
 
-    <div class="arrow">
-        →
-    </div>
+                    <td class="good">
+                        SÍ
+                    </td>
 
-    <div class="flow-box">
+                    <td>
+                        Cuenta + credenciales
+                    </td>
+                </tr>
 
-        <div class="flow-icon">
-            🔁
-        </div>
 
-        <strong>
-            REPETICIÓN
-        </strong>
+                <tr>
+                    <td>
+                        Instalar software
+                    </td>
 
-        <small>
-            Miles de operaciones
-        </small>
+                    <td class="bad">
+                        RESTRINGIDO
+                    </td>
+
+                    <td>
+                        Personal autorizado
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>
+                        Escanear vulnerabilidades
+                    </td>
+
+                    <td class="bad">
+                        RESTRINGIDO
+                    </td>
+
+                    <td>
+                        Autorización expresa
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
 
     </div>
-
-    <div class="arrow">
-        →
-    </div>
-
-    <div class="flow-box">
-
-        <div class="flow-icon">
-            💰
-        </div>
-
-        <strong>
-            ACUMULACIÓN
-        </strong>
-
-        <small>
-            Resultado significativo
-        </small>
-
-    </div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     EJEMPLO
-===================================================== -->
-
-<section class="section">
-
-<div class="section-label">
-    05 // EJEMPLO
-</div>
-
-<h2>
-    Ejemplo conceptual
-</h2>
-
-<div class="example-grid">
-
-    <article class="example-card">
-
-        <div class="example-id">
-            NORMAL_OPERATION
-        </div>
-
-        <div class="example-icon">
-            🧾
-        </div>
-
-        <h3>
-            Operación legítima
-        </h3>
-
-        <p>
-            Un sistema procesa una gran cantidad de operaciones
-            económicas con importes diferentes.
-        </p>
-
-    </article>
-
-
-    <article class="example-card danger-card">
-
-        <div class="example-id">
-            UNAUTHORIZED_MODIFICATION
-        </div>
-
-        <div class="example-icon">
-            ⚠️
-        </div>
-
-        <h3>
-            Alteración no autorizada
-        </h3>
-
-        <p>
-            Una cantidad mínima es desviada o modificada
-            repetidamente. Cada cambio aislado puede parecer
-            insignificante, pero la suma final puede ser elevada.
-        </p>
-
-    </article>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     POR QUÉ PUEDE PASAR DESAPERCIBIDA
-===================================================== -->
-
-<section class="section">
-
-<div class="section-label">
-    06 // DETECCIÓN
-</div>
-
-<h2>
-    ¿Por qué puede pasar desapercibida?
-</h2>
-
-<div class="panel">
-
-    <p>
-        La característica principal de esta técnica es que
-        <span class="cyan">
-            cada modificación individual tiene un valor muy pequeño.
-        </span>
-    </p>
-
-    <br>
-
-    <p>
-        Una alteración de unos pocos céntimos puede no llamar la
-        atención de un usuario si observa una operación de manera
-        aislada.
-    </p>
-
-    <br>
-
-    <p>
-        El problema aparece cuando el mismo patrón se repite
-        sobre un número muy elevado de operaciones. Por ello,
-        para detectarlo no basta con analizar únicamente una
-        transacción: es necesario observar
-        <span class="green">
-            patrones repetitivos y acumulaciones.
-        </span>
-    </p>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     CID
-===================================================== -->
-
-<section class="section">
-
-<div class="section-label">
-    07 // SEGURIDAD DE LA INFORMACIÓN
-</div>
-
-<h2>
-    ¿Qué propiedad se compromete?
-</h2>
-
-<div class="security-grid">
-
-    <article class="security-card">
-
-        <span class="security-letter">
-            C
-        </span>
-
-        <h3>
-            Confidencialidad
-        </h3>
-
-        <p>
-            No es necesariamente el objetivo principal de la
-            técnica, aunque podría verse afectada dependiendo
-            del incidente.
-        </p>
-
-    </article>
-
-
-    <article class="security-card main-impact">
-
-        <span class="security-letter">
-            I
-        </span>
-
-        <h3>
-            ⚠ Integridad
-        </h3>
-
-        <p>
-            Es la propiedad principalmente comprometida porque
-            se producen modificaciones no autorizadas sobre
-            datos u operaciones.
-        </p>
-
-    </article>
-
-
-    <article class="security-card">
-
-        <span class="security-letter">
-            D
-        </span>
-
-        <h3>
-            Disponibilidad
-        </h3>
-
-        <p>
-            El sistema puede continuar funcionando, por lo que
-            normalmente no es la propiedad directamente atacada.
-        </p>
-
-    </article>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     CONTROLES
-===================================================== -->
-
-<section class="section">
-
-<div class="section-label">
-    08 // PREVENCIÓN Y DETECCIÓN
-</div>
-
-<h2>
-    ¿Cómo puede detectarse?
-</h2>
-
-<div class="controls">
-
-    <article class="control">
-
-        <div class="control-icon">
-            📋
-        </div>
-
-        <h3>
-            Auditoría
-        </h3>
-
-        <p>
-            Registrar y revisar las operaciones realizadas
-            sobre sistemas y datos.
-        </p>
-
-    </article>
-
-
-    <article class="control">
-
-        <div class="control-icon">
-            📊
-        </div>
-
-        <h3>
-            Análisis de patrones
-        </h3>
-
-        <p>
-            Detectar pequeñas modificaciones que se repiten
-            de forma anormal.
-        </p>
-
-    </article>
-
-
-    <article class="control">
-
-        <div class="control-icon">
-            👥
-        </div>
-
-        <h3>
-            Control de acceso
-        </h3>
-
-        <p>
-            Limitar quién puede modificar información
-            sensible y operaciones.
-        </p>
-
-    </article>
-
-
-    <article class="control">
-
-        <div class="control-icon">
-            🧾
-        </div>
-
-        <h3>
-            Trazabilidad
-        </h3>
-
-        <p>
-            Poder identificar quién realizó una operación,
-            cuándo se produjo y qué información fue modificada.
-        </p>
-
-    </article>
-
-</div>
 
 </section>
 
@@ -1576,62 +1989,91 @@ footer{
 
 <section class="section">
 
-<div class="section-label">
-    09 // MEMORY BLOCK
-</div>
-
-<h2>
-    EXAM MODE
-</h2>
-
-<div class="panel exam">
-
-    <div class="exam-title">
-        ⚠ CONCEPTOS PARA RECORDAR
+    <div class="section-code">
+        07 // MEMORY BLOCK
     </div>
 
-    <ul>
+    <h2>
+        EXAM MODE
+    </h2>
 
-        <li>
-            La <strong>técnica Salami</strong> se basa en realizar
-            pequeñas alteraciones repetidas.
-        </li>
 
-        <li>
-            Cada modificación individual puede ser
-            <strong>muy pequeña</strong> y difícil de apreciar.
-        </li>
+    <div class="panel exam">
 
-        <li>
-            El beneficio o perjuicio aparece por la
-            <strong>acumulación</strong> de muchas operaciones.
-        </li>
+        <div class="exam-title">
+            ⚠ CONCEPTOS IMPORTANTES
+        </div>
 
-        <li>
-            Un ejemplo típico es modificar o desviar
-            <strong>pequeñas cantidades económicas</strong>
-            en numerosas transacciones.
-        </li>
 
-        <li>
-            En términos de CID, la propiedad más claramente
-            afectada es la <strong>INTEGRIDAD</strong>.
-        </li>
+        <ul>
 
-        <li>
-            Para detectar este tipo de comportamiento es
-            importante analizar <strong>patrones</strong>, no
-            solamente operaciones aisladas.
-        </li>
+            <li>
+                Una política de seguridad establece
+                <strong>
+                    normas y procedimientos
+                </strong>
+                para proteger los recursos de una organización.
+            </li>
 
-        <li>
-            Auditoría, trazabilidad y control de acceso ayudan
-            a prevenir y detectar modificaciones no autorizadas.
-        </li>
+            <li>
+                Los equipos pertenecientes a la organización
+                no deben salir de ella sin
+                <strong>
+                    autorización
+                </strong>.
+            </li>
 
-    </ul>
+            <li>
+                Cada usuario debe disponer de su
+                <strong>
+                    propia cuenta y credenciales
+                </strong>.
+            </li>
 
-</div>
+            <li>
+                Los permisos deben concederse según
+                las necesidades del puesto de trabajo.
+            </li>
+
+            <li>
+                Un usuario no debe instalar software
+                libremente si no está autorizado.
+            </li>
+
+            <li>
+                Los escaneos y pruebas de vulnerabilidades
+                requieren
+                <strong>
+                    autorización expresa
+                </strong>.
+            </li>
+
+            <li>
+                <strong>
+                    Autenticación
+                </strong>
+                responde a “¿quién eres?”.
+            </li>
+
+            <li>
+                <strong>
+                    Autorización
+                </strong>
+                responde a “¿qué puedes hacer?”.
+            </li>
+
+            <li>
+                El
+                <strong>
+                    principio de mínimo privilegio
+                </strong>
+                limita los permisos a los estrictamente
+                necesarios.
+            </li>
+
+        </ul>
+
+    </div>
 
 </section>
 
@@ -1642,48 +2084,121 @@ footer{
 
 <section class="section">
 
-<div class="section-label">
-    10 // RESPUESTA DIRECTA
-</div>
+    <div class="section-code">
+        08 // RESPUESTA DIRECTA
+    </div>
 
-<h2>
-    Respuesta de la actividad
-</h2>
+    <h2>
+        Respuestas de la actividad
+    </h2>
 
-<div class="panel answer">
 
-    <h3>
-        Técnica Salami
-    </h3>
+    <div class="panel direct-answer">
 
-    <p>
-        La técnica Salami consiste en realizar
-        <strong>
-            pequeñas modificaciones o sustracciones de forma
-            repetida sobre un gran número de operaciones.
-        </strong>
-        Cada modificación individual tiene un valor tan reducido
-        que puede resultar difícil de detectar, pero la suma de
-        todas ellas puede producir un resultado considerable.
-    </p>
+        <p>
 
-    <p>
-        Por ejemplo, una alteración de unos pocos céntimos puede
-        parecer insignificante en una única operación. Sin embargo,
-        si se repite automáticamente sobre miles de operaciones,
-        el valor acumulado puede llegar a ser elevado.
-    </p>
+            <span class="num">1.</span>
 
-    <p>
-        Esta técnica compromete principalmente la
-        <strong>integridad de la información</strong>, ya que
-        supone modificar datos u operaciones sin autorización.
-        Para prevenirla y detectarla son importantes mecanismos
-        como la auditoría, la trazabilidad, el control de acceso
-        y el análisis de patrones anómalos.
-    </p>
+            <strong>
+                ¿El usuario puede/debe comer cuando trabaja
+                con el ordenador?
+            </strong>
 
-</div>
+            <br>
+
+            No. No se debe comer junto al equipo informático,
+            ya que los restos de alimentos y los líquidos
+            pueden provocar daños en los dispositivos.
+
+        </p>
+
+
+        <br>
+
+
+        <p>
+
+            <span class="num">2.</span>
+
+            <strong>
+                ¿Un ordenador se puede sacar de la organización?
+                ¿Qué hay que hacer?
+            </strong>
+
+            <br>
+
+            No debe sacarse libremente. Cuando sea necesario
+            retirar un equipo de la organización debe existir
+            la autorización correspondiente y seguirse el
+            procedimiento establecido para la salida del activo.
+
+        </p>
+
+
+        <br>
+
+
+        <p>
+
+            <span class="num">3.</span>
+
+            <strong>
+                Para comenzar a trabajar, ¿de qué debe disponer
+                un nuevo usuario además de su equipo?
+            </strong>
+
+            <br>
+
+            Debe disponer de una cuenta de usuario, sus
+            credenciales de acceso y los permisos necesarios
+            para desarrollar sus funciones.
+
+        </p>
+
+
+        <br>
+
+
+        <p>
+
+            <span class="num">4.</span>
+
+            <strong>
+                ¿Cualquier usuario puede instalar nuevo software?
+            </strong>
+
+            <br>
+
+            No. La instalación de software debe estar
+            autorizada y realizarse con los permisos
+            correspondientes o por el personal responsable
+            de los sistemas.
+
+        </p>
+
+
+        <br>
+
+
+        <p>
+
+            <span class="num">5.</span>
+
+            <strong>
+                ¿Los usuarios pueden explorar libremente
+                la red en busca de vulnerabilidades?
+            </strong>
+
+            <br>
+
+            No. Las exploraciones, escaneos y pruebas de
+            vulnerabilidades deben ser realizadas únicamente
+            por personal autorizado y siguiendo los
+            procedimientos de seguridad establecidos.
+
+        </p>
+
+    </div>
 
 </section>
 
@@ -1692,161 +2207,294 @@ footer{
      TERMINAL
 ===================================================== -->
 
-<div class="terminal">
+<section class="terminal">
 
-<div class="terminal-top">
+    <div class="terminal-bar">
 
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
+        <span class="dot red-dot"></span>
+        <span class="dot yellow-dot"></span>
+        <span class="dot green-dot"></span>
 
-    <span class="terminal-title">
-        mcs-security@fraud-monitor
-    </span>
+        <span class="terminal-title">
+            MCS Security Policy Terminal
+        </span>
 
-</div>
-
-<div class="terminal-body">
-
-    <div>
-        <span class="prompt">mcs@security:~$</span>
-        analyse --transactions --pattern
     </div>
 
-    <br>
 
-    <div>
-        > Transaction 00001......
-        0.01
+    <div class="terminal-body">
+
+        <span class="prompt">
+            miguel@security:~$
+        </span>
+
+        policy --check user
+
+        <br>
+
+        USER_ACCOUNT ..............
+        <span class="ok">REQUIRED</span>
+
+        <br>
+
+        SOFTWARE_INSTALL ..........
+        <span class="term-red">RESTRICTED</span>
+
+        <br>
+
+        ASSET_REMOVAL .............
+        <span class="warn">AUTHORIZATION REQUIRED</span>
+
+        <br>
+
+        NETWORK_SCANNING ..........
+        <span class="term-red">RESTRICTED</span>
+
+        <br>
+
+        LEAST_PRIVILEGE ...........
+        <span class="ok">ENABLED</span>
+
+        <br><br>
+
+        <span class="prompt">
+            miguel@security:~$
+        </span>
+
+        <span class="term-cyan">
+            POLICY CHECK COMPLETE_
+        </span>
+
     </div>
 
-    <div>
-        > Transaction 00002......
-        0.01
-    </div>
+</section>
 
-    <div>
-        > Transaction 00003......
-        0.01
-    </div>
-
-    <div>
-        > Repeated operations.....
-        100000
-    </div>
-
-    <br>
-
-    <div class="term-red">
-        > SALAMI PATTERN...........
-        DETECTED
-    </div>
-
-    <div class="term-red">
-        > INTEGRITY...............
-        COMPROMISED
-    </div>
-
-    <div class="term-gold">
-        > ACTION..................
-        AUDIT REQUIRED
-    </div>
-
-    <br>
-
-    <div>
-        <span class="prompt">mcs@security:~$</span>
-        <span class="cursor"></span>
-    </div>
-
-</div>
-
-</div>
 
 </main>
 
 
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
 <footer>
 
-<div>
-    MCS SECURITY SYSTEM · SEC-ACT-008
-</div>
+    <span>
+        SEGURETAT I ALTA DISPONIBILITAT · SEC-ACT-009
+    </span>
 
-<div>
-    MIGUEL · ASIX 2026/2027
-</div>
+    <span>
+        MIGUEL · ASIX 2026/2027
+    </span>
 
 </footer>
 
 
 <script>
 
-/* =====================================================
-   BOOT
-===================================================== */
+/* =========================================================
+   FONDO SECURITY NETWORK
+========================================================= */
 
-window.addEventListener("load",function(){
+const canvas =
+    document.getElementById("securityCanvas");
 
-    setTimeout(function(){
+const ctx =
+    canvas.getContext("2d");
 
-        document
-            .getElementById("boot")
-            .classList.add("hide");
-
-    },2300);
-
-});
+let particles=[];
 
 
-/* =====================================================
-   MATRIX
-===================================================== */
+function resize(){
 
-const matrix =
-    document.getElementById("matrix");
+    canvas.width =
+        window.innerWidth;
 
-const chars = [
-    "0",
-    "1",
-    "0.01",
-    "TX",
-    "SALAMI",
-    "DATA",
-    "AUDIT",
-    "LOG",
-    "CID",
-    "I",
-    "01",
-    "10"
-];
-
-for(let i=0;i<55;i++){
-
-    const item =
-        document.createElement("span");
-
-    item.innerText =
-        chars[
-            Math.floor(
-                Math.random()*chars.length
-            )
-        ];
-
-    item.style.left =
-        Math.random()*100+"%";
-
-    item.style.animationDuration =
-        (5+Math.random()*10)+"s";
-
-    item.style.animationDelay =
-        (-Math.random()*12)+"s";
-
-    item.style.opacity =
-        Math.random();
-
-    matrix.appendChild(item);
+    canvas.height =
+        window.innerHeight;
 
 }
+
+resize();
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+function createParticles(){
+
+    particles=[];
+
+    const amount =
+        window.innerWidth < 700
+        ? 28
+        : 55;
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        particles.push({
+
+            x:
+                Math.random()*
+                canvas.width,
+
+            y:
+                Math.random()*
+                canvas.height,
+
+            vx:
+                (Math.random()-.5)*
+                .17,
+
+            vy:
+                (Math.random()-.5)*
+                .17,
+
+            r:
+                Math.random()*
+                1.3+
+                .4
+
+        });
+
+    }
+
+}
+
+createParticles();
+
+window.addEventListener(
+    "resize",
+    createParticles
+);
+
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    particles.forEach(p=>{
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+
+        if(
+            p.x<0 ||
+            p.x>canvas.width
+        ){
+            p.vx *= -1;
+        }
+
+
+        if(
+            p.y<0 ||
+            p.y>canvas.height
+        ){
+            p.vy *= -1;
+        }
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.r,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle =
+            "rgba(245,185,66,.25)";
+
+        ctx.fill();
+
+    });
+
+
+    for(
+        let i=0;
+        i<particles.length;
+        i++
+    ){
+
+        for(
+            let j=i+1;
+            j<particles.length;
+            j++
+        ){
+
+            const dx =
+                particles[i].x -
+                particles[j].x;
+
+            const dy =
+                particles[i].y -
+                particles[j].y;
+
+            const distance =
+                Math.sqrt(
+                    dx*dx+
+                    dy*dy
+                );
+
+
+            if(distance<125){
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    particles[i].x,
+                    particles[i].y
+                );
+
+                ctx.lineTo(
+                    particles[j].x,
+                    particles[j].y
+                );
+
+                const opacity =
+                    .045*
+                    (
+                        1-
+                        distance/125
+                    );
+
+                ctx.strokeStyle =
+                    "rgba(0,234,255,"+
+                    opacity+
+                    ")";
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+animate();
 
 </script>
 
