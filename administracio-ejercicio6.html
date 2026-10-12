@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 1.6 | Políticas Locales de Windows</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#07090b;
+    --panel:#101418;
+    --amber:#ffb000;
+    --amber2:#ffd166;
+    --green:#65ff8f;
+    --cyan:#42d9ff;
+    --white:#e8edf0;
+    --muted:#87929a;
+    --border:rgba(255,255,255,.09);
+    --red:#ff6b6b;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#07090b;
+    color:var(--white);
+    font-family:"Segoe UI",Arial,sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+}
+
+.bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+
+    background:
+        radial-gradient(
+            circle at 12% 10%,
+            rgba(255,176,0,.08),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 55%,
+            rgba(66,217,255,.07),
+            transparent 32%
+        ),
+        linear-gradient(
+            #07090bd9,
+            #07090bfa
+        );
+}
+
+.scan{
+    position:fixed;
+    inset:0;
+
+    z-index:99;
+
+    pointer-events:none;
+
+    opacity:.11;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            rgba(255,255,255,.025) 4px
+        );
+}
+
+header,
+main,
+footer{
+    width:92%;
+    max-width:1120px;
+    margin:auto;
+}
+
+.top{
+    padding:30px 0;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.back{
+    color:#78838b;
+
+    text-decoration:none;
+
+    font:11px Consolas,monospace;
+
+    letter-spacing:1px;
+}
+
+.back:hover{
+    color:var(--amber);
+}
+
+.online{
+    color:var(--green);
+
+    font:10px Consolas,monospace;
+
+    letter-spacing:2px;
+}
+
+.online:before{
+    content:"";
+
+    display:inline-block;
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 10px var(--green);
+
+    margin-right:8px;
+}
+
+.hero{
+    padding:35px 0 45px;
+}
+
+.eyebrow{
+    color:var(--amber);
+
+    font:11px Consolas,monospace;
+
+    letter-spacing:4px;
+
+    margin-bottom:10px;
+}
+
+h1{
+    font-size:clamp(38px,6vw,64px);
+
+    line-height:1.02;
+
+    letter-spacing:-2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #ffd98a,
+            var(--amber)
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.lead{
+    max-width:850px;
+
+    color:var(--muted);
+
+    margin-top:20px;
+
+    font-size:15px;
+}
+
+.chips{
+    display:flex;
+
+    gap:9px;
+
+    flex-wrap:wrap;
+
+    margin-top:24px;
+}
+
+.chip{
+    border:1px solid var(--border);
+
+    background:#101418cc;
+
+    border-radius:5px;
+
+    padding:7px 10px;
+
+    font:10px Consolas,monospace;
+
+    color:#9aa4ab;
+}
+
+.chip strong{
+    color:var(--green);
+}
+
+.summary{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:12px;
+
+    margin-bottom:35px;
+}
+
+.card,
+.section{
+    border:1px solid var(--border);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(17,21,25,.95),
+            rgba(9,12,14,.95)
+        );
+
+    border-radius:12px;
+}
+
+.card{
+    padding:16px;
+}
+
+.card small{
+    display:block;
+
+    color:#5f6a72;
+
+    font:8px Consolas,monospace;
+
+    letter-spacing:2px;
+
+    margin-bottom:6px;
+}
+
+.card strong{
+    font:11px Consolas,monospace;
+}
+
+.section{
+    padding:28px;
+
+    margin:15px 0;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.section:before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:3px;
+    height:100%;
+
+    background:rgba(255,176,0,.55);
+}
+
+.num{
+    color:var(--amber);
+
+    font:10px Consolas,monospace;
+
+    letter-spacing:3px;
+
+    margin-bottom:6px;
+}
+
+h2{
+    font-size:25px;
+
+    margin-bottom:9px;
+}
+
+.section p{
+    color:#a0aab1;
+}
+
+.path{
+    margin:17px 0;
+
+    padding:14px 16px;
+
+    border:
+        1px solid rgba(66,217,255,.14);
+
+    border-radius:8px;
+
+    background:#05090c;
+
+    color:var(--cyan);
+
+    font:12px Consolas,monospace;
+
+    overflow:auto;
+}
+
+.setting{
+    display:grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    gap:12px;
+
+    margin:10px 0;
+
+    padding:12px 14px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid rgba(255,255,255,.055);
+
+    border-radius:7px;
+}
+
+.setting span{
+    color:#a9b2b8;
+}
+
+.setting b{
+    color:var(--green);
+
+    font-family:
+        Consolas,
+        monospace;
+}
+
+.shot{
+    margin-top:20px;
+
+    border:
+        1px solid rgba(255,176,0,.18);
+
+    border-radius:10px;
+
+    background:#050708;
+
+    padding:10px;
+}
+
+.shot img{
+    display:block;
+
+    width:100%;
+
+    max-height:610px;
+
+    object-fit:contain;
+
+    border-radius:6px;
+
+    background:#000;
+}
+
+.caption{
+    padding:9px 4px 2px;
+
+    color:#66727a;
+
+    font:10px Consolas,monospace;
+}
+
+.note,
+.exam{
+    margin-top:17px;
+
+    padding:15px 17px;
+
+    border-radius:8px;
+}
+
+.note{
+    background:
+        rgba(66,217,255,.045);
+
+    border:
+        1px solid rgba(66,217,255,.15);
+
+    color:#9eabb3;
+}
+
+.exam{
+    background:
+        rgba(255,176,0,.045);
+
+    border:
+        1px solid rgba(255,176,0,.18);
+}
+
+.exam strong{
+    color:var(--amber2);
+}
+
+code{
+    font-family:
+        Consolas,
+        monospace;
+
+    color:var(--green);
+}
+
+.compare{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:14px;
+
+    margin-top:17px;
+}
+
+.compare > div{
+    padding:18px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:9px;
+
+    background:#080b0d;
+}
+
+.compare h3{
+    color:var(--cyan);
+
+    font:15px Consolas,monospace;
+
+    margin-bottom:8px;
+}
+
+.table-wrap{
+    overflow:auto;
+
+    margin-top:17px;
+}
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:720px;
+}
+
+th,
+td{
+    padding:12px;
+
+    border-bottom:
+        1px solid var(--border);
+
+    text-align:left;
+}
+
+th{
+    color:var(--amber);
+
+    font:10px Consolas,monospace;
+
+    letter-spacing:1px;
+}
+
+td{
+    color:#9ca7ae;
+
+    font-size:13px;
+}
+
+.ok{
+    color:var(--green);
+
+    font-family:
+        Consolas,
+        monospace;
+}
+
+.terminal{
+    margin:25px 0 55px;
+
+    border:
+        1px solid rgba(101,255,143,.15);
+
+    border-radius:10px;
+
+    background:#030604;
+
+    padding:20px;
+
+    color:var(--green);
+
+    font:12px Consolas,monospace;
+
+    line-height:1.9;
+}
+
+.prompt{
+    color:var(--amber);
+}
+
+footer{
+    border-top:
+        1px solid var(--border);
+
+    padding:25px 0 40px;
+
+    color:#4d575e;
+
+    font:9px Consolas,monospace;
+
+    display:flex;
+
+    justify-content:space-between;
+}
+
+@media(max-width:800px){
+
+    .summary{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .compare{
+        grid-template-columns:1fr;
+    }
+
+    .setting{
+        grid-template-columns:1fr;
+    }
+
+    .section{
+        padding:20px;
+    }
+}
+
+@media(max-width:520px){
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .top{
+        align-items:flex-start;
+
+        gap:15px;
+    }
+
+    footer{
+        flex-direction:column;
+
+        gap:6px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="scan"></div>
+
+<header>
+
+<div class="top">
+
+    <a
+        class="back"
+        href="administracio.html"
+    >
+        ← ADMINISTRACIÓ DE SISTEMES
+    </a>
+
+    <div class="online">
+        POLICY ENGINE ONLINE
+    </div>
+
+</div>
+
+
+<section class="hero">
+
+    <div class="eyebrow">
+        // SYS-ACT-006 · WINDOWS POLICY LAB
+    </div>
+
+    <h1>
+        Políticas Locales<br>
+        de Windows
+    </h1>
+
+    <p class="lead">
+        Aplicación de políticas mediante
+        <strong>gpedit.msc</strong>
+        y
+        <strong>secpol.msc</strong>
+        en Windows 11 Pro.
+        Se configuran restricciones de usuario
+        y equipo, seguridad, almacenamiento USB,
+        inicio de sesión, contraseñas y bloqueo
+        de cuenta.
+    </p>
+
+    <div class="chips">
+
+        <span class="chip">
+            <strong>OS</strong>
+            Windows 11 Pro
+        </span>
+
+        <span class="chip">
+            <strong>TOOLS</strong>
+            gpedit.msc + secpol.msc
+        </span>
+
+        <span class="chip">
+            <strong>APPLY</strong>
+            gpupdate /force
+        </span>
+
+        <span class="chip">
+            <strong>STATUS</strong>
+            COMPLETADA
+        </span>
+
+    </div>
+
+</section>
+
+</header>
+
+
+<main>
+
+
+<section class="summary">
+
+    <div class="card">
+        <small>ACTIVIDAD</small>
+        <strong style="color:var(--amber)">
+            1.6
+        </strong>
+    </div>
+
+    <div class="card">
+        <small>ÁMBITO</small>
+        <strong>
+            LOCAL POLICY
+        </strong>
+    </div>
+
+    <div class="card">
+        <small>PLATAFORMA</small>
+        <strong style="color:var(--cyan)">
+            WINDOWS 11 PRO
+        </strong>
+    </div>
+
+    <div class="card">
+        <small>RESULTADO</small>
+        <strong style="color:var(--green)">
+            ● APLICADO
+        </strong>
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 00 · HERRAMIENTAS                                    -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        00 · HERRAMIENTAS
+    </div>
+
+    <h2>
+        gpedit.msc vs secpol.msc
+    </h2>
+
+    <p>
+        Las dos consolas administran políticas
+        locales, pero no tienen exactamente
+        el mismo alcance.
+    </p>
+
+    <div class="compare">
+
+        <div>
+
+            <h3>
+                gpedit.msc
+            </h3>
+
+            <p>
+                <strong>
+                    Editor de directivas de grupo local.
+                </strong>
+
+                Permite configurar directivas de
+                equipo y de usuario, incluidas las
+                Plantillas administrativas.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                secpol.msc
+            </h3>
+
+            <p>
+                <strong>
+                    Directiva de seguridad local.
+                </strong>
+
+                Está centrada en opciones de seguridad,
+                contraseñas, bloqueo de cuenta y otras
+                políticas de seguridad.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="exam">
+
+        <strong>EXAMEN:</strong>
+
+        Configuración del equipo afecta al ordenador;
+        Configuración de usuario se aplica al usuario.
+
+        Una política de usuario no debe confundirse
+        con una política de equipo.
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 01 · BLOQUEO AUTOMÁTICO                              -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        01 · SEGURIDAD
+    </div>
+
+    <h2>
+        Bloqueo automático por inactividad
+    </h2>
+
+    <div class="path">
+        secpol.msc →
+        Directivas locales →
+        Opciones de seguridad →
+        Inicio de sesión interactivo:
+        Límite de inactividad del equipo
+    </div>
+
+    <div class="setting">
+
+        <span>
+            Límite configurado para la práctica
+        </span>
+
+        <b>
+            60 segundos
+        </b>
+
+    </div>
+
+    <p>
+        Se utilizó un minuto como valor de laboratorio
+        para facilitar la comprobación.
+
+        El enunciado exige el bloqueo automático,
+        pero no fija un tiempo concreto.
+    </p>
+
+    <div class="shot">
+
+        <img
+            src="media/act6-01-bloqueo.PNG"
+            alt="Bloqueo automático"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Configuración del límite de inactividad.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 02 · PANEL DE CONTROL                                -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        02 · USUARIOS
+    </div>
+
+    <h2>
+        Bloquear el acceso al Panel de control
+    </h2>
+
+    <div class="path">
+        gpedit.msc →
+        Configuración de usuario →
+        Plantillas administrativas →
+        Panel de control
+    </div>
+
+    <div class="setting">
+
+        <span>
+            Prohibir el acceso al Panel de control
+            y a Configuración de PC
+        </span>
+
+        <b>
+            HABILITADA
+        </b>
+
+    </div>
+
+    <p>
+        La restricción se encuentra en
+        <strong>Configuración de usuario</strong>.
+
+        Tras aplicar la política,
+        el acceso al Panel de control
+        queda restringido.
+    </p>
+
+    <div class="shot">
+
+        <img
+            src="media/act6-02-panel-control.PNG"
+            alt="Panel de control bloqueado"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Directiva de acceso al Panel
+            de control habilitada.
+        </div>
+
+    </div>
+
+
+    <div class="shot">
+
+        <img
+            src="media/act6-09-panel-bloqueado.PNG"
+            alt="Resultado panel bloqueado"
+        >
+
+        <div class="caption">
+            VERIFICACIÓN · Windows impide el acceso
+            tras aplicar la política.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 03 · FONDO DE ESCRITORIO                             -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        03 · USUARIOS
+    </div>
+
+    <h2>
+        Impedir cambiar el fondo de escritorio
+    </h2>
+
+    <div class="path">
+        gpedit.msc →
+        Configuración de usuario →
+        Plantillas administrativas →
+        Panel de control →
+        Personalización
+    </div>
+
+    <div class="setting">
+
+        <span>
+            Impedir cambiar el fondo de pantalla
+        </span>
+
+        <b>
+            HABILITADA
+        </b>
+
+    </div>
+
+    <p>
+        La política evita que el usuario modifique
+        el fondo del escritorio.
+
+        La evidencia muestra la directiva habilitada
+        en el Editor de directivas de grupo local.
+    </p>
+
+    <div class="shot">
+
+        <img
+            src="media/act6-10-fondo-bloqueado.PNG"
+            alt="Impedir cambiar fondo"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Restricción de cambio
+            del fondo habilitada.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 04 · USB                                             -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        04 · DISPOSITIVOS
+    </div>
+
+    <h2>
+        Almacenamiento USB en solo lectura
+    </h2>
+
+    <div class="path">
+        gpedit.msc →
+        Configuración del equipo →
+        Plantillas administrativas →
+        Sistema →
+        Acceso de almacenamiento extraíble
+    </div>
+
+    <div class="setting">
+
+        <span>
+            Discos extraíbles:
+            denegar acceso de escritura
+        </span>
+
+        <b>
+            HABILITADA
+        </b>
+
+    </div>
+
+    <p>
+        Se deniega la
+        <strong>escritura</strong>
+        en discos extraíbles.
+
+        Esto no equivale a denegar todo acceso:
+        la finalidad es permitir la lectura
+        e impedir que el usuario escriba datos
+        en el dispositivo.
+    </p>
+
+    <div class="shot">
+
+        <img
+            src="media/act6-04-usb.PNG"
+            alt="USB solo lectura"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Denegación de escritura
+            en discos extraíbles.
+        </div>
+
+    </div>
+
+    <div class="exam">
+
+        <strong>CLAVE:</strong>
+
+        «Denegar acceso de escritura»
+        ≠
+        «Denegar todo acceso».
+
+        La primera opción es la adecuada para
+        dejar el almacenamiento en modo
+        de solo lectura.
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 05 · MENSAJE DE INICIO                               -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        05 · INICIO DE SESIÓN
+    </div>
+
+    <h2>
+        Mensaje corporativo
+    </h2>
+
+    <div class="path">
+        secpol.msc →
+        Directivas locales →
+        Opciones de seguridad →
+        Inicio de sesión interactivo
+    </div>
+
+    <div class="setting">
+
+        <span>
+            Texto del mensaje
+        </span>
+
+        <b>
+            CONFIGURADO
+        </b>
+
+    </div>
+
+    <div class="note">
+
+        Texto solicitado:
+
+        <strong>
+            “Va a iniciar sesión en un equipo
+            de la empresa X. Bienvenido”
+        </strong>.
+
+        Para facilitar su visualización durante
+        la comprobación se configuró además
+        el título
+
+        <strong>
+            “Aviso de seguridad”
+        </strong>.
+
+    </div>
+
+    <div class="shot">
+
+        <img
+            src="media/act6-05-mensaje.PNG"
+            alt="Configuración mensaje"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Configuración del texto
+            del mensaje de inicio de sesión.
+        </div>
+
+    </div>
+
+
+    <div class="shot">
+
+        <img
+            src="media/act6-12-mensaje-login.PNG"
+            alt="Mensaje de inicio de sesión"
+        >
+
+        <div class="caption">
+            VERIFICACIÓN · Mensaje mostrado
+            al iniciar sesión.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 06 · CONTRASEÑAS                                     -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        06 · CONTRASEÑAS
+    </div>
+
+    <h2>
+        Política de contraseñas
+    </h2>
+
+    <div class="path">
+        secpol.msc →
+        Directivas de cuenta →
+        Directiva de contraseñas
+    </div>
+
+    <div class="setting">
+
+        <span>
+            Longitud mínima de la contraseña
+        </span>
+
+        <b>
+            10 caracteres
+        </b>
+
+    </div>
+
+
+    <div class="setting">
+
+        <span>
+            Requisitos de complejidad
+        </span>
+
+        <b>
+            HABILITADOS
+        </b>
+
+    </div>
+
+
+    <div class="setting">
+
+        <span>
+            Vigencia máxima
+        </span>
+
+        <b>
+            90 días
+        </b>
+
+    </div>
+
+
+    <div class="shot">
+
+        <img
+            src="media/act6-06-password.PNG"
+            alt="Política de contraseñas"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Valores de la política
+            de contraseñas.
+        </div>
+
+    </div>
+
+
+    <div class="exam">
+
+        <strong>MEMORIA:</strong>
+
+        longitud = número mínimo de caracteres;
+
+        complejidad = requisitos de composición;
+
+        vigencia máxima = tiempo máximo antes
+        de exigir un cambio.
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 07 · BLOQUEO DE CUENTA                               -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        07 · BLOQUEO DE CUENTA
+    </div>
+
+    <h2>
+        Protección ante intentos incorrectos
+    </h2>
+
+    <div class="path">
+        secpol.msc →
+        Directivas de cuenta →
+        Directiva de bloqueo de cuenta
+    </div>
+
+
+    <div class="setting">
+
+        <span>
+            Umbral de bloqueo
+        </span>
+
+        <b>
+            3 intentos
+        </b>
+
+    </div>
+
+
+    <div class="setting">
+
+        <span>
+            Duración del bloqueo
+        </span>
+
+        <b>
+            5 minutos
+        </b>
+
+    </div>
+
+
+    <div class="setting">
+
+        <span>
+            Restablecer contador después de
+        </span>
+
+        <b>
+            5 minutos
+        </b>
+
+    </div>
+
+
+    <p>
+        El enunciado fija los dos valores de
+        <strong>5 minutos</strong>,
+        pero no indica cuántos intentos incorrectos
+        deben provocar el bloqueo.
+
+        Para el laboratorio se eligió de forma
+        explícita un umbral de
+        <strong>3 intentos</strong>.
+    </p>
+
+
+    <div class="shot">
+
+        <img
+            src="media/act6-07-bloqueo-cuenta.PNG"
+            alt="Bloqueo de cuenta"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Política de bloqueo
+            de cuenta configurada.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 08 · GPUPDATE                                        -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        08 · APLICACIÓN
+    </div>
+
+    <h2>
+        Forzar actualización de las políticas
+    </h2>
+
+    <p>
+        Una vez configuradas las directivas,
+        se fuerza su actualización desde una
+        consola con privilegios administrativos.
+    </p>
+
+
+    <div class="path">
+
+        <span style="color:var(--amber)">
+            C:\&gt;
+        </span>
+
+        gpupdate /force
+
+    </div>
+
+
+    <div class="shot">
+
+        <img
+            src="media/act6-08-gpupdate.PNG"
+            alt="gpupdate force"
+        >
+
+        <div class="caption">
+            EVIDENCIA · Actualización forzada
+            de directivas de equipo y usuario.
+        </div>
+
+    </div>
+
+
+    <div class="note">
+
+        Algunas políticas pueden requerir
+        cerrar sesión o reiniciar Windows
+        para que el efecto sea visible.
+
+        El mensaje de inicio de sesión
+        se comprobó correctamente
+        después del reinicio.
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 09 · RESUMEN                                         -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        09 · VERIFICACIÓN
+    </div>
+
+    <h2>
+        Resumen final
+    </h2>
+
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>POLÍTICA</th>
+                    <th>HERRAMIENTA</th>
+                    <th>ÁMBITO</th>
+                    <th>ESTADO</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+                    <td>Bloqueo automático</td>
+                    <td>secpol.msc</td>
+                    <td>Equipo / seguridad</td>
+                    <td class="ok">APLICADA</td>
+                </tr>
+
+                <tr>
+                    <td>Bloquear Panel de control</td>
+                    <td>gpedit.msc</td>
+                    <td>Usuario</td>
+                    <td class="ok">VERIFICADA</td>
+                </tr>
+
+                <tr>
+                    <td>Impedir cambiar fondo</td>
+                    <td>gpedit.msc</td>
+                    <td>Usuario</td>
+                    <td class="ok">APLICADA</td>
+                </tr>
+
+                <tr>
+                    <td>USB solo lectura</td>
+                    <td>gpedit.msc</td>
+                    <td>Equipo</td>
+                    <td class="ok">APLICADA</td>
+                </tr>
+
+                <tr>
+                    <td>Mensaje de inicio</td>
+                    <td>secpol.msc</td>
+                    <td>Seguridad</td>
+                    <td class="ok">VERIFICADA</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Contraseña 10 /
+                        complejidad /
+                        90 días
+                    </td>
+                    <td>secpol.msc</td>
+                    <td>Cuenta</td>
+                    <td class="ok">APLICADA</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Bloqueo 3 intentos /
+                        5 min /
+                        reset 5 min
+                    </td>
+                    <td>secpol.msc</td>
+                    <td>Cuenta</td>
+                    <td class="ok">APLICADA</td>
+                </tr>
+
+                <tr>
+                    <td>Actualización de políticas</td>
+                    <td>gpupdate</td>
+                    <td>Equipo + usuario</td>
+                    <td class="ok">COMPLETADA</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 10 · EXAM MODE                                       -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="num">
+        10 · EXAM MODE
+    </div>
+
+    <h2>
+        Lo que hay que recordar
+    </h2>
+
+
+    <div class="exam">
+
+        <strong>1.</strong>
+        <code>gpedit.msc</code>
+        = Editor de directivas de grupo local.
+
+        <br><br>
+
+        <strong>2.</strong>
+        <code>secpol.msc</code>
+        = Directiva de seguridad local.
+
+        <br><br>
+
+        <strong>3.</strong>
+        Las restricciones de Panel de control
+        y fondo usadas aquí están en
+        <strong>Configuración de usuario</strong>.
+
+        <br><br>
+
+        <strong>4.</strong>
+        La restricción USB está en
+        <strong>Configuración del equipo</strong>.
+
+        <br><br>
+
+        <strong>5.</strong>
+        Contraseñas y bloqueo de cuenta
+        están en
+        <strong>Directivas de cuenta</strong>.
+
+        <br><br>
+
+        <strong>6.</strong>
+        <code>gpupdate /force</code>
+        fuerza la actualización
+        de las directivas.
+
+        <br><br>
+
+        <strong>7.</strong>
+        Habilitar una directiva no siempre
+        implica efecto visual inmediato:
+        algunas requieren cerrar sesión
+        o reiniciar.
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- TERMINAL FINAL                                       -->
+<!-- ===================================================== -->
+
+<div class="terminal">
+
+    <span class="prompt">
+        miguel@asix:~$
+    </span>
+
+    policy-check --activity 06
+
+    <br>
+
+    gpedit.msc ...............
+    <span class="ok">
+        OK
+    </span>
+
+    <br>
+
+    secpol.msc ...............
+    <span class="ok">
+        OK
+    </span>
+
+    <br>
+
+    gpupdate /force ..........
+    <span class="ok">
+        OK
+    </span>
+
+    <br>
+
+    SYS-ACT-006 ..............
+    <span class="ok">
+        COMPLETED
+    </span>
+
+</div>
+
+
+</main>
+
+
+<footer>
+
+    <span>
+        ADMINISTRACIÓ DE SISTEMES · ASIX
+    </span>
+
+    <span>
+        MIGUEL · 2026/2027
+    </span>
+
+</footer>
+
+
+</body>
+</html>
