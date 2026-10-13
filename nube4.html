@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Actividad 4 | Zonas de Disponibilidad AWS - MCS Cloud Command Center</title>
+
+<style>
+:root{
+    --bg:#040914;
+    --panel:#091321;
+    --panel2:#0d1a2b;
+    --aws:#ff9900;
+    --cyan:#00e5ff;
+    --green:#39ff88;
+    --purple:#b77cff;
+    --red:#ff5570;
+    --yellow:#ffd166;
+    --text:#eaf6ff;
+    --muted:#8fa9bd;
+    --border:#19364d;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:
+        radial-gradient(circle at 15% 10%,rgba(0,229,255,.08),transparent 30%),
+        radial-gradient(circle at 85% 20%,rgba(255,153,0,.07),transparent 30%),
+        radial-gradient(circle at 50% 80%,rgba(183,124,255,.05),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    line-height:1.65;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(0,229,255,.022) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,229,255,.022) 1px,transparent 1px);
+    background-size:35px 35px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+}
+
+/* HERO */
+
+header{
+    min-height:90vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:60px 20px;
+    border-bottom:1px solid var(--border);
+}
+
+.hero{
+    max-width:1050px;
+}
+
+.badge{
+    display:inline-block;
+    border:1px solid var(--aws);
+    color:var(--aws);
+    padding:7px 18px;
+    border-radius:50px;
+    font-family:Consolas,monospace;
+    font-size:.82rem;
+    letter-spacing:2px;
+    margin-bottom:22px;
+    box-shadow:0 0 22px rgba(255,153,0,.12);
+}
+
+h1{
+    font-size:clamp(2.8rem,7vw,5.8rem);
+    line-height:.95;
+    letter-spacing:-4px;
+    margin:0;
+}
+
+h1 span{
+    color:var(--aws);
+}
+
+.subtitle{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    margin-top:22px;
+    font-size:1.1rem;
+    letter-spacing:1px;
+}
+
+.hero p{
+    max-width:800px;
+    margin:25px auto;
+    color:var(--muted);
+    font-size:1.08rem;
+}
+
+.status{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:30px;
+}
+
+.status span{
+    background:rgba(9,19,33,.75);
+    border:1px solid var(--border);
+    padding:8px 14px;
+    border-radius:8px;
+    font-family:Consolas,monospace;
+    font-size:.82rem;
+}
+
+/* GENERAL */
+
+main{
+    max-width:1180px;
+    margin:auto;
+    padding:75px 20px 120px;
+}
+
+section{
+    margin-bottom:95px;
+}
+
+.section-tag{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    letter-spacing:2px;
+    font-size:.78rem;
+}
+
+h2{
+    font-size:2rem;
+    margin:6px 0 25px;
+}
+
+h3{
+    color:var(--aws);
+}
+
+p{
+    color:#c4d5e2;
+}
+
+code{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+}
+
+/* CARDS */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;
+}
+
+.card{
+    background:linear-gradient(
+        145deg,
+        rgba(14,26,44,.95),
+        rgba(6,13,24,.96)
+    );
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:var(--cyan);
+    box-shadow:0 15px 40px rgba(0,229,255,.06);
+}
+
+.card .number{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    font-size:.78rem;
+}
+
+.card strong{
+    display:block;
+    margin:7px 0;
+    font-size:1.08rem;
+}
+
+.card p{
+    color:var(--muted);
+    margin:0;
+}
+
+/* ARCHITECTURE */
+
+.architecture{
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:30px;
+    background:rgba(5,12,22,.75);
+}
+
+.region{
+    border:1px solid var(--aws);
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+    position:relative;
+}
+
+.region-title{
+    color:var(--aws);
+    font-family:Consolas,monospace;
+    font-size:1.2rem;
+    font-weight:bold;
+}
+
+.az-container{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:20px;
+    margin-top:25px;
+}
+
+.az{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:25px 15px;
+}
+
+.az strong{
+    display:block;
+    color:var(--cyan);
+    font-size:1.15rem;
+}
+
+.az .ip{
+    color:var(--green);
+    font-family:Consolas,monospace;
+    margin-top:8px;
+}
+
+.connection{
+    color:var(--green);
+    font-size:2.2rem;
+    animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{opacity:.4;}
+    50%{opacity:1;}
+}
+
+/* EVIDENCE */
+
+.evidence{
+    margin:30px 0 55px;
+    background:#060d17;
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.evidence img{
+    display:block;
+    width:100%;
+    height:auto;
+    border-bottom:1px solid var(--border);
+}
+
+.evidence-text{
+    padding:20px 24px;
+}
+
+.evidence-text strong{
+    color:var(--cyan);
+}
+
+.evidence-text p{
+    margin:6px 0 0;
+    color:var(--muted);
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--panel);
+    border-radius:14px;
+    overflow:hidden;
+    margin:25px 0;
+}
+
+th,td{
+    padding:15px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+}
+
+th{
+    background:#08111e;
+    color:var(--aws);
+}
+
+tr:last-child td{
+    border-bottom:none;
+}
+
+/* INFO BOXES */
+
+.info,
+.warning,
+.success,
+.exam{
+    padding:21px 23px;
+    border-radius:14px;
+    margin:25px 0;
+}
+
+.info{
+    border:1px solid rgba(0,229,255,.4);
+    background:rgba(0,229,255,.045);
+}
+
+.warning{
+    border:1px solid rgba(255,85,112,.5);
+    background:rgba(255,85,112,.055);
+}
+
+.success{
+    border:1px solid rgba(57,255,136,.45);
+    background:rgba(57,255,136,.05);
+}
+
+.exam{
+    border:1px solid rgba(183,124,255,.55);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(183,124,255,.08),
+            rgba(0,229,255,.035)
+        );
+}
+
+.exam h3{
+    margin-top:0;
+    color:var(--purple);
+}
+
+/* TERMINAL */
+
+.terminal{
+    background:#010407;
+    border:1px solid #18384e;
+    border-radius:14px;
+    overflow:hidden;
+    font-family:Consolas,monospace;
+    margin:25px 0;
+}
+
+.terminal-top{
+    background:#0c1721;
+    padding:10px 15px;
+    color:var(--muted);
+}
+
+.terminal-body{
+    padding:20px;
+    color:#8dffb5;
+    white-space:pre-wrap;
+    overflow-x:auto;
+}
+
+/* CODE */
+
+.code{
+    background:#02060b;
+    border:1px solid #16364c;
+    border-left:4px solid var(--cyan);
+    border-radius:10px;
+    padding:18px;
+    font-family:Consolas,monospace;
+    color:#bdf7ff;
+    overflow-x:auto;
+    margin:18px 0;
+}
+
+/* COMPARE */
+
+.compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.compare-box{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:25px;
+}
+
+.compare-box h3{
+    margin-top:0;
+}
+
+.highlight{
+    color:var(--green);
+    font-weight:bold;
+}
+
+.bad{
+    color:var(--red);
+    font-weight:bold;
+}
+
+/* FLOW */
+
+.flow{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin:30px 0;
+}
+
+.flow-node{
+    padding:15px 20px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    border-radius:12px;
+    text-align:center;
+}
+
+.flow-arrow{
+    color:var(--aws);
+    font-size:1.8rem;
+}
+
+/* TIMELINE */
+
+.timeline{
+    margin-left:15px;
+    border-left:1px solid var(--border);
+    padding-left:30px;
+}
+
+.timeline-item{
+    position:relative;
+    margin-bottom:30px;
+}
+
+.timeline-item::before{
+    content:"";
+    position:absolute;
+    left:-36px;
+    top:8px;
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);
+}
+
+/* FOOTER */
+
+footer{
+    border-top:1px solid var(--border);
+    padding:40px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-family:Consolas,monospace;
+}
+
+@media(max-width:800px){
+
+    .az-container{
+        grid-template-columns:1fr;
+    }
+
+    .connection{
+        transform:rotate(90deg);
+    }
+
+    .compare{
+        grid-template-columns:1fr;
+    }
+
+    h1{
+        letter-spacing:-1px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="hero">
+
+<div class="badge">
+MCS CLOUD COMMAND CENTER // AWS LAB
+</div>
+
+<h1>
+ACTIVIDAD <span>04</span>
+</h1>
+
+<div class="subtitle">
+ZONAS DE DISPONIBILIDAD · EC2 · VPC · SSH · ICMP · PRIVATE NETWORK
+</div>
+
+<p>
+Despliegue de dos instancias Amazon EC2 dentro de la misma región AWS,
+pero ubicadas en zonas de disponibilidad diferentes, comprobando
+posteriormente su comunicación mediante direcciones IPv4 privadas.
+</p>
+
+<div class="status">
+<span>REGIÓN: US-EAST-1 ✓</span>
+<span>AZ-1A ✓</span>
+<span>AZ-1B ✓</span>
+<span>EC2 ×2 ✓</span>
+<span>SSH ✓</span>
+<span>PRIVATE IP ✓</span>
+<span>ICMP ✓</span>
+</div>
+
+</div>
+
+</header>
+
+
+<main>
+
+<!-- ===================================================== -->
+<!-- OBJETIVOS -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">01 // MISSION</div>
+
+<h2>Objetivos del laboratorio</h2>
+
+<div class="grid">
+
+<div class="card">
+<div class="number">01</div>
+<strong>Región AWS</strong>
+<p>
+Trabajar dentro de Norte de Virginia
+<code>us-east-1</code>.
+</p>
+</div>
+
+<div class="card">
+<div class="number">02</div>
+<strong>Zonas de disponibilidad</strong>
+<p>
+Desplegar las máquinas en dos AZ diferentes dentro de la misma región.
+</p>
+</div>
+
+<div class="card">
+<div class="number">03</div>
+<strong>Amazon EC2</strong>
+<p>
+Crear dos instancias Amazon Linux de tipo t3.micro.
+</p>
+</div>
+
+<div class="card">
+<div class="number">04</div>
+<strong>SSH</strong>
+<p>
+Comprobar el acceso remoto a las dos instancias.
+</p>
+</div>
+
+<div class="card">
+<div class="number">05</div>
+<strong>Red privada</strong>
+<p>
+Utilizar las direcciones IPv4 privadas para comunicar las dos EC2.
+</p>
+</div>
+
+<div class="card">
+<div class="number">06</div>
+<strong>Security Groups</strong>
+<p>
+Permitir ICMP para comprobar la conectividad mediante ping.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- CONCEPTO -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">02 // CORE CONCEPT</div>
+
+<h2>Región ≠ Zona de disponibilidad</h2>
+
+<div class="exam">
+
+<h3>🎓 EXAM MODE</h3>
+
+<p>
+Este es el concepto fundamental de toda la actividad:
+</p>
+
+<div class="code">
+REGIÓN AWS
+us-east-1
+Norte de Virginia
+
+        │
+        ├── us-east-1a  → Zona de disponibilidad
+        │
+        ├── us-east-1b  → Zona de disponibilidad
+        │
+        ├── us-east-1c
+        │
+        └── ...
+</div>
+
+<p>
+Una <strong>región</strong> es una ubicación geográfica de AWS.
+Dentro de una región existen varias
+<strong>zonas de disponibilidad (Availability Zones)</strong>.
+</p>
+
+<p>
+Por tanto:
+</p>
+
+<div class="code">
+us-east-1  ≠  us-east-1a
+
+us-east-1  → REGIÓN
+us-east-1a → ZONA DE DISPONIBILIDAD
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ARQUITECTURA -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">03 // ARCHITECTURE</div>
+
+<h2>Arquitectura realizada</h2>
+
+<div class="architecture">
+
+<div class="region">
+
+<div class="region-title">
+AWS REGION // us-east-1 // NORTH VIRGINIA
+</div>
+
+<div class="az-container">
+
+<div class="az">
+
+<strong>Availability Zone A</strong>
+
+us-east-1a
+
+<div class="ip">
+EC2-Zona1<br>
+172.31.12.66
+</div>
+
+</div>
+
+<div class="connection">
+⇄
+</div>
+
+<div class="az">
+
+<strong>Availability Zone B</strong>
+
+us-east-1b
+
+<div class="ip">
+EC2-Zona2<br>
+172.31.93.148
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="info">
+
+<strong>Resultado:</strong>
+
+las dos máquinas están en
+<strong>zonas de disponibilidad distintas</strong>,
+pero pertenecen a la misma región y a la misma VPC.
+
+Esto permite estudiar la comunicación privada entre ambas instancias.
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- PRIMERA INSTANCIA -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">04 // AVAILABILITY ZONE A</div>
+
+<h2>EC2-Zona1 · us-east-1a</h2>
+
+<div class="evidence">
+
+<img
+src="media/nube4-01-region-virginia.PNG"
+alt="Región Norte de Virginia">
+
+<div class="evidence-text">
+
+<strong>
+Captura 01 — Región Norte de Virginia
+</strong>
+
+<p>
+Selección de la región
+<code>us-east-1</code>
+antes de comenzar el despliegue.
+</p>
+
+</div>
+
+</div>
+
+
+<table>
+
+<tr>
+<th>Parámetro</th>
+<th>Configuración</th>
+</tr>
+
+<tr>
+<td>Nombre</td>
+<td>EC2-Zona1</td>
+</tr>
+
+<tr>
+<td>AMI</td>
+<td>Amazon Linux</td>
+</tr>
+
+<tr>
+<td>Tipo</td>
+<td>t3.micro</td>
+</tr>
+
+<tr>
+<td>Par de claves</td>
+<td>vockey</td>
+</tr>
+
+<tr>
+<td>Zona de disponibilidad</td>
+<td class="highlight">us-east-1a</td>
+</tr>
+
+<tr>
+<td>SSH</td>
+<td>TCP/22</td>
+</tr>
+
+<tr>
+<td>Almacenamiento</td>
+<td>8 GiB gp3</td>
+</tr>
+
+</table>
+
+
+<div class="evidence">
+
+<img
+src="media/nube4-02-ec2-zona1-config.PNG"
+alt="Configuración EC2 Zona1">
+
+<div class="evidence-text">
+
+<strong>
+Captura 02 — Configuración EC2-Zona1
+</strong>
+
+<p>
+Configuración de la primera instancia y selección explícita
+de la primera zona de disponibilidad.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="evidence">
+
+<img
+src="media/nube4-03-ec2-zona1-resumen.PNG"
+alt="Resumen EC2 Zona1">
+
+<div class="evidence-text">
+
+<strong>
+Captura 03 — Red y zona de disponibilidad
+</strong>
+
+<p>
+La instancia queda desplegada en
+<strong>us-east-1a</strong>
+con la dirección privada
+<strong>172.31.12.66</strong>.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="info">
+
+<strong>Datos reales de EC2-Zona1</strong>
+
+<div class="code">
+Availability Zone : us-east-1a
+Zone ID           : use1-az1
+Private IPv4      : 172.31.12.66
+Public IPv4       : 32.198.99.135
+Instance Type     : t3.micro
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SSH ZONA 1 -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">05 // SSH ACCESS</div>
+
+<h2>Conexión SSH a EC2-Zona1</h2>
+
+<p>
+Una vez iniciada la máquina se comprobó el acceso remoto
+mediante SSH utilizando el usuario de Amazon Linux
+<code>ec2-user</code>.
+</p>
+
+<div class="code">
+ssh -i ".\labsuser(1).pem" ec2-user@ec2-32-198-99-135.compute-1.amazonaws.com
+</div>
+
+<div class="evidence">
+
+<img
+src="media/nube4-04-ssh-zona1.PNG"
+alt="SSH EC2 Zona1">
+
+<div class="evidence-text">
+
+<strong>
+Captura 04 — SSH operativo en EC2-Zona1
+</strong>
+
+<p>
+Acceso correcto al sistema Amazon Linux de la primera zona.
+</p>
+
+</div>
+
+</div>
+
+<div class="exam">
+
+<h3>🎓 Detalle interesante</h3>
+
+<p>
+El prompt de Amazon Linux identifica internamente la máquina
+mediante su IP privada:
+</p>
+
+<div class="code">
+[ec2-user@ip-172-31-12-66 ~]$
+</div>
+
+<p>
+Esto coincide con la dirección privada observada en la consola AWS:
+</p>
+
+<strong class="highlight">
+172.31.12.66
+</strong>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SEGUNDA INSTANCIA -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">06 // AVAILABILITY ZONE B</div>
+
+<h2>EC2-Zona2 · us-east-1b</h2>
+
+<p>
+La segunda máquina se configuró con características similares,
+pero seleccionando expresamente una
+<strong>zona de disponibilidad diferente</strong>.
+</p>
+
+<table>
+
+<tr>
+<th>Parámetro</th>
+<th>Configuración</th>
+</tr>
+
+<tr>
+<td>Nombre</td>
+<td>EC2-Zona2</td>
+</tr>
+
+<tr>
+<td>AMI</td>
+<td>Amazon Linux</td>
+</tr>
+
+<tr>
+<td>Tipo</td>
+<td>t3.micro</td>
+</tr>
+
+<tr>
+<td>Par de claves</td>
+<td>vockey</td>
+</tr>
+
+<tr>
+<td>Zona de disponibilidad</td>
+<td class="highlight">us-east-1b</td>
+</tr>
+
+<tr>
+<td>Almacenamiento</td>
+<td>8 GiB gp3</td>
+</tr>
+
+</table>
+
+
+<div class="evidence">
+
+<img
+src="media/nube4-05-ec2-zona2-config.PNG"
+alt="Configuración EC2 Zona2">
+
+<div class="evidence-text">
+
+<strong>
+Captura 05 — Configuración de EC2-Zona2
+</strong>
+
+<p>
+La segunda máquina se despliega en
+<strong>us-east-1b</strong>,
+distinta de la primera instancia.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="evidence">
+
+<img
+src="media/nube4-06-ec2-zona2-resumen.PNG"
+alt="Resumen EC2 Zona2">
+
+<div class="evidence-text">
+
+<strong>
+Captura 06 — Red de EC2-Zona2
+</strong>
+
+<p>
+AWS confirma la segunda zona y la dirección privada
+<strong>172.31.93.148</strong>.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="info">
+
+<strong>Datos reales de EC2-Zona2</strong>
+
+<div class="code">
+Availability Zone : us-east-1b
+Zone ID           : use1-az2
+Private IPv4      : 172.31.93.148
+Public IPv4       : 52.203.19.164
+Instance Type     : t3.micro
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- COMPARATIVA AZ -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">07 // AZ COMPARISON</div>
+
+<h2>Dos máquinas · Dos zonas</h2>
+
+<div class="compare">
+
+<div class="compare-box">
+
+<h3>EC2-Zona1</h3>
+
+<strong>Zona:</strong> us-east-1a<br>
+<strong>Zone ID:</strong> use1-az1<br>
+<strong>Privada:</strong> 172.31.12.66<br>
+<strong>Pública:</strong> 32.198.99.135
+
+</div>
+
+<div class="compare-box">
+
+<h3>EC2-Zona2</h3>
+
+<strong>Zona:</strong> us-east-1b<br>
+<strong>Zone ID:</strong> use1-az2<br>
+<strong>Privada:</strong> 172.31.93.148<br>
+<strong>Pública:</strong> 52.203.19.164
+
+</div>
+
+</div>
+
+<div class="success">
+
+<strong>✓ OBJETIVO CONSEGUIDO</strong>
+
+<br><br>
+
+Las dos instancias pertenecen a
+<strong>Norte de Virginia</strong>,
+pero se encuentran físicamente distribuidas entre
+<strong>dos zonas de disponibilidad diferentes</strong>.
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SSH ZONA 2 -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">08 // SSH ACCESS</div>
+
+<h2>Conexión SSH a EC2-Zona2</h2>
+
+<div class="code">
+ssh -i ".\labsuser(1).pem" ec2-user@ec2-52-203-19-164.compute-1.amazonaws.com
+</div>
+
+<div class="evidence">
+
+<img
+src="media/nube4-07-ssh-zona2.PNG"
+alt="SSH EC2 Zona2">
+
+<div class="evidence-text">
+
+<strong>
+Captura 07 — SSH operativo en EC2-Zona2
+</strong>
+
+<p>
+La segunda instancia también queda accesible correctamente
+mediante SSH.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- PRIVATE NETWORK -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">09 // PRIVATE NETWORK</div>
+
+<h2>Comunicación mediante IP privada</h2>
+
+<p>
+Para comprobar la comunicación entre las dos instancias se
+utilizaron las consolas web integradas de EC2 y las
+direcciones IPv4 privadas.
+</p>
+
+<div class="flow">
+
+<div class="flow-node">
+<strong>EC2-Zona1</strong><br>
+172.31.12.66
+</div>
+
+<div class="flow-arrow">
+⇄
+</div>
+
+<div class="flow-node">
+<strong>EC2-Zona2</strong><br>
+172.31.93.148
+</div>
+
+</div>
+
+<div class="exam">
+
+<h3>🎓 EXAM MODE — IP pública vs privada</h3>
+
+<div class="code">
+IP PÚBLICA
+→ comunicación desde Internet
+→ cambia según la configuración/ciclo de vida
+
+IP PRIVADA
+→ comunicación interna
+→ utilizada dentro de la red VPC
+</div>
+
+<p>
+En esta práctica el objetivo no era hacer ping desde nuestro
+ordenador hacia AWS, sino comunicar
+<strong>EC2-Zona1 directamente con EC2-Zona2</strong>
+mediante sus direcciones privadas.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ICMP -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">10 // SECURITY GROUP TEST</div>
+
+<h2>Primer intento: ICMP bloqueado</h2>
+
+<p>
+Desde la consola web de EC2-Zona1 se ejecutó:
+</p>
+
+<div class="code">
+ping -c 4 172.31.93.148
+</div>
+
+<p>
+El primer intento no obtuvo respuesta:
+</p>
+
+<div class="terminal">
+
+<div class="terminal-top">
+EC2-Zona1 // Amazon Linux
+</div>
+
+<div class="terminal-body">
+PING 172.31.93.148 (172.31.93.148)
+
+4 packets transmitted
+0 received
+100% packet loss
+</div>
+
+</div>
+
+<div class="warning">
+
+<strong>¿Por qué no funcionaba?</strong>
+
+<br><br>
+
+Estar dentro de la misma VPC no significa que cualquier tipo de
+tráfico esté permitido automáticamente.
+
+El grupo de seguridad de la máquina de destino no tenía una regla
+de entrada que permitiera ICMP.
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ICMP RULE -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">11 // SECURITY RULE</div>
+
+<h2>Permitir ICMP dentro de la VPC</h2>
+
+<p>
+Se añadió una regla ICMP utilizando como origen la red privada
+de la VPC:
+</p>
+
+<table>
+
+<tr>
+<th>Tipo</th>
+<th>Protocolo</th>
+<th>Origen</th>
+</tr>
+
+<tr>
+<td>Todos los ICMP - IPv4</td>
+<td>ICMP</td>
+<td class="highlight">172.31.0.0/16</td>
+</tr>
+
+</table>
+
+<div class="info">
+
+<strong>¿Por qué 172.31.0.0/16?</strong>
+
+<br><br>
+
+Las dos máquinas pertenecen a la VPC cuyo rango privado observado
+durante la práctica es:
+
+<div class="code">
+172.31.0.0/16
+</div>
+
+Así se permite el tráfico ICMP procedente de esa red privada
+en lugar de utilizar:
+
+<div class="code">
+0.0.0.0/0
+</div>
+
+que representaría cualquier dirección IPv4.
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- PING ZONA 1 -> ZONA 2 -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">12 // PRIVATE PING A → B</div>
+
+<h2>EC2-Zona1 → EC2-Zona2</h2>
+
+<div class="evidence">
+
+<img
+src="media/nube4-08-ping-zona1-zona2.PNG"
+alt="Ping privado Zona1 a Zona2">
+
+<div class="evidence-text">
+
+<strong>
+Captura 08 — Antes y después de permitir ICMP
+</strong>
+
+<p>
+La misma consola muestra primero el 100 % de pérdida y,
+tras modificar el Security Group, la comunicación correcta.
+</p>
+
+</div>
+
+</div>
+
+<div class="terminal">
+
+<div class="terminal-top">
+EC2-Zona1 → 172.31.93.148
+</div>
+
+<div class="terminal-body">
+64 bytes from 172.31.93.148: icmp_seq=1 time=0.426 ms
+64 bytes from 172.31.93.148: icmp_seq=2 time=0.431 ms
+64 bytes from 172.31.93.148: icmp_seq=3 time=0.433 ms
+64 bytes from 172.31.93.148: icmp_seq=4 time=0.468 ms
+
+4 packets transmitted
+4 received
+0% packet loss
+
+rtt min/avg/max/mdev =
+0.426/0.439/0.468/0.016 ms
+</div>
+
+</div>
+
+<div class="success">
+
+<strong>✓ COMUNICACIÓN CORRECTA</strong>
+
+<br><br>
+
+EC2-Zona1, situada en
+<strong>us-east-1a</strong>,
+puede comunicarse mediante IP privada con
+EC2-Zona2, situada en
+<strong>us-east-1b</strong>.
+
+<br><br>
+
+Latencia media observada:
+<strong>0,439 ms</strong>.
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- PING ZONA 2 -> ZONA 1 -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">13 // PRIVATE PING B → A</div>
+
+<h2>EC2-Zona2 → EC2-Zona1</h2>
+
+<p>
+Posteriormente se realizó la prueba en sentido contrario desde
+la consola web de la segunda instancia:
+</p>
+
+<div class="code">
+ping -c 4 172.31.12.66
+</div>
+
+<p>
+Para permitir la comunicación también se añadió la regla ICMP
+correspondiente al Security Group asociado a EC2-Zona1.
+</p>
+
+<div class="evidence">
+
+<img
+src="media/nube4-09-ping-zona2-zona1.PNG"
+alt="Ping privado Zona2 a Zona1">
+
+<div class="evidence-text">
+
+<strong>
+Captura 09 — Comunicación privada en sentido inverso
+</strong>
+
+<p>
+EC2-Zona2 se comunica correctamente con la dirección privada
+de EC2-Zona1.
+</p>
+
+</div>
+
+</div>
+
+<div class="success">
+
+<strong>COMUNICACIÓN BIDIRECCIONAL ✓</strong>
+
+<div class="code">
+EC2-Zona1
+172.31.12.66
+      ⇅
+      ⇅ ICMP
+      ⇅
+172.31.93.148
+EC2-Zona2
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ACT 3 VS ACT 4 -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">14 // KNOWLEDGE LINK</div>
+
+<h2>Actividad 3 vs Actividad 4</h2>
+
+<p>
+Las dos actividades permiten observar dos tipos de pruebas
+de red diferentes.
+</p>
+
+<table>
+
+<tr>
+<th></th>
+<th>Actividad 3</th>
+<th>Actividad 4</th>
+</tr>
+
+<tr>
+<td>Escenario</td>
+<td>Virginia ↔ Oregón</td>
+<td>Virginia AZ-A ↔ AZ-B</td>
+</tr>
+
+<tr>
+<td>Regiones</td>
+<td>Distintas</td>
+<td>La misma</td>
+</tr>
+
+<tr>
+<td>Direcciones utilizadas</td>
+<td>IPv4 públicas</td>
+<td>IPv4 privadas</td>
+</tr>
+
+<tr>
+<td>Origen del ping</td>
+<td>PC local</td>
+<td>EC2</td>
+</tr>
+
+<tr>
+<td>Red</td>
+<td>Internet</td>
+<td>VPC</td>
+</tr>
+
+<tr>
+<td>Latencia observada</td>
+<td>112 / 199 ms</td>
+<td>Submilisegundo en la prueba A → B</td>
+</tr>
+
+</table>
+
+<div class="exam">
+
+<h3>🎓 Concepto</h3>
+
+<p>
+No debemos comparar directamente los valores de latencia de ambas
+actividades como si fueran el mismo experimento.
+</p>
+
+<p>
+En la Actividad 3 el tráfico partía desde nuestro equipo hacia
+direcciones públicas de AWS.
+</p>
+
+<p>
+En esta actividad el tráfico circula entre dos instancias mediante
+sus direcciones privadas.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- CLEANUP -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">15 // CLEANUP</div>
+
+<h2>Eliminación de las instancias</h2>
+
+<p>
+Una vez finalizadas todas las pruebas se terminaron las dos
+instancias utilizadas.
+</p>
+
+<div class="warning">
+
+<strong>Importante:</strong>
+
+<br><br>
+
+<strong>Detener</strong> una instancia no es lo mismo que
+<strong>terminarla</strong>.
+
+<br><br>
+
+En esta práctica se realizó la
+<strong>terminación definitiva</strong>
+de ambas EC2.
+
+</div>
+
+<div class="evidence">
+
+<img
+src="media/nube4-10-instancias-terminadas.PNG"
+alt="Instancias terminadas">
+
+<div class="evidence-text">
+
+<strong>
+Captura 10 — Recursos eliminados
+</strong>
+
+<p>
+EC2-Zona1 y EC2-Zona2 aparecen terminadas al finalizar
+el laboratorio.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- RESUMEN -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">16 // DEBRIEF</div>
+
+<h2>Resumen de la práctica</h2>
+
+<div class="timeline">
+
+<div class="timeline-item">
+
+<strong>1. Selección de región</strong>
+
+<p>
+Norte de Virginia
+<code>us-east-1</code>.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>2. EC2-Zona1</strong>
+
+<p>
+Amazon Linux desplegado en
+<code>us-east-1a</code>.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>3. SSH Zona1</strong>
+
+<p>
+Acceso remoto correcto a la primera máquina.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>4. EC2-Zona2</strong>
+
+<p>
+Segunda instancia desplegada en
+<code>us-east-1b</code>.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>5. SSH Zona2</strong>
+
+<p>
+Acceso remoto correcto a la segunda máquina.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>6. Ping privado</strong>
+
+<p>
+El primer intento falla porque ICMP no está permitido.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>7. Security Groups</strong>
+
+<p>
+Se permite ICMP desde
+<code>172.31.0.0/16</code>.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>8. Comunicación</strong>
+
+<p>
+Ping privado correcto en ambos sentidos.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<strong>9. Limpieza</strong>
+
+<p>
+Terminación de las dos instancias.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- EXAM MODE -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">17 // EXAM MODE</div>
+
+<h2>Lo que hay que recordar</h2>
+
+<div class="exam">
+
+<h3>🎓 Zonas de disponibilidad — puntos clave</h3>
+
+<p>
+<strong>1.</strong>
+Una <strong>región AWS</strong> es una ubicación geográfica.
+</p>
+
+<p>
+<strong>2.</strong>
+Una región contiene varias
+<strong>zonas de disponibilidad</strong>.
+</p>
+
+<p>
+<strong>3.</strong>
+<code>us-east-1</code> es una región.
+</p>
+
+<p>
+<strong>4.</strong>
+<code>us-east-1a</code> y
+<code>us-east-1b</code> son zonas de disponibilidad.
+</p>
+
+<p>
+<strong>5.</strong>
+Dos EC2 pueden estar en AZ distintas y seguir perteneciendo
+a la misma región.
+</p>
+
+<p>
+<strong>6.</strong>
+En esta práctica las dos máquinas se encuentran en la misma
+<strong>VPC</strong>.
+</p>
+
+<p>
+<strong>7.</strong>
+Las IP privadas se utilizan para la comunicación interna
+entre recursos de la red.
+</p>
+
+<p>
+<strong>8.</strong>
+Estar dentro de la misma VPC no implica que todo el tráfico
+esté permitido: también intervienen los
+<strong>Security Groups</strong>.
+</p>
+
+<p>
+<strong>9.</strong>
+<code>ping</code> utiliza
+<strong>ICMP</strong>.
+</p>
+
+<p>
+<strong>10.</strong>
+Permitir SSH no significa permitir ICMP.
+</p>
+
+<p>
+<strong>11.</strong>
+<code>172.31.0.0/16</code> representa el rango utilizado
+por la VPC observada durante esta práctica.
+</p>
+
+<p>
+<strong>12.</strong>
+<code>0.0.0.0/0</code> representa cualquier dirección IPv4.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- FINAL -->
+<!-- ===================================================== -->
+
+<section>
+
+<div class="section-tag">18 // FINAL STATUS</div>
+
+<h2>Actividad completada</h2>
+
+<div class="success">
+
+<strong>✓ MISSION COMPLETE</strong>
+
+<br><br>
+
+Se han desplegado dos instancias Amazon EC2 dentro de
+<strong>Norte de Virginia</strong> utilizando dos zonas de
+disponibilidad diferentes.
+
+<br><br>
+
+<strong>EC2-Zona1</strong><br>
+us-east-1a · 172.31.12.66
+
+<br><br>
+
+<strong>EC2-Zona2</strong><br>
+us-east-1b · 172.31.93.148
+
+<br><br>
+
+Se ha comprobado el acceso SSH, identificado el bloqueo inicial
+de ICMP, configurado los Security Groups y verificado finalmente
+la comunicación privada bidireccional entre ambas instancias.
+
+<br><br>
+
+<strong>Recursos eliminados correctamente ✓</strong>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+MCS CLOUD COMMAND CENTER · AWS LAB · ACTIVIDAD 04 · ASIX 2026/2027
+</footer>
+
+</body>
+</html>
