@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 1.7 | Ejemplos de edición del registro de Windows</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090b;--panel:#101418;--amber:#ffb000;--amber2:#ffd166;--green:#65ff8f;--cyan:#42d9ff;--white:#e8edf0;--muted:#87929a;--border:rgba(255,255,255,.09)}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{background:var(--bg);color:var(--white);font-family:"Segoe UI",Arial,sans-serif;line-height:1.75}
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 12% 10%,rgba(255,176,0,.08),transparent 28%),radial-gradient(circle at 90% 55%,rgba(66,217,255,.07),transparent 32%)}
+.scan{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.11;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.025) 4px)}
+header,main,footer{width:92%;max-width:1120px;margin:auto}
+.top{padding:30px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.back{color:var(--muted);text-decoration:none;font:11px Consolas,monospace;letter-spacing:1px}.back:hover{color:var(--amber)}
+.online{color:var(--green);font:10px Consolas,monospace;letter-spacing:2px}
+.eyebrow{margin-top:30px;color:var(--amber);font:11px Consolas,monospace;letter-spacing:3px}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.12;letter-spacing:-1.5px;margin:15px 0 20px;max-width:950px}
+h1 span{color:var(--amber2)}
+.intro{max-width:850px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 35px}.meta span{padding:8px 12px;border:1px solid var(--border);border-radius:5px;font:10px Consolas,monospace;color:var(--cyan)}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 30px}nav a{border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--muted);text-decoration:none;font-size:12px}nav a:hover{color:var(--amber);border-color:var(--amber)}
+.section{margin:20px 0 35px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(17,21,25,.96),rgba(9,12,14,.96))}
+.section-title{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:center}
+.number{flex-shrink:0;color:var(--amber);font:bold 20px Consolas,monospace;border:1px solid rgba(255,176,0,.2);border-radius:7px;padding:10px}
+h2{font-size:22px;line-height:1.35}.section-title small{display:block;color:var(--muted);font:9px Consolas,monospace;letter-spacing:2px;margin-bottom:5px}
+.content{padding:25px 26px}.content p{margin:0 0 14px;color:#a3aeb5}
+ol,ul{padding-left:23px;margin:15px 0 22px}li{padding-left:4px;margin:7px 0;color:#b9c2c8}
+strong{color:var(--white)}code{font-family:Consolas,"Courier New",monospace;color:var(--cyan);overflow-wrap:anywhere}
+.path{background:#06090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:5px;padding:14px 16px;margin:16px 0;overflow-wrap:anywhere;font-size:12px}
+.note,.expected{padding:15px 18px;margin:18px 0;border:1px solid rgba(255,176,0,.16);border-radius:7px;background:rgba(255,176,0,.035)}
+.note p,.expected p{margin:0}.expected{border-color:rgba(101,255,143,.16);background:rgba(101,255,143,.025)}.expected strong{color:var(--green)}
+.captures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:26px}
+.capture{min-width:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#080c0f}
+.capture-heading{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.capture-heading span{color:var(--amber);font:10px Consolas,monospace}.capture-heading code{color:#7d8992;font-size:9px}
+.capture-media{padding:14px}.capture-media img{display:none;width:100%;height:auto;border-radius:4px}.capture.loaded img{display:block}.capture.loaded .placeholder{display:none}
+.placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border:1px dashed #2a343b;border-radius:6px}
+.placeholder-icon{font-size:35px;color:#56656f}.placeholder strong{font-size:14px}.placeholder p{font-size:12px;margin:10px 0;color:#76858f}.placeholder small{font:9px Consolas,monospace;color:var(--amber)}
+figcaption{padding:0 14px 15px;font-size:11px;color:#7f8d97}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin:18px 0}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--amber);font-family:Consolas,monospace}
+a{color:var(--cyan)}.sources{font-size:12px}.sources li{margin:10px 0}
+.terminal{border:1px solid rgba(101,255,143,.16);border-radius:9px;background:#030604;padding:22px;margin:30px 0;color:var(--green);font:11px/1.9 Consolas,monospace}.terminal .prompt{color:var(--amber)}
+footer{padding:25px 0 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:15px;color:#65717a;font:9px Consolas,monospace}
+@media(max-width:700px){.captures{grid-template-columns:1fr}.content{padding:20px 17px}.section-title{padding:18px 17px}h2{font-size:19px}.online{letter-spacing:0}.top{align-items:flex-start}footer{flex-direction:column}.placeholder{min-height:180px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="scan"></div>
+<header>
+<div class="top"><a class="back" href="administracio.html">← ADMINISTRACIÓ DE SISTEMES</a><span class="online">● ASIX · WINDOWS LAB</span></div>
+<div class="eyebrow">// SYS-ACT-007 · ACTIVIDAD 1.7</div>
+<h1>Ejemplos de edición<br>del <span>registro de Windows</span></h1>
+<p class="intro">Práctica de configuración de Windows mediante el Editor del Registro: copia de seguridad, modificación de cuatro ajustes, comprobación de sus efectos y restauración del estado original.</p>
+<div class="meta"><span>WINDOWS 11</span><span>REGEDIT</span><span>4 MODIFICACIONES</span><span>18 CAPTURAS</span></div>
+<nav aria-label="Apartados de la actividad"><a href="#preparacion">01 · Copia de seguridad</a><a href="#menu">02 · Menú contextual</a><a href="#bloqueo">03 · Pantalla de bloqueo</a><a href="#velocidad">04 · Velocidad de menús</a><a href="#mensajes">05 · Mensajes detallados</a><a href="#restauracion">06 · Restauración</a></nav>
+</header>
+<main>
+<section class="section" id="preparacion">
+<div class="section-title"><span class="number">01</span><div><small>PREPARACIÓN Y COPIA DE SEGURIDAD</small><h2>Guardar el estado anterior</h2></div></div>
+<div class="content">
+<p><strong>Enunciado:</strong> llevar a cabo las modificaciones del registro, comprobar el resultado, realizar previamente una copia de seguridad y restaurar el registro al finalizar. Las capturas documentan la copia de seguridad, los ajustes del registro y su restauración. El apartado de mensajes detallados incluye la configuración y una explicación de su funcionamiento.</p>
+<div class="note"><p>Realizar preferiblemente en una máquina virtual. Crear una instantánea con la máquina apagada antes de comenzar. Usar el mismo usuario durante la práctica y anotar los valores originales antes de editarlos.</p></div>
+<ol><li>Pulsar <strong>Win + R</strong>, ejecutar <code>winver</code> y guardar la versión y edición de Windows.</li><li>Crear una carpeta <code>Actividad-1.7</code> para las copias y pruebas.</li><li>Abrir <code>regedit</code> y aceptar la elevación de permisos.</li><li>Seleccionar <strong>Equipo → Archivo → Exportar</strong>, elegir el intervalo <strong>Todo</strong> y guardar <code>registro-antes-act7.reg</code>.</li><li>Exportar también las ramas existentes que se vayan a editar mediante <strong>Archivo → Exportar → Rama seleccionada</strong>. Si una clave o valor no existe, anotar su ausencia para eliminar únicamente lo creado al restaurar.</li></ol>
+<div class="table-wrap"><table><thead><tr><th>Ajuste</th><th>Estado antes de modificar</th><th>Datos de la práctica</th></tr></thead><tbody>
+<tr><td>InprocServer32 / Predeterminado</td><td>Consultar el estado inicial antes de modificar</td><td>REG_SZ vacío</td></tr>
+<tr><td>NoLockScreen</td><td>Consultar el estado inicial antes de modificar</td><td>DWORD = 1</td></tr>
+<tr><td>MenuShowDelay</td><td>Valor original documentado en la captura 10</td><td>REG_SZ = 100</td></tr>
+<tr><td>VerboseStatus</td><td>Consultar el estado inicial antes de modificar</td><td>DWORD = 1</td></tr>
+<tr><td>DisableStatusMessages</td><td>Consultar el estado inicial antes de modificar</td><td>Si existe y vale 1, cambiar a 0</td></tr>
+</tbody></table></div>
+<div class="captures"><figure class="capture" id="captura-1">
+  <div class="capture-heading"><span>CAPTURA 1</span><code>media/act7-01-version.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-01-version.PNG" alt="Versión de Windows" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Versión de Windows</strong><p>Ventana de winver con la edición, versión y compilación.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Versión de Windows</figcaption>
+</figure>
+<figure class="capture" id="captura-2">
+  <div class="capture-heading"><span>CAPTURA 2</span><code>media/act7-02-copia.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-02-copia.PNG" alt="Exportación del registro" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Exportación del registro</strong><p>Archivo → Exportar, con intervalo Todo y nombre registro-antes-act7.reg.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Exportación del registro</figcaption>
+</figure>
+<figure class="capture" id="captura-3">
+  <div class="capture-heading"><span>CAPTURA 3</span><code>media/act7-03-copia-guardada.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-03-copia-guardada.PNG" alt="Copia guardada" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Copia guardada</strong><p>Archivo de copia del registro visible en la carpeta de la actividad.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Copia guardada</figcaption>
+</figure></div>
+</div></section>
+<section class="section" id="menu">
+<div class="section-title"><span class="number">02</span><div><small>MODIFICACIÓN 1</small><h2>Desactivar el menú contextual simplificado</h2></div></div>
+<div class="content"><p>Documentar primero el menú que aparece al hacer clic derecho sobre un archivo. Después configurar el ajuste del menú clásico.</p>
+<div class="path"><code>HKEY_CURRENT_USER\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32</code></div>
+<ol><li>Abrir <code>HKEY_CURRENT_USER\Software\Classes\CLSID</code>.</li><li>Comprobar si existe la clave <code>{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}</code>. Si no existe, crearla mediante <strong>Nuevo → Clave</strong>.</li><li>Crear dentro <code>InprocServer32</code>, si falta. Si ya existía, guardar su estado antes de editar.</li><li>Abrir <strong>(Predeterminado)</strong>, dejar los datos vacíos y pulsar <strong>Aceptar</strong>. Debe quedar una cadena vacía, no un valor sin establecer.</li><li>Reiniciar Windows y hacer clic derecho sobre el mismo archivo.</li></ol>
+<div class="expected"><p><strong>Resultado esperado:</strong> apertura directa del menú clásico. <strong>Resultado observado:</strong> el menú clásico aparece directamente tras reiniciar, como se muestra en la captura 6.</p></div>
+<div class="note"><p>La compatibilidad de este ajuste puede variar según la compilación de Windows 11. Si no produce el efecto esperado, documentar la versión y el resultado real, sin presentar el cambio como conseguido.</p></div>
+<div class="captures"><figure class="capture" id="captura-4">
+  <div class="capture-heading"><span>CAPTURA 4</span><code>media/act7-04-menu-antes.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-04-menu-antes.PNG" alt="Menú contextual original" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Menú contextual original</strong><p>Clic derecho sobre un archivo antes de modificar el registro.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Menú contextual original</figcaption>
+</figure>
+<figure class="capture" id="captura-5">
+  <div class="capture-heading"><span>CAPTURA 5</span><code>media/act7-05-menu-registro.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-05-menu-registro.PNG" alt="Configuración del menú clásico" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Configuración del menú clásico</strong><p>Ruta InprocServer32 y valor Predeterminado establecido como cadena vacía.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Configuración del menú clásico</figcaption>
+</figure>
+<figure class="capture" id="captura-6">
+  <div class="capture-heading"><span>CAPTURA 6</span><code>media/act7-06-menu-despues.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-06-menu-despues.PNG" alt="Comprobación del menú contextual" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Comprobación del menú contextual</strong><p>Clic derecho sobre el mismo archivo después de reiniciar.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Comprobación del menú contextual</figcaption>
+</figure></div></div></section>
+<section class="section" id="bloqueo">
+<div class="section-title"><span class="number">03</span><div><small>MODIFICACIÓN 2</small><h2>Desactivar la pantalla de bloqueo</h2></div></div>
+<div class="content"><p>Pulsar <strong>Win + L</strong> antes de modificar el registro y documentar la pantalla con fondo, fecha y hora.</p>
+<div class="path"><code>HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Personalization</code></div>
+<ol><li>Crear <code>Personalization</code> dentro de <code>Windows</code> únicamente si no existe.</li><li>Anotar si existe <code>NoLockScreen</code> y guardar sus datos originales.</li><li>Si falta, crear un <strong>DWORD (32 bits)</strong> llamado <code>NoLockScreen</code>, incluso en Windows de 64 bits.</li><li>Establecer sus datos en <code>1</code>.</li><li>Reiniciar y pulsar <strong>Win + L</strong> para comprobar el efecto.</li></ol>
+<div class="expected"><p><strong>Resultado esperado:</strong> aparecer directamente en la pantalla de inicio de sesión, sin la pantalla previa con fecha y hora. Se mantiene la autenticación. <strong>Resultado observado:</strong> al bloquear la máquina virtual aparece directamente la pantalla de inicio de sesión.</p></div>
+<div class="note"><p>La directiva está documentada para las ediciones Pro, Enterprise y Education, entre otras. La edición y las políticas existentes pueden condicionar el resultado.</p></div>
+<div class="captures"><figure class="capture" id="captura-7">
+  <div class="capture-heading"><span>CAPTURA 7</span><code>media/act7-07-bloqueo-antes.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-07-bloqueo-antes.PNG" alt="Pantalla de bloqueo original" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Pantalla de bloqueo original</strong><p>Pantalla con fondo, fecha y hora antes del cambio.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Pantalla de bloqueo original</figcaption>
+</figure>
+<figure class="capture" id="captura-8">
+  <div class="capture-heading"><span>CAPTURA 8</span><code>media/act7-08-bloqueo-registro.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-08-bloqueo-registro.PNG" alt="Configuración de NoLockScreen" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Configuración de NoLockScreen</strong><p>Ruta Personalization y DWORD NoLockScreen con datos 1.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Configuración de NoLockScreen</figcaption>
+</figure>
+<figure class="capture" id="captura-9">
+  <div class="capture-heading"><span>CAPTURA 9</span><code>media/act7-09-bloqueo-despues.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-09-bloqueo-despues.PNG" alt="Comprobación de la pantalla de bloqueo" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Comprobación de la pantalla de bloqueo</strong><p>Pantalla que aparece al pulsar Win + L después del cambio.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Comprobación de la pantalla de bloqueo</figcaption>
+</figure></div></div></section>
+<section class="section" id="velocidad">
+<div class="section-title"><span class="number">04</span><div><small>MODIFICACIÓN 3</small><h2>Aumentar la velocidad de los menús y submenús</h2></div></div>
+<div class="content"><div class="path"><code>HKEY_CURRENT_USER\Control Panel\Desktop</code></div>
+<ol><li>Localizar <code>MenuShowDelay</code> y registrar sus datos originales; habitualmente son <code>400</code>.</li><li>Conservar el tipo <strong>Cadena (REG_SZ)</strong> y establecer los datos en <code>100</code>.</li><li>Reiniciar Windows.</li><li>Comparar la apertura de un submenú clásico al pasar el ratón, por ejemplo <strong>clic derecho en el escritorio → Nuevo</strong>, antes y después.</li></ol>
+<div class="expected"><p><strong>Resultado esperado:</strong> menor espera para desplegar submenús clásicos. No garantiza acelerar el Inicio moderno de Windows 11. <strong>Configuración aplicada:</strong> REG_SZ con datos 100, documentada en la captura 11. Las imágenes muestran el ajuste; no constituyen una medición del tiempo de apertura.</p></div>
+<div class="note"><p>Las capturas acreditan el valor configurado. Una grabación breve antes y después permite observar el cambio de tiempo; una imagen estática no mide la velocidad.</p></div>
+<div class="captures"><figure class="capture" id="captura-10">
+  <div class="capture-heading"><span>CAPTURA 10</span><code>media/act7-10-velocidad-antes.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-10-velocidad-antes.PNG" alt="Retraso original de los menús" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Retraso original de los menús</strong><p>MenuShowDelay con sus datos originales.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Retraso original de los menús</figcaption>
+</figure>
+<figure class="capture" id="captura-11">
+  <div class="capture-heading"><span>CAPTURA 11</span><code>media/act7-11-velocidad-despues.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-11-velocidad-despues.PNG" alt="Nuevo retraso de los menús" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Nuevo retraso de los menús</strong><p>MenuShowDelay como REG_SZ con datos 100.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Nuevo retraso de los menús</figcaption>
+</figure></div></div></section>
+<section class="section" id="mensajes">
+<div class="section-title"><span class="number">05</span><div><small>MODIFICACIÓN 4</small><h2>Mostrar información detallada durante el inicio y apagado</h2></div></div>
+<div class="content"><div class="path"><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System</code></div>
+<ol><li>Registrar si existe <code>VerboseStatus</code> y sus datos originales.</li><li>Crear el valor si falta, de tipo <strong>DWORD (32 bits)</strong>, y asignarle <code>1</code>.</li><li>Si <code>DisableStatusMessages</code> existe y vale <code>1</code>, registrar ese estado y cambiarlo a <code>0</code>. Si no existe, no crearlo.</li><li>Reiniciar Windows y observar los mensajes de inicio y cierre de sesión.</li></ol>
+<div class="expected"><p><strong>Resultado esperado:</strong> mensajes más específicos sobre las tareas que Windows realiza durante estas transiciones. Este apartado documenta el valor configurado; no incluye una captura del efecto durante el reinicio.</p></div>
+<div class="note"><p>VerboseStatus permite solicitar mensajes de estado más detallados. DisableStatusMessages puede impedir que se muestren si está activado. Para comprobar el efecto se observa un reinicio completo y las transiciones de inicio o cierre de sesión. En esta actividad se aporta la configuración del registro y esta explicación, sin afirmar que se hayan observado los mensajes. La referencia de Microsoft enlazada corresponde a Windows Server antiguo.</p></div>
+<div class="captures"><figure class="capture" id="captura-12">
+  <div class="capture-heading"><span>CAPTURA 12</span><code>media/act7-12-mensajes-registro.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-12-mensajes-registro.PNG" alt="Configuración de mensajes detallados" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Configuración de mensajes detallados</strong><p>VerboseStatus como DWORD con datos 1; DisableStatusMessages, si existe, no debe estar en 1.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Configuración de mensajes detallados</figcaption>
+</figure>
+</div></div></section>
+<section class="section" id="restauracion">
+<div class="section-title"><span class="number">06</span><div><small>RESTAURACIÓN Y COMPROBACIÓN FINAL</small><h2>Recuperar los valores originales</h2></div></div>
+<div class="content">
+<div class="note"><p><strong>Importar un archivo .reg combina sus entradas con las existentes:</strong> no elimina automáticamente las claves y valores nuevos. Retirar únicamente lo creado en la práctica y recuperar los datos originales de lo que ya existía.</p></div>
+<ol><li>Si se creó la clave CLSID del menú clásico, eliminar esa clave específica. Si ya existía, restaurar solamente lo modificado.</li><li>Eliminar <code>NoLockScreen</code> si se creó; si existía, devolver sus datos originales. Eliminar <code>Personalization</code> solo si se creó durante la práctica y ha quedado vacía.</li><li>Restaurar <code>MenuShowDelay</code> a los datos originales anotados.</li><li>Eliminar <code>VerboseStatus</code> si se creó, o recuperar sus datos originales. Restaurar también <code>DisableStatusMessages</code> si se modificó.</li><li>En esta práctica se restauran manualmente los cambios descritos. La copia <code>registro-antes-act7.reg</code> se conserva como respaldo. Para recuperar entradas exportadas se utiliza <strong>Archivo → Importar</strong>; la importación no elimina las entradas nuevas y puede encontrar valores protegidos. No se presenta como una operación realizada en las capturas.</li><li>Reiniciar y comprobar el menú contextual, la pantalla de bloqueo y el resto de los ajustes. Si es necesario recuperar toda la máquina virtual, conservar primero las pruebas fuera de ella y usar la instantánea previa.</li></ol>
+<div class="captures"><figure class="capture" id="captura-14">
+  <div class="capture-heading"><span>CAPTURA 14</span><code>media/act7-14-velocidad-restaurada.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-14-velocidad-restaurada.PNG" alt="Restauración de MenuShowDelay" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Restauración de MenuShowDelay</strong><p>Valor devuelto exactamente a sus datos originales.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Restauración de MenuShowDelay</figcaption>
+</figure>
+<figure class="capture" id="captura-15">
+  <div class="capture-heading"><span>CAPTURA 15</span><code>media/act7-15-menu-registro-restaurado.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-15-menu-registro-restaurado.PNG" alt="Restauración del ajuste del menú" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Restauración del ajuste del menú</strong><p>CLSID sin la clave creada durante la práctica, o ajuste previo recuperado.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Restauración del ajuste del menú</figcaption>
+</figure>
+<figure class="capture" id="captura-16">
+  <div class="capture-heading"><span>CAPTURA 16</span><code>media/act7-16-bloqueo-registro-restaurado.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-16-bloqueo-registro-restaurado.PNG" alt="Restauración de NoLockScreen" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Restauración de NoLockScreen</strong><p>Valor eliminado si se creó, o datos originales recuperados.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Restauración de NoLockScreen</figcaption>
+</figure>
+<figure class="capture" id="captura-17">
+  <div class="capture-heading"><span>CAPTURA 17</span><code>media/act7-17-mensajes-registro-restaurado.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-17-mensajes-registro-restaurado.PNG" alt="Restauración de VerboseStatus" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Restauración de VerboseStatus</strong><p>Valor eliminado si se creó, o datos originales recuperados; revisar también DisableStatusMessages.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Restauración de VerboseStatus</figcaption>
+</figure>
+<figure class="capture" id="captura-18">
+  <div class="capture-heading"><span>CAPTURA 18</span><code>media/act7-18-menu-restaurado.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-18-menu-restaurado.PNG" alt="Menú contextual restaurado" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Menú contextual restaurado</strong><p>Menú original después de reiniciar.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Menú contextual restaurado</figcaption>
+</figure>
+<figure class="capture" id="captura-19">
+  <div class="capture-heading"><span>CAPTURA 19</span><code>media/act7-19-bloqueo-restaurado.PNG</code></div>
+  <div class="capture-media">
+    <img src="media/act7-19-bloqueo-restaurado.PNG" alt="Pantalla de bloqueo restaurada" loading="lazy">
+    <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Pantalla de bloqueo restaurada</strong><p>Pantalla original después de reiniciar.</p><small>IMAGEN NO ENCONTRADA</small></div>
+  </div>
+  <figcaption>Pantalla de bloqueo restaurada</figcaption>
+</figure></div>
+<p style="margin-top:22px"><strong>Conclusión:</strong> la práctica documenta una copia de seguridad del registro, la activación del menú contextual clásico, la desactivación de la pantalla de bloqueo, el ajuste de MenuShowDelay y la configuración de VerboseStatus. La restauración se realizó retirando los ajustes nuevos y recuperando el valor original del retraso de los menús. Las capturas finales documentan las comprobaciones del menú y de la pantalla de bloqueo. El efecto visual de los mensajes detallados se explica, sin aportar una captura de su ejecución.</p>
+</div></section>
+<section class="section"><div class="section-title"><span class="number">↗</span><div><small>REFERENCIAS</small><h2>Documentación consultada</h2></div></div><div class="content"><ul class="sources">
+<li><a href="https://support.microsoft.com/en-us/windows/experience/backup-recovery/how-to-back-up-and-restore-the-registry-in-windows">Microsoft Support · Copia y restauración del registro</a></li>
+<li><a href="https://learn.microsoft.com/en-au/answers/questions/2287432/article-restore-old-right-click-context-menu-in-wi">Microsoft Q&amp;A · Ajuste del menú contextual clásico</a> (contenido de la comunidad; comprobar compatibilidad).</li>
+<li><a href="https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-controlpaneldisplay#cpl_personalization_nolockscreen">Microsoft Learn · Directiva NoLockScreen</a></li>
+<li><a href="https://learn.microsoft.com/ja-jp/answers/questions/2692097/menushowdelay-0%28-%29-win8-1">Microsoft Q&amp;A · MenuShowDelay</a> (referencia de la comunidad).</li>
+<li><a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/enable-verbose-startup-shutdown-logon-logoff-status-messages">Microsoft Learn · Mensajes de estado detallados</a></li>
+</ul></div></section>
+<div class="terminal"><span class="prompt">miguel@asix:~$</span> status act07<br>[READY] Copia de seguridad y configuración del registro<br>[READY] Restauración documentada<br>[INFO] Mensajes detallados: configuración y explicación</div>
+</main>
+<footer><span>ADMINISTRACIÓ DE SISTEMES · ACTIVIDAD 1.7</span><span>MIGUEL · ASIX 2026/2027</span></footer>
+<script>
+document.querySelectorAll('.capture').forEach(function(figure){
+  var img=figure.querySelector('img');
+  function showImage(){
+    if(!img.naturalWidth)return;
+    figure.classList.add('loaded');
+    figure.querySelector('figcaption').textContent=img.alt;
+  }
+  img.addEventListener('load',showImage);
+  if(img.complete)showImage();
+});
+</script>
+</body>
+</html>
