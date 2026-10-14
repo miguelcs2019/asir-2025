@@ -996,6 +996,29 @@ a:focus-visible{outline:3px solid #42d9ff;outline-offset:5px}
 @media(max-width:900px){.hero-layout{grid-template-columns:1fr}.lab{max-width:620px}.topbar{margin-bottom:36px}}
 @media(max-width:650px){.evolution{gap:8px}.evo-item{padding:10px 5px;font-size:11px}.evo-arrow{display:none}.lab{padding:16px}.system-panel{gap:8px}.system-card{padding:14px 12px}.actividad{grid-template-columns:55px 1fr 15px}.counter{white-space:nowrap}.activity-content h3{font-size:17px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ESFERAS Y APARICIÓN DEL DRAGÓN */
+.star-group{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:1px 2px;width:47px;line-height:1;font-size:13px;color:#b43914;filter:drop-shadow(0 1px 0 #ffe6a255)}
+.stars-1 .star-group{font-size:30px}.stars-2 .star-group,.stars-3 .star-group{font-size:19px}
+.actividad.locked .star-group{color:#d68d40}.actividad.locked .activity-number{background:radial-gradient(circle at 30% 25%,#ffd083,#dc8a35 60%,#8c4e25);border-color:#c88b49;box-shadow:inset -4px -5px 8px #99431544}
+.orb.seven{width:16px;height:16px;font-size:4px;line-height:4px;padding-top:2px}
+#dragonTransition{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;background:radial-gradient(ellipse at center,#123f35ee,#020812fa 70%);padding:20px;overflow:hidden}
+#dragonTransition[hidden]{display:none}
+.dragon-stage{width:min(760px,94vw);text-align:center;position:relative}
+.dragon-stage::before{content:'';position:absolute;width:70%;aspect-ratio:1;left:15%;top:0;border-radius:50%;background:radial-gradient(circle,#38ff991a,transparent 65%);animation:auraRise 1.4s ease-out both;pointer-events:none}
+.dragon-art{display:block;width:100%;height:auto;max-height:66vh;overflow:visible;filter:drop-shadow(0 0 15px #46dc8888);animation:dragonRise 1.5s cubic-bezier(.15,.8,.25,1) both}
+.dragon-body{stroke-dasharray:1900;stroke-dashoffset:1900;animation:dragonDraw 1.25s ease-out forwards}
+.dragon-head{animation:headReveal 1s ease-out .3s both;transform-origin:410px 160px}
+.dragon-flash{position:absolute;inset:0;background:#fff1c7;pointer-events:none;animation:flash .55s ease-out both}
+.dragon-caption{font-family:Consolas,monospace;letter-spacing:3px;color:#ffcc7c;margin-top:8px;font-size:clamp(16px,3vw,24px);animation:headReveal .6s .35s both}
+.dragon-subtitle{color:#c8f4dd;font-size:13px;margin-top:12px;line-height:1.6}
+.skip-dragon{display:inline-block;margin-top:20px;padding:10px 18px;color:#e4f9ef;background:#123d2b;border:1px solid #71db9f;border-radius:20px;cursor:pointer;font:12px 'Segoe UI',sans-serif}
+.energy-ball{position:absolute;left:50%;bottom:75px;width:25px;height:25px;border-radius:50%;background:#ffb33c;box-shadow:0 0 30px #ffa638,0 0 65px #ffd988;animation:energyBurst 1.5s ease-out both;pointer-events:none}
+@keyframes dragonDraw{to{stroke-dashoffset:0}}@keyframes dragonRise{from{opacity:0;transform:translateY(55px) scale(.78)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes headReveal{from{opacity:0}to{opacity:1}}@keyframes auraRise{from{transform:scale(.3);opacity:0}to{transform:scale(1.4);opacity:1}}
+@keyframes flash{from{opacity:.8}to{opacity:0}}@keyframes energyBurst{0%{transform:translateX(-50%) scale(.2);opacity:0}45%{opacity:1}100%{transform:translateX(-50%) scale(2);opacity:0}}
+@media(max-width:650px){.star-group{width:39px;font-size:11px;gap:1px}.stars-1 .star-group{font-size:25px}.stars-2 .star-group,.stars-3 .star-group{font-size:16px}}
+
 </style>
 </head>
 <body>
@@ -1018,7 +1041,7 @@ a:focus-visible{outline:3px solid #42d9ff;outline-offset:5px}
 <g fill="#79f4bb"><circle cx="189" cy="59" r="3"/><circle cx="201" cy="59" r="3"/><rect x="164" y="135" width="14" height="10"/><rect x="185" y="135" width="14" height="10"/><rect x="206" y="135" width="14" height="10"/><rect x="227" y="135" width="14" height="10"/><rect x="248" y="135" width="14" height="10"/><rect x="269" y="135" width="14" height="10"/></g>
 <g stroke="#54afda" stroke-width="2"><path d="M50 199H100M50 212H100M50 225H100M360 199H410M360 212H410M360 225H410M187 209H273M187 223H273M187 237H273"/></g>
 <g fill="#e5f4ff" font-family="Segoe UI,Arial,sans-serif" font-size="11" text-anchor="middle"><text x="230" y="103">ROUTER</text><text x="230" y="180">SWITCH</text><text x="75" y="270">SERVIDOR DNS</text><text x="230" y="270">SERVICIOS</text><text x="385" y="270">SERVIDOR VPN</text></g>
-<g fill="#ffc169" stroke="#ff9c30" stroke-width="2"><circle cx="77" cy="48" r="17"/><circle cx="386" cy="48" r="17"/></g><g fill="#b94322" font-size="19" text-anchor="middle"><text x="77" y="55">★</text><text x="386" y="55">★</text></g></svg><div class="radar-row"><div class="radar" aria-hidden="true"><span class="orb one">★</span><span class="orb two">★</span></div><p class="radar-caption"><strong>Radar de prácticas</strong>Cada actividad añade una nueva pieza al laboratorio.</p></div></div>
+<g fill="#ffc169" stroke="#ff9c30" stroke-width="2"><circle cx="77" cy="48" r="17"/><circle cx="386" cy="48" r="17"/></g><g fill="#b94322" font-size="19" text-anchor="middle"><text x="77" y="55">★</text><text x="386" y="41" font-size="8">★ ★</text><text x="386" y="49" font-size="8">★ ★ ★</text><text x="386" y="57" font-size="8">★ ★</text></g></svg><div class="radar-row"><div class="radar" aria-hidden="true"><span class="orb one">★</span><span class="orb two seven">★★<br>★★★<br>★★</span></div><p class="radar-caption"><strong>Radar de prácticas</strong>Cada actividad añade una nueva pieza al laboratorio.</p></div></div>
 </div></header>
 <main>
 <section class="system-panel" aria-label="Resumen del módulo">
@@ -1031,17 +1054,17 @@ a:focus-visible{outline:3px solid #42d9ff;outline-offset:5px}
 <section class="actividades" aria-label="Listado de prácticas">
 <!-- PRÁCTICA 01: enlaza al archivo que se preparará a continuación. -->
 <a href="servicios-en-red-ejercicio1.html" class="actividad activa">
-<div class="activity-number">01</div><div class="activity-content"><div class="activity-id">RED-ACT-001 · DDNS</div><h3>DDNS y acceso remoto seguro</h3><p>DuckDNS · Ubuntu · DNS · NAT y CGNAT · VPN · Evidencias y preguntas</p><span class="activity-status ready">● VER PRÁCTICA</span></div><span class="open" aria-hidden="true">→</span>
+<div class="activity-number stars-1" aria-label="Práctica 1"><span class="star-group" aria-hidden="true"><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-001 · DDNS</div><h3>DDNS y acceso remoto seguro</h3><p>DuckDNS · Ubuntu · DNS · NAT y CGNAT · VPN · Evidencias y preguntas</p><span class="activity-status ready">● VER PRÁCTICA</span></div><span class="open" aria-hidden="true">→</span>
 </a>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">02</div><div class="activity-content"><div class="activity-id">RED-ACT-002 · PENDIENTE</div><h3>Práctica 2</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">03</div><div class="activity-content"><div class="activity-id">RED-ACT-003 · PENDIENTE</div><h3>Práctica 3</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">04</div><div class="activity-content"><div class="activity-id">RED-ACT-004 · PENDIENTE</div><h3>Práctica 4</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">05</div><div class="activity-content"><div class="activity-id">RED-ACT-005 · PENDIENTE</div><h3>Práctica 5</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">06</div><div class="activity-content"><div class="activity-id">RED-ACT-006 · PENDIENTE</div><h3>Práctica 6</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">07</div><div class="activity-content"><div class="activity-id">RED-ACT-007 · PENDIENTE</div><h3>Práctica 7</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">08</div><div class="activity-content"><div class="activity-id">RED-ACT-008 · PENDIENTE</div><h3>Práctica 8</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">09</div><div class="activity-content"><div class="activity-id">RED-ACT-009 · PENDIENTE</div><h3>Práctica 9</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
-<div class="actividad locked" aria-disabled="true"><div class="activity-number">10</div><div class="activity-content"><div class="activity-id">RED-ACT-010 · PENDIENTE</div><h3>Práctica 10</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-2" aria-label="Práctica 2"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-002 · PENDIENTE</div><h3>Práctica 2</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-3" aria-label="Práctica 3"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-003 · PENDIENTE</div><h3>Práctica 3</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-4" aria-label="Práctica 4"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-004 · PENDIENTE</div><h3>Práctica 4</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-5" aria-label="Práctica 5"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-005 · PENDIENTE</div><h3>Práctica 5</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-6" aria-label="Práctica 6"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-006 · PENDIENTE</div><h3>Práctica 6</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-7" aria-label="Práctica 7"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-007 · PENDIENTE</div><h3>Práctica 7</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-8" aria-label="Práctica 8"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-008 · PENDIENTE</div><h3>Práctica 8</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-9" aria-label="Práctica 9"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-009 · PENDIENTE</div><h3>Práctica 9</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
+<div class="actividad locked" aria-disabled="true"><div class="activity-number stars-10" aria-label="Práctica 10"><span class="star-group" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></span></div><div class="activity-content"><div class="activity-id">RED-ACT-010 · PENDIENTE</div><h3>Práctica 10</h3><p>Contenido pendiente de asignar.</p><span class="activity-status">PENDIENTE</span></div><span class="open" aria-hidden="true">⌑</span></div>
 </section>
 <section class="terminal" aria-label="Resumen de las actividades">
 <div class="terminal-bar"><span class="dot red" aria-hidden="true"></span><span class="dot yellow" aria-hidden="true"></span><span class="dot green-dot" aria-hidden="true"></span><span class="terminal-title">MCS · CAPSULE NETWORK LAB</span></div>
@@ -1049,5 +1072,66 @@ a:focus-visible{outline:3px solid #42d9ff;outline-offset:5px}
 </section>
 </main>
 <footer><span>SERVICIOS EN RED · ASIX</span><span>MIGUEL · 2026/2027</span></footer>
+
+<div id="dragonTransition" role="dialog" aria-modal="true" aria-labelledby="dragonCaption" hidden>
+<div class="dragon-flash"></div><div class="dragon-stage">
+<svg class="dragon-art" viewBox="0 0 760 520" role="img" aria-label="Dragón verde de cuerpo serpentino, cuernos y ojos rojos que aparece entre las esferas">
+<defs><linearGradient id="dragonGreen" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#126e4e"/><stop offset=".5" stop-color="#51d576"/><stop offset="1" stop-color="#0f754d"/></linearGradient><linearGradient id="dragonBelly"><stop stop-color="#e6ba62"/><stop offset="1" stop-color="#fff2b0"/></linearGradient></defs>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path class="dragon-body" d="M176 459C24 404 102 324 225 350S507 470 582 356S423 238 316 277S142 263 161 179S369 141 438 197S611 268 613 170S499 116 424 149" stroke="#063d30" stroke-width="58"/>
+<path class="dragon-body" d="M176 459C24 404 102 324 225 350S507 470 582 356S423 238 316 277S142 263 161 179S369 141 438 197S611 268 613 170S499 116 424 149" stroke="url(#dragonGreen)" stroke-width="47"/>
+<path class="dragon-body" d="M176 465C44 405 114 343 225 368S497 473 570 357S426 256 320 292S153 265 177 187S370 155 430 209S608 274 626 178" stroke="url(#dragonBelly)" stroke-width="13"/>
+<g stroke="#1a754b" stroke-width="3" opacity=".7"><path d="M213 345l-7 18M260 357l-8 20M307 380l-7 18M350 402l-6 18M399 417v17M448 417l5 18M494 405l9 15M542 378l12 12M563 327l18-7M523 285l9-17M464 270l2-16M402 272l-2-15M344 285l-5-16M290 294l-1-16"/></g>
+<g stroke="#50c774" stroke-width="12"><path d="M271 349l-31-38-45 3M489 288l33-48 35 1"/></g>
+<g stroke="#eddda0" stroke-width="4"><path d="M195 314l-18-13M195 314l-22 2M195 314l-18 14M557 241l22-14M557 241l25 1M557 241l18 15"/></g>
+</g>
+<g class="dragon-head">
+<g fill="none" stroke="#d9b978" stroke-width="9" stroke-linecap="round"><path d="M387 122l-35-62 9-23M359 76l-20-6M451 120l23-66-10-21M469 74l22-13"/></g>
+<path d="M371 114l-25-18 8 33-20 7 29 18-16 18 29-4 17 30 43-9 18-25 31-14-8-34-26 12-15-22z" fill="#22804e" stroke="#063d30" stroke-width="4"/>
+<path d="M384 126l38-12 33 23-1 24-31 12-49-11 5-20z" fill="#58cc78" stroke="#063d30" stroke-width="3"/>
+<path d="M404 155l66-6 17 16-13 19-56 3-28-20" fill="#64cf83" stroke="#063d30" stroke-width="4"/>
+<path d="M408 175l64-3-14 21-41-3z" fill="#112b21"/><path d="M423 176l5 12 7-13M453 174l5 12 6-13" fill="#fff2bd"/>
+<path d="M387 137l23 7-21 7zM429 132l24 2-15 12z" fill="#ff423b" stroke="#172c20" stroke-width="2"/>
+<path d="M382 134l28 7M429 129l27 3" fill="none" stroke="#173d27" stroke-width="5"/>
+<circle cx="471" cy="159" r="3" fill="#103826"/>
+<g fill="none" stroke="#f2dc96" stroke-width="3" stroke-linecap="round"><path d="M414 165C328 111 320 195 276 167M461 169C513 121 537 189 588 129"/></g>
+<path d="M361 113l7-27 16 15 6-22 19 20 21-19 3 26" fill="#e6b961" stroke="#8d713c" stroke-width="2"/>
+</g>
+<g fill="#ffb646" stroke="#ffdc8b" stroke-width="2">
+<circle cx="239" cy="465" r="16"/><circle cx="286" cy="473" r="16"/><circle cx="333" cy="478" r="16"/><circle cx="380" cy="480" r="16"/><circle cx="427" cy="478" r="16"/><circle cx="474" cy="473" r="16"/><circle cx="521" cy="465" r="16"/>
+</g>
+<g fill="#b73913" font-family="Arial" font-size="9" text-anchor="middle"><text x="239" y="469">★</text><text x="286" y="477">★★</text><text x="333" y="482">★★★</text><text x="380" y="478">★★</text><text x="380" y="487">★★</text><text x="427" y="477">★★</text><text x="427" y="485">★★★</text><text x="474" y="472">★★★</text><text x="474" y="481">★★★</text><text x="521" y="460">★★</text><text x="521" y="468">★★★</text><text x="521" y="476">★★</text></g>
+</svg>
+<div class="energy-ball"></div><h2 class="dragon-caption" id="dragonCaption">EL DRAGÓN ABRE EL LABORATORIO</h2><p class="dragon-subtitle">Accediendo a la práctica de Servicios en Red…</p><button type="button" class="skip-dragon">Entrar ahora →</button>
+</div></div>
+<script>
+(() => {
+ const overlay = document.getElementById('dragonTransition');
+ const skip = overlay.querySelector('.skip-dragon');
+ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+ let destination = null;
+ let timer = null;
+ let opener = null;
+ function enter() { if (destination) window.location.assign(destination); }
+ function cancel() { clearTimeout(timer); overlay.hidden = true; document.body.style.overflow = ''; destination = null; if (opener) opener.focus(); }
+ document.querySelectorAll('a.actividad.activa').forEach(link => {
+  link.addEventListener('click', event => {
+   if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || reduceMotion.matches) return;
+   event.preventDefault();
+   if (!overlay.hidden) return;
+   destination = link.href; opener = link;
+   overlay.hidden = false; document.body.style.overflow = 'hidden'; skip.focus();
+   timer = setTimeout(enter, 2300);
+  });
+ });
+ skip.addEventListener('click', enter);
+ overlay.addEventListener('keydown', event => {
+  if (event.key === 'Escape') cancel();
+  if (event.key === 'Tab') { event.preventDefault(); skip.focus(); }
+ });
+ window.addEventListener('pageshow', cancel);
+})();
+</script>
+
 </body>
 </html>
