@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            DDNS y acceso remoto seguro | Servicios en Red
+        </title>
+        <style>
+        * {
+            box-sizing:border-box
+        }
+        html {
+            scroll-behavior:smooth
+        }
+        body {
+            margin:0;
+            color:#eaf1f9;
+            background:radial-gradient(ellipse at 90% 0,#123552,transparent 40%),#070d19;
+            font-family:'Segoe UI',Arial,sans-serif;
+            line-height:1.7
+        }
+        a {
+            color:#83dfff
+        }
+        header,main,footer {
+            width:92%;
+            max-width:1120px;
+            margin:auto
+        }
+        header {
+            padding:35px 0 30px
+        }
+        .topbar {
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-bottom:38px
+        }
+        .back {
+            text-decoration:none;
+            font-size:12px;
+            letter-spacing:1px
+        }
+        .brand {
+            color:#ffb96c;
+            font:12px Consolas,monospace;
+            letter-spacing:2px
+        }
+        .hero {
+            display:grid;
+            grid-template-columns:1fr 140px;
+            align-items:center;
+            gap:25px
+        }
+        .eyebrow {
+            color:#86dfff;
+            font:12px Consolas,monospace;
+            letter-spacing:2px
+        }
+        h1 {
+            font-size:clamp(34px,5vw,56px);
+            line-height:1.13;
+            letter-spacing:-1px;
+            margin:18px 0
+        }
+        h2 {
+            font-size:26px;
+            line-height:1.3;
+            margin:0 0 20px
+        }
+        h3 {
+            font-size:18px;
+            margin:28px 0 10px
+        }
+        .lead {
+            max-width:800px;
+            color:#afc0d5;
+            font-size:16px
+        }
+        .ball {
+            border-radius:50%;
+            background:radial-gradient(circle at 30% 25%,#fff2bc,#ffb645 40%,#e97d22 75%,#9c4214);
+            border:3px solid #ffd083;
+            display:grid;
+            place-items:center;
+            color:#b23718;
+            box-shadow:inset -9px -10px 20px #7d300e55,0 0 35px #ff9d2422;
+            width:115px;
+            height:115px;
+            font-size:55px
+        }
+        .meta {
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin:28px 0
+        }
+        .meta span {
+            padding:7px 12px;
+            border:1px solid #2e4961;
+            border-radius:7px;
+            color:#bad3e5;
+            font-size:12px;
+            background:#122033
+        }
+        .toc {
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            border-top:1px solid #ffffff18;
+            padding-top:22px
+        }
+        .toc a {
+            padding:8px 12px;
+            background:#102035;
+            border:1px solid #25425a;
+            border-radius:6px;
+            text-decoration:none;
+            font-size:12px
+        }
+        .toc a:hover {
+            border-color:#ffa84b;
+            color:#ffc675
+        }
+        main {
+            padding-bottom:30px
+        }
+        .block {
+            border:1px solid #253a50;
+            border-radius:15px;
+            padding:32px;
+            margin:22px 0;
+            background:linear-gradient(135deg,#111e30ee,#0b1321ee);
+            scroll-margin-top:20px
+        }
+        .heading {
+            display:flex;
+            align-items:center;
+            gap:15px;
+            margin-bottom:20px
+        }
+        .heading h2 {
+            margin:0
+        }
+        .section-ball {
+            flex:none;
+            width:50px;
+            height:50px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-wrap:wrap;
+            align-content:center;
+            border-radius:50%;
+            background:radial-gradient(circle at 30% 25%,#ffdc89,#f99b30 65%,#bf5b20);
+            border:1px solid #ffd084;
+            color:#9e3018;
+            font-size:11px;
+            line-height:1.1;
+            padding:9px;
+            gap:1px
+        }
+        .section-ball span {
+            display:block
+        }
+        .block p {
+            color:#bac9dc
+        }
+        .block strong {
+            color:#fff0ce
+        }
+        .code-label {
+            color:#ffbf70;
+            font:12px Consolas,monospace;
+            margin-top:19px
+        }
+        pre {
+            margin:8px 0 20px;
+            background:#040a13;
+            border:1px solid #253f54;
+            border-radius:8px;
+            padding:18px;
+            overflow:auto;
+            color:#a2edda;
+            line-height:1.65;
+            font-size:13px
+        }
+        code {
+            font-family:Consolas,'Courier New',monospace
+        }
+        p code,li code,td code {
+            color:#95dfff;
+            overflow-wrap:anywhere
+        }
+        .table-scroll {
+            overflow:auto;
+            margin:20px 0
+        }
+        table {
+            width:100%;
+            border-collapse:collapse;
+            min-width:570px;
+            font-size:14px
+        }
+        th {
+            background:#14304a;
+            color:#e6f5ff;
+            text-align:left
+        }
+        th,td {
+            border:1px solid #32485f;
+            padding:14px;
+            vertical-align:top
+        }
+        tr:nth-child(even) td {
+            background:#142135
+        }
+        td {
+            color:#bacbdf
+        }
+        figure {
+            margin:25px 0;
+            border:1px solid #304963;
+            border-radius:10px;
+            overflow:hidden;
+            background:#080f1c
+        }
+        figure a {
+            display:block
+        }
+        figure img {
+            width:100%;
+            height:auto;
+            display:block;
+            color:#bed0e2;
+            padding:5px;
+            min-height:60px
+        }
+        figcaption {
+            padding:12px 16px;
+            color:#a4bdd2;
+            font-size:13px;
+            border-top:1px solid #233950
+        }
+        .simulated {
+            border-left:3px solid #ffae55;
+            padding-left:18px
+        }
+        .simulated h3 {
+            color:#ffc47c
+        }
+        .questions {
+            counter-reset:questions
+        }
+        .question {
+            padding:18px 0;
+            border-bottom:1px solid #263b51
+        }
+        .question:last-child {
+            border:0
+        }
+        .question h3 {
+            margin:0 0 9px;
+            font-size:17px
+        }
+        .question p {
+            margin:0;
+            color:#d4dfec
+        }
+        .sources li {
+            margin:10px 0
+        }
+        .result {
+            font-size:16px;
+            color:#f8d296!important
+        }
+        .footer-nav {
+            display:flex;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:15px;
+            padding:25px 0
+        }
+        footer {
+            border-top:1px solid #24394e;
+            padding:22px 0 35px;
+            color:#91a8c1;
+            font-size:12px;
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            flex-wrap:wrap
+        }
+        .network-strip {
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            color:#96dfff;
+            font:12px Consolas,monospace;
+            letter-spacing:1px;
+            margin:20px 0
+        }
+        .network-strip span {
+            border:1px solid #2d4e68;
+            padding:8px 12px;
+            border-radius:7px
+        }
+        a:focus-visible {
+            outline:3px solid #ffb450;
+            outline-offset:5px
+        }
+        @media(max-width:650px) {
+            .block {
+                padding:22px 18px
+            }
+            .hero {
+                grid-template-columns:1fr 70px;
+                gap:12px
+            }
+            .ball {
+                width:70px;
+                height:70px;
+                font-size:36px
+            }
+            .brand {
+                font-size:10px
+            }
+            .heading h2 {
+                font-size:22px
+            }
+            pre {
+                font-size:12px;
+                padding:14px
+            }
+            .section-ball {
+                width:43px;
+                height:43px;
+                padding:7px
+            }
+            .lead {
+                font-size:14px
+            }
+        }
+        @media(prefers-reduced-motion:reduce) {
+            html {
+                scroll-behavior:auto
+            }
+        }
+        @media print {
+            body {
+                background:white;
+                color:black
+            }
+            header,main,footer {
+                width:100%;
+                max-width:none
+            }
+            .block {
+                background:white;
+                border-color:#ccc;
+                break-inside:auto
+            }
+            .block p,td,.question p {
+                color:#222
+            }
+            .block strong {
+                color:black
+            }
+            .toc,.footer-nav,.ball,.brand {
+                display:none
+            }
+            pre {
+                background:#f3f6f8;
+                color:#15372d;
+                border-color:#ccc;
+                white-space:pre-wrap;
+                overflow-wrap:anywhere
+            }
+            th {
+                background:#e7eff6;
+                color:black
+            }
+            td,th {
+                border-color:#aaa
+            }
+            tr:nth-child(even) td {
+                background:#f5f7fa
+            }
+            figure {
+                background:white;
+                break-inside:avoid
+            }
+            a {
+                color:#174e74
+            }
+            h2,h3 {
+                break-after:avoid
+            }
+        }
+    </style>
+    </head>
+    <body id="inicio">
+        <header>
+            <div class="topbar">
+                <a class="back" href="servicios-en-red.html">
+                    ← SERVICIOS EN RED
+                </a>
+                <span class="brand">
+                    CAPSULE CORP · NETWORK LAB
+                </span>
+            </div>
+            <div class="hero">
+                <div>
+                    <div class="eyebrow">
+                        PRÁCTICA 01 · SERVICIOS EN RED
+                    </div>
+                    <h1>
+                        DDNS y acceso
+                        <br>
+                        remoto seguro
+                    </h1>
+                    <p class="lead">
+                        Configuración de DuckDNS desde Ubuntu, comprobación del dominio y análisis del acceso remoto. La práctica combina pruebas realizadas, resultados y una consulta WAN simulada.
+                    </p>
+                </div>
+                <div class="ball" aria-hidden="true">
+                    ★
+                </div>
+            </div>
+            <div class="meta">
+                <span>
+                    Miguel Castillo
+                </span>
+                <span>
+                    ASIX · 2026/2027
+                </span>
+                <span>
+                    Ubuntu 24.04 LTS · VirtualBox
+                </span>
+                <span>
+                    14 de octubre de 2026
+                </span>
+            </div>
+            <div class="network-strip">
+                <span>
+                    ⇄ ROUTERS
+                </span>
+                <span>
+                    ▤ SWITCHES
+                </span>
+                <span>
+                    ▥ SERVIDORES
+                </span>
+                <span>
+                    ◉ DNS / DDNS
+                </span>
+            </div>
+            <nav class="toc" aria-label="Apartados de la práctica">
+                <a href="#parte1">
+                    1. DuckDNS
+                </a>
+                <a href="#parte2">
+                    2. Cliente DDNS
+                </a>
+                <a href="#parte3">
+                    3. Verificación DNS
+                </a>
+                <a href="#parte4">
+                    4. Diagnóstico
+                </a>
+                <a href="#parte5">
+                    5. Seguridad
+                </a>
+                <a href="#parte6">
+                    6. VPN
+                </a>
+                <a href="#parte7">
+                    7. Operadores
+                </a>
+                <a href="#preguntas">
+                    Preguntas
+                </a>
+                <a href="#fuentes">
+                    Fuentes
+                </a>
+            </nav>
+        </header>
+        <main>
+            <section class="block" id="parte1">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        1. Alta del servicio DDNS
+                    </h2>
+                </div>
+                <p>
+                    Accedí a
+                    <a href="https://www.duckdns.org" target="_blank" rel="noopener">
+                        DuckDNS
+                    </a>
+                    , inicié sesión mediante una de sus opciones de acceso y añadí el subdominio
+                    <strong>
+                        mcs-practica
+                    </strong>
+                    .
+                </p>
+                <p>
+                    El nombre completo es
+                    <strong>
+                        <code>
+                            mcs-practica.duckdns.org
+                        </code>
+                    </strong>
+                    . La cuenta permite gestionar el dominio y su token permite autenticar las peticiones de actualización.
+                </p>
+                <p>
+                    Guardé el token en un archivo protegido de Ubuntu. En las capturas no se muestran el token ni las credenciales; la IP pública está parcialmente oculta.
+                </p>
+                <figure>
+                    <a href="media/ddns-01-dominio.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-01-dominio.PNG" alt="Captura 1. Subdominio creado en DuckDNS, con la IP pública parcialmente oculta." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 1. Subdominio creado en DuckDNS, con la IP pública parcialmente oculta.
+                    </figcaption>
+                </figure>
+            </section>
+            <section class="block" id="parte2">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        2. Cliente de actualización DDNS
+                    </h2>
+                </div>
+                <p>
+                    Utilicé Ubuntu dentro de VirtualBox como cliente de actualización. El cliente envía una petición HTTPS a DuckDNS para mantener el dominio apuntando a la IPv4 pública.
+                </p>
+                <h3>
+                    Preparación de herramientas
+                </h3>
+                <pre><code>cat /etc/os-release
+sudo apt update
+sudo apt install curl dnsutils cron</code></pre>
+                <p>
+                    <code>
+                        curl
+                    </code>
+                    envía la actualización;
+                    <code>
+                        dnsutils
+                    </code>
+                    incluye las herramientas de consulta DNS y
+                    <code>
+                        cron
+                    </code>
+                    permite programar la tarea.
+                </p>
+                <h3>
+                    Carpeta y archivo de configuración
+                </h3>
+                <pre><code>mkdir -p ~/duckdns
+chmod 700 ~/duckdns
+nano ~/duckdns/duck.conf</code></pre>
+                <p>
+                    Inicialmente guardé estas dos líneas.
+                    <code>
+                        TU_TOKEN
+                    </code>
+                    representa el token privado y no es su valor real.
+                </p>
+                <pre><code>domains = &quot;mcs-practica&quot;
+token = &quot;TU_TOKEN&quot;</code></pre>
+                <pre><code>chmod 600 ~/duckdns/duck.conf</code></pre>
+                <p>
+                    El permiso
+                    <code>
+                        700
+                    </code>
+                    limita el acceso a la carpeta a mi usuario. El permiso
+                    <code>
+                        600
+                    </code>
+                    permite que solo mi usuario lea y modifique la configuración.
+                </p>
+                <h3>
+                    Actualización manual
+                </h3>
+                <p>
+                    Adapté el archivo al formato de configuración de
+                    <code>
+                        curl
+                    </code>
+                    , conservando el token sin mostrarlo:
+                </p>
+                <pre><code>sed -i &#x27;s/^domains = &quot;/data-urlencode = &quot;domains=/; s/^token = &quot;/data-urlencode = &quot;token=/&#x27; ~/duckdns/duck.conf</code></pre>
+                <p>
+                    El archivo queda con este formato:
+                </p>
+                <pre><code>data-urlencode = &quot;domains=mcs-practica&quot;
+data-urlencode = &quot;token=TU_TOKEN&quot;</code></pre>
+                <pre><code>curl -4 --silent --show-error --fail --max-time 30 \
+  --get --config ~/duckdns/duck.conf \
+  --data-urlencode &quot;ip=&quot; \
+  https://www.duckdns.org/update
+echo</code></pre>
+                <p>
+                    La respuesta fue
+                    <strong>
+                        <code>
+                            OK
+                        </code>
+                    </strong>
+                    : DuckDNS aceptó la actualización. El parámetro
+                    <code>
+                        ip
+                    </code>
+                    vacío permite detectar la IPv4 pública de la conexión.
+                </p>
+                <figure>
+                    <a href="media/ddns-02-actualizacion-manual.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-02-actualizacion-manual.PNG" alt="Captura 2. Petición de actualización manual y respuesta OK de DuckDNS." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 2. Petición de actualización manual y respuesta OK de DuckDNS.
+                    </figcaption>
+                </figure>
+                <h3>
+                    Cliente de actualización
+                </h3>
+                <pre><code>nano ~/duckdns/duck.sh</code></pre>
+                <p>
+                    Contenido del cliente:
+                </p>
+                <pre><code>#!/bin/bash
+umask 077
+
+/usr/bin/curl -4 --silent --show-error --fail --max-time 30 \
+  --get --config &quot;$HOME/duckdns/duck.conf&quot; \
+  --data-urlencode &quot;ip=&quot; \
+  https://www.duckdns.org/update \
+  &gt; &quot;$HOME/duckdns/duck.log&quot; 2&gt;&amp;1</code></pre>
+                <pre><code>chmod 700 ~/duckdns/duck.sh
+~/duckdns/duck.sh
+cat ~/duckdns/duck.log
+echo</code></pre>
+                <p>
+                    La prueba del cliente también devolvió
+                    <strong>
+                        <code>
+                            OK
+                        </code>
+                    </strong>
+                    . El resultado se guarda en
+                    <code>
+                        duck.log
+                    </code>
+                    .
+                </p>
+                <h3>
+                    Programación cada cinco minutos
+                </h3>
+                <pre><code>crontab -e</code></pre>
+                <p>
+                    Añadí esta línea al crontab de mi usuario:
+                </p>
+                <pre><code>*/5 * * * * /home/mcsadmin/duckdns/duck.sh</code></pre>
+                <pre><code>sudo systemctl enable --now cron
+crontab -l | tail -n 1
+systemctl is-active cron</code></pre>
+                <p>
+                    La tarea quedó programada y el servicio cron activo.
+                    <strong>
+                        Las actualizaciones se ejecutan mientras la máquina virtual esté encendida.
+                    </strong>
+                    La ejecución manual está comprobada; la configuración de cron muestra la programación automática.
+                </p>
+                <figure>
+                    <a href="media/ddns-03-actualizacion-automatica.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-03-actualizacion-automatica.PNG" alt="Captura 3. Tarea programada cada cinco minutos y servicio cron activo." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 3. Tarea programada cada cinco minutos y servicio cron activo.
+                    </figcaption>
+                </figure>
+            </section>
+            <section class="block" id="parte3">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        3. Verificación DNS
+                    </h2>
+                </div>
+                <p>
+                    Consulté el dominio desde Ubuntu:
+                </p>
+                <pre><code>nslookup mcs-practica.duckdns.org</code></pre>
+                <p>
+                    La dirección devuelta para el dominio coincide con la IPv4 pública observada. El campo
+                    <code>
+                        Server
+                    </code>
+                    identifica el servidor DNS que respondió; no es la IP del dominio.
+                </p>
+                <p>
+                    También puede consultarse con
+                    <code>
+                        dig
+                    </code>
+                    :
+                </p>
+                <pre><code>dig mcs-practica.duckdns.org A</code></pre>
+                <p>
+                    La comprobación realizada y documentada fue con
+                    <code>
+                        nslookup
+                    </code>
+                    .
+                </p>
+                <figure>
+                    <a href="media/ddns-04-verificacion-dns.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-04-verificacion-dns.PNG" alt="Captura 4. Resolución del dominio con nslookup; IP pública parcialmente oculta." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 4. Resolución del dominio con nslookup; IP pública parcialmente oculta.
+                    </figcaption>
+                </figure>
+            </section>
+            <section class="block" id="parte4">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        4. Diagnóstico de red
+                    </h2>
+                </div>
+                <h3>
+                    Direcciones del equipo y puerta de enlace
+                </h3>
+                <p>
+                    Primero revisé las interfaces y rutas:
+                </p>
+                <pre><code>ip -br addr
+ip route</code></pre>
+                <p>
+                    Como también aparecían interfaces de Docker, limité la salida a la interfaz utilizada para salir a Internet:
+                </p>
+                <pre><code>ip -br addr show enp0s3
+ip route show default</code></pre>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Dato
+                                </th>
+                                <th scope="col">
+                                    Resultado
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Interfaz de Ubuntu
+                                </td>
+                                <td>
+                                    <code>
+                                        enp0s3
+                                    </code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    IP privada
+                                </td>
+                                <td>
+                                    <code>
+                                        10.0.2.15/24
+                                    </code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Puerta de enlace de la VM
+                                </td>
+                                <td>
+                                    <code>
+                                        10.0.2.2
+                                    </code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Modo de VirtualBox
+                                </td>
+                                <td>
+                                    NAT
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    IPv4 pública
+                                </td>
+                                <td>
+                                    Consultada desde el navegador de Ubuntu; coincide con DuckDNS.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    WAN del router doméstico
+                                </td>
+                                <td>
+                                    No consultada en el entorno real. Se incluye un ejemplo simulado.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    IPv6 de la interfaz
+                                </td>
+                                <td>
+                                    Una dirección local ULA (
+                                    <code>
+                                        fd17:…
+                                    </code>
+                                    ) y una de enlace local (
+                                    <code>
+                                        fe80:…
+                                    </code>
+                                    ). No se comprobó conectividad IPv6 pública.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figure>
+                    <a href="media/ddns-05-red-linux.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-05-red-linux.PNG" alt="Captura 5. IP privada de Ubuntu y puerta de enlace predeterminada." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 5. IP privada de Ubuntu y puerta de enlace predeterminada.
+                    </figcaption>
+                </figure>
+                <figure>
+                    <a href="media/ddns-06-red-virtualbox.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-06-red-virtualbox.PNG" alt="Captura 6. Adaptador 1 de VirtualBox configurado en NAT." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 6. Adaptador 1 de VirtualBox configurado en NAT.
+                    </figcaption>
+                </figure>
+                <h3>
+                    Comparación de la IP pública
+                </h3>
+                <p>
+                    Desde el navegador de Ubuntu consulté la IPv4 pública y la comparé con DuckDNS.
+                    <strong>
+                        Las direcciones coinciden.
+                    </strong>
+                </p>
+                <figure>
+                    <a href="media/ddns-07-ip-publica.PNG" target="_blank" rel="noopener">
+                        <img src="media/ddns-07-ip-publica.PNG" alt="Captura 7. IPv4 pública observada desde Ubuntu, parcialmente oculta." loading="lazy">
+                    </a>
+                    <figcaption>
+                        Captura 7. IPv4 pública observada desde Ubuntu, parcialmente oculta.
+                    </figcaption>
+                </figure>
+                <h3>
+                    NAT, CGNAT e IPv6
+                </h3>
+                <p>
+                    Se confirmó el NAT de VirtualBox. Si el router doméstico también utiliza NAT para salir a Internet, el tráfico de la VM pasa por dos traducciones. Esto no demuestra que exista CGNAT del operador.
+                </p>
+                <p>
+                    Sin consultar la WAN del router no puede confirmarse ni descartarse CGNAT. Las IPv6 locales encontradas tampoco demuestran acceso a Internet mediante IPv6. Con una IPv6 pública, el firewall debe controlar las conexiones entrantes aunque no se utilice NAT.
+                </p>
+                <div class="simulated">
+                    <h3>
+                        Ejemplo simulado de consulta WAN
+                    </h3>
+                    <p>
+                        <strong>
+                            Datos ficticios; esta consulta no se realizó en el router doméstico.
+                        </strong>
+                    </p>
+                    <p>
+                        En el ejemplo, se accedió a
+                        <code>
+                            192.168.1.1
+                        </code>
+                        , se inició sesión y se abrió Estado/WAN. Se comparó la IPv4 WAN con la pública:
+                    </p>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Dirección
+                                    </th>
+                                    <th scope="col">
+                                        Valor ficticio
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        IPv4 WAN
+                                    </td>
+                                    <td>
+                                        <code>
+                                            203.0.113.25
+                                        </code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        IPv4 pública
+                                    </td>
+                                    <td>
+                                        <code>
+                                            203.0.113.25
+                                        </code>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        Al coincidir, el ejemplo no presenta indicios de CGNAT. Estos valores son de documentación y no corresponden a mi conexión.
+                    </p>
+                </div>
+            </section>
+            <section class="block" id="parte5">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        5. Análisis de seguridad
+                    </h2>
+                </div>
+                <p>
+                    Comparé qué queda expuesto y qué medidas aplicar en cada escenario.
+                </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Escenario
+                                </th>
+                                <th scope="col">
+                                    Superficie de ataque
+                                </th>
+                                <th scope="col">
+                                    Medidas de seguridad
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    A. Solo DDNS
+                                </td>
+                                <td>
+                                    El nombre permite conocer la IP, pero no abre servicios nuevos.
+                                </td>
+                                <td>
+                                    Proteger la cuenta y el token.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    B. DDNS + puerto publicado
+                                </td>
+                                <td>
+                                    El servicio interno queda expuesto a conexiones e intentos de ataque desde Internet.
+                                </td>
+                                <td>
+                                    Mantenerlo actualizado, usar autenticación segura y limitar el acceso con el firewall.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    C. DDNS + administración remota del router
+                                </td>
+                                <td>
+                                    El panel del router queda expuesto. Si alguien accede, puede modificar la configuración de la red.
+                                </td>
+                                <td>
+                                    Desactivar la administración desde Internet y acceder mediante una VPN.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    Durante esta práctica no se abrieron puertos ni se activó la administración remota del router.
+                </p>
+            </section>
+            <section class="block" id="parte6">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        6. Acceso remoto seguro mediante VPN
+                    </h2>
+                </div>
+                <p>
+                    Una VPN crea una conexión cifrada entre nuestro equipo y la red privada. Después de identificarnos, podemos acceder a los recursos que tengamos autorizados.
+                </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Elemento
+                                </th>
+                                <th scope="col">
+                                    Función
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    DDNS
+                                </td>
+                                <td>
+                                    Mantiene el nombre apuntando a la IP pública cuando cambia.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Firewall
+                                </td>
+                                <td>
+                                    Permite o bloquea las conexiones según las reglas configuradas.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    VPN
+                                </td>
+                                <td>
+                                    Crea un túnel cifrado para acceder a la red privada.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Autenticación
+                                </td>
+                                <td>
+                                    Comprueba la identidad de quien intenta acceder.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    NAT/CGNAT
+                                </td>
+                                <td>
+                                    Traducen direcciones IP. El CGNAT del operador suele dificultar las conexiones entrantes.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    DDNS ayuda a localizar el punto de acceso. La VPN cifra la conexión y el firewall limita los recursos accesibles. El acceso debe autorizarse únicamente a los usuarios y servicios necesarios.
+                </p>
+                <p>
+                    Este apartado es un análisis teórico: no se instaló ni se probó una VPN. Una VPN alojada en casa también necesita ser alcanzable; DDNS por sí solo no resuelve CGNAT.
+                </p>
+            </section>
+            <section class="block" id="parte7">
+                <div class="heading">
+                    <div class="section-ball" aria-hidden="true">
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                        <span>
+                            ★
+                        </span>
+                    </div>
+                    <h2>
+                        7. Routers de operadores
+                    </h2>
+                </div>
+                <p>
+                    La disponibilidad de DDNS y los proveedores admitidos dependen del modelo y del firmware. Admitir DDNS no implica admitir DuckDNS.
+                </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Operador
+                                </th>
+                                <th scope="col">
+                                    Modelo o familia
+                                </th>
+                                <th scope="col">
+                                    DDNS
+                                </th>
+                                <th scope="col">
+                                    Alternativa
+                                </th>
+                                <th scope="col">
+                                    Fuente
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Movistar
+                                </td>
+                                <td>
+                                    Smart WiFi / HGU
+                                </td>
+                                <td>
+                                    Depende del modelo y firmware; hay que comprobarlo en su configuración avanzada.
+                                </td>
+                                <td>
+                                    Cliente DuckDNS en Ubuntu.
+                                </td>
+                                <td>
+                                    <a href="https://www.movistar.es/atencion-cliente/manuales" target="_blank" rel="noopener">
+                                        Manuales Movistar
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Orange
+                                </td>
+                                <td>
+                                    Livebox
+                                </td>
+                                <td>
+                                    Orange documenta DDNS con No-IP en algunos Livebox. Revisar los proveedores del modelo concreto.
+                                </td>
+                                <td>
+                                    Cliente en Ubuntu si no admite DuckDNS.
+                                </td>
+                                <td>
+                                    <a href="https://blog.orange.es/dispositivos/router-orange-livebox/" target="_blank" rel="noopener">
+                                        Guía Livebox de Orange
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Vodafone
+                                </td>
+                                <td>
+                                    Sercomm H500-s
+                                </td>
+                                <td>
+                                    La documentación oficial consultada no confirma el soporte DDNS ni DuckDNS de este firmware.
+                                </td>
+                                <td>
+                                    Cliente DuckDNS en Ubuntu.
+                                </td>
+                                <td>
+                                    <a href="https://ayudacliente.vodafone.es/particulares/internet-y-fijo/wifi-y-router/configuracion-de-routers/" target="_blank" rel="noopener">
+                                        Guías Vodafone
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    Si el router no admite DuckDNS, podemos actualizarlo desde un equipo de la red, como nuestra máquina Ubuntu.
+                </p>
+            </section>
+            <section class="block questions" id="preguntas">
+                <h2>
+                    Preguntas de reflexión
+                </h2>
+                <article class="question">
+                    <h3>
+                        1. ¿Qué diferencia existe entre DNS y DDNS?
+                    </h3>
+                    <p>
+                        DNS relaciona un nombre con una IP. DDNS mantiene esa relación actualizada cuando la IP cambia.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        2. ¿DDNS proporciona acceso remoto? Justifica la respuesta.
+                    </h3>
+                    <p>
+                        No, solo mantiene el nombre apuntando a la IP actual. Para acceder necesitamos un servicio disponible y que la conexión esté permitida.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        3. ¿Qué diferencia existe entre una IP privada y una IP pública?
+                    </h3>
+                    <p>
+                        La IP privada se usa dentro de la red local. La IP pública identifica nuestra conexión en Internet.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        4. ¿Qué es NAT?
+                    </h3>
+                    <p>
+                        NAT permite que varios equipos con IP privada compartan una IP pública para salir a Internet.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        5. ¿Qué es CGNAT y qué consecuencias tiene para conexiones entrantes?
+                    </h3>
+                    <p>
+                        CGNAT hace que varios clientes compartan una IP pública y dificulta las conexiones entrantes.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        6. ¿Qué riesgos aparecen al publicar un puerto en Internet?
+                    </h3>
+                    <p>
+                        El servicio queda expuesto a Internet y pueden intentar entrar aprovechando contraseñas débiles o fallos de seguridad.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        7. ¿Por qué la administración remota del router aumenta la superficie de ataque?
+                    </h3>
+                    <p>
+                        Porque expone el panel del router a Internet. Si alguien entra, puede modificar la configuración de nuestra red.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        8. ¿Por qué un token DDNS debe tratarse como una credencial?
+                    </h3>
+                    <p>
+                        Porque permite modificar la IP del dominio. Debemos protegerlo como una contraseña.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        9. ¿Por qué ping no demuestra que un servicio TCP esté disponible?
+                    </h3>
+                    <p>
+                        Ping comprueba si el equipo responde por ICMP, pero no si un servicio TCP está funcionando.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        10. ¿Qué ventajas presenta una VPN frente a publicar numerosos servicios?
+                    </h3>
+                    <p>
+                        Una VPN protege el acceso con cifrado y autenticación, y evita publicar cada servicio en Internet.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        11. ¿Qué medidas aplicarías para reducir la superficie de ataque?
+                    </h3>
+                    <p>
+                        Cerraría los puertos innecesarios, desactivaría la administración remota y mantendría los servicios actualizados. Para acceder desde fuera, usaría una VPN.
+                    </p>
+                </article>
+                <article class="question">
+                    <h3>
+                        12. ¿Por qué es preferible realizar esta actividad sobre un router de laboratorio?
+                    </h3>
+                    <p>
+                        Porque podemos hacer pruebas sin afectar a la red de casa y recuperar la configuración si algo sale mal.
+                    </p>
+                </article>
+            </section>
+            <section class="block" id="fuentes">
+                <h2>
+                    Fuentes consultadas y documentación de referencia
+                </h2>
+                <ul class="sources">
+                    <li>
+                        <a href="https://www.duckdns.org/spec.jsp" target="_blank" rel="noopener">
+                            DuckDNS · Especificación de la API
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.movistar.es/atencion-cliente/manuales" target="_blank" rel="noopener">
+                            Movistar · Manuales de routers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://blog.orange.es/dispositivos/router-orange-livebox/" target="_blank" rel="noopener">
+                            Orange · Funciones del router Livebox
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://ayudacliente.vodafone.es/particulares/internet-y-fijo/wifi-y-router/configuracion-de-routers/" target="_blank" rel="noopener">
+                            Vodafone · Configuración de routers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.incibe.es/sites/default/files/docs/guia_router/osi-guia-tu-router-tu-castillo.pdf" target="_blank" rel="noopener">
+                            INCIBE · Tu router, tu castillo — referencia propuesta en el enunciado
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8425A.pdf" target="_blank" rel="noopener">
+                            NIST IR 8425A — referencia propuesta en el enunciado
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <div class="footer-nav">
+                <a href="servicios-en-red.html">
+                    ← Volver a las prácticas
+                </a>
+                <a href="#inicio">
+                    Volver arriba ↑
+                </a>
+            </div>
+        </main>
+        <footer>
+            <span>
+                SERVICIOS EN RED · PRÁCTICA 01
+            </span>
+            <span>
+                CAPSULE NETWORK LAB · ASIX 2026/2027
+            </span>
+        </footer>
+    </body>
+</html>
