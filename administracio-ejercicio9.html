@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Actividad 1.9 | Automatización del despliegue de imágenes WIN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090b;--panel:#101418;--amber:#ffb000;--amber2:#ffd166;--green:#65ff8f;--cyan:#42d9ff;--white:#e8edf0;--muted:#87929a;--border:rgba(255,255,255,.09)}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{background:var(--bg);color:var(--white);font-family:"Segoe UI",Arial,sans-serif;line-height:1.75}
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 12% 10%,rgba(255,176,0,.08),transparent 28%),radial-gradient(circle at 90% 55%,rgba(66,217,255,.07),transparent 32%)}
+.scan{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.11;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.025) 4px)}
+header,main,footer{width:92%;max-width:1120px;margin:auto}
+.top{padding:30px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.back{color:var(--muted);text-decoration:none;font:11px Consolas,monospace;letter-spacing:1px}.back:hover{color:var(--amber)}
+.online{color:var(--green);font:10px Consolas,monospace;letter-spacing:2px}
+.eyebrow{margin-top:30px;color:var(--amber);font:11px Consolas,monospace;letter-spacing:3px}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.12;letter-spacing:-1.5px;margin:15px 0 20px;max-width:950px}
+h1 span{color:var(--amber2)}
+.intro{max-width:850px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 35px}.meta span{padding:8px 12px;border:1px solid var(--border);border-radius:5px;font:10px Consolas,monospace;color:var(--cyan)}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 30px}nav a{border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--muted);text-decoration:none;font-size:12px}nav a:hover{color:var(--amber);border-color:var(--amber)}
+.section{margin:20px 0 35px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(17,21,25,.96),rgba(9,12,14,.96))}
+.section-title{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:center}
+.number{flex-shrink:0;color:var(--amber);font:bold 20px Consolas,monospace;border:1px solid rgba(255,176,0,.2);border-radius:7px;padding:10px}
+h2{font-size:22px;line-height:1.35}.section-title small{display:block;color:var(--muted);font:9px Consolas,monospace;letter-spacing:2px;margin-bottom:5px}
+.content{padding:25px 26px}.content p{margin:0 0 14px;color:#a3aeb5}
+ol,ul{padding-left:23px;margin:15px 0 22px}li{padding-left:4px;margin:7px 0;color:#b9c2c8}
+strong{color:var(--white)}code{font-family:Consolas,"Courier New",monospace;color:var(--cyan);overflow-wrap:anywhere}
+.path{background:#06090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:5px;padding:14px 16px;margin:16px 0;overflow-wrap:anywhere;font-size:12px}
+.note,.expected{padding:15px 18px;margin:18px 0;border:1px solid rgba(255,176,0,.16);border-radius:7px;background:rgba(255,176,0,.035)}
+.note p,.expected p{margin:0}.expected{border-color:rgba(101,255,143,.16);background:rgba(101,255,143,.025)}.expected strong{color:var(--green)}
+.captures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:26px}
+.capture{min-width:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#080c0f}
+.capture-heading{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.capture-heading span{color:var(--amber);font:10px Consolas,monospace}.capture-heading code{color:#7d8992;font-size:9px}
+.capture-media{padding:14px}.capture-media img{display:none;width:100%;height:auto;border-radius:4px}.capture.loaded img{display:block}.capture.loaded .placeholder{display:none}
+.placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border:1px dashed #2a343b;border-radius:6px}
+.placeholder-icon{font-size:35px;color:#56656f}.placeholder strong{font-size:14px}.placeholder p{font-size:12px;margin:10px 0;color:#76858f}.placeholder small{font:9px Consolas,monospace;color:var(--amber)}
+figcaption{padding:0 14px 15px;font-size:11px;color:#7f8d97}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin:18px 0}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--amber);font-family:Consolas,monospace}
+a{color:var(--cyan)}.sources{font-size:12px}.sources li{margin:10px 0}
+.terminal{border:1px solid rgba(101,255,143,.16);border-radius:9px;background:#030604;padding:22px;margin:30px 0;color:var(--green);font:11px/1.9 Consolas,monospace}.terminal .prompt{color:var(--amber)}
+footer{padding:25px 0 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:15px;color:#65717a;font:9px Consolas,monospace}
+@media(max-width:700px){.captures{grid-template-columns:1fr}.content{padding:20px 17px}.section-title{padding:18px 17px}h2{font-size:19px}.online{letter-spacing:0}.top{align-items:flex-start}footer{flex-direction:column}.placeholder{min-height:180px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<style>pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#05090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:16px;margin:16px 0;color:var(--cyan);font:12px/1.8 Consolas,monospace}.flow{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.flow span{padding:12px 16px;border:1px solid var(--border);border-radius:6px;color:var(--amber2);font:12px Consolas,monospace}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}</style>
+<style>details{margin:18px 0;border:1px solid var(--border);border-radius:7px;padding:16px}summary{cursor:pointer;color:var(--amber2)}details pre{max-height:650px;overflow:auto}</style>
+</head>
+<body><div class="bg"></div><div class="scan"></div><header><div class="top"><a class="back" href="administracio.html">← ADMINISTRACIÓ DE SISTEMES</a><span class="online">● ASIX · DEPLOYMENT LAB</span></div><div class="eyebrow">// SYS-ACT-009 · ACTIVIDAD 1.9</div><h1>Automatización del despliegue<br>de <span>imágenes WIN</span></h1><p class="intro">De WinPE a Windows 11 Pro: particiones GPT, aplicación de una imagen oficial, preparación del arranque y comprobación del resultado.</p><div class="meta"><span>WINPE</span><span>DISM</span><span>UEFI / GPT</span><span>WINDOWS 11 PRO</span><span>14 CAPTURAS</span></div><nav aria-label="Apartados"><a href="#objetivo">01 · Objetivo</a><a href="#scripts">02 · Scripts</a><a href="#maquina">03 · Máquina</a><a href="#ejecucion">04 · Confirmación</a><a href="#automatizacion">05 · Despliegue</a><a href="#inicio">06 · Primer inicio</a><a href="#verificacion">07 · Verificación</a></nav>
+</header>
+<main>
+
+<section class='section' id='objetivo'><div class='section-title'><span class='number'>01</span><div><small>ACTIVIDAD 1.9</small><h2>Objetivo y destino</h2></div></div><div class='content'><p><strong>Objetivo:</strong> automatizar las particiones, la aplicación de una imagen de Windows 11 Pro y el arranque UEFI desde WinPE. La selección de edición, la confirmación de borrado y OOBE son manuales: se automatiza el despliegue, no toda la configuración inicial.</p>
+<div class="flow"><span>WinPE</span><span>→ Validación</span><span>→ GPT</span><span>→ DISM</span><span>→ BCDBoot</span><span>→ Windows</span></div>
+<p>Se reutiliza <strong>WINPE-LAB</strong> con su disco vacío de 64 GB, y la ISO <code>Win11_25H2_Spanish_x64_v2.iso</code>. La VM que ya tiene Windows 11 Pro instalado se conserva.</p>
+<div class="note"><p><strong>Destino exclusivo:</strong> un único VDI VBOX de 64 GB vacío en WINPE-LAB. El proceso borra ese disco. Crear antes una instantánea con la VM apagada. No conectar discos físicos, USB ni otros VDI.</p></div>
+<p><strong>Resultado:</strong> se ha desplegado Windows 11 Pro desde la imagen oficial, se ha arrancado desde el disco virtual y se ha comprobado Windows RE habilitado. Las capturas documentan las fases del proceso; la captura 8 reúne la aplicación de la imagen, la creación del arranque y el resumen final.</p></div></section>
+
+<section class='section' id='scripts'><div class='section-title'><span class='number'>02</span><div><small>ACTIVIDAD 1.9</small><h2>Añadir los scripts a WinPE</h2></div></div><div class='content'><ol><li>Extraer <code>actividad9-despliegue.zip</code> en el Windows 10 anfitrión. Incluye <code>ASIX\desplegar.cmd</code> y <code>ASIX\particiones-uefi.txt</code>.</li><li>Copiar ASIX completa en <code>C:\WinPE_amd64\media</code>.</li><li>WinPE básico puede no incluir findstr.exe. En el anfitrión Windows 10 de 64 bits, copiar <code>C:\Windows\System32\findstr.exe</code> dentro de <code>C:\WinPE_amd64\media\ASIX</code>. Conservar también los dos archivos del paquete. El script utilizará esa copia para sus comprobaciones.</li><li>Conservar la ISO original y abrir el entorno elevado del ADK para generar una ISO nueva:</li></ol>
+<pre><code>MakeWinPEMedia /ISO C:\WinPE_amd64 C:\WinPE_amd64\WinPE_ASIX_Act9.iso /bootex</code></pre>
+<div class="note"><p><strong>Incidencia y solución:</strong> en el primer intento WinPE indicó que findstr no se reconocía. El script se detuvo antes del particionado. Se añadió una copia x64 de findstr.exe desde System32 del anfitrión y se regeneró la ISO. En el siguiente intento se detectó otra incidencia: DiskPart antepone un asterisco al disco seleccionado. Se corrigieron los patrones de lectura para admitirlo, manteniendo la exigencia de un único disco vacío de 64 GB. Además se reprodujo que la lectura directa de un listado Unicode con FINDSTR no contaba el disco. El script normaliza a ANSI los listados antes de analizarlos. El paquete incorpora PREPARAR-ISO.cmd para copiar los archivos y regenerar la ISO desde el anfitrión sin escribir comandos largos. El recuento también debía excluir el mensaje «Disk 0 is now the selected disk»: se restringió el filtro a las filas de estado Online, Offline o No Media. Tras corregir estas comprobaciones, el despliegue terminó correctamente. Los intentos fallidos se detuvieron antes de particionar el disco.</p></div><div class="note"><p><strong>Preparación simplificada:</strong> extraer todo el ZIP en Windows 10, apagar WINPE-LAB y retirar su ISO de WinPE. Hacer clic derecho en PREPARAR-ISO.cmd → Ejecutar como administrador. El asistente copia los scripts, añade findstr.exe y genera de nuevo WinPE_ASIX_Act9.iso. No ejecuta el despliegue.</p></div><p>Los scripts quedan en el medio óptico, fuera de boot.wim. Se ejecutan manualmente desde WinPE; no se añade un borrado automático al arranque ni se depende de las carpetas compartidas de VirtualBox.</p><div class='captures'><figure class="capture" id="captura-1"><div class="capture-heading"><span>CAPTURA 1</span><code>media/act9-01-archivos.PNG</code></div><div class="capture-media"><img src="media/act9-01-archivos.PNG" alt="Archivos del despliegue"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Archivos del despliegue</strong><p>ASIX con desplegar.cmd, particiones-uefi.txt y findstr.exe dentro de media.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Archivos del despliegue</figcaption></figure>
+
+<figure class="capture" id="captura-2"><div class="capture-heading"><span>CAPTURA 2</span><code>media/act9-02-iso-despliegue.PNG</code></div><div class="capture-media"><img src="media/act9-02-iso-despliegue.PNG" alt="ISO de WinPE con el script"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>ISO de WinPE con el script</strong><p>MakeWinPEMedia finalizado creando WinPE_ASIX_Act9.iso.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>ISO de WinPE con el script</figcaption></figure>
+</div></div></section>
+
+<section class='section' id='maquina'><div class='section-title'><span class='number'>03</span><div><small>ACTIVIDAD 1.9</small><h2>Preparar medios y revisar el disco</h2></div></div><div class='content'><ol><li>Con WINPE-LAB apagada, comprobar 4 GB de RAM, 2 CPU, EFI y TPM 2.0 virtual. Mantener una configuración compatible con Windows 11; no se eluden sus requisitos.</li><li>En Almacenamiento conservar solo el VDI vacío de 64 GB. Conectar <code>WinPE_ASIX_Act9.iso</code> y, en otra unidad óptica, <code>Win11_25H2_Spanish_x64_v2.iso</code>.</li><li>Arrancar desde WinPE. Si se abre el instalador de Windows, apagar y elegir la otra unidad óptica en el menú de arranque.</li><li>Consultar discos y volúmenes:</li></ol>
+<pre><code>diskpart
+list disk
+list volume
+exit</code></pre>
+<p>En la comprobación inicial aparecen el <strong>disco 0 de 64 GB completamente libre</strong>, la ISO de WinPE en <strong>D:</strong> con unos 380 MB y la ISO de Windows en <strong>E:</strong> con unos 8077 MB. Estas letras se identificaron en la práctica, no se presuponen para otros equipos. La lectura de la ISO local no requiere red.</p><div class='captures'><figure class="capture" id="captura-3"><div class="capture-heading"><span>CAPTURA 3</span><code>media/act9-03-almacenamiento.PNG</code></div><div class="capture-media"><img src="media/act9-03-almacenamiento.PNG" alt="Dos ISO conectadas"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Dos ISO conectadas</strong><p>Un solo VDI de 64 GB y dos unidades opticas: WinPE Act9 y Windows 11.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Dos ISO conectadas</figcaption></figure>
+
+<figure class="capture" id="captura-4"><div class="capture-heading"><span>CAPTURA 4</span><code>media/act9-04-discos-antes.PNG</code></div><div class="capture-media"><img src="media/act9-04-discos-antes.PNG" alt="Discos y volumenes originales"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Discos y volumenes originales</strong><p>Disco vacio de 64 GB y ambas unidades opticas desde WinPE.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Discos y volumenes originales</figcaption></figure>
+</div></div></section>
+
+<section class='section' id='ejecucion'><div class='section-title'><span class='number'>04</span><div><small>ACTIVIDAD 1.9</small><h2>Elegir la imagen y confirmar</h2></div></div><div class='content'><p>En la consola interactiva de WinPE, localizar el script:</p>
+<pre><code>for %L in (C D E F G H I J K L M N O P Q T U V Y Z) do @if exist %L:\ASIX\desplegar.cmd echo %L:\ASIX\desplegar.cmd</code></pre>
+<p>Ejecutar la ruta que aparezca, por ejemplo <code>D:\ASIX\desplegar.cmd</code> solo si se ha identificado esa unidad.</p>
+<p>El script detecta exactamente un <code>install.wim</code> o <code>install.esd</code>, muestra las ediciones y pide el índice de <strong>Windows 11 Pro</strong>. En la ISO utilizada, Windows 11 Pro corresponde al <strong>índice 6</strong>, con arquitectura <strong>x64</strong> e idioma <strong>es-ES</strong>, leído desde <code>E:\sources\install.wim</code>. El número puede variar en otras ISO; por eso el script comprueba Professional x64 antes del borrado.</p>
+<div class="note"><p>Se exige WinPE en X:, UEFI, letras S:/W:/R: libres y un único VBOX HARDDISK de 64 GB totalmente libre. La comprobación de DiskPart utiliza su salida inglesa, como en la actividad 8; si cambia el formato, se cancela. No retirar las comprobaciones para forzar la ejecución.</p></div>
+<p>Revisar el resumen y hacer la captura 6 antes de confirmar. Solo si el destino es WINPE-LAB, escribir exactamente:</p>
+<pre><code>BORRAR WINPE-LAB DISCO 0</code></pre>
+<p>Otra respuesta cancela. No ejecutar <code>particiones-uefi.txt</code> directamente: solo el script principal contiene las comprobaciones previas.</p><div class='captures'><figure class="capture" id="captura-5"><div class="capture-heading"><span>CAPTURA 5</span><code>media/act9-05-ediciones.PNG</code></div><div class="capture-media"><img src="media/act9-05-ediciones.PNG" alt="Ediciones disponibles"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Ediciones disponibles</strong><p>Listado de DISM con el indice de Windows 11 Pro.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Ediciones disponibles</figcaption></figure>
+
+<figure class="capture" id="captura-6"><div class="capture-heading"><span>CAPTURA 6</span><code>media/act9-06-confirmacion.PNG</code></div><div class="capture-media"><img src="media/act9-06-confirmacion.PNG" alt="Revision antes de borrar"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Revision antes de borrar</strong><p>Resumen del origen, indice y destino antes de escribir la confirmacion.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Revision antes de borrar</figcaption></figure>
+</div></div></section>
+
+<section class='section' id='automatizacion'><div class='section-title'><span class='number'>05</span><div><small>ACTIVIDAD 1.9</small><h2>Despliegue por fases</h2></div></div><div class='content'><div class="table-wrap"><table><thead><tr><th>Fase</th><th>Operación automática</th><th>Captura</th></tr></thead><tbody>
+<tr><td>GPT</td><td>EFI FAT32 de 300 MB (S:), MSR de 16 MB, Windows NTFS (W:) y Recovery NTFS de 2048 MB (R: temporal).</td><td>7, primera pausa</td></tr>
+<tr><td>Imagen</td><td>DISM aplica el índice seleccionado en W: y comprueba la integridad.</td><td>8, captura conjunta</td></tr>
+<tr><td>Arranque</td><td>BCDBoot prepara BCD y archivos UEFI en S:; se comprueba su existencia.</td><td>8, captura conjunta</td></tr>
+<tr><td>Recuperación y logs</td><td>Copia winre.wim, registra la ubicación, retira la letra R: y guarda registros en la partición de Windows.</td><td>8, captura conjunta</td></tr>
+</tbody></table></div>
+<p>BCDBoot utiliza una partición EFI explícita: no crea entrada NVRAM y depende de la ruta de arranque de reserva, cuya existencia se comprueba. Si el firmware no la elige, revisar su menú de arranque.</p>
+<p>Recovery necesita al menos 250 MB libres además de winre.wim. Se han reservado 2 GB para este laboratorio. La ubicación se registró durante el despliegue y el estado habilitado se comprobó después de iniciar Windows, como muestra la captura 15.</p>
+<div class="note"><p>Ante un error, detenerse y conservar pantalla y logs. No reiniciar ni volver a ejecutar: el disco puede estar parcialmente desplegado y la comprobación de disco vacío bloqueará otra ejecución.</p></div><div class='captures'><figure class="capture" id="captura-7"><div class="capture-heading"><span>CAPTURA 7</span><code>media/act9-07-particiones.PNG</code></div><div class="capture-media"><img src="media/act9-07-particiones.PNG" alt="Particionado automatico"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Particionado automatico</strong><p>Primera pausa: particiones EFI, MSR, Windows y Recovery.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Particionado automatico</figcaption></figure>
+
+<figure class="capture" id="captura-8"><div class="capture-heading"><span>CAPTURA 8</span><code>media/act9-08-imagen-aplicada.PNG</code></div><div class="capture-media"><img src="media/act9-08-imagen-aplicada.PNG" alt="Imagen aplicada, arranque creado y resumen del despliegue"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Imagen aplicada, arranque y resultado</strong><p>DISM al 100 %, archivos de arranque creados por BCDBoot y resumen final con la ubicación de WinRE y de los registros.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>DISM al 100 %, BCDBoot correcto y resumen final. Esta captura conjunta documenta las fases 8, 9 y 10 del script; no se requieren imágenes separadas para 9 y 10.</figcaption></figure>
+
+
+</div></div></section>
+
+<section class='section' id='inicio'><div class='section-title'><span class='number'>06</span><div><small>ACTIVIDAD 1.9</small><h2>Primer inicio desde el disco</h2></div></div><div class='content'><p>Al terminar, consultar los volúmenes para la captura 11 y apagar:</p>
+<pre><code>diskpart
+list volume
+exit
+wpeutil shutdown</code></pre>
+<ol><li>Con la VM apagada, retirar ambas ISO de las unidades ópticas; conservar el VDI.</li><li>Arrancar desde el disco y documentar OOBE.</li><li>Completar manualmente idioma, teclado, cuenta y conexión según lo que solicite Windows.</li><li>En el escritorio, ejecutar <code>winver</code> y comprobar Windows 11 Pro y su versión.</li></ol>
+<p>Aplicar una imagen no activa Windows: se necesita la licencia correspondiente. El resultado de DISM no acredita por sí solo el primer arranque; las capturas 12 y 13 documentan esa comprobación.</p><div class='captures'><figure class="capture" id="captura-11"><div class="capture-heading"><span>CAPTURA 11</span><code>media/act9-11-volumenes.PNG</code></div><div class="capture-media"><img src="media/act9-11-volumenes.PNG" alt="Volumenes resultantes"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Volumenes resultantes</strong><p>list volume tras finalizar el script; Recovery sin letra.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Volumenes resultantes</figcaption></figure>
+
+<figure class="capture" id="captura-12"><div class="capture-heading"><span>CAPTURA 12</span><code>media/act9-12-primer-inicio.PNG</code></div><div class="capture-media"><img src="media/act9-12-primer-inicio.PNG" alt="Primer inicio desde el VDI"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Primer inicio desde el VDI</strong><p>OOBE desde el disco virtual, con ambas ISO retiradas.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Primer inicio desde el VDI</figcaption></figure>
+
+<figure class="capture" id="captura-13"><div class="capture-heading"><span>CAPTURA 13</span><code>media/act9-13-windows-pro.PNG</code></div><div class="capture-media"><img src="media/act9-13-windows-pro.PNG" alt="Windows 11 Pro desplegado"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Windows 11 Pro desplegado</strong><p>Escritorio y winver con edicion y version.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Windows 11 Pro desplegado</figcaption></figure>
+</div></div></section>
+
+<section class='section' id='verificacion'><div class='section-title'><span class='number'>07</span><div><small>ACTIVIDAD 1.9</small><h2>Verificación final</h2></div></div><div class='content'><p>Abrir Administración de discos y revisar EFI, Windows y Recovery. MSR puede no verse en esa pantalla. Las letras S:/W:/R: eran temporales de WinPE; Windows normalmente arranca en C:.</p>
+<p>En una consola como administrador del Windows desplegado:</p>
+<pre><code>reagentc /info</code></pre>
+<p><strong>Resultado comprobado:</strong> Windows RE aparece como <code>Enabled</code>. Su ubicación corresponde al disco 0, partición 4, carpeta <code>Recovery\WindowsRE</code>. La versión mostrada del entorno de recuperación es <code>10.0.26100.8031</code>, y REAGENTC confirma que la operación se ha efectuado correctamente.</p>
+<p>Abrir <code>C:\ASIX-Logs</code> y revisar resumen.txt, edición, particionado, arranque y registro de DISM. Conservarlos junto a las capturas.</p><p><strong>Cómo interpretar el registro:</strong> el resumen se generó antes del primer arranque; por eso puede indicar que la comprobación de WinRE se hace después de OOBE. La captura 15 aporta esa verificación posterior. No es necesario editar el registro del despliegue para sustituir ese aviso.</p>
+<div class="expected"><p><strong>Conclusión:</strong> se ha automatizado el despliegue de Windows 11 Pro en WINPE-LAB mediante un script ejecutado desde WinPE. El proceso creó las particiones GPT, aplicó el índice 6 de la imagen oficial, preparó el arranque UEFI y registró la ubicación de WinRE. Tras retirar ambas ISO, Windows arrancó desde el VDI y se completó su configuración inicial. La comprobación final confirma Windows RE habilitado en la partición 4 y la conservación de los registros en C:\ASIX-Logs. La selección de edición, la confirmación del borrado y OOBE se realizaron manualmente.</p></div><div class='captures'><figure class="capture" id="captura-14"><div class="capture-heading"><span>CAPTURA 14</span><code>media/act9-14-disco-final.PNG</code></div><div class="capture-media"><img src="media/act9-14-disco-final.PNG" alt="Distribucion final del disco"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Distribucion final del disco</strong><p>Administracion de discos: EFI, Windows y Recovery.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Distribucion final del disco</figcaption></figure>
+
+<figure class="capture" id="captura-15"><div class="capture-heading"><span>CAPTURA 15</span><code>media/act9-15-recuperacion.PNG</code></div><div class="capture-media"><img src="media/act9-15-recuperacion.PNG" alt="Estado de Windows RE"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Estado de Windows RE</strong><p>reagentc /info en consola elevada del Windows desplegado.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Estado de Windows RE</figcaption></figure>
+
+<figure class="capture" id="captura-16"><div class="capture-heading"><span>CAPTURA 16</span><code>media/act9-16-logs.PNG</code></div><div class="capture-media"><img src="media/act9-16-logs.PNG" alt="Registros de la automatizacion"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Registros de la automatizacion</strong><p>C:\ASIX-Logs y resumen.txt.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Registros de la automatizacion</figcaption></figure>
+</div></div></section>
+<section class="section"><div class="section-title"><span class="number">&lt;/&gt;</span><div><small>ARCHIVOS COMPLETOS</small><h2>Scripts del laboratorio</h2></div></div><div class="content"><p>El ZIP contiene estos dos archivos en ASIX. Ejecutar solo el principal desde WinPE, después de revisar el destino. Se incluyen completos para consulta.</p><details><summary>desplegar.cmd</summary><pre><code>@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+title ASIX ACT 1.9 - SOLO WINPE-LAB
+reg query &quot;HKLM\SYSTEM\CurrentControlSet\Control\MiniNT&quot; &gt;nul 2&gt;&amp;1
+if errorlevel 1 (
+ echo ERROR: ejecutar solo desde WinPE, nunca desde Windows instalado.
+ exit /b 1
+)
+if /i not &quot;%SystemDrive%&quot;==&quot;X:&quot; exit /b 1
+rem Usar findstr.exe x64 copiado desde el Windows 10 anfitrion.
+if not exist &quot;%~dp0findstr.exe&quot; (
+ echo ERROR: falta ASIX\findstr.exe. Copiarlo desde C:\Windows\System32
+ echo en el anfitrion Windows 10 de 64 bits y regenerar la ISO.
+ exit /b 1
+)
+set &quot;PATH=%~dp0;%PATH%&quot;
+&quot;%~dp0findstr.exe&quot; /? &gt;nul 2&gt;&amp;1
+if errorlevel 2 (
+ echo ERROR: findstr.exe no se puede ejecutar. Detenerse y revisar arquitectura.
+ exit /b 1
+)
+wpeutil UpdateBootInfo &gt;nul 2&gt;&amp;1
+reg query &quot;HKLM\SYSTEM\CurrentControlSet\Control&quot; /v PEFirmwareType 2&gt;nul | findstr /i &quot;0x2&quot; &gt;nul
+if errorlevel 1 (
+ echo ERROR: se requiere arranque UEFI.
+ exit /b 1
+)
+if not exist &quot;%~dp0particiones-uefi.txt&quot; (
+ echo ERROR: falta particiones-uefi.txt junto al script.
+ exit /b 1
+)
+set &quot;LOGDIR=X:\ASIX-Logs&quot;
+if not exist &quot;!LOGDIR!&quot; md &quot;!LOGDIR!&quot;
+&gt; &quot;!LOGDIR!\resumen.txt&quot; echo ASIX ACTIVIDAD 1.9 - INICIO
+for %%L in (S W R) do if exist &quot;%%L:\&quot; (
+ echo ERROR: letra %%L: ocupada. No se ha borrado nada.
+ exit /b 1
+)
+set /a SOURCES=0
+set &quot;IMAGE=&quot;
+for %%L in (C D E F G H I J K L M N O P Q T U V Y Z) do (
+ if exist &quot;%%L:\sources\install.wim&quot; (
+  set /a SOURCES+=1
+  set &quot;IMAGE=%%L:\sources\install.wim&quot;
+ )
+ if exist &quot;%%L:\sources\install.esd&quot; (
+  set /a SOURCES+=1
+  set &quot;IMAGE=%%L:\sources\install.esd&quot;
+ )
+)
+if not &quot;!SOURCES!&quot;==&quot;1&quot; (
+ echo ERROR: se necesita exactamente un install.wim o install.esd.
+ echo Revisar las dos ISO conectadas.
+ exit /b 1
+)
+&gt; &quot;!LOGDIR!\consulta.txt&quot; echo select disk 0
+&gt;&gt; &quot;!LOGDIR!\consulta.txt&quot; echo detail disk
+&gt;&gt; &quot;!LOGDIR!\consulta.txt&quot; echo list disk
+&gt;&gt; &quot;!LOGDIR!\consulta.txt&quot; echo list volume
+&gt;&gt; &quot;!LOGDIR!\consulta.txt&quot; echo exit
+diskpart /s &quot;!LOGDIR!\consulta.txt&quot; &gt; &quot;!LOGDIR!\discos-antes.txt&quot; 2&gt;&amp;1
+if errorlevel 1 goto error
+rem Normalizar a ANSI la salida de DiskPart antes de usar FINDSTR.
+cmd /d /a /c type &quot;!LOGDIR!\discos-antes.txt&quot; &gt; &quot;!LOGDIR!\discos-ansi.txt&quot;
+if errorlevel 1 goto error
+move /y &quot;!LOGDIR!\discos-ansi.txt&quot; &quot;!LOGDIR!\discos-antes.txt&quot; &gt;nul
+if errorlevel 1 goto error
+type &quot;!LOGDIR!\discos-antes.txt&quot;
+rem Validacion especifica de la salida inglesa del WinPE de la actividad 8.
+set /a DISKS=0
+for /f &quot;delims=&quot; %%L in (&#39;findstr /r /c:&quot;^[ *]*Disk [0-9][0-9]* *Online &quot; /c:&quot;^[ *]*Disk [0-9][0-9]* *Offline &quot; /c:&quot;^[ *]*Disk [0-9][0-9]* *No Media &quot; &quot;!LOGDIR!\discos-antes.txt&quot;&#39;) do set /a DISKS+=1
+if not &quot;!DISKS!&quot;==&quot;1&quot; (
+ echo ERROR: no se identifica exactamente un disco. Recuento: !DISKS!
+ exit /b 1
+)
+findstr /i /c:&quot;VBOX HARDDISK&quot; &quot;!LOGDIR!\discos-antes.txt&quot; &gt;nul
+if errorlevel 1 (
+ echo ERROR: no se identifica el modelo VBOX HARDDISK.
+ exit /b 1
+)
+findstr /r /c:&quot;^[ *]*Disk 0 *Online *64 GB *64 GB&quot; &quot;!LOGDIR!\discos-antes.txt&quot; &gt;nul
+if errorlevel 1 (
+ echo ERROR: no coincide con disco 0 vacio de 64 GB.
+ echo No modificar el script para saltarse esta comprobacion.
+ exit /b 1
+)
+echo ORIGEN: !IMAGE!
+dism /Get-ImageInfo /ImageFile:&quot;!IMAGE!&quot; /English
+if errorlevel 1 goto error
+echo CAPTURA 5: listado de ediciones. Identificar Windows 11 Pro.
+:indice
+set &quot;INDEX=&quot;
+set /p &quot;INDEX=Indice de Windows 11 Pro: &quot;
+&gt; &quot;!LOGDIR!\indice.txt&quot; echo(!INDEX!
+findstr /r /x &quot;[1-9][0-9]*&quot; &quot;!LOGDIR!\indice.txt&quot; &gt;nul
+if errorlevel 1 goto indice
+if not &quot;!INDEX:~3!&quot;==&quot;&quot; goto indice
+dism /Get-ImageInfo /ImageFile:&quot;!IMAGE!&quot; /Index:!INDEX! /English &gt; &quot;!LOGDIR!\edicion.txt&quot; 2&gt;&amp;1
+if errorlevel 1 (
+ cmd /d /a /c type &quot;!LOGDIR!\edicion.txt&quot; &gt; &quot;!LOGDIR!\edicion-ansi.txt&quot;
+move /y &quot;!LOGDIR!\edicion-ansi.txt&quot; &quot;!LOGDIR!\edicion.txt&quot; &gt;nul
+type &quot;!LOGDIR!\edicion.txt&quot;
+ goto indice
+)
+cmd /d /a /c type &quot;!LOGDIR!\edicion.txt&quot; &gt; &quot;!LOGDIR!\edicion-ansi.txt&quot;
+move /y &quot;!LOGDIR!\edicion-ansi.txt&quot; &quot;!LOGDIR!\edicion.txt&quot; &gt;nul
+type &quot;!LOGDIR!\edicion.txt&quot;
+findstr /r /c:&quot;^Edition : Professional$&quot; &quot;!LOGDIR!\edicion.txt&quot; &gt;nul
+if errorlevel 1 (
+ echo El indice no es Professional.
+ goto indice
+)
+findstr /r /c:&quot;^Architecture : x64$&quot; &quot;!LOGDIR!\edicion.txt&quot; &gt;nul
+if errorlevel 1 (
+ echo ERROR: la imagen no es x64.
+ exit /b 1
+)
+echo.
+echo ===== CAPTURA 6: REVISION ANTES DE BORRAR =====
+echo Destino: unico disco 0 VBOX HARDDISK, 64 GB, vacio.
+echo Origen: !IMAGE!
+echo Indice: !INDEX!, Professional x64.
+echo Comprobar que la ventana es WINPE-LAB.
+echo Se BORRARA TODO el disco 0. No utilizar en otra maquina.
+echo Escribir exactamente: BORRAR WINPE-LAB DISCO 0
+set &quot;CONFIRM=&quot;
+set /p &quot;CONFIRM=Confirmacion: &quot;
+if not &quot;!CONFIRM!&quot;==&quot;BORRAR WINPE-LAB DISCO 0&quot; (
+ echo CANCELADO. No se ha particionado.
+ exit /b 2
+)
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Origen: !IMAGE!
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Indice: !INDEX!, Professional x64.
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Destino: disco 0 VBOX vacio de 64 GB confirmado.
+diskpart /s &quot;%~dp0particiones-uefi.txt&quot; &gt; &quot;!LOGDIR!\particiones.txt&quot; 2&gt;&amp;1
+if errorlevel 1 goto error
+type &quot;!LOGDIR!\particiones.txt&quot;
+for %%L in (S W R) do if not exist &quot;%%L:\&quot; goto error
+vol S: | findstr /c:&quot;ASIX_SYS&quot; &gt;nul
+if errorlevel 1 goto error
+vol W: | findstr /c:&quot;ASIX_WIN&quot; &gt;nul
+if errorlevel 1 goto error
+vol R: | findstr /c:&quot;ASIX_RE&quot; &gt;nul
+if errorlevel 1 goto error
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo GPT: EFI 300 MB, MSR 16 MB, Windows y Recovery 2048 MB.
+echo CAPTURA 7: particiones creadas.
+pause
+dism /Apply-Image /ImageFile:&quot;!IMAGE!&quot; /Index:!INDEX! /ApplyDir:W:\ /CheckIntegrity /Verify /LogPath:&quot;!LOGDIR!\dism.log&quot;
+if errorlevel 1 goto error
+if not exist W:\Windows\System32\Config\SYSTEM goto error
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Imagen aplicada correctamente.
+echo CAPTURA 8: DISM finalizado.
+pause
+W:\Windows\System32\bcdboot.exe W:\Windows /s S: /f UEFI /l es-es /bootex &gt; &quot;!LOGDIR!\arranque.txt&quot; 2&gt;&amp;1
+if errorlevel 1 goto error
+type &quot;!LOGDIR!\arranque.txt&quot;
+if not exist S:\EFI\Microsoft\Boot\BCD goto error
+if not exist S:\EFI\Boot\bootx64.efi goto error
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Archivos UEFI y BCD creados.
+echo CAPTURA 9: BCDBoot correcto.
+pause
+if not exist W:\Windows\System32\Recovery\Winre.wim goto error
+md R:\Recovery\WindowsRE
+xcopy /h /r /y W:\Windows\System32\Recovery\Winre.wim R:\Recovery\WindowsRE\ &gt; &quot;!LOGDIR!\copia-winre.txt&quot; 2&gt;&amp;1
+if errorlevel 1 goto error
+W:\Windows\System32\reagentc.exe /Setreimage /Path R:\Recovery\WindowsRE /Target W:\Windows &gt; &quot;!LOGDIR!\winre.txt&quot; 2&gt;&amp;1
+if errorlevel 1 goto error
+type &quot;!LOGDIR!\winre.txt&quot;
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Ubicacion de WinRE registrada, verificar estado despues de OOBE.
+&gt; &quot;!LOGDIR!\ocultar-recovery.txt&quot; echo select volume R
+&gt;&gt; &quot;!LOGDIR!\ocultar-recovery.txt&quot; echo remove letter=R
+&gt;&gt; &quot;!LOGDIR!\ocultar-recovery.txt&quot; echo exit
+diskpart /s &quot;!LOGDIR!\ocultar-recovery.txt&quot; &gt; &quot;!LOGDIR!\ocultar-recovery.log&quot; 2&gt;&amp;1
+if errorlevel 1 goto error
+&gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo Finalizado. Pendientes: primer arranque, OOBE y verificacion final.
+xcopy /e /h /i /y &quot;!LOGDIR!&quot; W:\ASIX-Logs &gt;nul
+if errorlevel 1 goto error
+echo ===== CAPTURA 10: RESULTADO =====
+type &quot;!LOGDIR!\resumen.txt&quot;
+echo Logs: W:\ASIX-Logs, normalmente C:\ASIX-Logs tras arrancar Windows.
+echo Captura 11: consultar list volume en DiskPart y salir con exit.
+echo Apagar, retirar ambas ISO y arrancar desde el disco.
+exit /b 0
+:error
+echo ERROR: detenerse. No reiniciar ni volver a ejecutar.
+echo Revisar pantalla y logs en !LOGDIR!. Puede haber un despliegue parcial.
+if exist &quot;!LOGDIR!\resumen.txt&quot; &gt;&gt; &quot;!LOGDIR!\resumen.txt&quot; echo ERROR: proceso detenido.
+if exist W:\Windows xcopy /e /h /i /y &quot;!LOGDIR!&quot; W:\ASIX-Logs &gt;nul 2&gt;&amp;1
+exit /b 1
+</code></pre></details><details><summary>particiones-uefi.txt</summary><pre><code>rem Solo ejecutar desde desplegar.cmd tras validar y confirmar WINPE-LAB.
+select disk 0
+clean
+convert gpt
+create partition efi size=300
+format quick fs=fat32 label=&quot;ASIX_SYS&quot;
+assign letter=S
+create partition msr size=16
+create partition primary
+shrink desired=2048 minimum=2048
+format quick fs=ntfs label=&quot;ASIX_WIN&quot;
+assign letter=W
+create partition primary
+format quick fs=ntfs label=&quot;ASIX_RE&quot;
+assign letter=R
+set id=&quot;de94bba4-06d1-4d40-a16a-bfd50179d6ac&quot;
+gpt attributes=0x8000000000000001
+list partition
+list volume
+exit
+</code></pre></details></div></section>
+<section class="section"><div class="section-title"><span class="number">↗</span><div><small>REFERENCIAS</small><h2>Documentación oficial</h2></div></div><div class="content"><ul class="sources"><li><a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/capture-and-apply-windows-using-a-single-wim?view=windows-11">Microsoft · Aplicar una imagen desde WinPE</a></li><li><a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/configure-uefigpt-based-hard-drive-partitions?view=windows-11">Microsoft · Particiones UEFI/GPT</a></li><li><a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/dism-image-management-command-line-options-s14?view=windows-11">Microsoft · Administración de imágenes con DISM</a></li><li><a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/bcdboot-command-line-options-techref-di?view=windows-11">Microsoft · BCDBoot</a></li></ul></div></section><!-- =====================================================
+     NOTA FINAL · IMÁGENES PERSONALIZADAS
+     ===================================================== -->
+<section class="section" id="otros-despliegues">
+    <div class="section-title">
+        <span class="number">↗</span>
+        <div>
+            <small>APLICACIÓN A OTROS ESCENARIOS</small>
+            <h2>Otras versiones e imágenes personalizadas</h2>
+        </div>
+    </div>
+    <div class="content">
+        <p>En esta práctica se ha desplegado <strong>Windows 11 Pro</strong>. El mismo enfoque puede adaptarse a otras versiones, por ejemplo Windows 10, con una imagen, herramientas, controladores y configuración compatibles. El script incluido está limitado expresamente al laboratorio y a la edición Professional x64: no se utiliza sin adaptar sus comprobaciones a otro destino.</p>
+        <p>También puede prepararse una imagen personalizada con Windows, <strong>Word y una terminal</strong>, además de los ajustes y aplicaciones necesarios para un aula, una oficina o un puesto específico.</p>
+        <ol>
+            <li>Preparar un equipo o máquina virtual de referencia con la versión de Windows elegida.</li>
+            <li>Instalar las aplicaciones necesarias y configurar el entorno. Revisar el procedimiento de despliegue y activación de cada aplicación.</li>
+            <li>Generalizar la instalación con <strong>Sysprep</strong> y apagarla siguiendo el procedimiento correspondiente.</li>
+            <li>Arrancar WinPE y capturar la partición de Windows en una imagen <strong>WIM</strong> con DISM.</li>
+            <li>Adaptar y probar el script para aplicar esa imagen en los equipos de destino y completar su configuración.</li>
+        </ol>
+        <p>Así puede repetirse una configuración preparada sin instalar manualmente cada aplicación en todos los equipos. Este escenario se explica como ampliación: en la práctica realizada se ha utilizado la imagen oficial, no se ha capturado una imagen con Word.</p>
+        <div class="note">
+            <p><strong>Aplicaciones y licencias:</strong> la ISO oficial de Windows utilizada no incluye Word. Windows y las aplicaciones añadidas necesitan sus licencias y activación correspondientes. Una imagen personalizada no transfiere automáticamente la activación ni convierte las licencias en reutilizables para cualquier equipo.</p>
+        </div>
+        <p><a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/capture-and-apply-windows-using-a-single-wim?view=windows-11">Microsoft · Capturar y aplicar una imagen de Windows</a></p>
+    </div>
+</section>
+<div class="terminal"><span class="prompt">miguel@asix:~$</span> status act09<br>[READY] Windows 11 Pro desplegado y arrancado desde el VDI<br>[READY] Windows RE habilitado en disco 0, partición 4<br>[READY] Registros del despliegue conservados</div></main><footer><span>ADMINISTRACIÓ DE SISTEMES · ACTIVIDAD 1.9</span><span>MIGUEL · ASIX 2026/2027</span></footer><script>document.querySelectorAll('.capture').forEach(function(f){var i=f.querySelector('img');function check(){f.classList.toggle('missing',!i.naturalWidth);}i.addEventListener('load',check);i.addEventListener('error',check);if(i.complete)check();});</script></body></html>
