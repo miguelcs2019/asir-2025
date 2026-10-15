@@ -470,6 +470,29 @@ footer{
     }
 }
 
+
+/* UNIDADES: repetir una sección .unidad para ampliar el curso */
+.unidad{margin-bottom:52px;--accent:var(--gold)}
+.unidad-cyan{--accent:var(--cyan);--border:rgba(0,234,255,.25)}
+.unidad-label{display:block;color:var(--accent);font-size:12px;letter-spacing:3px;margin-bottom:10px}
+.unidad .titulo-seccion{gap:20px;align-items:flex-end}
+.unidad .titulo-seccion h2{font-size:25px;line-height:1.25}
+.unidad .contador{color:var(--accent);white-space:nowrap}
+.unidad-descripcion{color:#94a4b0;font:14px/1.6 'Segoe UI',Arial,sans-serif;margin:-3px 0 22px}
+.unidad-cyan .actividad{background:linear-gradient(135deg,rgba(0,234,255,.06),rgba(8,13,18,.9))}
+.unidad-cyan .bloque-numero{color:var(--cyan);border-color:rgba(0,234,255,.35)}
+.unidad-cyan .abrir{color:var(--cyan)}
+.unidad-cyan .actividad:hover{border-color:var(--cyan);box-shadow:0 12px 35px rgba(0,0,0,.45),0 0 20px rgba(0,234,255,.1)}
+.contenido-actividad{min-width:0}
+.actividad p{line-height:1.6;color:#94a4b0}
+.actividad:focus-visible,.volver:focus-visible{outline:2px solid var(--cyan);outline-offset:5px}
+.bloqueada{opacity:.65}
+@media(max-width:750px){
+.unidad .titulo-seccion{align-items:flex-start;flex-direction:column;gap:14px}
+.superior{gap:16px;flex-wrap:wrap}
+.actividad{padding:18px;gap:14px}
+.loading-text{font-size:12px;letter-spacing:2px}
+}
 </style>
 </head>
 
@@ -552,7 +575,7 @@ footer{
 
     <div class="info">
         <span>ACADEMIC BLOCKS</span>
-        <strong>10 ACTIVITATS</strong>
+        <strong>2 UNIDADES</strong>
     </div>
 
 </section>
@@ -562,322 +585,143 @@ footer{
 <!-- ACTIVIDADES -->
 
 <main class="contenedor">
-
-    <div class="titulo-seccion">
-
-        <h2>Blockchain d'Activitats</h2>
-
-        <span class="contador">
-            09 / 10 DESBLOQUEJADES
-        </span>
-
-    </div>
-
-
-    <div class="actividades">
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 1 -->
-        <!-- ===================================== -->
-
-        <a href="activitat1.html" class="actividad">
-
-            <div class="bloque-numero">
-                01
+    <!-- Cada unidad tiene su propia numeración y contador. -->
+    <section class="unidad" id="unidad-1" aria-labelledby="titulo-unidad-1">
+        <div class="titulo-seccion">
+            <div>
+                <span class="unidad-label">UNIDAD 1 // SECURITY FUNDAMENTALS</span>
+                <h2 id="titulo-unidad-1">Fundamentos de Seguridad</h2>
             </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000A1F8C29B73E4D901...
-                </div>
-
-                <h3>Activitat 1</h3>
-
-                <p>
-                    Bloc verificat · Disponible
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 2 -->
-        <!-- ===================================== -->
-
-        <a href="activitat2.html" class="actividad">
-
-            <div class="bloque-numero">
-                02
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000B2D4E821C99A7431...
-                </div>
-
-                <h3>Activitat 2</h3>
-
-                <p>
-                    Bloc verificat · Disponible
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 3 -->
-        <!-- ===================================== -->
-
-        <a href="activitat3.html" class="actividad">
-
-            <div class="bloque-numero">
-                03
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000C39F62A117D08E54...
-                </div>
-
-                <h3>Activitat 3</h3>
-
-                <p>
-                    Bloc verificat · Disponible
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 4 -->
-        <!-- ===================================== -->
-
-        <a href="activitat4.html" class="actividad">
-
-            <div class="bloque-numero">
-                04
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000D4A7F91C28E6B403...
-                </div>
-
-                <h3>Activitat 4</h3>
-
-                <p>
-                    Autenticació · Bloc verificat
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 5 -->
-        <!-- ===================================== -->
-
-        <a href="activitat5.html" class="actividad">
-
-            <div class="bloque-numero">
-                05
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000E51B83F0A4D92765...
-                </div>
-
-                <h3>Activitat 5</h3>
-
-                <p>
-                    Elements vulnerables · Bloc verificat
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 6 -->
-        <!-- ===================================== -->
-
-        <a href="activitat6.html" class="actividad">
-
-            <div class="bloque-numero">
-                06
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000F6C921A75E38D410...
-                </div>
-
-                <h3>Activitat 6</h3>
-
-                <p>
-                    Vulnerabilitat · Bloc verificat
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 7 -->
-        <!-- ===================================== -->
-
-        <a href="activitat7.html" class="actividad">
-
-            <div class="bloque-numero">
-                07
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000A7D62F91B8C45037...
-                </div>
-
-                <h3>Activitat 7</h3>
-
-                <p>
-                    Tipus d'amenaces · Bloc verificat
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 8 -->
-        <!-- ===================================== -->
-
-        <a href="activitat8.html" class="actividad">
-
-            <div class="bloque-numero">
-                08
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000B8E43C720F9A1562...
-                </div>
-
-                <h3>Activitat 8</h3>
-
-                <p>
-                    Tècnica Salami · Bloc verificat
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 9 -->
-        <!-- ===================================== -->
-
-        <a href="activitat9.html" class="actividad">
-
-            <div class="bloque-numero">
-                09
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    000000C9F715B4D82E603A...
-                </div>
-
-                <h3>Activitat 9</h3>
-
-                <p>
-                    Política de Seguretat · Bloc verificat
-                </p>
-
-            </div>
-
-            <span class="abrir">→</span>
-
-        </a>
-
-
-
-        <!-- ===================================== -->
-        <!-- ACTIVIDAD 10 - BLOQUEADA -->
-        <!-- ===================================== -->
-
-        <div class="actividad bloqueada">
-
-            <div class="bloque-numero">
-                10
-            </div>
-
-            <div class="contenido-actividad">
-
-                <div class="hash">
-                    BLOCK_PENDING...
-                </div>
-
-                <h3>Activitat 10</h3>
-
-                <p>
-                    Pendent
-                </p>
-
-            </div>
-
-            <span class="abrir">🔒</span>
-
+            <span class="contador">09/11 COMPLETADAS</span>
         </div>
+        <p class="unidad-descripcion">Criptografía, autenticación, amenazas y protección de la información · 2 actividades pendientes.</p>
+        <div class="actividades">
+        <a href="activitat1.html" class="actividad">
+            <div class="bloque-numero">01</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_01 · VERIFIED</div>
+                <h3>Certificaciones de Seguridad Informática</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat2.html" class="actividad">
+            <div class="bloque-numero">02</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_02 · VERIFIED</div>
+                <h3>Calculadora de Alta Disponibilidad</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat3.html" class="actividad">
+            <div class="bloque-numero">03</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_03 · VERIFIED</div>
+                <h3>Criptografía Simétrica y Asimétrica</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat4.html" class="actividad">
+            <div class="bloque-numero">04</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_04 · VERIFIED</div>
+                <h3>Autenticación</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat5.html" class="actividad">
+            <div class="bloque-numero">05</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_05 · VERIFIED</div>
+                <h3>Elementos Vulnerables</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat6.html" class="actividad">
+            <div class="bloque-numero">06</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_06 · VERIFIED</div>
+                <h3>EternalBlue / WannaCry</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat7.html" class="actividad">
+            <div class="bloque-numero">07</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_07 · VERIFIED</div>
+                <h3>Tipos de Amenazas</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat8.html" class="actividad">
+            <div class="bloque-numero">08</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_08 · VERIFIED</div>
+                <h3>Técnica Salami</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <a href="activitat9.html" class="actividad">
+            <div class="bloque-numero">09</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_09 · VERIFIED</div>
+                <h3>Política de Seguridad</h3>
+                <p>Completada · Disponible</p>
+            </div>
+            <span class="abrir" aria-hidden="true">→</span>
+        </a>
+        <div class="actividad bloqueada" aria-disabled="true">
+            <div class="bloque-numero">10</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_10 · PENDING</div>
+                <h3>Exploración de Puertos · Nmap</h3>
+                <p>Bloqueada · Pendiente</p>
+            </div>
+            <span class="abrir" aria-hidden="true">🔒</span>
+        </div>
+        <div class="actividad bloqueada" aria-disabled="true">
+            <div class="bloque-numero">11</div>
+            <div class="contenido-actividad">
+                <div class="hash">U1 · BLOCK_11 · PENDING</div>
+                <h3>Herramientas INCIBE</h3>
+                <p>Bloqueada · Pendiente</p>
+            </div>
+            <span class="abrir" aria-hidden="true">🔒</span>
+        </div>
+        </div>
+    </section>
 
-
-    </div>
-
+    <section class="unidad unidad-cyan" id="unidad-2" aria-labelledby="titulo-unidad-2">
+        <div class="titulo-seccion">
+            <div>
+                <span class="unidad-label">UNIDAD 2 // PHYSICAL SECURITY</span>
+                <h2 id="titulo-unidad-2">Seguridad Física y Ambiental</h2>
+            </div>
+            <span class="contador">01 DISPONIBLE</span>
+        </div>
+        <p class="unidad-descripcion">Protección del entorno y de los equipos · La primera entrada reúne las actividades 1–6 del tema.</p>
+        <div class="actividades">
+            <a href="unitat2-activitat01-seguretat-fisica.html" class="actividad">
+                <div class="bloque-numero">01</div>
+                <div class="contenido-actividad">
+                    <div class="hash">U2 · BLOCK_01 · AVAILABLE</div>
+                    <h3>Seguridad Física y Ambiental</h3>
+                    <p>Actividades 1–6 · SAI · Biometría · Ley de Ohm · Exam Mode</p>
+                </div>
+                <span class="abrir" aria-hidden="true">→</span>
+            </a>
+        </div>
+    </section>
+    <!-- FUTURAS UNIDADES: añadir otra sección .unidad con id, título,
+         contador y tarjetas propios; reiniciar su numeración en 01
+         y actualizar el número de unidades en ACADEMIC BLOCKS. -->
 </main>
 
 
