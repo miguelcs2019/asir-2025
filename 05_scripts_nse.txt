@@ -1,0 +1,13 @@
+# Nmap 7.95 scan initiated Tue Oct 20 09:38:42 2026 as: /usr/lib/nmap/nmap --privileged -sT -n -Pn -T2 -p 22,80 --script=http-title,ssh-hostkey -oN 05_scripts_nse.txt 192.168.56.101
+Nmap scan report for 192.168.56.101
+Host is up (0.0012s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+| ssh-hostkey: 
+|   1024 60:0f:cf:e1:c0:5f:6a:74:d6:90:24:fa:c4:d5:6c:cd (DSA)
+|_  2048 56:56:24:0f:21:1d:de:a7:2b:ae:61:b1:24:3d:e8:f3 (RSA)
+80/tcp open  http
+|_http-title: Metasploitable2 - Linux
+
+# Nmap done at Tue Oct 20 09:38:43 2026 -- 1 IP address (1 host up) scanned in 1.15 seconds

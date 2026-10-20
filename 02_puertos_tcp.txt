@@ -1,0 +1,21 @@
+# Nmap 7.95 scan initiated Tue Oct 20 09:23:17 2026 as: /usr/lib/nmap/nmap --privileged -sT -Pn -T2 -p 1-1024 -oN 02_puertos_tcp.txt 192.168.56.101
+mass_dns: warning: Unable to open /etc/resolv.conf. Try using --system-dns or specify valid servers with --dns-servers: No such file or directory (2)
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report for 192.168.56.101
+Host is up (0.0014s latency).
+Not shown: 1012 closed tcp ports (conn-refused)
+PORT    STATE SERVICE
+21/tcp  open  ftp
+22/tcp  open  ssh
+23/tcp  open  telnet
+25/tcp  open  smtp
+53/tcp  open  domain
+80/tcp  open  http
+111/tcp open  rpcbind
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+512/tcp open  exec
+513/tcp open  login
+514/tcp open  shell
+
+# Nmap done at Tue Oct 20 09:30:07 2026 -- 1 IP address (1 host up) scanned in 410.51 seconds

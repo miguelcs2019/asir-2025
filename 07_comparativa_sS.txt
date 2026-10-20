@@ -1,0 +1,13 @@
+# Nmap 7.95 scan initiated Tue Oct 20 09:40:14 2026 as: /usr/lib/nmap/nmap -sS -n -Pn -T2 -p 21,22,80,445,1024 -oN 07_comparativa_sS.txt 192.168.56.101
+Nmap scan report for 192.168.56.101
+Host is up (0.0010s latency).
+
+PORT     STATE  SERVICE
+21/tcp   open   ftp
+22/tcp   open   ssh
+80/tcp   open   http
+445/tcp  open   microsoft-ds
+1024/tcp closed kdm
+MAC Address: 08:00:27:85:87:4D (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+# Nmap done at Tue Oct 20 09:40:16 2026 -- 1 IP address (1 host up) scanned in 2.59 seconds
