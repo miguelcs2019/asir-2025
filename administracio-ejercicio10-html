@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unidad 1 · Actividad 10 · Exploración de Puertos · Nmap</title>
+<style>
+:root{--gold:#f5b942;--cyan:#00eaff;--green:#71ffb3;--text:#e5edf3;--muted:#a5b3bf;--line:#293b45}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at top right,#10303c,transparent 55%),#030609;color:var(--text);font:16px/1.7 'Segoe UI',Arial,sans-serif}
+header,main,footer{max-width:1100px;margin:auto;padding:32px 24px}header{padding-top:50px}a{color:var(--cyan)}.back{text-decoration:none;font:13px Consolas,monospace}
+.eyebrow{font:12px/1.7 Consolas,monospace;color:var(--gold);letter-spacing:2px;margin-top:16px}h1{font-size:clamp(34px,6vw,65px);line-height:1.1;margin:20px 0;color:#ffe0a0}h2{font-size:25px;line-height:1.3}h3{font-size:17px;color:var(--cyan)}
+.lead{color:var(--muted);max-width:820px}.tags{display:flex;flex-wrap:wrap;gap:10px}.tags span{border:1px solid var(--line);border-radius:30px;padding:6px 12px;font:12px Consolas,monospace;color:var(--green)}
+nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}nav a{padding:7px 12px;border:1px solid var(--line);border-radius:7px;text-decoration:none}
+.card{padding:28px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(135deg,#111b23,#080d12);margin-bottom:28px;scroll-margin-top:20px}
+pre{background:#02070b;border:1px solid #30434a;padding:18px;overflow:auto;border-radius:9px;color:var(--green);font:14px/1.7 Consolas,monospace;white-space:pre}
+figure{margin:24px 0}figure img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px}.placeholder{min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px dashed #75643e;border-radius:10px;background:#f5b94205;font:15px/2 Consolas,monospace;color:var(--gold);padding:20px}
+figcaption{color:var(--muted);font-size:14px;margin-top:12px}.pending{border-left:3px solid var(--gold);padding:12px 16px;background:#f5b94209;color:#f0d4a0}.note{border-left:3px solid var(--cyan);padding:12px 16px;background:#00eaff08}
+table{border-collapse:collapse;width:100%;min-width:600px}th,td{border-bottom:1px solid var(--line);padding:12px;text-align:left}th{color:var(--cyan)}.scroll{overflow:auto}
+footer{border-top:1px solid var(--line);color:var(--muted);font:12px Consolas,monospace}button{border:1px solid var(--line);background:#132732;color:var(--text);padding:10px 15px;border-radius:7px;cursor:pointer}
+@media(max-width:600px){.card{padding:19px}header,main{padding-left:16px;padding-right:16px}}@media print{body{background:white;color:black}.card{background:white;break-inside:avoid}nav,button{display:none}h1,h3,.eyebrow{color:black}pre{white-space:pre-wrap;background:#eee;color:black}}
+</style>
+</head>
+<body>
+<header><a class="back" href="seguretat.html">← VOLVER A SEGURETAT</a>
+<div class="eyebrow">UNIDAD 1 · ACTIVIDAD 10 // NETWORK SECURITY LAB</div>
+<h1>Exploración de puertos<br>con Nmap</h1>
+<p class="lead">Análisis de Metasploitable desde Kali Linux en un laboratorio de VirtualBox. Inventario, versiones, fingerprinting y scripts NSE.</p>
+<div class="tags"><span>8 CAPTURAS</span><span>KALI 192.168.56.102</span><span>OBJETIVO 192.168.56.101</span></div>
+<nav><a href="#entorno">Entorno</a><a href="#paso-01">Procedimiento</a><a href="#inventario">Inventario</a><a href="#analisis">Conclusiones</a><a href="#descargas">Descargar TXT</a><a href="#fuentes">Referencias</a></nav>
+</header><main>
+<section class="card" id="entorno"><div class="eyebrow">00 // PREPARACIÓN DEL ENTORNO</div><h2>Red y alcance de la práctica</h2>
+<p>Se parte de Kali Linux y Metasploitable instaladas en VirtualBox. Se configura en ambas una red de tipo solo-anfitrión, seleccionando el mismo adaptador y marcando “Cable conectado”. Esta red comunica las máquinas virtuales y el anfitrión sin proporcionar salida directa a Internet a través de ese adaptador.</p>
+<p>En la preparación apareció un error de controlador de red solo-anfitrión. Se instaló el controlador incluido en VirtualBox y se recuperó la posibilidad de crear estos adaptadores. Aunque se preparó también una red 192.168.96.0/24, las comprobaciones de la ejecución muestran que la práctica se realizó en <strong>192.168.56.0/24</strong>. Los comandos y resultados de este documento utilizan esta red real.</p>
+<p>Kali: <strong>192.168.56.102/24</strong>. Metasploitable: <strong>192.168.56.101/24</strong>. Todos los escaneos se dirigen exclusivamente a esta víctima. El PDF utiliza otra IP como ejemplo, que se adapta al laboratorio.</p>
+<div class="note">La configuración de VirtualBox se documenta mediante esta explicación. Las ocho capturas corresponden al trabajo en las máquinas. No hay gateway predeterminada en la salida de Kali y no se documenta una prueba de ping a gateway: la conectividad necesaria es la de la subred local.</div>
+</section>
+<section id="paso-01" class="card">
+<div class="eyebrow">CAPTURA 1 DE 8</div><h2>Dirección IP y versión de Nmap en Kali</h2>
+<pre><code>ip -br addr
+ip route
+nmap --version</code></pre>
+<p>Kali utiliza eth0 con la dirección 192.168.56.102/24 y una ruta directa a 192.168.56.0/24. No aparece una ruta predeterminada, coherente con el laboratorio aislado. Nmap 7.95 está instalado. La ausencia de gateway no impide la comunicación con la víctima en esta misma subred.</p>
+<figure><a href="media/nmap-01-ip-kali.PNG" target="_blank" rel="noopener"><img src="media/nmap-01-ip-kali.PNG" alt="Captura 1 de 8: Dirección IP y versión de Nmap en Kali" loading="lazy"></a><figcaption>Captura 1 de 8 · Dirección IP y versión de Nmap en Kali</figcaption></figure>
+</section>
+<section id="paso-02" class="card">
+<div class="eyebrow">CAPTURA 2 DE 8</div><h2>Dirección IP de Metasploitable</h2>
+<pre><code>ifconfig</code></pre>
+<p>Metasploitable tiene la dirección 192.168.56.101, máscara 255.255.255.0 y MAC 08:00:27:85:87:4D. Kali y la víctima pertenecen a la misma subred. Esta consulta de configuración se realiza en la consola de la víctima; los escaneos se ejecutan desde Kali.</p>
+<figure><a href="media/nmap-02-ip-metasploitable.PNG" target="_blank" rel="noopener"><img src="media/nmap-02-ip-metasploitable.PNG" alt="Captura 2 de 8: Dirección IP de Metasploitable" loading="lazy"></a><figcaption>Captura 2 de 8 · Dirección IP de Metasploitable</figcaption></figure>
+</section>
+<section id="paso-03" class="card">
+<div class="eyebrow">CAPTURA 3 DE 8</div><h2>Preparación de evidencias y conectividad</h2>
+<pre><code>mkdir -p ~/practica-nmap
+cd ~/practica-nmap
+export OBJETIVO=192.168.56.101
+ping -c 3 &quot;$OBJETIVO&quot; | tee 01_ping_objetivo.txt</code></pre>
+<p>Se prepara la carpeta de trabajo y se envían tres solicitudes ICMP al objetivo. La captura y 01_ping_objetivo.txt recogen el resultado de esta comprobación. No se transcriben cifras de pérdida o latencia de ping porque su salida no se aportó durante la elaboración. Los escaneos posteriores sí confirman que el objetivo responde.</p>
+<figure><a href="media/nmap-03-conectividad.PNG" target="_blank" rel="noopener"><img src="media/nmap-03-conectividad.PNG" alt="Captura 3 de 8: Preparación de evidencias y conectividad" loading="lazy"></a><figcaption>Captura 3 de 8 · Preparación de evidencias y conectividad</figcaption></figure>
+</section>
+<section id="paso-04" class="card">
+<div class="eyebrow">CAPTURA 4 DE 8</div><h2>Exploración TCP de los puertos 1–1024</h2>
+<pre><code>nmap -sT -Pn -T2 -p 1-1024 192.168.56.101 -oN 02_puertos_tcp.txt</code></pre>
+<p>Duración aproximada: 7 minutos. Se detectaron 12 puertos TCP abiertos y 1012 cerrados por rechazo de conexión. El análisis se limita a 1–1024: no es un inventario de todos los puertos ni incluye UDP. -sT establece conexiones TCP completas; -Pn omite el descubrimiento previo, -T2 emplea un ritmo conservador y -oN guarda la salida. Apareció un aviso por falta de configuración DNS, pero no impidió escanear la IP; en los siguientes comandos se usó -n para omitir la resolución de nombres.</p>
+<figure><a href="media/nmap-04-puertos-tcp.PNG" target="_blank" rel="noopener"><img src="media/nmap-04-puertos-tcp.PNG" alt="Captura 4 de 8: Exploración TCP de los puertos 1–1024" loading="lazy"></a><figcaption>Captura 4 de 8 · Exploración TCP de los puertos 1–1024</figcaption></figure>
+</section>
+<section id="paso-05" class="card">
+<div class="eyebrow">CAPTURA 5 DE 8</div><h2>Detección de servicios y versiones</h2>
+<pre><code>nmap -sT -sV -n -Pn -T2 -p 21,22,23,25,53,80,111,139,445,512,513,514 192.168.56.101 -oN 03_servicios_versiones.txt</code></pre>
+<p>Duración aproximada: 1 minuto. -sV analiza los 12 puertos abiertos ya localizados. Se identificaron vsftpd 2.3.4, OpenSSH 4.7p1 Debian 8ubuntu1, ISC BIND 9.4.2 y Apache 2.2.8, entre otros. Se obtuvo el nombre metasploitable.localdomain. En Samba se informó un rango 3.X–4.X, no una versión exacta; el puerto 513 no aportó una versión. Una identificación de versión no demuestra por sí sola que exista una vulnerabilidad explotable.</p>
+<figure><a href="media/nmap-05-servicios-versiones.PNG" target="_blank" rel="noopener"><img src="media/nmap-05-servicios-versiones.PNG" alt="Captura 5 de 8: Detección de servicios y versiones" loading="lazy"></a><figcaption>Captura 5 de 8 · Detección de servicios y versiones</figcaption></figure>
+</section>
+<section id="paso-06" class="card">
+<div class="eyebrow">CAPTURA 6 DE 8</div><h2>Fingerprinting del sistema operativo</h2>
+<pre><code>sudo nmap -sS -O -n -Pn -T2 -p 21,22,80,445,1024 192.168.56.101 -oN 04_sistema_operativo.txt</code></pre>
+<p>Duración aproximada: 11 segundos. Se incluyeron cuatro puertos abiertos y uno cerrado para facilitar la identificación. Nmap estimó Linux 2.6.X, concretamente Linux 2.6.9–2.6.33; no confirmó una versión exacta. También mostró una tarjeta virtual de Oracle VirtualBox, la MAC 08:00:27:85:87:4D y una distancia de un salto. El adaptador virtual identifica el entorno de red, no el kernel. La estimación concuerda con los indicios Unix/Linux de -sV, pero requeriría comprobación local para confirmarse.</p>
+<figure><a href="media/nmap-06-sistema-operativo.PNG" target="_blank" rel="noopener"><img src="media/nmap-06-sistema-operativo.PNG" alt="Captura 6 de 8: Fingerprinting del sistema operativo" loading="lazy"></a><figcaption>Captura 6 de 8 · Fingerprinting del sistema operativo</figcaption></figure>
+</section>
+<section id="paso-07" class="card">
+<div class="eyebrow">CAPTURA 7 DE 8</div><h2>Investigación con dos scripts NSE</h2>
+<pre><code>nmap -sT -n -Pn -T2 -p 22,80 --script=http-title,ssh-hostkey 192.168.56.101 -oN 05_scripts_nse.txt</code></pre>
+<p>Duración aproximada: 1 segundo. http-title obtuvo el título “Metasploitable2 - Linux”, que aporta contexto sobre el sitio servido en el puerto 80, sin confirmar por sí solo el sistema operativo. ssh-hostkey obtuvo las huellas de las claves públicas DSA de 1024 bits y RSA de 2048 bits. Estas permiten identificar y contrastar el servidor SSH; no son contraseñas ni claves privadas. Ambos scripts se aplicaron a servicios previamente observados.</p>
+<figure><a href="media/nmap-07-scripts-nse.PNG" target="_blank" rel="noopener"><img src="media/nmap-07-scripts-nse.PNG" alt="Captura 7 de 8: Investigación con dos scripts NSE" loading="lazy"></a><figcaption>Captura 7 de 8 · Investigación con dos scripts NSE</figcaption></figure>
+</section>
+<section id="paso-08" class="card">
+<div class="eyebrow">CAPTURA 8 DE 8</div><h2>Comparación de TCP Connect y TCP SYN</h2>
+<pre><code>nmap -sT -n -Pn -T2 -p 21,22,80,445,1024 192.168.56.101 -oN 06_comparativa_sT.txt
+sudo nmap -sS -n -Pn -T2 -p 21,22,80,445,1024 192.168.56.101 -oN 07_comparativa_sS.txt</code></pre>
+<p>Duración aproximada: 2 segundos para TCP Connect y 3 segundos para SYN. Los dos métodos coincidieron: 21, 22, 80 y 445 abiertos; 1024 cerrado. SYN añadió la MAC de la víctima. -sT completa la conexión TCP mediante el sistema operativo; -sS requiere privilegios y no completa el establecimiento normal de conexión. SYN sigue siendo detectable. Una sola medición no permite afirmar qué método es más rápido en general. No se consultaron los logs de la víctima, por lo que no se afirman diferencias observadas en sus registros.</p>
+<figure><a href="media/nmap-08-comparativa.PNG" target="_blank" rel="noopener"><img src="media/nmap-08-comparativa.PNG" alt="Captura 8 de 8: Comparación de TCP Connect y TCP SYN" loading="lazy"></a><figcaption>Captura 8 de 8 · Comparación de TCP Connect y TCP SYN</figcaption></figure>
+</section>
+<section class="card" id="inventario"><div class="eyebrow">09 // INVENTARIO LOCAL</div><h2>Puertos y servicios observados</h2>
+<p>Estado obtenido en la exploración TCP y versiones informadas por -sV. El inventario se limita a los puertos 1–1024.</p>
+<div class="scroll"><table><thead><tr><th>Puerto</th><th>Estado</th><th>Servicio</th><th>Identificación</th></tr></thead><tbody><tr><td>21/tcp</td><td>Abierto</td><td>ftp</td><td>vsftpd 2.3.4</td></tr><tr><td>22/tcp</td><td>Abierto</td><td>ssh</td><td>OpenSSH 4.7p1 Debian 8ubuntu1</td></tr><tr><td>23/tcp</td><td>Abierto</td><td>telnet</td><td>Linux telnetd</td></tr><tr><td>25/tcp</td><td>Abierto</td><td>smtp</td><td>Postfix smtpd</td></tr><tr><td>53/tcp</td><td>Abierto</td><td>domain</td><td>ISC BIND 9.4.2</td></tr><tr><td>80/tcp</td><td>Abierto</td><td>http</td><td>Apache httpd 2.2.8 ((Ubuntu) DAV/2)</td></tr><tr><td>111/tcp</td><td>Abierto</td><td>rpcbind</td><td>Versión de protocolo 2 (RPC #100000)</td></tr><tr><td>139/tcp</td><td>Abierto</td><td>netbios-ssn</td><td>Samba smbd 3.X–4.X · WORKGROUP</td></tr><tr><td>445/tcp</td><td>Abierto</td><td>netbios-ssn</td><td>Samba smbd 3.X–4.X · WORKGROUP</td></tr><tr><td>512/tcp</td><td>Abierto</td><td>exec</td><td>netkit-rsh rexecd</td></tr><tr><td>513/tcp</td><td>Abierto</td><td>login</td><td>Sin versión identificada</td></tr><tr><td>514/tcp</td><td>Abierto</td><td>shell</td><td>Netkit rshd</td></tr></tbody></table></div>
+<h3>Información aportada por NSE</h3>
+<pre><code>http-title: Metasploitable2 - Linux
+ssh-hostkey:
+DSA 1024: 60:0f:cf:e1:c0:5f:6a:74:d6:90:24:fa:c4:d5:6c:cd
+RSA 2048: 56:56:24:0f:21:1d:de:a7:2b:ae:61:b1:24:3d:e8:f3</code></pre>
+</section>
+<section class="card" id="analisis"><div class="eyebrow">10 // ANÁLISIS</div><h2>Observaciones, limitaciones y recomendaciones</h2>
+<h3>Cinco observaciones</h3><ol>
+<li>Se identificaron 12 puertos TCP abiertos de los 1024 examinados, con servicios de acceso remoto, correo, web, DNS y compartición de archivos.</li>
+<li>Telnet y los servicios exec/login/shell amplían la superficie de acceso remoto. Conviene revisar su necesidad y sustituir los accesos heredados por alternativas seguras.</li>
+<li>La identificación mostró versiones antiguas de vsftpd, OpenSSH, BIND y Apache. Son indicios que requieren revisión de soporte y parches; no se verificaron vulnerabilidades mediante explotación.</li>
+<li>La estimación de Linux 2.6.9–2.6.33 y la información Unix/Linux de servicios son coherentes entre sí. La versión exacta del sistema no quedó confirmada.</li>
+<li>Los dos scripts aportaron información adicional: el título de la aplicación web y las huellas públicas del servidor SSH. Connect y SYN coincidieron en el estado de los cinco puertos comparados.</li></ol>
+<h3>Dos limitaciones encontradas</h3><ol>
+<li><strong>Resolución DNS no disponible:</strong> el primer escaneo avisó de que no podía abrir /etc/resolv.conf ni determinar servidores DNS. Se continuó por IP y se utilizó -n en los siguientes comandos. No se pudo basar el inventario en una resolución inversa normal; el hostname informado por -sV es información obtenida del servicio.</li>
+<li><strong>Identificación no concluyente:</strong> Nmap devolvió un intervalo de kernels Linux y un rango amplio para Samba, sin versión para algunos servicios. Las huellas y banners remotos no sustituyen la verificación local ni permiten confirmar CVE por sí solos.</li></ol>
+<p>Además, no se examinaron UDP, los puertos TCP superiores a 1024 ni los registros del objetivo. La práctica describe el alcance probado, sin concluir que el resto de servicios no exista.</p>
+<h3>Tres medidas de mitigación</h3><ol>
+<li><strong>Reducir servicios expuestos:</strong> desactivar Telnet y los servicios rexec/rlogin/rsh si no son necesarios, y mantener únicamente los servicios justificados. Priorizar esta medida por los puertos 23, 512, 513 y 514 observados.</li>
+<li><strong>Actualizar la plataforma y sus servicios:</strong> revisar y migrar el kernel y los paquetes identificados a versiones con soporte, validar la configuración SSH y retirar algoritmos heredados como DSA según la compatibilidad necesaria.</li>
+<li><strong>Restringir acceso con firewall y segmentación:</strong> permitir SSH solo desde los equipos de administración y limitar SMB/RPC, DNS y otros servicios a los orígenes que realmente los necesitan.</li></ol>
+<div class="note">Metasploitable es una máquina deliberadamente vulnerable para formación. Las medidas anteriores describen cómo endurecer un sistema equivalente; no se aplicaron cambios a la víctima durante los escaneos.</div>
+<h3>Conclusión</h3>
+<p>Nmap permitió identificar la exposición de la víctima, ampliar el inventario con versiones, estimar el sistema operativo y obtener datos mediante dos scripts NSE. Ambos tipos de escaneo comparados coincidieron en los estados. La combinación de puertos y software observado justifica reducir la superficie expuesta, revisar actualizaciones y controlar el acceso. Los resultados son reconocimiento de servicios, no una demostración de explotación.</p>
+<h3>Archivos de evidencia</h3><pre><code>01_ping_objetivo.txt
+02_puertos_tcp.txt
+03_servicios_versiones.txt
+04_sistema_operativo.txt
+05_scripts_nse.txt
+06_comparativa_sT.txt
+07_comparativa_sS.txt</code></pre>
+<p>Las salidas se guardan en ~/practica-nmap. Los comandos y resultados de los escaneos se han documentado a partir de las transcripciones aportadas. La captura de ping y su TXT permiten revisar esa prueba sin atribuirle estadísticas no facilitadas.</p>
+</section>
+<section class="card" id="descargas"><div class="eyebrow">11 // EVIDENCIAS</div><h2>Descargar informes originales</h2><p>Salidas de la comprobación de conectividad y de los escaneos realizados desde Kali. Estos archivos complementan las capturas de la práctica.</p><ul><li><a href="media/01_ping_objetivo.txt" download="01_ping_objetivo.txt">Descargar 01_ping_objetivo.txt</a></li>
+<li><a href="media/02_puertos_tcp.txt" download="02_puertos_tcp.txt">Descargar 02_puertos_tcp.txt</a></li>
+<li><a href="media/03_servicios_versiones.txt" download="03_servicios_versiones.txt">Descargar 03_servicios_versiones.txt</a></li>
+<li><a href="media/04_sistema_operativo.txt" download="04_sistema_operativo.txt">Descargar 04_sistema_operativo.txt</a></li>
+<li><a href="media/05_scripts_nse.txt" download="05_scripts_nse.txt">Descargar 05_scripts_nse.txt</a></li>
+<li><a href="media/06_comparativa_sT.txt" download="06_comparativa_sT.txt">Descargar 06_comparativa_sT.txt</a></li>
+<li><a href="media/07_comparativa_sS.txt" download="07_comparativa_sS.txt">Descargar 07_comparativa_sS.txt</a></li></ul></section>
+<section class="card" id="fuentes"><h2>Referencias</h2><p>Enunciado: PRACTICANMAP.pdf, apartados 4 y 5.</p><p><a href="https://nmap.org/book/man.html" target="_blank" rel="noopener">Manual oficial de Nmap</a> · <a href="https://nmap.org/nsedoc/scripts/http-title.html" target="_blank" rel="noopener">http-title</a> · <a href="https://nmap.org/nsedoc/scripts/ssh-hostkey.html" target="_blank" rel="noopener">ssh-hostkey</a></p><button type="button" onclick="window.print()">Imprimir / guardar PDF</button></section>
+</main><footer>MIGUEL · ASIX 2026/2027 · UNIDAD 1 · ACTIVIDAD 10 · EXPLORACIÓN DE PUERTOS</footer>
+</body>
+</html>
