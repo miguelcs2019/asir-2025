@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unidad 2 · Actividad 02 · Dimensionar SAI</title>
+<style>
+:root{--gold:#f5b942;--cyan:#00eaff;--green:#71ffb3;--text:#e5edf3;--muted:#a5b3bf;--line:#293b45}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at top right,#10303c,transparent 55%),#030609;color:var(--text);font:16px/1.7 'Segoe UI',Arial,sans-serif}
+header,main,footer{max-width:1100px;margin:auto;padding:32px 24px}header{padding-top:50px}a{color:var(--cyan)}.back{text-decoration:none;font:13px Consolas,monospace}
+.eyebrow{font:12px/1.7 Consolas,monospace;color:var(--gold);letter-spacing:2px;margin-top:16px}h1{font-size:clamp(34px,6vw,65px);line-height:1.1;margin:20px 0;color:#ffe0a0}h2{font-size:25px;line-height:1.3}h3{font-size:17px;color:var(--cyan)}
+.lead{color:var(--muted);max-width:820px}.tags{display:flex;flex-wrap:wrap;gap:10px}.tags span{border:1px solid var(--line);border-radius:30px;padding:6px 12px;font:12px Consolas,monospace;color:var(--green)}
+nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}nav a{padding:7px 12px;border:1px solid var(--line);border-radius:7px;text-decoration:none}
+.card{padding:28px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(135deg,#111b23,#080d12);margin-bottom:28px;scroll-margin-top:20px}
+pre{background:#02070b;border:1px solid #30434a;padding:18px;overflow:auto;border-radius:9px;color:var(--green);font:14px/1.7 Consolas,monospace;white-space:pre}
+figure{margin:24px 0}figure img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px}.placeholder{min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px dashed #75643e;border-radius:10px;background:#f5b94205;font:15px/2 Consolas,monospace;color:var(--gold);padding:20px}
+figcaption{color:var(--muted);font-size:14px;margin-top:12px}.pending{border-left:3px solid var(--gold);padding:12px 16px;background:#f5b94209;color:#f0d4a0}.note{border-left:3px solid var(--cyan);padding:12px 16px;background:#00eaff08}
+table{border-collapse:collapse;width:100%;min-width:600px}th,td{border-bottom:1px solid var(--line);padding:12px;text-align:left}th{color:var(--cyan)}.scroll{overflow:auto}
+footer{border-top:1px solid var(--line);color:var(--muted);font:12px Consolas,monospace}button{border:1px solid var(--line);background:#132732;color:var(--text);padding:10px 15px;border-radius:7px;cursor:pointer}
+@media(max-width:600px){.card{padding:19px}header,main{padding-left:16px;padding-right:16px}}@media print{body{background:white;color:black}.card{background:white;break-inside:avoid}nav,button{display:none}h1,h3,.eyebrow{color:black}pre{white-space:pre-wrap;background:#eee;color:black}}
+</style>
+</head>
+<body><header><a class="back" href="seguretat.html">← VOLVER A SEGURETAT</a><div class="eyebrow">UNIDAD 2 · ACTIVIDAD 02</div><h1>Dimensionar un SAI</h1><p class="lead">Cálculo de cargas, selección de equipos críticos y propuesta de protección eléctrica para dos salas separadas.</p><nav><a href="#calculos">Cálculo total</a><a href="#seleccion">Selección</a><a href="#compra">Compra</a></nav></header>
+<main><section class="card"><h2>Hipótesis de cálculo</h2><p>El enunciado no indica tensión, factor de potencia ni autonomía. Para mantener el criterio de la actividad anterior se adopta <strong>220 V</strong>, conversión docente <strong>VA ≈ W × 1,4</strong> y utilización máxima del <strong>70 %</strong>.</p><pre><code>Potencia equivalente de clase: P ≈ V × I
+Carga aparente estimada: S ≈ P × 1,4
+Capacidad nominal mínima: S / 0,70</code></pre><div class="note">En corriente alterna V × I da VA, no necesariamente W. La potencia activa es V × I × FP. El tratamiento de los aparatos indicados en amperios es una simplificación académica; para una compra real se necesitan potencia activa y factor de potencia medidos o de ficha. El factor 1,4 es una estimación docente, no una constante universal.</div></section>
+<section class="card" id="calculos"><div class="eyebrow">APARTADO A</div><h2>Todos los aparatos conectados</h2><div class="scroll"><table><thead><tr><th>Aparato</th><th>Dato / cálculo unitario</th><th>Cantidad</th><th>Total académico</th></tr></thead><tbody><tr><td>Portátiles</td><td>32 W</td><td>3</td><td>96 W</td></tr><tr><td>Impresoras láser</td><td>180 W</td><td>5</td><td>900 W</td></tr><tr><td>Router</td><td>0,1 A × 220 V</td><td>1</td><td>22 W</td></tr><tr><td>Escáneres</td><td>2,3 A × 220 V</td><td>5</td><td>2530 W</td></tr><tr><td>Frigorífico</td><td>800 W</td><td>1</td><td>800 W</td></tr><tr><td>Monitores</td><td>30 W</td><td>12</td><td>360 W</td></tr><tr><td>PC de escritorio</td><td>75 W</td><td>10</td><td>750 W</td></tr><tr><td>Servidores</td><td>600 W</td><td>2</td><td>1200 W</td></tr><tr><td>Radiadores</td><td>400 W</td><td>3</td><td>1200 W</td></tr><tr><td>Aire acondicionado de servidores</td><td>1200 W</td><td>1</td><td>1200 W</td></tr><tr><td>Aire acondicionado de sala de PCs</td><td>4000 W</td><td>1</td><td>4000 W</td></tr><tr><td>Fotocopiadora</td><td>1,5 A × 220 V</td><td>1</td><td>330 W</td></tr></tbody></table></div>
+<pre><code>Portátiles:          3 × 32 =    96 W
+Impresoras:          5 × 180 =  900 W
+Router:              220 × 0,1 = 22 W equivalentes
+Escáneres:           5 × 220 × 2,3 = 2530 W equivalentes
+Frigorífico:                    800 W
+Monitores:           12 × 30 =  360 W
+PCs:                 10 × 75 =  750 W
+Servidores:          2 × 600 = 1200 W
+Radiadores:          3 × 400 = 1200 W
+Aire de servidores:            1200 W
+Aire de sala de PCs:           4000 W
+Fotocopiadora:       220 × 1,5 = 330 W equivalentes
+
+TOTAL = 13 388 W equivalentes
+Carga aparente estimada = 13 388 × 1,4 = 18 743,2 VA
+SAI mínimo = 18 743,2 / 0,70 = 26 776 VA ≈ 26,8 kVA</code></pre>
+<p>Según el método docente, una capacidad nominal de <strong>30 kVA</strong> superaría el mínimo calculado. No basta para validar una instalación real: habría que comprobar W admitidos, arranques de motores, simultaneidad y autonomía. Conectar toda la lista a un único SAI sería poco eficiente y mezclaría cargas críticas con calefacción y maquinaria.</p></section>
+<section class="card" id="seleccion"><div class="eyebrow">APARTADO B</div><h2>Seleccionar cargas y separar las salas</h2><p>Se proponen dos SAI locales: uno en la sala de servidores y otro en la sala de PCs. Así cada zona conserva protección próxima a sus equipos, con circuitos dimensionados para su carga. La separación superior a 100 metros refuerza la conveniencia de no distribuir toda la alimentación respaldada desde un pequeño SAI único; no implica que una instalación central diseñada profesionalmente sea imposible.</p>
+<h3>SAI de servidores</h3><p>Se consideran los dos servidores y, como hipótesis de ubicación, el router. Si este está en otra sala, su respaldo deberá instalarse donde se encuentre.</p><pre><code>2 × 600 + 22 = 1222 W equivalentes
+1222 × 1,4 / 0,70 = 2444 VA mínimos</code></pre>
+<h3>SAI de puestos</h3><p>Se protegen los diez PCs y, de forma conservadora, los doce monitores. Los portátiles pueden utilizar sus baterías si están operativas.</p><pre><code>10 × 75 + 12 × 30 = 1110 W
+1110 × 1,4 / 0,70 = 2220 VA mínimos</code></pre>
+<h3>Equipos fuera de las salidas de batería de estos SAI</h3><p>Impresoras láser, fotocopiadora y escáneres no se consideran esenciales para guardar el trabajo y apagar ordenadamente. Se excluyen también radiadores, frigorífico y aire acondicionado de la sala de PCs. Deben contar con protecciones eléctricas adecuadas en sus circuitos, sin consumir la autonomía de las cargas informáticas.</p>
+<h3>La climatización de servidores es un caso crítico</h3><p>El enunciado advierte que perder el aire acondicionado puede provocar temperaturas peligrosas en esa sala. Por eso <strong>no se propone mantener los servidores funcionando indefinidamente sin refrigeración</strong>. Para cortes breves se plantea apagado automático ordenado por tiempo y temperatura; los equipos no esenciales de la sala, incluida la impresora, no deben seguir aportando calor innecesariamente.</p>
+<p>Si se exige continuidad durante el corte, el aire de servidores necesita respaldo específico. Su referencia académica sería <strong>1200 × 1,4 / 0,70 = 2400 VA</strong> solo para climatización, o <strong>(1222 + 1200) × 1,4 / 0,70 = 4844 VA</strong> si se agrupara con servidores y router. Estas cifras no cubren por sí solas el arranque del compresor: debe comprobarse con sus datos y elegirse un respaldo compatible, por ejemplo un sistema dedicado y generación de emergencia según la autonomía exigida.</p></section>
+<section class="card" id="compra"><h2>Opción concreta de compra</h2><p>Para el escenario de <strong>cortes breves y apagado seguro</strong>, se proponen <strong>dos APC Smart-UPS On-Line SRT3000XLI</strong>, uno por sala. La ficha del fabricante indica <strong>3000 VA / 2700 W</strong>, doble conversión online y onda sinusoidal.</p><div class="scroll"><table><thead><tr><th>Zona</th><th>Carga académica</th><th>VA estimados</th><th>Uso sobre 3000 VA</th></tr></thead><tbody><tr><td>Servidores + router</td><td>1222 W</td><td>1710,8 VA</td><td>57,0 %</td></tr><tr><td>PCs + monitores</td><td>1110 W</td><td>1554 VA</td><td>51,8 %</td></tr></tbody></table></div>
+<p>Ambos quedan por debajo del 70 % en la estimación y sus cargas activas académicas están por debajo de 2700 W. Esta selección no incluye alimentar el aire acondicionado desde ellos. Dos SAI por zonas tampoco equivalen a redundancia entre SAI.</p>
+<p>Antes de comprar se deben validar la curva de autonomía a 1222 W y 1110 W, el tiempo de apagado, baterías necesarias, compatibilidad de gestión, conectores, distribución eléctrica y corrientes de arranque. El PDF no fija minutos de autonomía: no se atribuye una duración inventada. En servidores, el apagado debe completarse antes de alcanzar una temperatura insegura; para servicio continuo es imprescindible resolver también el respaldo de climatización.</p>
+<p><a href="https://www.se.com/es/es/product/SRT3000XLI/" target="_blank" rel="noopener">Ficha oficial de Schneider Electric: APC SRT3000XLI</a></p></section>
+<section class="card"><h2>Conclusión</h2><p>La suma de todos los aparatos requiere unos 26,8 kVA nominales con el método de clase. La selección reduce el respaldo informático a dos cargas locales de 1222 W y 1110 W, cubiertas académicamente por dos SAI online de 3 kVA. La seguridad de la sala de servidores exige además monitorización térmica y apagado ordenado, o respaldo de climatización si se necesita continuidad. Así se priorizan los datos y los equipos críticos sin dedicar batería a cargas prescindibles.</p><p>Fuente del enunciado: Caso práctico UP2 - Dimensionar SAI.pdf. Hipótesis y solución razonada propias; especificaciones del modelo consultadas en el fabricante.</p><button onclick="window.print()">Imprimir / guardar PDF</button></section>
+</main><footer>MIGUEL · ASIX 2026/2027 · UNIDAD 2 · ACTIVIDAD 02</footer></body></html>
