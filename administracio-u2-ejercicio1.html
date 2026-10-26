@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 2 · Actividad 1 | Unir un cliente a un dominio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090b;--panel:#101418;--amber:#ffb000;--amber2:#ffd166;--green:#65ff8f;--cyan:#42d9ff;--white:#e8edf0;--muted:#87929a;--border:rgba(255,255,255,.09)}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{background:var(--bg);color:var(--white);font-family:"Segoe UI",Arial,sans-serif;line-height:1.75}
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 12% 10%,rgba(255,176,0,.08),transparent 28%),radial-gradient(circle at 90% 55%,rgba(66,217,255,.07),transparent 32%)}
+.scan{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.11;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.025) 4px)}
+header,main,footer{width:92%;max-width:1120px;margin:auto}
+.top{padding:30px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.back{color:var(--muted);text-decoration:none;font:11px Consolas,monospace;letter-spacing:1px}.back:hover{color:var(--amber)}
+.online{color:var(--green);font:10px Consolas,monospace;letter-spacing:2px}
+.eyebrow{margin-top:30px;color:var(--amber);font:11px Consolas,monospace;letter-spacing:3px}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.12;letter-spacing:-1.5px;margin:15px 0 20px;max-width:950px}
+h1 span{color:var(--amber2)}
+.intro{max-width:850px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 35px}.meta span{padding:8px 12px;border:1px solid var(--border);border-radius:5px;font:10px Consolas,monospace;color:var(--cyan)}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 30px}nav a{border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--muted);text-decoration:none;font-size:12px}nav a:hover{color:var(--amber);border-color:var(--amber)}
+.section{margin:20px 0 35px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(17,21,25,.96),rgba(9,12,14,.96))}
+.section-title{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:center}
+.number{flex-shrink:0;color:var(--amber);font:bold 20px Consolas,monospace;border:1px solid rgba(255,176,0,.2);border-radius:7px;padding:10px}
+h2{font-size:22px;line-height:1.35}.section-title small{display:block;color:var(--muted);font:9px Consolas,monospace;letter-spacing:2px;margin-bottom:5px}
+.content{padding:25px 26px}.content p{margin:0 0 14px;color:#a3aeb5}
+ol,ul{padding-left:23px;margin:15px 0 22px}li{padding-left:4px;margin:7px 0;color:#b9c2c8}
+strong{color:var(--white)}code{font-family:Consolas,"Courier New",monospace;color:var(--cyan);overflow-wrap:anywhere}
+.path{background:#06090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:5px;padding:14px 16px;margin:16px 0;overflow-wrap:anywhere;font-size:12px}
+.note,.expected{padding:15px 18px;margin:18px 0;border:1px solid rgba(255,176,0,.16);border-radius:7px;background:rgba(255,176,0,.035)}
+.note p,.expected p{margin:0}.expected{border-color:rgba(101,255,143,.16);background:rgba(101,255,143,.025)}.expected strong{color:var(--green)}
+.captures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:26px}
+.capture{min-width:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#080c0f}
+.capture-heading{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.capture-heading span{color:var(--amber);font:10px Consolas,monospace}.capture-heading code{color:#7d8992;font-size:9px}
+.capture-media{padding:14px}.capture-media img{display:none;width:100%;height:auto;border-radius:4px}.capture.loaded img{display:block}.capture.loaded .placeholder{display:none}
+.placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border:1px dashed #2a343b;border-radius:6px}
+.placeholder-icon{font-size:35px;color:#56656f}.placeholder strong{font-size:14px}.placeholder p{font-size:12px;margin:10px 0;color:#76858f}.placeholder small{font:9px Consolas,monospace;color:var(--amber)}
+figcaption{padding:0 14px 15px;font-size:11px;color:#7f8d97}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin:18px 0}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--amber);font-family:Consolas,monospace}
+a{color:var(--cyan)}.sources{font-size:12px}.sources li{margin:10px 0}
+.terminal{border:1px solid rgba(101,255,143,.16);border-radius:9px;background:#030604;padding:22px;margin:30px 0;color:var(--green);font:11px/1.9 Consolas,monospace}.terminal .prompt{color:var(--amber)}
+footer{padding:25px 0 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:15px;color:#65717a;font:9px Consolas,monospace}
+@media(max-width:700px){.captures{grid-template-columns:1fr}.content{padding:20px 17px}.section-title{padding:18px 17px}h2{font-size:19px}.online{letter-spacing:0}.top{align-items:flex-start}footer{flex-direction:column}.placeholder{min-height:180px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<style>pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#05090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:16px;margin:16px 0;color:var(--cyan);font:12px/1.8 Consolas,monospace}.flow{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.flow span{padding:12px 16px;border:1px solid var(--border);border-radius:6px;color:var(--amber2);font:12px Consolas,monospace}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}</style>
+<style>
+.console{border:1px solid rgba(66,217,255,.17);border-radius:8px;margin:22px 0;background:rgba(66,217,255,.025)}
+.console summary{cursor:pointer;padding:14px 18px;color:var(--cyan);font:12px/1.6 Consolas,monospace}
+.console-body{padding:0 18px 18px}.content h3{margin:18px 0 12px;font-size:17px;color:var(--amber2)}
+.note p+p{margin-top:12px}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="scan"></div>
+<header>
+    <div class="top">
+        <a class="back" href="administracio.html">← ADMINISTRACIÓ DE SISTEMES</a>
+        <span class="online">● ASIX · ACTIVE DIRECTORY LAB</span>
+    </div>
+    <div class="eyebrow">// UNIDAD 2 · ACTIVIDAD 1</div>
+    <h1>Unir un cliente<br>a un <span>dominio</span></h1>
+    <p class="intro">Windows Server 2025 y Windows 11 Pro: preparación de Active Directory y DNS, incorporación del cliente y comprobación de una sesión de dominio.</p>
+    <div class="meta"><span>ASIX.TEST</span><span>AD DS + DNS</span><span>WINDOWS 11 PRO</span><span>15 CAPTURAS</span></div>
+    <nav aria-label="Apartados de la práctica">
+        <a href="#entorno">Laboratorio</a><a href="#servidor">Servidor y red</a><a href="#roles">Roles</a><a href="#bosque">Bosque</a><a href="#cliente">Cliente</a><a href="#dns">DNS</a><a href="#union">Unión</a><a href="#confianza">Comprobaciones</a><a href="#usuario">Usuario</a><a href="#sesion">Sesión</a>
+    </nav>
+</header>
+<main>
+<!-- =====================================================
+     01 · Objetivo y entorno
+     ===================================================== -->
+<section class="section" id="entorno">
+    <div class="section-title"><span class="number">01</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Objetivo y entorno</h2></div></div>
+    <div class="content">
+<p><strong>Objetivo:</strong> preparar un dominio de Active Directory sobre Windows Server 2025 y unir un cliente Windows 11 Pro. La comprobación incluye DNS, canal seguro, objeto del equipo y acceso con un usuario normal del dominio.</p>
+<div class="flow"><span>Red interna</span><span>→ AD DS + DNS</span><span>→ asix.test</span><span>→ Cliente</span><span>→ Usuario de dominio</span></div>
+<div class="table-wrap"><table><thead><tr><th>Elemento</th><th>Servidor</th><th>Cliente</th></tr></thead><tbody>
+<tr><td>Máquina en VirtualBox</td><td>windowsserver2025</td><td>windows11 pro clonar</td></tr>
+<tr><td>Sistema operativo</td><td>Windows Server 2025 Datacenter</td><td>Windows 11 Pro</td></tr>
+<tr><td>Nombre dentro de Windows</td><td>SRV-DC01</td><td>CLI-W11-01</td></tr>
+<tr><td>IPv4 / prefijo</td><td>192.168.50.10 / 24</td><td>192.168.50.20 / 24</td></tr>
+<tr><td>Máscara</td><td>255.255.255.0</td><td>255.255.255.0</td></tr>
+<tr><td>DNS preferido</td><td>192.168.50.10</td><td>192.168.50.10</td></tr>
+<tr><td>Puerta de enlace</td><td>Sin configurar</td><td>Sin configurar</td></tr>
+<tr><td>Red de VirtualBox</td><td colspan="2">Red interna ASIX-U2, cable conectado, sin otros adaptadores activos.</td></tr>
+</tbody></table></div>
+<p><strong>Bosque y dominio:</strong> <code>asix.test</code>. <strong>NetBIOS:</strong> <code>ASIX</code>. <strong>Usuario de prueba:</strong> <code>ASIX\usuario01</code> — Usuario Prueba.</p>
+<div class="note"><p>La red interna aísla el laboratorio y permite la comunicación entre las dos VM. Sin router ni otro adaptador, no ofrece salida a Internet. El DNS del cliente apunta al controlador del dominio, no a un DNS público ni al propio cliente.</p></div>
+<p>Los procedimientos gráficos y de consola son <strong>alternativas</strong>. No se deben ejecutar de nuevo operaciones ya realizadas, como crear el bosque, unir el equipo o crear el usuario.</p>
+
+    </div>
+</section>
+<!-- =====================================================
+     02 · Preparar el servidor y la red interna
+     ===================================================== -->
+<section class="section" id="servidor">
+    <div class="section-title"><span class="number">02</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Preparar el servidor y la red interna</h2></div></div>
+    <div class="content">
+<h3>Mediante interfaz gráfica</h3>
+<ol><li>En el servidor, ejecutar <code>sysdm.cpl</code>, abrir Nombre de equipo → Cambiar y establecer <strong>SRV-DC01</strong>. Reiniciar para aplicar el nombre.</li><li>Ejecutar <code>ncpa.cpl</code>. En Ethernet → Propiedades → TCP/IPv4, configurar IP <strong>192.168.50.10</strong>, máscara <strong>255.255.255.0</strong>, puerta de enlace vacía y DNS preferido <strong>192.168.50.10</strong>.</li><li>No desactivar IPv6. Comprobar <code>hostname</code> e <code>ipconfig /all</code>.</li><li>Con las VM apagadas, en VirtualBox → Configuración → Red, conectar el adaptador 1 de ambas a <strong>Red interna</strong>, con el nombre exacto <strong>ASIX-U2</strong> y cable conectado.</li></ol>
+<p>El servidor apunta a sí mismo como DNS porque alojará el servicio DNS de Active Directory. Antes de instalarlo es normal que esa dirección todavía no responda consultas DNS.</p><details class="console"><summary>Alternativa por consola · servidor</summary><div class="console-body"><p>La configuración parte del laboratorio indicado. No ejecutar estos comandos en el anfitrión. New-NetIPAddress añade una IP; no limpia automáticamente otras direcciones fijas.</p><pre><code># Windows PowerShell de 64 bits, como administrador, EN EL SERVIDOR.
+# Si el nombre ya es SRV-DC01, no es necesario renombrarlo otra vez.
+if ($env:COMPUTERNAME -ne &#39;SRV-DC01&#39;) {
+    Rename-Computer -NewName &#39;SRV-DC01&#39; -Restart
+}
+
+# Tras el reinicio, comprobar el nombre real del adaptador.
+Get-NetAdapter
+
+# En este laboratorio el adaptador se llama Ethernet.
+# New-NetIPAddress se usa para a&#241;adir esta IP si todav&#237;a no existe.
+# Si ya hay otra IP FIJA configurada, corregirla desde ncpa.cpl primero.
+if (-not (Get-NetIPAddress -InterfaceAlias &#39;Ethernet&#39; -AddressFamily IPv4 |
+        Where-Object IPAddress -EQ &#39;192.168.50.10&#39;)) {
+    New-NetIPAddress -InterfaceAlias &#39;Ethernet&#39; -IPAddress &#39;192.168.50.10&#39; -PrefixLength 24
+}
+Set-DnsClientServerAddress -InterfaceAlias &#39;Ethernet&#39; -ServerAddresses &#39;192.168.50.10&#39;
+hostname
+ipconfig /all</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-1">
+    <div class="capture-heading"><span>CAPTURA 1</span><code>media/u2-act1-01-servidor-red.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-01-servidor-red.PNG" alt="Nombre y red del servidor">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Nombre y red del servidor</strong><p>SRV-DC01 con IP 192.168.50.10, máscara 255.255.255.0 y DNS 192.168.50.10.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Nombre y red del servidor</figcaption>
+</figure>
+<figure class="capture" id="captura-2">
+    <div class="capture-heading"><span>CAPTURA 2</span><code>media/u2-act1-02-red-interna.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-02-red-interna.PNG" alt="Red interna del laboratorio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Red interna del laboratorio</strong><p>Adaptador de VirtualBox conectado a la red interna ASIX-U2, con cable conectado.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Red interna del laboratorio</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     03 · Instalar Active Directory y DNS
+     ===================================================== -->
+<section class="section" id="roles">
+    <div class="section-title"><span class="number">03</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Instalar Active Directory y DNS</h2></div></div>
+    <div class="content">
+<h3>Mediante interfaz gráfica</h3>
+<ol><li>Abrir Administrador del servidor → Administrar → Agregar roles y características.</li><li>Elegir instalación basada en características o roles y seleccionar <strong>SRV-DC01</strong>.</li><li>Seleccionar <strong>Servicios de dominio de Active Directory</strong> y <strong>Servidor DNS</strong>, aceptando sus herramientas de administración.</li><li>Completar la instalación. Instalar los roles no crea todavía el dominio.</li></ol>
+<p><strong>Resultado obtenido por consola:</strong> <code>Success: True</code>, <code>Restart Needed: No</code> y <code>Exit Code: Success</code>.</p><details class="console"><summary>Alternativa por consola · servidor</summary><div class="console-body"><p>En la práctica se realizó esta instalación por PowerShell. IncludeManagementTools añade las consolas y módulos de administración.</p><pre><code># EN SRV-DC01, Windows PowerShell de 64 bits como administrador.
+[Environment]::Is64BitProcess
+Import-Module ServerManager
+Install-WindowsFeature -Name AD-Domain-Services,DNS -IncludeManagementTools
+Get-WindowsFeature -Name AD-Domain-Services,DNS</code></pre></div></details><details class="console"><summary>Incidencia resuelta · PowerShell de 32 bits</summary><div class="console-body">
+<p>Install-WindowsFeature no se reconocía y ServerManager no se encontraba. La consola era de 32 bits: Is64BitProcess devolvía False. El acceso a System32 estaba sujeto a redirección y no mostraba el módulo correcto.</p>
+<p>Desde esa consola de 32 bits se abrió Windows PowerShell de 64 bits con:</p>
+<pre><code>&amp; "$env:windir\Sysnative\WindowsPowerShell\v1.0\powershell.exe"</code></pre>
+<p>Después Is64BitProcess y Test-Path devolvieron True. La instalación de roles terminó correctamente. Sysnative se utiliza en este caso desde un proceso de 32 bits; desde uno de 64 bits se usa la ruta normal System32.</p>
+<pre><code>[Environment]::Is64BitProcess
+Test-Path "$env:windir\System32\WindowsPowerShell\v1.0\Modules\ServerManager"</code></pre>
+</div></details>
+<div class="captures"><figure class="capture" id="captura-3">
+    <div class="capture-heading"><span>CAPTURA 3</span><code>media/u2-act1-03-roles-instalados.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-03-roles-instalados.PNG" alt="Roles AD DS y DNS instalados">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Roles AD DS y DNS instalados</strong><p>Install-WindowsFeature finaliza con Success True y sin reinicio requerido.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Roles AD DS y DNS instalados</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     04 · Crear el bosque asix.test
+     ===================================================== -->
+<section class="section" id="bosque">
+    <div class="section-title"><span class="number">04</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Crear el bosque asix.test</h2></div></div>
+    <div class="content">
+<h3>Promoción mediante el asistente</h3>
+<ol><li>En la bandera de notificaciones del Administrador del servidor, pulsar <strong>Promover este servidor a controlador de dominio</strong>.</li><li>Seleccionar <strong>Agregar un nuevo bosque</strong> y dominio raíz <code>asix.test</code>.</li><li>En Opciones del controlador de dominio, conservar DNS y catálogo global. Establecer personalmente la contraseña <strong>DSRM</strong> y conservarla fuera de las capturas.</li><li>En Opciones de DNS, dejar <strong>Crear delegación DNS</strong> sin marcar. El aviso es esperado al no existir una zona superior en este laboratorio aislado.</li><li>En Opciones adicionales, comprobar el nombre NetBIOS <strong>ASIX</strong>.</li><li>Conservar las rutas predeterminadas y revisar las opciones. Esperar a que las comprobaciones de requisitos previos finalicen correctamente.</li><li>Pulsar Instalar. El servidor se reinicia al terminar la promoción.</li><li>Iniciar sesión como <code>ASIX\Administrador</code>, con la contraseña del administrador del servidor. La contraseña DSRM se utiliza para recuperación, no para este inicio normal.</li></ol><details class="console"><summary>Alternativa por consola · servidor</summary><div class="console-body"><p>Este bloque sustituye al asistente completo. Solicita la contraseña DSRM de forma oculta y conserva las comprobaciones y la confirmación. No ejecutarlo si asix.test ya existe.</p><pre><code># ALTERNATIVA al asistente: solo si el bosque NO est&#225; creado todav&#237;a.
+# Ejecutar en SRV-DC01 con permisos de administrador.
+Import-Module ADDSDeployment
+$dsrm = Read-Host &#39;Contrase&#241;a de recuperaci&#243;n DSRM&#39; -AsSecureString
+$forest = @{
+    DomainName = &#39;asix.test&#39;
+    DomainNetbiosName = &#39;ASIX&#39;
+    InstallDns = $true
+    CreateDnsDelegation = $false
+    SafeModeAdministratorPassword = $dsrm
+}
+Install-ADDSForest @forest
+# Revisar y confirmar cuando lo solicite. El servidor se reinicia.</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-4">
+    <div class="capture-heading"><span>CAPTURA 4</span><code>media/u2-act1-04-aviso-dns.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-04-aviso-dns.PNG" alt="Aviso de delegación DNS">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Aviso de delegación DNS</strong><p>Aviso mostrado al crear el bosque nuevo asix.test, sin una zona superior en el laboratorio.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Aviso de delegación DNS</figcaption>
+</figure>
+<figure class="capture" id="captura-5">
+    <div class="capture-heading"><span>CAPTURA 5</span><code>media/u2-act1-05-netbios.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-05-netbios.PNG" alt="Nombre NetBIOS del dominio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Nombre NetBIOS del dominio</strong><p>Opciones adicionales del asistente: nombre corto ASIX.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Nombre NetBIOS del dominio</figcaption>
+</figure>
+<figure class="capture" id="captura-6">
+    <div class="capture-heading"><span>CAPTURA 6</span><code>media/u2-act1-06-revision-dominio.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-06-revision-dominio.PNG" alt="Revisión de la creación del dominio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Revisión de la creación del dominio</strong><p>Resumen del nuevo bosque asix.test antes de ejecutar la promoción.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Revisión de la creación del dominio</figcaption>
+</figure>
+<figure class="capture" id="captura-7">
+    <div class="capture-heading"><span>CAPTURA 7</span><code>media/u2-act1-07-requisitos-previos.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-07-requisitos-previos.PNG" alt="Requisitos previos comprobados">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Requisitos previos comprobados</strong><p>Comprobaciones correctas; el aviso de delegación DNS no bloquea esta promoción.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Requisitos previos comprobados</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     05 · Comprobar el dominio creado
+     ===================================================== -->
+<section class="section" id="dominio">
+    <div class="section-title"><span class="number">05</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Comprobar el dominio creado</h2></div></div>
+    <div class="content">
+<p>En el servidor promovido, abrir Windows PowerShell de 64 bits y comprobar:</p>
+<pre><code>Get-ADDomain | Select-Object DNSRoot,NetBIOSName</code></pre>
+<div class="expected"><p><strong>Resultado comprobado:</strong> DNSRoot <code>asix.test</code> y NetBIOSName <code>ASIX</code>. El dominio está creado; el servidor debe permanecer encendido durante las operaciones del cliente.</p></div>
+<div class="captures"><figure class="capture" id="captura-8">
+    <div class="capture-heading"><span>CAPTURA 8</span><code>media/u2-act1-08-dominio-creado.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-08-dominio-creado.PNG" alt="Dominio creado">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Dominio creado</strong><p>Get-ADDomain muestra DNSRoot asix.test y NetBIOSName ASIX.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Dominio creado</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     06 · Preparar Windows 11 Pro
+     ===================================================== -->
+<section class="section" id="cliente">
+    <div class="section-title"><span class="number">06</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Preparar Windows 11 Pro</h2></div></div>
+    <div class="content">
+<h3>Nombre y direccionamiento del cliente</h3>
+<ol><li>Iniciar sesión con un administrador local en <strong>windows11 pro clonar</strong>.</li><li>En <code>sysdm.cpl</code>, cambiar el nombre a <strong>CLI-W11-01</strong>, conservando inicialmente el grupo de trabajo. Reiniciar.</li><li>En <code>ncpa.cpl</code> → Ethernet → TCP/IPv4, configurar <strong>192.168.50.20</strong>, máscara <strong>255.255.255.0</strong>, puerta de enlace vacía y DNS <strong>192.168.50.10</strong>.</li><li>Comprobar nombre y red con <code>hostname</code> e <code>ipconfig /all</code>.</li></ol>
+<div class="note"><p><strong>Corrección realizada:</strong> el cliente tenía inicialmente 192.168.50.20 como DNS. Se corrigió a <strong>192.168.50.10</strong>, el servidor DNS del dominio. La IP propia del cliente sigue siendo .20.</p></div>
+<p>El cliente conservaba restricciones locales de la unidad 1. Estas se revisan desde una cuenta administradora local antes de continuar. El restablecimiento de políticas del cliente no se ejecuta en el servidor ni en un equipo ya unido al dominio. No es necesario desactivar el firewall para esta práctica.</p><details class="console"><summary>Alternativa por consola · cliente, administrador local</summary><div class="console-body"><p>El cambio de nombre reinicia el cliente. Tras iniciar sesión, continuar con la red. El nombre del adaptador debe comprobarse con Get-NetAdapter.</p><pre><code># EN EL CLIENTE, Windows PowerShell como administrador local.
+if ($env:COMPUTERNAME -ne &#39;CLI-W11-01&#39;) {
+    Rename-Computer -NewName &#39;CLI-W11-01&#39; -Restart
+}
+
+# Tras el reinicio, comprobar que el adaptador se llama Ethernet.
+Get-NetAdapter
+# Si existe otra IP FIJA, corregirla antes desde ncpa.cpl.
+if (-not (Get-NetIPAddress -InterfaceAlias &#39;Ethernet&#39; -AddressFamily IPv4 |
+        Where-Object IPAddress -EQ &#39;192.168.50.20&#39;)) {
+    New-NetIPAddress -InterfaceAlias &#39;Ethernet&#39; -IPAddress &#39;192.168.50.20&#39; -PrefixLength 24
+}
+Set-DnsClientServerAddress -InterfaceAlias &#39;Ethernet&#39; -ServerAddresses &#39;192.168.50.10&#39;
+hostname
+ipconfig /all</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-9">
+    <div class="capture-heading"><span>CAPTURA 9</span><code>media/u2-act1-09-cliente-red.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-09-cliente-red.PNG" alt="Nombre y red del cliente">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Nombre y red del cliente</strong><p>CLI-W11-01 con IP 192.168.50.20 y DNS 192.168.50.10.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Nombre y red del cliente</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     07 · Localizar el controlador de dominio
+     ===================================================== -->
+<section class="section" id="dns">
+    <div class="section-title"><span class="number">07</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Localizar el controlador de dominio</h2></div></div>
+    <div class="content">
+<p>En el cliente, con el servidor encendido:</p>
+<pre><code>nslookup asix.test
+nltest /dsgetdc:asix.test</code></pre>
+<div class="expected"><p><strong>Resultado obtenido:</strong> asix.test se resuelve a <code>192.168.50.10</code>. nltest identifica <code>\\SRV-DC01.asix.test</code>, dirección <code>\\192.168.50.10</code>, dominio y bosque <code>asix.test</code>, y termina correctamente.</p></div>
+<p>nslookup mostró primero un timeout y el nombre del servidor como UnKnown, pero después obtuvo la dirección solicitada. La consulta inversa del servidor DNS podría explicar ese aviso, aunque no se diagnosticó de forma concluyente. No se presenta como un fallo resuelto: la localización del controlador y las pruebas posteriores confirmaron el funcionamiento necesario para unir el cliente.</p>
+<div class="captures"><figure class="capture" id="captura-10">
+    <div class="capture-heading"><span>CAPTURA 10</span><code>media/u2-act1-10-localizar-dominio.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-10-localizar-dominio.PNG" alt="Localización del controlador de dominio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Localización del controlador de dominio</strong><p>nslookup resuelve asix.test y nltest identifica SRV-DC01.asix.test en 192.168.50.10.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Localización del controlador de dominio</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     08 · Unir el cliente al dominio
+     ===================================================== -->
+<section class="section" id="union">
+    <div class="section-title"><span class="number">08</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Unir el cliente al dominio</h2></div></div>
+    <div class="content">
+<h3>Unión mediante interfaz gráfica</h3>
+<ol><li>En CLI-W11-01 ejecutar <code>sysdm.cpl</code>.</li><li>En Nombre de equipo, pulsar <strong>Cambiar</strong>. No basta con editar el campo Descripción del equipo.</li><li>Seleccionar <strong>Dominio</strong>, introducir <code>asix.test</code> y aceptar.</li><li>Cuando se pidan credenciales, utilizar <code>ASIX\Administrador</code> y su contraseña. En un entorno real pueden utilizarse permisos delegados para la unión.</li><li>Guardar el mensaje de bienvenida al dominio y reiniciar el cliente.</li></ol><details class="console"><summary>Alternativa por consola · cliente, administrador local</summary><div class="console-body"><p>Get-Credential solicita la contraseña sin escribirla en el código. Este bloque sustituye a la unión gráfica y reinicia el cliente.</p><pre><code># ALTERNATIVA a sysdm.cpl: ejecutar en CLI-W11-01 como administrador local.
+# Solo si todav&#237;a no pertenece al dominio.
+$credential = Get-Credential -UserName &#39;ASIX\Administrador&#39; -Message &#39;Credenciales autorizadas para unir el cliente&#39;
+Add-Computer -DomainName &#39;asix.test&#39; -Credential $credential -PassThru -Verbose -Restart</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-11">
+    <div class="capture-heading"><span>CAPTURA 11</span><code>media/u2-act1-11-union-dominio.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-11-union-dominio.PNG" alt="Cliente unido al dominio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Cliente unido al dominio</strong><p>Mensaje de bienvenida al dominio asix.test.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Cliente unido al dominio</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     09 · Verificar la pertenencia y el canal seguro
+     ===================================================== -->
+<section class="section" id="confianza">
+    <div class="section-title"><span class="number">09</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Verificar la pertenencia y el canal seguro</h2></div></div>
+    <div class="content">
+<p>Tras el reinicio, abrir PowerShell como administrador en el cliente y ejecutar:</p>
+<pre><code>Get-CimInstance Win32_ComputerSystem | Select-Object Name,Domain,PartOfDomain
+Test-ComputerSecureChannel -Verbose</code></pre>
+<div class="expected"><p><strong>Resultado comprobado:</strong> nombre <code>CLI-W11-01</code>, dominio <code>asix.test</code>, <code>PartOfDomain: True</code> y canal seguro <code>True</code>. El mensaje confirma que el canal entre el equipo y el dominio está en buen estado.</p></div>
+<p>En SRV-DC01, ejecutar <code>dsa.msc</code>, expandir <strong>asix.test → Computers</strong> y localizar <strong>CLI-W11-01</strong>.</p><details class="console"><summary>Alternativa por consola · servidor</summary><div class="console-body"><p>Consulta equivalente al objeto mostrado en Computers. Se ejecuta en el servidor con el módulo ActiveDirectory.</p><pre><code>Get-ADComputer -Identity &#39;CLI-W11-01&#39; -Properties DNSHostName | Select-Object Name,DNSHostName,Enabled</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-12">
+    <div class="capture-heading"><span>CAPTURA 12</span><code>media/u2-act1-12-comprobar-union.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-12-comprobar-union.PNG" alt="Pertenencia y canal seguro">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Pertenencia y canal seguro</strong><p>PartOfDomain True y Test-ComputerSecureChannel devuelve True.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Pertenencia y canal seguro</figcaption>
+</figure>
+<figure class="capture" id="captura-13">
+    <div class="capture-heading"><span>CAPTURA 13</span><code>media/u2-act1-13-equipo-en-ad.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-13-equipo-en-ad.PNG" alt="Objeto del cliente en Active Directory">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Objeto del cliente en Active Directory</strong><p>CLI-W11-01 visible en Computers dentro de asix.test.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Objeto del cliente en Active Directory</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     10 · Crear Usuario Prueba
+     ===================================================== -->
+<section class="section" id="usuario">
+    <div class="section-title"><span class="number">10</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Crear Usuario Prueba</h2></div></div>
+    <div class="content">
+<h3>Crear una cuenta de prueba sin privilegios administrativos</h3>
+<ol><li>En SRV-DC01, abrir <code>dsa.msc</code> y seleccionar <strong>asix.test → Users</strong>.</li><li>Elegir Nuevo → Usuario.</li><li>Nombre de pila <strong>Usuario</strong>, apellidos <strong>Prueba</strong> y nombre completo <strong>Usuario Prueba</strong>.</li><li>Inicio de sesión <code>usuario01@asix.test</code> y nombre corto <code>ASIX\usuario01</code>.</li><li>Definir una contraseña que cumpla la política del dominio y marcar <strong>El usuario debe cambiar la contraseña en el siguiente inicio de sesión</strong>.</li><li>Finalizar. No añadir la cuenta a Administradores del dominio ni a Administradores locales.</li></ol><details class="console"><summary>Alternativa por consola · servidor</summary><div class="console-body"><p>Solo si usuario01 aún no existe. La contraseña se solicita como SecureString y no aparece en el HTML. No se reutilizan nombres personales para esta cuenta.</p><pre><code># ALTERNATIVA al asistente de usuarios: ejecutar EN SRV-DC01.
+Import-Module ActiveDirectory
+$password = Read-Host &#39;Contrase&#241;a inicial de usuario01&#39; -AsSecureString
+$user = @{
+    Name = &#39;Usuario Prueba&#39;
+    GivenName = &#39;Usuario&#39;
+    Surname = &#39;Prueba&#39;
+    DisplayName = &#39;Usuario Prueba&#39;
+    SamAccountName = &#39;usuario01&#39;
+    UserPrincipalName = &#39;usuario01@asix.test&#39;
+    Path = &#39;CN=Users,DC=asix,DC=test&#39;
+    AccountPassword = $password
+    Enabled = $true
+    ChangePasswordAtLogon = $true
+}
+New-ADUser @user
+Get-ADUser -Identity &#39;usuario01&#39; -Properties UserPrincipalName |
+    Select-Object Name,SamAccountName,UserPrincipalName,Enabled</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-14">
+    <div class="capture-heading"><span>CAPTURA 14</span><code>media/u2-act1-14-usuario-dominio.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-14-usuario-dominio.PNG" alt="Usuario de prueba del dominio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Usuario de prueba del dominio</strong><p>Usuario Prueba creado en Users con inicio de sesión usuario01.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Usuario de prueba del dominio</figcaption>
+</figure></div>
+    </div>
+</section>
+<!-- =====================================================
+     11 · Iniciar sesión con usuario01
+     ===================================================== -->
+<section class="section" id="sesion">
+    <div class="section-title"><span class="number">11</span><div><small>UNIDAD 2 · ACTIVIDAD 1</small><h2>Iniciar sesión con usuario01</h2></div></div>
+    <div class="content">
+<ol><li>En CLI-W11-01 cerrar la sesión actual y seleccionar <strong>Otro usuario</strong>.</li><li>Introducir <code>ASIX\usuario01</code> y la contraseña inicial configurada en el servidor.</li><li>Cuando se solicite el cambio: la contraseña anterior es la inicial; elegir una nueva que cumpla la política y repetirla en Confirmar. Desde ese momento se utiliza la nueva.</li><li>Esperar a la preparación del escritorio.</li><li>Abrir PowerShell <strong>normal, sin elevarlo con otra cuenta</strong>, y ejecutar:</li></ol>
+<pre><code>whoami
+hostname</code></pre>
+<div class="expected"><p><strong>Identidad de la sesión:</strong> <code>asix\usuario01</code> en el equipo <code>CLI-W11-01</code>. La pertenencia al dominio, el canal seguro y el objeto del equipo se verificaron por separado; esta última prueba documenta el acceso con una cuenta normal del dominio.</p></div>
+<p>Si el cambio de contraseña falla, revisar el teclado, Bloq Mayús y los requisitos de la política. No incluir contraseñas ni respuestas de recuperación en capturas o código.</p>
+<div class="captures"><figure class="capture" id="captura-15">
+    <div class="capture-heading"><span>CAPTURA 15</span><code>media/u2-act1-15-sesion-dominio.PNG</code></div>
+    <div class="capture-media">
+        <img src="media/u2-act1-15-sesion-dominio.PNG" alt="Sesión del usuario de dominio">
+        <div class="placeholder"><span class="placeholder-icon">▧</span><strong>Sesión del usuario de dominio</strong><p>whoami devuelve asix\usuario01 y hostname muestra CLI-W11-01.</p><small>IMAGEN NO ENCONTRADA</small></div>
+    </div>
+    <figcaption>Sesión del usuario de dominio</figcaption>
+</figure></div>
+    </div>
+</section>
+<section class="section" id="conclusion">
+    <div class="section-title"><span class="number">✓</span><div><small>RESULTADO</small><h2>Conclusión de la actividad</h2></div></div>
+    <div class="content">
+        <p>Se ha creado el dominio <strong>asix.test</strong> en <strong>SRV-DC01</strong>, con Active Directory y DNS. El cliente <strong>CLI-W11-01</strong> se ha unido al dominio y devuelve <strong>True</strong> tanto en PartOfDomain como en la prueba del canal seguro. Su objeto está presente en Active Directory y se ha preparado la cuenta genérica <strong>Usuario Prueba / usuario01</strong> para comprobar el inicio de sesión.</p>
+        <p>La configuración DNS del cliente es esencial: debe consultar a <strong>192.168.50.10</strong>. La práctica también documenta la resolución de la consola PowerShell de 32 bits, la corrección del DNS del cliente y la diferencia entre el aviso de delegación DNS y un error que bloquee la promoción.</p>
+        <p>Las imágenes se enlazan con los nombres utilizados durante la práctica, dentro de <code>media/</code>, respetando la extensión <code>.PNG</code>. La actividad 2 se preparará por separado.</p>
+    </div>
+</section>
+<section class="section">
+    <div class="section-title"><span class="number">↗</span><div><small>REFERENCIAS</small><h2>Documentación oficial</h2></div></div>
+    <div class="content">
+        <ul class="sources">
+            <li><a href="https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/networkingdetails.html">Oracle VirtualBox · Modos de red</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/best-practices-for-dns-client-settings">Microsoft · Configuración DNS para clientes y controladores</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/powershell/module/servermanager/install-windowsfeature?view=windowsserver2025-ps">Microsoft · Install-WindowsFeature</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/powershell/module/addsdeployment/install-addsforest?view=windowsserver2025-ps">Microsoft · Install-ADDSForest</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/add-computer?view=powershell-5.1">Microsoft · Add-Computer</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/powershell/module/activedirectory/new-aduser?view=windowsserver2025-ps">Microsoft · New-ADUser</a></li>
+        </ul>
+    </div>
+</section>
+<div class="terminal">
+    <span class="prompt">miguel@asix:~$</span> status unidad2/actividad1<br>
+    [READY] asix.test · SRV-DC01<br>
+    [READY] CLI-W11-01 · PartOfDomain True<br>
+    [READY] Canal seguro True<br>
+    [INFO] Usuario de prueba: ASIX\usuario01
+</div>
+</main>
+<footer><span>ADMINISTRACIÓ DE SISTEMES · UNIDAD 2 · ACTIVIDAD 1</span><span>MIGUEL · ASIX 2026/2027</span></footer>
+<script>
+document.querySelectorAll('.capture').forEach(function(figure) {
+    var image = figure.querySelector('img');
+    function update() {
+        figure.classList.toggle('missing', !image.naturalWidth);
+    }
+    image.addEventListener('load', update);
+    image.addEventListener('error', update);
+    if (image.complete) update();
+});
+</script>
+</body>
+</html>
