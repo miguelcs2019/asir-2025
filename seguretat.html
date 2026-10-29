@@ -493,6 +493,16 @@ footer{
 .actividad{padding:18px;gap:14px}
 .loading-text{font-size:12px;letter-spacing:2px}
 }
+
+/* UNIDAD 3: SEGURIDAD LÓGICA */
+.unidad-green{--accent:var(--green);--border:rgba(0,255,157,.25)}
+.unidad-green .actividad{background:linear-gradient(135deg,rgba(0,255,157,.055),rgba(8,13,18,.9))}
+.unidad-green .bloque-numero,.unidad-green .abrir{color:var(--green)}
+.unidad-green .bloque-numero{border-color:rgba(0,255,157,.35)}
+.unidad-green .actividad:not(.bloqueada):hover{border-color:var(--green);box-shadow:0 12px 35px rgba(0,0,0,.45),0 0 20px rgba(0,255,157,.1)}
+.unidad-green .bloqueada .bloque-numero,.unidad-green .bloqueada .abrir{color:#65717b}
+.unidad-green .bloqueada .bloque-numero{border-color:rgba(255,255,255,.12)}
+@media(max-width:750px){.unidad .contador{white-space:normal}}
 </style>
 </head>
 
@@ -737,40 +747,49 @@ footer{
                 <span class="abrir" aria-hidden="true">→</span>
             </a></div>
     </section>
-    <section class="unidad" id="unidad-3" aria-labelledby="titulo-unidad-3">
+    <section class="unidad unidad-green" id="unidad-3" aria-labelledby="titulo-unidad-3">
         <div class="titulo-seccion">
             <div>
-                <span class="unidad-label">UNIDAD 3 // PENDING</span>
-                <h2 id="titulo-unidad-3">Unidad 3 · Pendiente de definir</h2>
+                <span class="unidad-label">UNIDAD 3 // LOGICAL SECURITY</span>
+                <h2 id="titulo-unidad-3">Seguridad Lógica</h2>
             </div>
-            <span class="contador">03 PENDIENTES</span>
+            <span class="contador">01 DISPONIBLE · 03 PENDIENTES</span>
         </div>
-        <p class="unidad-descripcion">Contenido y planteamiento pendientes de definir · Las actividades se habilitarán cuando las preparemos.</p>
+        <p class="unidad-descripcion">Control de acceso, contraseñas, criptografía y firma digital · La primera página reúne las ocho actividades del temario. Las tres prácticas independientes quedan pendientes.</p>
         <div class="actividades">
-            <div class="actividad bloqueada" aria-disabled="true">
+            <a href="unitat3-activitat01-seguretat-logica.html" class="actividad">
                 <div class="bloque-numero">01</div>
                 <div class="contenido-actividad">
-                    <div class="hash">U3 · BLOCK_01 · LOCKED</div>
-                    <h3>Actividad 01 · Pendiente</h3>
-                    <p>Pendiente de preparar · No disponible</p>
+                    <div class="hash">U3 · BLOCK_01 · AVAILABLE</div>
+                    <h3>Seguridad Lógica</h3>
+                    <p>Actividades 1–8 · ACL · Contraseñas · Criptografía · VALIDe · Exam Mode</p>
                 </div>
-                <span class="abrir" aria-hidden="true">🔒</span>
-            </div>
+                <span class="abrir" aria-hidden="true">→</span>
+            </a>
             <div class="actividad bloqueada" aria-disabled="true">
                 <div class="bloque-numero">02</div>
                 <div class="contenido-actividad">
-                    <div class="hash">U3 · BLOCK_02 · LOCKED</div>
-                    <h3>Actividad 02 · Pendiente</h3>
-                    <p>Pendiente de preparar · No disponible</p>
+                    <div class="hash">U3 · BLOCK_02 · PENDING</div>
+                    <h3>ACL en Linux</h3>
+                    <p>Pendiente · Casos prácticos 1.1 y 1.2 · Permisos · Máscaras · Usuarios y grupos</p>
                 </div>
                 <span class="abrir" aria-hidden="true">🔒</span>
             </div>
             <div class="actividad bloqueada" aria-disabled="true">
                 <div class="bloque-numero">03</div>
                 <div class="contenido-actividad">
-                    <div class="hash">U3 · BLOCK_03 · LOCKED</div>
-                    <h3>Actividad 03 · Pendiente</h3>
-                    <p>Pendiente de preparar · No disponible</p>
+                    <div class="hash">U3 · BLOCK_03 · PENDING</div>
+                    <h3>Auditoría de Contraseñas</h3>
+                    <p>Pendiente · Caso práctico 2 · Usuarios de prueba · Herramienta de auditoría · Resultados</p>
+                </div>
+                <span class="abrir" aria-hidden="true">🔒</span>
+            </div>
+            <div class="actividad bloqueada" aria-disabled="true">
+                <div class="bloque-numero">04</div>
+                <div class="contenido-actividad">
+                    <div class="hash">U3 · BLOCK_04 · PENDING</div>
+                    <h3>GPG y Seahorse</h3>
+                    <p>Pendiente · Casos prácticos 3.1 y 3.2 · Claves · Cifrado · Firma y verificación</p>
                 </div>
                 <span class="abrir" aria-hidden="true">🔒</span>
             </div>
