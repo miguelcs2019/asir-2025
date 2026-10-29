@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 2 · Actividad 2 | Maderas Nexo · Versión escritorio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090b;--panel:#101418;--amber:#ffb000;--amber2:#ffd166;--green:#65ff8f;--cyan:#42d9ff;--white:#e8edf0;--muted:#87929a;--border:rgba(255,255,255,.09)}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{background:var(--bg);color:var(--white);font-family:"Segoe UI",Arial,sans-serif;line-height:1.75}
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 12% 10%,rgba(255,176,0,.08),transparent 28%),radial-gradient(circle at 90% 55%,rgba(66,217,255,.07),transparent 32%)}
+.scan{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.11;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.025) 4px)}
+header,main,footer{width:92%;max-width:1120px;margin:auto}
+.top{padding:30px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.back{color:var(--muted);text-decoration:none;font:11px Consolas,monospace;letter-spacing:1px}.back:hover{color:var(--amber)}
+.online{color:var(--green);font:10px Consolas,monospace;letter-spacing:2px}
+.eyebrow{margin-top:30px;color:var(--amber);font:11px Consolas,monospace;letter-spacing:3px}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.12;letter-spacing:-1.5px;margin:15px 0 20px;max-width:950px}
+h1 span{color:var(--amber2)}
+.intro{max-width:850px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 35px}.meta span{padding:8px 12px;border:1px solid var(--border);border-radius:5px;font:10px Consolas,monospace;color:var(--cyan)}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 30px}nav a{border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--muted);text-decoration:none;font-size:12px}nav a:hover{color:var(--amber);border-color:var(--amber)}
+.section{margin:20px 0 35px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(17,21,25,.96),rgba(9,12,14,.96))}
+.section-title{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:center}
+.number{flex-shrink:0;color:var(--amber);font:bold 20px Consolas,monospace;border:1px solid rgba(255,176,0,.2);border-radius:7px;padding:10px}
+h2{font-size:22px;line-height:1.35}.section-title small{display:block;color:var(--muted);font:9px Consolas,monospace;letter-spacing:2px;margin-bottom:5px}
+.content{padding:25px 26px}.content p{margin:0 0 14px;color:#a3aeb5}
+ol,ul{padding-left:23px;margin:15px 0 22px}li{padding-left:4px;margin:7px 0;color:#b9c2c8}
+strong{color:var(--white)}code{font-family:Consolas,"Courier New",monospace;color:var(--cyan);overflow-wrap:anywhere}
+.path{background:#06090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:5px;padding:14px 16px;margin:16px 0;overflow-wrap:anywhere;font-size:12px}
+.note,.expected{padding:15px 18px;margin:18px 0;border:1px solid rgba(255,176,0,.16);border-radius:7px;background:rgba(255,176,0,.035)}
+.note p,.expected p{margin:0}.expected{border-color:rgba(101,255,143,.16);background:rgba(101,255,143,.025)}.expected strong{color:var(--green)}
+.captures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:26px}
+.capture{min-width:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#080c0f}
+.capture-heading{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.capture-heading span{color:var(--amber);font:10px Consolas,monospace}.capture-heading code{color:#7d8992;font-size:9px}
+.capture-media{padding:14px}.capture-media img{display:none;width:100%;height:auto;border-radius:4px}.capture.loaded img{display:block}.capture.loaded .placeholder{display:none}
+.placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border:1px dashed #2a343b;border-radius:6px}
+.placeholder-icon{font-size:35px;color:#56656f}.placeholder strong{font-size:14px}.placeholder p{font-size:12px;margin:10px 0;color:#76858f}.placeholder small{font:9px Consolas,monospace;color:var(--amber)}
+figcaption{padding:0 14px 15px;font-size:11px;color:#7f8d97}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin:18px 0}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--amber);font-family:Consolas,monospace}
+a{color:var(--cyan)}.sources{font-size:12px}.sources li{margin:10px 0}
+.terminal{border:1px solid rgba(101,255,143,.16);border-radius:9px;background:#030604;padding:22px;margin:30px 0;color:var(--green);font:11px/1.9 Consolas,monospace}.terminal .prompt{color:var(--amber)}
+footer{padding:25px 0 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:15px;color:#65717a;font:9px Consolas,monospace}
+@media(max-width:700px){.captures{grid-template-columns:1fr}.content{padding:20px 17px}.section-title{padding:18px 17px}h2{font-size:19px}.online{letter-spacing:0}.top{align-items:flex-start}footer{flex-direction:column}.placeholder{min-height:180px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<style>pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#05090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:16px;margin:16px 0;color:var(--cyan);font:12px/1.8 Consolas,monospace}.flow{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.flow span{padding:12px 16px;border:1px solid var(--border);border-radius:6px;color:var(--amber2);font:12px Consolas,monospace}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}</style>
+<style>
+.console{border:1px solid rgba(66,217,255,.17);border-radius:8px;margin:22px 0;background:rgba(66,217,255,.025)}
+.console summary{cursor:pointer;padding:14px 18px;color:var(--cyan);font:12px/1.6 Consolas,monospace}
+.console-body{padding:0 18px 18px}.content h3{margin:18px 0 12px;font-size:17px;color:var(--amber2)}
+.note p+p{margin-top:12px}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}
+</style>
+<style>.tree{white-space:pre;overflow:auto}.content h3{margin:20px 0;color:var(--amber2)}.flow{line-height:1.6}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}</style>
+</head>
+<body>
+<div class="bg"></div><div class="scan"></div>
+<header>
+<div class="top"><a class="back" href="administracio.html">← ADMINISTRACIÓ DE SISTEMES</a><span class="online">● ASIX · ACTIVE DIRECTORY LAB</span></div>
+<div class="eyebrow">// UNIDAD 2 · ACTIVIDAD 2</div>
+<h1>Maderas Nexo<br><span>Entidades en Active Directory</span></h1>
+<p class="intro">Diseño de Maderas Nexo y demostración gráfica de las entidades de Active Directory. La implementación completa del diseño se realiza en el ejercicio 3, mediante PowerShell.</p>
+<div class="meta"><span>30 EMPLEADOS</span><span>6 DEPARTAMENTOS</span><span>21 PUESTOS</span><span>AGDLP</span><span>VERSIÓN ESCRITORIO · 9 CAPTURAS</span></div>
+<nav aria-label="Apartados"><a href="#empresa">Empresa</a><a href="#estructura">OU</a><a href="#permisos">Grupos y recursos</a><a href="#manual">Ejemplo manual</a><a href="#estructura-completada">OU completas</a><a href="#equipos">Equipos</a><a href="#verificacion">Verificación</a></nav>
+</header>
+<main>
+<!-- 01 · Maderas Nexo: empresa y plantilla -->
+<section class="section" id="empresa"><div class="section-title"><span class="number">01</span><div><small>UNIDAD 2 · ACTIVIDAD 2</small><h2>Maderas Nexo: empresa y plantilla</h2></div></div>
+<div class="content"><p><strong>Maderas Nexo</strong> es una empresa ficticia de venta y distribución de madera y tableros. Dispone de una sola sede con oficinas y almacén, y una plantilla de <strong>30 empleados</strong>.</p>
+<div class="table-wrap"><table><thead><tr><th>Departamento</th><th>Empleados</th><th>Puestos</th><th>Cuentas</th></tr></thead><tbody><tr><td>Dirección</td><td>3</td><td>3</td><td><code>dir01–dir03</code></td></tr><tr><td>Administración y contabilidad</td><td>4</td><td>4</td><td><code>adm01–adm04</code></td></tr><tr><td>Comercial y atención al cliente</td><td>6</td><td>6</td><td><code>com01–com06</code></td></tr><tr><td>Compras y aprovisionamiento</td><td>3</td><td>3</td><td><code>cmp01–cmp03</code></td></tr><tr><td>Almacén</td><td>9</td><td>3</td><td><code>alm01–alm09</code></td></tr><tr><td>Logística y distribución</td><td>5</td><td>2</td><td><code>log01–log05</code></td></tr><tr><th>Total</th><th>30</th><th>21</th><th>30 cuentas individuales</th></tr></tbody></table></div>
+<p>Almacén comparte tres puestos entre nueve personas y Logística comparte dos entre cinco, mediante turnos y tareas que no requieren un ordenador simultáneamente para cada empleado. Los otros departamentos disponen de un puesto por persona. Cada empleado tiene una cuenta individual.</p>
+<div class="flow"><span>Dirección</span><span>→ Administración</span><span>→ Comercial</span><span>→ Compras</span><span>→ Almacén</span><span>→ Logística</span></div>
+<p>El organigrama sitúa a Dirección sobre los otros cinco departamentos, que coordinan las compras, ventas, almacenamiento y distribución de los productos.</p>
+</div></section>
+<!-- 02 · Estructura de unidades organizativas -->
+<section class="section" id="estructura"><div class="section-title"><span class="number">02</span><div><small>UNIDAD 2 · ACTIVIDAD 2</small><h2>Estructura de unidades organizativas</h2></div></div>
+<div class="content"><p>Se reutiliza el dominio <code>asix.test</code> y el controlador <code>SRV-DC01</code>. La empresa se aísla organizativamente en <code>OU=MaderasNexo,DC=asix,DC=test</code>, sin crear otro dominio.</p>
+<pre class="tree"><code>asix.test
+├── Domain Controllers
+│   └── SRV-DC01 (se conserva aqu&#237;)
+└── MaderasNexo
+    ├── Direccion
+    │   ├── Usuarios
+    │   └── Equipos
+    ├── Administracion
+    │   ├── Usuarios
+    │   └── Equipos → CLI-W11-01 + 3 precreados
+    ├── Comercial
+    │   ├── Usuarios
+    │   └── Equipos
+    ├── Compras
+    │   ├── Usuarios
+    │   └── Equipos
+    ├── Almacen
+    │   ├── Usuarios
+    │   └── Equipos
+    ├── Logistica
+    │   ├── Usuarios
+    │   └── Equipos
+    └── Grupos
+        ├── Globales
+        └── DominioLocal</code></pre>
+<p>Son <strong>22 OU</strong>: una principal, seis departamentos, doce OU de Usuarios/Equipos y tres OU para Grupos/Globales/DominioLocal. Las OU son contenedores para organizar y delegar administración; no conceden por sí mismas acceso a carpetas.</p>
+<p><strong>SRV-DC01 permanece en Domain Controllers.</strong> El usuario usuario01 de la actividad anterior se conserva fuera del recuento de 30 empleados de Maderas Nexo.</p>
+</div></section>
+<!-- 03 · Grupos y recursos: modelo AGDLP -->
+<section class="section" id="permisos"><div class="section-title"><span class="number">03</span><div><small>UNIDAD 2 · ACTIVIDAD 2</small><h2>Grupos y recursos: modelo AGDLP</h2></div></div>
+<div class="content"><p>Se sigue el modelo <strong>AGDLP</strong>: cuentas → grupos globales de departamento → grupos de dominio local del recurso → permisos.</p>
+<div class="flow"><span>adm01</span><span>→ GG_MN_ADM</span><span>→ DL_MN_ADM_M</span><span>→ Carpeta Administración</span></div>
+<p>Se definen <strong>6 grupos globales</strong> y <strong>12 de dominio local</strong>: seis para modificar cada carpeta departamental, cinco de lectura para Dirección sobre los otros departamentos y uno para modificar Común.</p>
+<p>La nomenclatura usa <code>GG_MN_CODIGO</code>, <code>DL_MN_CODIGO_M</code> para modificar y <code>DL_MN_CODIGO_L</code> para leer. Ejemplos: GG_MN_DIR, GG_MN_ADM, DL_MN_ADM_M y DL_MN_ADM_L. Los códigos son DIR, ADM, COM, CMP, ALM y LOG. El recurso compartido Común se asocia a DL_MN_COMUN_M.</p>
+<div class="table-wrap"><table><thead><tr><th>Recurso / departamento que accede</th><th>Direccion</th><th>Administracion</th><th>Comercial</th><th>Compras</th><th>Almacen</th><th>Logistica</th></tr></thead><tbody><tr><th>Dirección</th><td>Modificar</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td></tr><tr><th>Administración y contabilidad</th><td>Leer</td><td>Modificar</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td></tr><tr><th>Comercial y atención al cliente</th><td>Leer</td><td>Sin acceso</td><td>Modificar</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td></tr><tr><th>Compras y aprovisionamiento</th><td>Leer</td><td>Sin acceso</td><td>Sin acceso</td><td>Modificar</td><td>Sin acceso</td><td>Sin acceso</td></tr><tr><th>Almacén</th><td>Leer</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td><td>Modificar</td><td>Sin acceso</td></tr><tr><th>Logística y distribución</th><td>Leer</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td><td>Sin acceso</td><td>Modificar</td></tr><tr><th>Común</th><td>Modificar</td><td>Modificar</td><td>Modificar</td><td>Modificar</td><td>Modificar</td><td>Modificar</td></tr></tbody></table></div>
+<p>Dirección puede modificar su carpeta y leer las otras cinco. Los miembros de cada departamento pueden modificar su carpeta y Común. No se concede acceso a las carpetas privadas de otros departamentos. Esto se plantea para usuarios normales, sin alterar los accesos administrativos necesarios para gestionar los recursos.</p>
+<div class="note"><p><strong>Alcance:</strong> en esta actividad se crean las entidades y pertenencias de Active Directory y se diseña la matriz de recursos. Crear grupos no aplica automáticamente permisos SMB o NTFS. Las carpetas y sus ACL se documentan como diseño; una prueba real de acceso sería una ampliación aparte.</p></div>
+</div></section>
+<!-- 04 · Primer ejemplo mediante interfaz gráfica -->
+<section class="section" id="ambitos-tipos-grupo">
+    <div class="section-title"><span class="number">i</span><div><small>CONCEPTOS</small><h2>Ámbito y tipo de grupo</h2></div></div>
+    <div class="content">
+        <p>Son dos decisiones independientes: <strong>ámbito</strong> determina miembros y alcance; <strong>tipo</strong> indica su función.</p>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Ámbito</th><th>Miembros</th><th>Dónde concede permisos</th><th>Uso</th></tr></thead>
+                <tbody>
+                    <tr><td>Global</td><td>Cuentas y grupos globales del mismo dominio.</td><td>Dominios del bosque o con confianza.</td><td>Agrupar departamentos: GG_MN_ADM.</td></tr>
+                    <tr><td>Dominio local</td><td>Cuentas, globales y universales de dominios admitidos por confianza; otros DL del mismo dominio.</td><td>Su propio dominio.</td><td>Asignar acceso al recurso: DL_MN_ADM_M.</td></tr>
+                    <tr><td>Universal</td><td>Cuentas, globales y universales del mismo bosque.</td><td>Bosque y relaciones de confianza aplicables.</td><td>Agrupar funciones entre varios dominios. Aquí no se necesita.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Tipo</th><th>Finalidad</th></tr></thead>
+                <tbody>
+                    <tr><td>Seguridad</td><td>Puede recibir permisos. También puede habilitarse para correo con infraestructura compatible.</td></tr>
+                    <tr><td>Distribución</td><td>Listas de correo; no sirve para asignar permisos. Requiere un sistema de correo que utilice el grupo.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="expected"><p><strong>En esta práctica:</strong> Global + Seguridad para reunir empleados; Dominio local + Seguridad para permisos. Crear el grupo no configura automáticamente la carpeta.</p></div>
+        <p><a href="https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups">Microsoft · Grupos de seguridad y ámbitos</a></p>
+    </div>
+</section>
+<section class="section" id="manual"><div class="section-title"><span class="number">04</span><div><small>UNIDAD 2 · ACTIVIDAD 2</small><h2>Primer ejemplo mediante interfaz gráfica</h2></div></div>
+<div class="content"><p>La práctica empieza con un ejemplo en Administración, desde <code>dsa.msc</code> en SRV-DC01:</p>
+<ol>
+<li>En asix.test crear la OU <strong>MaderasNexo</strong>, manteniendo la protección contra eliminación accidental.</li>
+<li>Dentro, crear <strong>Administracion</strong> con sus OU <strong>Usuarios</strong> y <strong>Equipos</strong>. Crear también <strong>Grupos</strong> con <strong>Globales</strong> y <strong>DominioLocal</strong>.</li>
+<li>En Usuarios de Administracion, crear <strong>Administracion 01</strong>, inicio <code>adm01@asix.test</code> y nombre corto <code>ASIX\adm01</code>. Establecer una contraseña personal y exigir su cambio al primer inicio.</li>
+<li>En Globales, crear <strong>GG_MN_ADM</strong>, tipo Seguridad y ámbito Global.</li>
+<li>En DominioLocal, crear <strong>DL_MN_ADM_M</strong>, tipo Seguridad y ámbito Dominio local.</li>
+<li>En Miembros de GG_MN_ADM, añadir <strong>adm01</strong>.</li>
+<li>En Miembros de DL_MN_ADM_M, añadir <strong>GG_MN_ADM</strong>.</li>
+</ol>
+<p>La primera cadena AGDLP queda creada sin asignar permisos directos a la cuenta. No se hace al usuario administrador ni se utiliza una contraseña visible en la documentación.</p>
+<div class="captures"><figure class="capture" id="captura-1">
+<div class="capture-heading"><span>CAPTURA 1</span><code>media/u2-act2-01-ou-manual.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-01-ou-manual.PNG" alt="Estructura inicial creada manualmente"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Estructura inicial creada manualmente</strong><p>OU MaderasNexo, Administracion con Usuarios y Equipos, y Grupos con Globales y DominioLocal.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Estructura inicial creada manualmente</figcaption></figure>
+<figure class="capture" id="captura-2">
+<div class="capture-heading"><span>CAPTURA 2</span><code>media/u2-act2-02-usuario-manual.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-02-usuario-manual.PNG" alt="Primer usuario creado manualmente"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Primer usuario creado manualmente</strong><p>adm01 dentro de Usuarios de Administracion, sin mostrar su contraseña.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Primer usuario creado manualmente</figcaption></figure>
+<figure class="capture" id="captura-3">
+<div class="capture-heading"><span>CAPTURA 3</span><code>media/u2-act2-03-grupo-global-manual.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-03-grupo-global-manual.PNG" alt="Primer grupo global"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Primer grupo global</strong><p>GG_MN_ADM, categoría Seguridad y ámbito Global.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Primer grupo global</figcaption></figure>
+<figure class="capture" id="captura-4">
+<div class="capture-heading"><span>CAPTURA 4</span><code>media/u2-act2-04-grupo-local-manual.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-04-grupo-local-manual.PNG" alt="Primer grupo de dominio local"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Primer grupo de dominio local</strong><p>DL_MN_ADM_M, categoría Seguridad y ámbito Dominio local.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Primer grupo de dominio local</figcaption></figure>
+<figure class="capture" id="captura-5">
+<div class="capture-heading"><span>CAPTURA 5</span><code>media/u2-act2-05-usuario-en-global.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-05-usuario-en-global.PNG" alt="Cuenta dentro del grupo global"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Cuenta dentro del grupo global</strong><p>Miembros de GG_MN_ADM con adm01.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Cuenta dentro del grupo global</figcaption></figure>
+<figure class="capture" id="captura-6">
+<div class="capture-heading"><span>CAPTURA 6</span><code>media/u2-act2-06-global-en-local.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-06-global-en-local.PNG" alt="Grupo global dentro del grupo local"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Grupo global dentro del grupo local</strong><p>Miembros de DL_MN_ADM_M con GG_MN_ADM.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Grupo global dentro del grupo local</figcaption></figure></div></div></section>
+<!-- 05 · Completar la estructura con PowerShell -->
+<section class="section" id="estructura-completada"><div class="section-title"><span class="number">05</span><div><small>VERSIÓN ESCRITORIO</small><h2>Completar las OU mediante las ventanas</h2></div></div>
+<div class="content"><p>Tras el ejemplo inicial de Administración se han creado manualmente Direccion, Comercial, Compras, Almacen y Logistica, cada una con Usuarios y Equipos. Todas se sitúan dentro de MaderasNexo. Usuarios y Equipos son OU hermanas, no una dentro de otra.</p>
+<p>Al corregir una OU vacía creada en una ubicación incorrecta, se utilizó Ver → Características avanzadas → Propiedades → Objeto para retirar su protección contra eliminación accidental. Después se eliminó únicamente esa OU vacía y se recreó en la ubicación correcta, conservando la protección de las demás.</p>
+<div class="captures"><figure class="capture" id="captura-7">
+<div class="capture-heading"><span>CAPTURA 7</span><code>media/u2-act2-07-ous-completas.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-07-ous-completas.PNG" alt="Organización completa"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Organización completa</strong><p>Los seis departamentos y sus OU Usuarios/Equipos; OU Grupos separada por ámbito.</p><small>CAPTURA POR INCORPORAR</small></div></div>
+<figcaption>Organización completa</figcaption></figure></div></div></section>
+<!-- 06 · Puestos y objetos de equipo -->
+<section class="section" id="equipos"><div class="section-title"><span class="number">06</span><div><small>UNIDAD 2 · ACTIVIDAD 2</small><h2>Diseño de puestos y ejemplo de equipo</h2></div></div>
+<div class="content"><p><strong>No se crearán 20 máquinas virtuales.</strong> Se usa únicamente el cliente real CLI-W11-01 ya unido a asix.test. Su objeto existente se conserva y se organizará en el ejercicio 3, sin borrarlo ni volver a unirlo. En esta demostración no se ha movido.</p>
+<p>Los otros 20 puestos son objetos precreados para representar la infraestructura prevista. No se presentan como equipos instalados, conectados o autenticados. Crear un objeto con New-ADComputer no une una máquina al dominio.</p>
+<div class="table-wrap"><table><thead><tr><th>Equipo</th><th>Departamento</th><th>Estado previsto</th></tr></thead><tbody><tr><td><code>MN-DIR-01</code></td><td>Dirección</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-DIR-02</code></td><td>Dirección</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-DIR-03</code></td><td>Dirección</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>CLI-W11-01</code></td><td>Administración y contabilidad</td><td>Cliente real unido al dominio</td></tr><tr><td><code>MN-ADM-02</code></td><td>Administración y contabilidad</td><td>Objeto de ejemplo creado gráficamente</td></tr><tr><td><code>MN-ADM-03</code></td><td>Administración y contabilidad</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-ADM-04</code></td><td>Administración y contabilidad</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-COM-01</code></td><td>Comercial y atención al cliente</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-COM-02</code></td><td>Comercial y atención al cliente</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-COM-03</code></td><td>Comercial y atención al cliente</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-COM-04</code></td><td>Comercial y atención al cliente</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-COM-05</code></td><td>Comercial y atención al cliente</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-COM-06</code></td><td>Comercial y atención al cliente</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-CMP-01</code></td><td>Compras y aprovisionamiento</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-CMP-02</code></td><td>Compras y aprovisionamiento</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-CMP-03</code></td><td>Compras y aprovisionamiento</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-ALM-01</code></td><td>Almacén</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-ALM-02</code></td><td>Almacén</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-ALM-03</code></td><td>Almacén</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-LOG-01</code></td><td>Logística y distribución</td><td>Precreación prevista; sin VM adicional</td></tr><tr><td><code>MN-LOG-02</code></td><td>Logística y distribución</td><td>Precreación prevista; sin VM adicional</td></tr></tbody></table></div>
+<div class="captures"></div><h3>Ejemplo gráfico realizado</h3><p>En Administracion → Equipos se utilizó Nuevo → Equipo para crear <code>MN-ADM-02</code>, conservando las opciones predeterminadas. Esto crea una cuenta preconfigurada; no instala Windows ni une una máquina al dominio.</p><div class="captures"><figure class="capture" id="captura-8">
+<div class="capture-heading"><span>CAPTURA 8</span><code>media/u2-act2-08-equipo-manual.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-08-equipo-manual.PNG" alt="Objeto de equipo creado desde la interfaz"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Objeto de equipo creado desde la interfaz</strong><p>MN-ADM-02 dentro de Equipos de Administracion; objeto precreado, sin VM.</p><small>IMAGEN NO ENCONTRADA</small></div></div>
+<figcaption>Objeto de equipo creado desde la interfaz</figcaption></figure></div></div></section>
+<!-- 07 · Comprobaciones y documentación -->
+<section class="section" id="verificacion"><div class="section-title"><span class="number">07</span><div><small>DEMOSTRACIÓN GRÁFICA COMPLETADA</small><h2>Resumen y límites de esta versión</h2></div></div>
+<div class="content"><p>Desde Usuarios y equipos de Active Directory se han demostrado las operaciones de creación de OU, usuario, grupo global, grupo de dominio local, pertenencias y objeto de equipo.</p>
+<ul><li>Usuario de ejemplo: <code>adm01</code>, en Usuarios de Administracion.</li><li>Grupos de ejemplo: <code>GG_MN_ADM</code> y <code>DL_MN_ADM_M</code>.</li><li>Cadena de pertenencias: adm01 → GG_MN_ADM → DL_MN_ADM_M.</li><li>Equipo de ejemplo: <code>MN-ADM-02</code>, precreado en Equipos de Administracion.</li><li>Los seis departamentos tienen sus OU Usuarios y Equipos.</li></ul>
+<p>Como comprobación final se ejecutó una consulta de solo lectura por PowerShell para visualizar el árbol. Los objetos de esta versión se crearon gráficamente; la consulta no los crea ni modifica.</p>
+<details class="console"><summary>Consulta de comprobación · mostrar el árbol</summary><div class="console-body"><pre><code>Import-Module ActiveDirectory
+function Mostrar-ArbolAD {
+    param([string]$Ruta, [string]$Sangria = &#39;&#39;)
+    $objetos = @(Get-ADObject -SearchBase $Ruta -SearchScope OneLevel -Filter * |
+        Sort-Object ObjectClass, Name)
+    for ($i = 0; $i -lt $objetos.Count; $i++) {
+        $objeto = $objetos[$i]
+        $ultimo = $i -eq ($objetos.Count - 1)
+        $rama = if ($ultimo) { &#39;└── &#39; } else { &#39;├── &#39; }
+        Write-Host &quot;$Sangria$rama[$($objeto.ObjectClass)] $($objeto.Name)&quot;
+        if ($objeto.ObjectClass -eq &#39;organizationalUnit&#39;) {
+            $continuacion = if ($ultimo) { &#39;    &#39; } else { &#39;│   &#39; }
+            Mostrar-ArbolAD -Ruta $objeto.DistinguishedName -Sangria ($Sangria + $continuacion)
+        }
+    }
+}
+Write-Host &#39;MaderasNexo&#39;
+Mostrar-ArbolAD -Ruta &#39;OU=MaderasNexo,DC=asix,DC=test&#39;</code></pre></div></details>
+<div class="captures"><figure class="capture" id="captura-9">
+<div class="capture-heading"><span>CAPTURA 9</span><code>media/u2-act2-09-resumen-escritorio.PNG</code></div>
+<div class="capture-media"><img src="media/u2-act2-09-resumen-escritorio.PNG" alt="Árbol de los objetos de la demostración gráfica"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Árbol de los objetos de la demostración gráfica</strong><p>Consulta de solo lectura por PowerShell de la estructura creada desde las ventanas.</p><small>IMAGEN NO ENCONTRADA</small></div></div>
+<figcaption>Árbol de los objetos de la demostración gráfica</figcaption></figure></div>
+<div class="expected"><p><strong>Continuidad:</strong> el ejercicio 3 implementará el diseño completo mediante PowerShell: 30 usuarios, 6 grupos globales, 12 de dominio local y 21 objetos de equipo. Esta demostración gráfica no se presenta como una implementación de toda la plantilla ni como una prueba de permisos de carpetas.</p></div>
+</div></section>
+<!-- DESCARGAS DE LA ACTIVIDAD -->
+<section class="section" id="descargas">
+    <div class="section-title">
+        <span class="number">↓</span>
+        <div><small>DOCUMENTACIÓN DE LA ACTIVIDAD</small><h2>Presentación y documento de entrega</h2></div>
+    </div>
+    <div class="content">
+        <p>El PowerPoint editable y el PDF reunirán el diseño de Maderas Nexo, el organigrama y las pruebas de implementación en Active Directory.</p>
+        <p><strong>Preparación en curso:</strong> los archivos se incorporarán al terminar las capturas. Los enlaces quedan fijados para su publicación en media.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:18px">
+            <a href="media/u2-act2-maderas-nexo.pptx" download style="display:inline-block;padding:12px 18px;border:1px solid var(--amber);border-radius:7px;color:var(--amber2);text-decoration:none">↓ Descargar PowerPoint</a>
+            <a href="media/u2-act2-maderas-nexo.pdf" download style="display:inline-block;padding:12px 18px;border:1px solid var(--cyan);border-radius:7px;color:var(--cyan);text-decoration:none">↓ Descargar PDF</a>
+        </div>
+    </div>
+</section>
+<div class="terminal"><span class="prompt">miguel@asix:~$</span> status unidad2/actividad2<br>[READY] Diseño de Maderas Nexo aprobado<br>[READY] Ejemplos gráficos de las entidades completados<br>[NEXT] Ejercicio 3 · Implementación completa por PowerShell</div>
+</main>
+<footer><span>ADMINISTRACIÓ DE SISTEMES · UNIDAD 2 · ACTIVIDAD 2</span><span>MIGUEL · ASIX 2026/2027</span></footer>
+<script>
+document.querySelectorAll('.capture').forEach(function(f){
+var i=f.querySelector('img');
+function check(){f.classList.toggle('missing',!i.naturalWidth);}
+i.addEventListener('load',check);i.addEventListener('error',check);if(i.complete)check();
+});
+</script>
+</body>
+</html>
