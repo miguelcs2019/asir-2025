@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Unidad 2 · Ejercicio 3 | Maderas Nexo por PowerShell</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090b;--panel:#101418;--amber:#ffb000;--amber2:#ffd166;--green:#65ff8f;--cyan:#42d9ff;--white:#e8edf0;--muted:#87929a;--border:rgba(255,255,255,.09)}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{background:var(--bg);color:var(--white);font-family:"Segoe UI",Arial,sans-serif;line-height:1.75}
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 12% 10%,rgba(255,176,0,.08),transparent 28%),radial-gradient(circle at 90% 55%,rgba(66,217,255,.07),transparent 32%)}
+.scan{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.11;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.025) 4px)}
+header,main,footer{width:92%;max-width:1120px;margin:auto}
+.top{padding:30px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.back{color:var(--muted);text-decoration:none;font:11px Consolas,monospace;letter-spacing:1px}.back:hover{color:var(--amber)}
+.online{color:var(--green);font:10px Consolas,monospace;letter-spacing:2px}
+.eyebrow{margin-top:30px;color:var(--amber);font:11px Consolas,monospace;letter-spacing:3px}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.12;letter-spacing:-1.5px;margin:15px 0 20px;max-width:950px}
+h1 span{color:var(--amber2)}
+.intro{max-width:850px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 35px}.meta span{padding:8px 12px;border:1px solid var(--border);border-radius:5px;font:10px Consolas,monospace;color:var(--cyan)}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 30px}nav a{border:1px solid var(--border);border-radius:5px;padding:7px 12px;color:var(--muted);text-decoration:none;font-size:12px}nav a:hover{color:var(--amber);border-color:var(--amber)}
+.section{margin:20px 0 35px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(17,21,25,.96),rgba(9,12,14,.96))}
+.section-title{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:center}
+.number{flex-shrink:0;color:var(--amber);font:bold 20px Consolas,monospace;border:1px solid rgba(255,176,0,.2);border-radius:7px;padding:10px}
+h2{font-size:22px;line-height:1.35}.section-title small{display:block;color:var(--muted);font:9px Consolas,monospace;letter-spacing:2px;margin-bottom:5px}
+.content{padding:25px 26px}.content p{margin:0 0 14px;color:#a3aeb5}
+ol,ul{padding-left:23px;margin:15px 0 22px}li{padding-left:4px;margin:7px 0;color:#b9c2c8}
+strong{color:var(--white)}code{font-family:Consolas,"Courier New",monospace;color:var(--cyan);overflow-wrap:anywhere}
+.path{background:#06090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:5px;padding:14px 16px;margin:16px 0;overflow-wrap:anywhere;font-size:12px}
+.note,.expected{padding:15px 18px;margin:18px 0;border:1px solid rgba(255,176,0,.16);border-radius:7px;background:rgba(255,176,0,.035)}
+.note p,.expected p{margin:0}.expected{border-color:rgba(101,255,143,.16);background:rgba(101,255,143,.025)}.expected strong{color:var(--green)}
+.captures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:26px}
+.capture{min-width:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#080c0f}
+.capture-heading{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.capture-heading span{color:var(--amber);font:10px Consolas,monospace}.capture-heading code{color:#7d8992;font-size:9px}
+.capture-media{padding:14px}.capture-media img{display:none;width:100%;height:auto;border-radius:4px}.capture.loaded img{display:block}.capture.loaded .placeholder{display:none}
+.placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border:1px dashed #2a343b;border-radius:6px}
+.placeholder-icon{font-size:35px;color:#56656f}.placeholder strong{font-size:14px}.placeholder p{font-size:12px;margin:10px 0;color:#76858f}.placeholder small{font:9px Consolas,monospace;color:var(--amber)}
+figcaption{padding:0 14px 15px;font-size:11px;color:#7f8d97}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin:18px 0}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--amber);font-family:Consolas,monospace}
+a{color:var(--cyan)}.sources{font-size:12px}.sources li{margin:10px 0}
+.terminal{border:1px solid rgba(101,255,143,.16);border-radius:9px;background:#030604;padding:22px;margin:30px 0;color:var(--green);font:11px/1.9 Consolas,monospace}.terminal .prompt{color:var(--amber)}
+footer{padding:25px 0 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:15px;color:#65717a;font:9px Consolas,monospace}
+@media(max-width:700px){.captures{grid-template-columns:1fr}.content{padding:20px 17px}.section-title{padding:18px 17px}h2{font-size:19px}.online{letter-spacing:0}.top{align-items:flex-start}footer{flex-direction:column}.placeholder{min-height:180px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<style>pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#05090b;border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:16px;margin:16px 0;color:var(--cyan);font:12px/1.8 Consolas,monospace}.flow{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.flow span{padding:12px 16px;border:1px solid var(--border);border-radius:6px;color:var(--amber2);font:12px Consolas,monospace}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}</style>
+<style>
+.console{border:1px solid rgba(66,217,255,.17);border-radius:8px;margin:22px 0;background:rgba(66,217,255,.025)}
+.console summary{cursor:pointer;padding:14px 18px;color:var(--cyan);font:12px/1.6 Consolas,monospace}
+.console-body{padding:0 18px 18px}.content h3{margin:18px 0 12px;font-size:17px;color:var(--amber2)}
+.note p+p{margin-top:12px}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}
+</style>
+<style>.tree{white-space:pre;overflow:auto}.content h3{margin:20px 0;color:var(--amber2)}.flow{line-height:1.6}.capture-media img{display:block}.capture .placeholder{display:none}.capture.missing img{display:none}.capture.missing .placeholder{display:flex}</style>
+<style>.infografia{margin:22px 0;overflow-x:auto;border:1px solid var(--border);border-radius:10px}.infografia svg{display:block;width:100%;min-width:760px;height:auto}.download-actions{display:flex;flex-wrap:wrap;gap:12px}.download-actions a{padding:12px 18px;border:1px solid var(--amber);border-radius:7px;text-decoration:none;color:var(--amber2)}.script-doc{margin:18px 0;border:1px solid var(--border);border-radius:7px;padding:16px}.script-doc summary{cursor:pointer;color:var(--cyan)}</style>
+</head><body><div class="bg"></div><div class="scan"></div><header><div class="top"><a class="back" href="administracio.html">← ADMINISTRACIÓ DE SISTEMES</a><span class="online">● ASIX · POWERSHELL LAB</span></div><div class="eyebrow">// UNIDAD 2 · EJERCICIO 3</div><h1>Maderas Nexo<br><span>Implementación por PowerShell</span></h1><p class="intro">Un ejemplo explicado paso a paso y la ampliación de la estructura al diseño completo: 30 cuentas, 18 grupos y 21 objetos de equipo.</p><div class="meta"><span>ASIX.TEST</span><span>22 OU</span><span>30 USUARIOS</span><span>10 CAPTURAS</span></div><nav aria-label="Apartados"><a href="#plan">Plan</a><a href="#ou">OU</a><a href="#usuario">Usuario</a><a href="#grupos">Grupos</a><a href="#equipo">Equipo</a><a href="#ampliacion">Scripts</a><a href="#mantenimiento">Ampliaciones</a><a href="#descargas">Descargas</a></nav></header><main>
+<section class="section" id="plan"><div class="section-title"><span class="number">01</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Diseño y alcance</h2></div></div><div class="content"><p>Se implementa por PowerShell el diseño de <strong>Maderas Nexo</strong>: 30 empleados, seis departamentos y 21 puestos. Se conserva el dominio <code>asix.test</code> y el cliente real <code>CLI-W11-01</code>. Los otros 20 equipos son cuentas precreadas, no máquinas virtuales adicionales.</p>
+<p>Tras guardar las pruebas del ejercicio gráfico, se retiró su OU de prueba y se empezó de nuevo. Esa eliminación no es parte del script de ampliación y no se debe repetir sobre la empresa ya creada.</p>
+<p>Los ejemplos se ejecutan una sola vez en Windows PowerShell de 64 bits de SRV-DC01. Los comandos aparecen sin caracteres de continuación para facilitar el pegado. El indicador <code>&gt;&gt;</code> señala un bloque aún incompleto; antes de repetir una creación se cancela con Ctrl+C y se consulta si el objeto existe.</p>
+<div class="infografia"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-label="Organigrama de la empresa"><defs><marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#344552"/></marker></defs><rect width="1280" height="720" fill="#090D11"/><path d="M640 265 V327.5 H160 V390" fill="none" stroke="#344552" stroke-width="2" marker-end="url(#a)"/><path d="M640 265 V327.5 H400 V390" fill="none" stroke="#344552" stroke-width="2" marker-end="url(#a)"/><path d="M640 265 V327.5 H640 V390" fill="none" stroke="#344552" stroke-width="2" marker-end="url(#a)"/><path d="M640 265 V327.5 H880 V390" fill="none" stroke="#344552" stroke-width="2" marker-end="url(#a)"/><path d="M640 265 V327.5 H1120 V390" fill="none" stroke="#344552" stroke-width="2" marker-end="url(#a)"/><text x="66" y="99.8" fill="#F1F3F0" font-family="Arial,sans-serif" font-size="42" font-weight="700">Organigrama de la empresa</text><text x="66" y="150.8" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="22" font-weight="400">Dirección coordina cinco departamentos en una sede con oficinas y almacén</text><rect x="450" y="165" width="380" height="100" rx="8" fill="#111A22" stroke="#F5B343" stroke-width="1.5"/><text x="464" y="209.4" fill="#F5B343" font-family="Arial,sans-serif" font-size="28" font-weight="700">Dirección</text><text x="464" y="243" fill="#F5B343" font-family="Arial,sans-serif" font-size="28" font-weight="700">3 empleados · 3 puestos</text><rect x="48" y="390" width="224" height="145" rx="8" fill="#111A22" stroke="#57CDD2" stroke-width="1.5"/><text x="62" y="443.3" fill="#57CDD2" font-family="Arial,sans-serif" font-size="24" font-weight="700">Administración</text><text x="62" y="472.1" fill="#57CDD2" font-family="Arial,sans-serif" font-size="24" font-weight="700">4 empleados</text><text x="62" y="500.9" fill="#57CDD2" font-family="Arial,sans-serif" font-size="24" font-weight="700">4 puestos</text><rect x="288" y="390" width="224" height="145" rx="8" fill="#111A22" stroke="#8BC899" stroke-width="1.5"/><text x="302" y="443.3" fill="#8BC899" font-family="Arial,sans-serif" font-size="24" font-weight="700">Comercial</text><text x="302" y="472.1" fill="#8BC899" font-family="Arial,sans-serif" font-size="24" font-weight="700">6 empleados</text><text x="302" y="500.9" fill="#8BC899" font-family="Arial,sans-serif" font-size="24" font-weight="700">6 puestos</text><rect x="528" y="390" width="224" height="145" rx="8" fill="#111A22" stroke="#80ACEE" stroke-width="1.5"/><text x="542" y="443.3" fill="#80ACEE" font-family="Arial,sans-serif" font-size="24" font-weight="700">Compras</text><text x="542" y="472.1" fill="#80ACEE" font-family="Arial,sans-serif" font-size="24" font-weight="700">3 empleados</text><text x="542" y="500.9" fill="#80ACEE" font-family="Arial,sans-serif" font-size="24" font-weight="700">3 puestos</text><rect x="768" y="390" width="224" height="145" rx="8" fill="#111A22" stroke="#B7A3DD" stroke-width="1.5"/><text x="782" y="443.3" fill="#B7A3DD" font-family="Arial,sans-serif" font-size="24" font-weight="700">Almacén</text><text x="782" y="472.1" fill="#B7A3DD" font-family="Arial,sans-serif" font-size="24" font-weight="700">9 empleados</text><text x="782" y="500.9" fill="#B7A3DD" font-family="Arial,sans-serif" font-size="24" font-weight="700">3 puestos</text><rect x="1008" y="390" width="224" height="145" rx="8" fill="#111A22" stroke="#EB9A80" stroke-width="1.5"/><text x="1022" y="443.3" fill="#EB9A80" font-family="Arial,sans-serif" font-size="24" font-weight="700">Logística</text><text x="1022" y="472.1" fill="#EB9A80" font-family="Arial,sans-serif" font-size="24" font-weight="700">5 empleados</text><text x="1022" y="500.9" fill="#EB9A80" font-family="Arial,sans-serif" font-size="24" font-weight="700">2 puestos</text><text x="66" y="640.2" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="23" font-weight="400">Almacén y Logística comparten puestos por turnos; cada empleado conserva su cuenta.</text><text x="66" y="706.4" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="11" font-weight="400">MADERAS NEXO / PLAN ORGANIZATIVO                                                   02</text></svg></div></div></section>
+<section class="section" id="ou"><div class="section-title"><span class="number">02</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Primer ejemplo: unidades organizativas</h2></div></div><div class="content"><p>Primero se creó una OU principal y el ejemplo de Administración. La protección contra eliminación accidental se mantiene activada.</p><pre><code>Import-Module ActiveDirectory
+New-ADOrganizationalUnit -Name &#39;MaderasNexo&#39; -Path &#39;DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true
+Get-ADOrganizationalUnit -Identity &#39;OU=MaderasNexo,DC=asix,DC=test&#39; | Select-Object Name,DistinguishedName,ProtectedFromAccidentalDeletion
+New-ADOrganizationalUnit -Name &#39;Administracion&#39; -Path &#39;OU=MaderasNexo,DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true
+New-ADOrganizationalUnit -Name &#39;Usuarios&#39; -Path &#39;OU=Administracion,OU=MaderasNexo,DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true
+New-ADOrganizationalUnit -Name &#39;Equipos&#39; -Path &#39;OU=Administracion,OU=MaderasNexo,DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true</code></pre><div class="captures"><figure class="capture" id="captura-1"><div class="capture-heading"><span>CAPTURA 1 DE 10</span><code>media/u2-act3-01-ou-principal.PNG</code></div><div class="capture-media"><img src="media/u2-act3-01-ou-principal.PNG" alt="OU principal"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>OU principal</strong><p>MaderasNexo creada con protección contra eliminación accidental.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>OU principal</figcaption></figure>
+<figure class="capture" id="captura-2"><div class="capture-heading"><span>CAPTURA 2 DE 10</span><code>media/u2-act3-02-ous-administracion.PNG</code></div><div class="capture-media"><img src="media/u2-act3-02-ous-administracion.PNG" alt="OU de Administración"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>OU de Administración</strong><p>Usuarios y Equipos dentro de Administracion.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>OU de Administración</figcaption></figure></div></div></section>
+<section class="section" id="usuario"><div class="section-title"><span class="number">03</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Primer ejemplo: cuenta de usuario</h2></div></div><div class="content"><p>La contraseña se introduce de forma oculta. Enabled debe ser True; pwdLastSet igual a 0 indica cambio obligatorio en el primer acceso. No se escriben contraseñas en el código ni en los CSV.</p><pre><code>$clave = Read-Host &#39;Contrase&#241;a inicial para adm01&#39; -AsSecureString
+New-ADUser -Name &#39;Administracion 01&#39; -SamAccountName &#39;adm01&#39; -UserPrincipalName &#39;adm01@asix.test&#39; -Path &#39;OU=Usuarios,OU=Administracion,OU=MaderasNexo,DC=asix,DC=test&#39; -AccountPassword $clave -Enabled $true -ChangePasswordAtLogon $true
+Get-ADUser -Identity &#39;adm01&#39; -Properties UserPrincipalName,pwdLastSet | Select-Object Name,SamAccountName,UserPrincipalName,Enabled,pwdLastSet</code></pre><div class="captures"><figure class="capture" id="captura-3"><div class="capture-heading"><span>CAPTURA 3 DE 10</span><code>media/u2-act3-03-usuario-adm01.PNG</code></div><div class="capture-media"><img src="media/u2-act3-03-usuario-adm01.PNG" alt="Usuario de ejemplo"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Usuario de ejemplo</strong><p>adm01 habilitado y con cambio de contraseña al primer inicio.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Usuario de ejemplo</figcaption></figure></div></div></section>
+<section class="section" id="grupos"><div class="section-title"><span class="number">04</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Grupos y pertenencias AGDLP</h2></div></div><div class="content"><p>Se distinguen las OU contenedoras de los grupos: Globales y DominioLocal organizan los objetos; GroupScope define el ámbito real. Ambos grupos son de seguridad. La cadena de pertenencias no configura por sí sola los permisos de una carpeta.</p><pre><code>New-ADOrganizationalUnit -Name &#39;Grupos&#39; -Path &#39;OU=MaderasNexo,DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true
+New-ADOrganizationalUnit -Name &#39;Globales&#39; -Path &#39;OU=Grupos,OU=MaderasNexo,DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true
+New-ADOrganizationalUnit -Name &#39;DominioLocal&#39; -Path &#39;OU=Grupos,OU=MaderasNexo,DC=asix,DC=test&#39; -ProtectedFromAccidentalDeletion $true
+New-ADGroup -Name &#39;GG_MN_ADM&#39; -GroupScope Global -GroupCategory Security -Path &#39;OU=Globales,OU=Grupos,OU=MaderasNexo,DC=asix,DC=test&#39;
+New-ADGroup -Name &#39;DL_MN_ADM_M&#39; -GroupScope DomainLocal -GroupCategory Security -Path &#39;OU=DominioLocal,OU=Grupos,OU=MaderasNexo,DC=asix,DC=test&#39;
+Add-ADGroupMember -Identity &#39;GG_MN_ADM&#39; -Members &#39;adm01&#39;
+Add-ADGroupMember -Identity &#39;DL_MN_ADM_M&#39; -Members &#39;GG_MN_ADM&#39;
+Get-ADGroupMember -Identity &#39;GG_MN_ADM&#39; | Select-Object Name,SamAccountName,ObjectClass
+Get-ADGroupMember -Identity &#39;DL_MN_ADM_M&#39; | Select-Object Name,SamAccountName,ObjectClass</code></pre><div class='infografia'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-label="Modelo AGDLP"><defs><marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#344552"/></marker></defs><rect width="1280" height="720" fill="#090D11"/><path d="M303 246 H333 V246 H363" fill="none" stroke="#57CDD2" stroke-width="2" marker-end="url(#a)"/><path d="M608 246 H638 V246 H668" fill="none" stroke="#57CDD2" stroke-width="2" marker-end="url(#a)"/><path d="M913 246 H943 V246 H973" fill="none" stroke="#57CDD2" stroke-width="2" marker-end="url(#a)"/><path d="M303 401 H333 V401 H363" fill="none" stroke="#F5B343" stroke-width="2" marker-end="url(#a)"/><path d="M608 401 H638 V401 H668" fill="none" stroke="#F5B343" stroke-width="2" marker-end="url(#a)"/><path d="M913 401 H943 V401 H973" fill="none" stroke="#F5B343" stroke-width="2" marker-end="url(#a)"/><text x="66" y="99.8" fill="#F1F3F0" font-family="Arial,sans-serif" font-size="42" font-weight="700">Modelo AGDLP</text><text x="66" y="150.8" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="22" font-weight="400">Cuenta → Grupo global → Dominio local → Permiso sobre el recurso</text><rect x="58" y="205" width="245" height="82" rx="8" fill="#111A22" stroke="#57CDD2" stroke-width="1.5"/><text x="72" y="254.8" fill="#57CDD2" font-family="Arial,sans-serif" font-size="22" font-weight="700">adm01</text><rect x="363" y="205" width="245" height="82" rx="8" fill="#111A22" stroke="#57CDD2" stroke-width="1.5"/><text x="377" y="254.8" fill="#57CDD2" font-family="Arial,sans-serif" font-size="22" font-weight="700">GG_MN_ADM</text><rect x="668" y="205" width="245" height="82" rx="8" fill="#111A22" stroke="#57CDD2" stroke-width="1.5"/><text x="682" y="254.8" fill="#57CDD2" font-family="Arial,sans-serif" font-size="22" font-weight="700">DL_MN_ADM_M</text><rect x="973" y="205" width="245" height="82" rx="8" fill="#111A22" stroke="#57CDD2" stroke-width="1.5"/><text x="987" y="241.6" fill="#57CDD2" font-family="Arial,sans-serif" font-size="22" font-weight="700">Administración</text><text x="987" y="268" fill="#57CDD2" font-family="Arial,sans-serif" font-size="22" font-weight="700">Modificar</text><rect x="58" y="360" width="245" height="82" rx="8" fill="#111A22" stroke="#F5B343" stroke-width="1.5"/><text x="72" y="409.8" fill="#F5B343" font-family="Arial,sans-serif" font-size="22" font-weight="700">dir01</text><rect x="363" y="360" width="245" height="82" rx="8" fill="#111A22" stroke="#F5B343" stroke-width="1.5"/><text x="377" y="409.8" fill="#F5B343" font-family="Arial,sans-serif" font-size="22" font-weight="700">GG_MN_DIR</text><rect x="668" y="360" width="245" height="82" rx="8" fill="#111A22" stroke="#F5B343" stroke-width="1.5"/><text x="682" y="409.8" fill="#F5B343" font-family="Arial,sans-serif" font-size="22" font-weight="700">DL_MN_ADM_L</text><rect x="973" y="360" width="245" height="82" rx="8" fill="#111A22" stroke="#F5B343" stroke-width="1.5"/><text x="987" y="396.6" fill="#F5B343" font-family="Arial,sans-serif" font-size="22" font-weight="700">Administración</text><text x="987" y="423" fill="#F5B343" font-family="Arial,sans-serif" font-size="22" font-weight="700">Leer</text><text x="70" y="188.8" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="17" font-weight="700">CUENTA</text><text x="375" y="188.8" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="17" font-weight="700">GRUPO GLOBAL</text><text x="680" y="188.8" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="17" font-weight="700">DOMINIO LOCAL</text><text x="985" y="188.8" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="17" font-weight="700">RECURSO</text><text x="66" y="544.8" fill="#8BC899" font-family="Arial,sans-serif" font-size="27" font-weight="700">Todos los GG → DL_MN_COMUN_M → Común: Modificar</text><text x="66" y="632.3" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="22" font-weight="400">Crear grupos no aplica permisos SMB o NTFS: esta relación expresa el diseño de accesos.</text><text x="66" y="706.4" fill="#AAB7C0" font-family="Arial,sans-serif" font-size="11" font-weight="400">MADERAS NEXO / PLAN ORGANIZATIVO                                                   08</text></svg></div><div class="captures"><figure class="capture" id="captura-4"><div class="capture-heading"><span>CAPTURA 4 DE 10</span><code>media/u2-act3-04-grupos-administracion.PNG</code></div><div class="capture-media"><img src="media/u2-act3-04-grupos-administracion.PNG" alt="Grupos de ejemplo"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Grupos de ejemplo</strong><p>GG_MN_ADM Global y DL_MN_ADM_M DomainLocal; ambos Security.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Grupos de ejemplo</figcaption></figure>
+<figure class="capture" id="captura-5"><div class="capture-heading"><span>CAPTURA 5 DE 10</span><code>media/u2-act3-05-pertenencias-agdlp.PNG</code></div><div class="capture-media"><img src="media/u2-act3-05-pertenencias-agdlp.PNG" alt="Pertenencias de ejemplo"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Pertenencias de ejemplo</strong><p>adm01 dentro de GG_MN_ADM y este dentro de DL_MN_ADM_M.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Pertenencias de ejemplo</figcaption></figure></div></div></section>
+<section class="section" id="equipo"><div class="section-title"><span class="number">05</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Objeto de equipo de ejemplo</h2></div></div><div class="content"><p>El objeto previsto se crea deshabilitado hasta que exista una incorporación real. No se modifica ni se vuelve a unir el cliente CLI-W11-01.</p><pre><code>New-ADComputer -Name &#39;MN-ADM-02&#39; -SamAccountName &#39;MN-ADM-02$&#39; -Path &#39;OU=Equipos,OU=Administracion,OU=MaderasNexo,DC=asix,DC=test&#39; -Enabled $false -Description &#39;Puesto previsto de Administracion; pendiente de incorporar al dominio&#39;
+Get-ADComputer -Identity &#39;MN-ADM-02&#39; -Properties Description | Select-Object Name,Enabled,DistinguishedName,Description | Format-List</code></pre><div class="captures"><figure class="capture" id="captura-6"><div class="capture-heading"><span>CAPTURA 6 DE 10</span><code>media/u2-act3-06-equipo-ejemplo.PNG</code></div><div class="capture-media"><img src="media/u2-act3-06-equipo-ejemplo.PNG" alt="Cuenta de equipo precreada"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Cuenta de equipo precreada</strong><p>MN-ADM-02, deshabilitado hasta su incorporación real.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Cuenta de equipo precreada</figcaption></figure></div></div></section>
+<section class="section" id="ampliacion"><div class="section-title"><span class="number">06</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Completar la empresa mediante scripts</h2></div></div><div class="content"><p>Después de los ejemplos se utilizó <strong>Completar-MaderasNexo.ps1</strong> junto con cuatro CSV. Se extrae todo el ZIP en el servidor y se abre INICIAR.cmd como administrador.</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Función</th><th>Captura</th></tr></thead><tbody>
+<tr><td>1</td><td>Completar las OU y crear solo los usuarios que faltan. Conserva adm01 y su contraseña. Solicita una clave inicial temporal para las cuentas nuevas del laboratorio.</td><td>7</td></tr>
+<tr><td>2</td><td>Crear los grupos que faltan y añadir las pertenencias aún no existentes.</td><td>8</td></tr>
+<tr><td>3</td><td>Mover el objeto real CLI-W11-01 a Administración tras confirmarlo, y precrear los otros equipos deshabilitados. No borra ni vuelve a unir el cliente.</td><td>9</td></tr>
+<tr><td>4</td><td>Consultar recuentos, ámbitos, tipos, ubicaciones y pertenencias sin cambiar los objetos de AD.</td><td>10</td></tr>
+</tbody></table></div>
+<p>El programa comprueba servidor, dominio, arquitectura y archivos de entrada. Si un nombre ya existe en otra ubicación o con otro ámbito, se detiene en lugar de modificarlo sin identificarlo. Conserva un inventario previo e informes en Documentos\MaderasNexo-Ej3; esos informes no contienen contraseñas ni sustituyen un respaldo completo de Active Directory.</p>
+<div class="table-wrap"><table><thead><tr><th>Archivo</th><th>Contenido</th></tr></thead><tbody>
+<tr><td>usuarios.csv</td><td>30 nombres, cuentas, UPN, departamento, ruta y grupo global.</td></tr>
+<tr><td>grupos.csv</td><td>18 grupos con ámbito, categoría, finalidad y ruta.</td></tr>
+<tr><td>pertenencias.csv</td><td>47 relaciones: 30 cuentas en GG, 6 GG en DL propios, 6 GG en Común y 5 lecturas de Dirección.</td></tr>
+<tr><td>equipos.csv</td><td>21 puestos, ubicación y distinción entre real y precreado.</td></tr>
+</tbody></table></div><div class="captures"><figure class="capture" id="captura-7"><div class="capture-heading"><span>CAPTURA 7 DE 10</span><code>media/u2-act3-07-usuarios-completos.PNG</code></div><div class="capture-media"><img src="media/u2-act3-07-usuarios-completos.PNG" alt="OU y usuarios completos"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>OU y usuarios completos</strong><p>Resumen de 30 usuarios y 22 OU.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>OU y usuarios completos</figcaption></figure>
+<figure class="capture" id="captura-8"><div class="capture-heading"><span>CAPTURA 8 DE 10</span><code>media/u2-act3-08-grupos-pertenencias.PNG</code></div><div class="capture-media"><img src="media/u2-act3-08-grupos-pertenencias.PNG" alt="Grupos y pertenencias completos"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Grupos y pertenencias completos</strong><p>6 grupos globales, 12 de dominio local y relaciones AGDLP.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Grupos y pertenencias completos</figcaption></figure>
+<figure class="capture" id="captura-9"><div class="capture-heading"><span>CAPTURA 9 DE 10</span><code>media/u2-act3-09-equipos-completos.PNG</code></div><div class="capture-media"><img src="media/u2-act3-09-equipos-completos.PNG" alt="Puestos organizados"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Puestos organizados</strong><p>CLI-W11-01 conservado y 20 cuentas de equipo precreadas.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Puestos organizados</figcaption></figure></div></div></section>
+<section class="section" id="verificacion"><div class="section-title"><span class="number">07</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Comprobación final</h2></div></div><div class="content"><p>El diseño completo contiene 22 OU, 30 usuarios, 6 grupos globales, 12 de dominio local y 21 objetos de equipo. Las diez capturas documentan el ejemplo y la ampliación por fases.</p>
+<p>La verificación comprueba objetos y pertenencias. No acredita permisos SMB o NTFS, porque las carpetas se han planteado como diseño organizativo. Las pertenencias nuevas se recogen en el token del usuario después de cerrar e iniciar sesión.</p><div class="captures"><figure class="capture" id="captura-10"><div class="capture-heading"><span>CAPTURA 10 DE 10</span><code>media/u2-act3-10-verificacion-final.PNG</code></div><div class="capture-media"><img src="media/u2-act3-10-verificacion-final.PNG" alt="Verificación final"><div class="placeholder"><span class="placeholder-icon">▧</span><strong>Verificación final</strong><p>Recuentos y pertenencias contrastados con el diseño.</p><small>IMAGEN NO ENCONTRADA</small></div></div><figcaption>Verificación final</figcaption></figure></div></div></section>
+<section class="section" id="mantenimiento"><div class="section-title"><span class="number">08</span><div><small>UNIDAD 2 · ACTIVIDAD 3</small><h2>Administración posterior</h2></div></div><div class="content"><p>Estos ejemplos son ampliaciones futuras y no se han ejecutado: añadir adm05 elevaría la plantilla a 31 usuarios, y crear Auditoría aumentaría el número de grupos. Revisar la existencia de cada objeto antes de ejecutar New-AD*.</p><h3>Añadir otro usuario</h3><pre><code># EJEMPLO DE AMPLIACI&#211;N: no se ejecut&#243; en el recuento original de 30 usuarios.
+$claveNueva = Read-Host &#39;Contrase&#241;a temporal de adm05&#39; -AsSecureString
+New-ADUser -Name &#39;Administracion 05&#39; -SamAccountName &#39;adm05&#39; -UserPrincipalName &#39;adm05@asix.test&#39; -Path &#39;OU=Usuarios,OU=Administracion,OU=MaderasNexo,DC=asix,DC=test&#39; -AccountPassword $claveNueva -Enabled $true -ChangePasswordAtLogon $true -Department &#39;Administraci&#243;n y contabilidad&#39;
+Add-ADGroupMember -Identity &#39;GG_MN_ADM&#39; -Members &#39;adm05&#39;</code></pre><h3>Crear otro grupo y añadir miembros</h3><pre><code># Ejemplo: grupo de funci&#243;n adicional para una necesidad futura.
+New-ADGroup -Name &#39;GG_MN_AUDITORIA&#39; -GroupScope Global -GroupCategory Security -Path &#39;OU=Globales,OU=Grupos,OU=MaderasNexo,DC=asix,DC=test&#39; -Description &#39;Funci&#243;n adicional de auditor&#237;a&#39;
+Add-ADGroupMember -Identity &#39;GG_MN_AUDITORIA&#39; -Members &#39;adm05&#39;
+# Crear y poblar este grupo no le concede permisos sobre recursos.</code></pre><h3>Mover un usuario y cambiar de departamento</h3><pre><code># Solo si se cre&#243; adm05 en el ejemplo anterior.
+$usuario = Get-ADUser -Identity &#39;adm05&#39;
+Move-ADObject -Identity $usuario.DistinguishedName -TargetPath &#39;OU=Usuarios,OU=Comercial,OU=MaderasNexo,DC=asix,DC=test&#39;
+# Cambiar de OU NO cambia los grupos ni el atributo Department.
+Set-ADUser -Identity &#39;adm05&#39; -Department &#39;Comercial y atenci&#243;n al cliente&#39;
+Add-ADGroupMember -Identity &#39;GG_MN_COM&#39; -Members &#39;adm05&#39;
+Remove-ADGroupMember -Identity &#39;GG_MN_ADM&#39; -Members &#39;adm05&#39; -Confirm
+Get-ADUser -Identity &#39;adm05&#39; -Properties Department,MemberOf | Select-Object Name,Department,DistinguishedName,MemberOf | Format-List</code></pre><p><strong>Mover una cuenta de OU no modifica sus pertenencias ni sus permisos.</strong> El cambio departamental requiere revisar los grupos y el acceso necesario. Aquí se conserva adm05 como identificador por tratarse de una demostración; en una empresa se define una norma de nombres estable.</p></div></section>
+<section class="section" id="scripts"><div class="section-title"><span class="number">&lt;/&gt;</span><div><small>CÓDIGO DOCUMENTADO</small><h2>Archivos utilizados</h2></div></div><div class="content"><p><a href="media/unidad2-ejercicio3-powershell.zip" download>Descargar scripts y CSV</a>. Extraer todo el paquete: el script necesita los CSV en su misma carpeta. INICIAR.cmd selecciona la consola de 64 bits; ExecutionPolicy Bypass se limita a ese proceso y no cambia la política global del servidor.</p><details class="script-doc"><summary>INICIAR.cmd · lanzador</summary><pre><code>@echo off
+setlocal
+set &quot;PS=%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe&quot;
+if exist &quot;%SystemRoot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe&quot; set &quot;PS=%SystemRoot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe&quot;
+&quot;%PS%&quot; -NoProfile -ExecutionPolicy Bypass -File &quot;%~dp0Completar-MaderasNexo.ps1&quot;</code></pre></details><details class="script-doc"><summary>Completar-MaderasNexo.ps1 · código completo</summary><pre><code>param(
+    [ValidateSet(&#39;Menu&#39;,&#39;Usuarios&#39;,&#39;Grupos&#39;,&#39;Equipos&#39;,&#39;Verificar&#39;)]
+    [string]$Fase=&#39;Menu&#39;
+)
+$ErrorActionPreference=&#39;Stop&#39;
+$base=&#39;OU=MaderasNexo,DC=asix,DC=test&#39;
+$report=$null
+try {
+    if(-not [Environment]::Is64BitProcess){throw &#39;Abrir Windows PowerShell de 64 bits.&#39;}
+    $principal=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+    if(-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){throw &#39;Abrir como administrador del dominio.&#39;}
+    Import-Module ActiveDirectory
+    $domain=Get-ADDomain
+    if($domain.DNSRoot -ne &#39;asix.test&#39; -or $env:COMPUTERNAME -ne &#39;SRV-DC01&#39;){throw &#39;Ejecutar en SRV-DC01 del dominio asix.test.&#39;}
+    Get-ADOrganizationalUnit -Identity $base | Out-Null
+    $users=@(Import-Csv -LiteralPath (Join-Path $PSScriptRoot &#39;usuarios.csv&#39;) -Encoding UTF8)
+    $groups=@(Import-Csv -LiteralPath (Join-Path $PSScriptRoot &#39;grupos.csv&#39;) -Encoding UTF8)
+    $members=@(Import-Csv -LiteralPath (Join-Path $PSScriptRoot &#39;pertenencias.csv&#39;) -Encoding UTF8)
+    $computers=@(Import-Csv -LiteralPath (Join-Path $PSScriptRoot &#39;equipos.csv&#39;) -Encoding UTF8)
+    if($users.Count -ne 30 -or $groups.Count -ne 18 -or $computers.Count -ne 21 -or $members.Count -ne 47){throw &#39;Los CSV no coinciden con el diseno aprobado.&#39;}
+    foreach($row in @($users)+@($groups)+@($computers)){
+        if(-not $row.Path.EndsWith(&quot;,$base&quot;,[StringComparison]::OrdinalIgnoreCase)){throw &#39;Ruta CSV fuera de MaderasNexo.&#39;}
+    }
+    if(($users.SamAccountName|Sort-Object -Unique).Count -ne 30){throw &#39;Usuarios repetidos en CSV.&#39;}
+    if(($groups.Name|Sort-Object -Unique).Count -ne 18){throw &#39;Grupos repetidos en CSV.&#39;}
+    if(($computers.Name|Sort-Object -Unique).Count -ne 21){throw &#39;Equipos repetidos en CSV.&#39;}
+    foreach($row in $users){
+        $name=$row.SamAccountName
+        $existing=Get-ADUser -Filter {SamAccountName -eq $name}
+        if($existing -and $existing.DistinguishedName -ine &quot;CN=$($row.Name),$($row.Path)&quot;){throw &quot;La cuenta $name ya existe fuera de la ubicacion esperada. No se modifica.&quot;}
+    }
+    foreach($row in $groups){
+        $name=$row.Name
+        $existing=Get-ADGroup -Filter {Name -eq $name}
+        if($existing){
+            if($existing.DistinguishedName -ine &quot;CN=$name,$($row.Path)&quot; -or [string]$existing.GroupScope -ne $row.Scope -or [string]$existing.GroupCategory -ne &#39;Security&#39;){
+                throw &quot;El grupo $name existe con ubicacion o tipo diferente. Revisar antes de continuar.&quot;
+            }
+        }
+    }
+    foreach($row in $computers|Where-Object Name -NE &#39;CLI-W11-01&#39;){
+        $name=$row.Name
+        $existing=Get-ADComputer -Filter {Name -eq $name}
+        if($existing -and $existing.DistinguishedName -ine &quot;CN=$name,$($row.Path)&quot;){throw &quot;El equipo $name ya existe en otra ubicacion. No se mueve automaticamente.&quot;}
+    }
+    if($Fase -eq &#39;Menu&#39;){
+        Write-Host &#39;&#39;
+        Write-Host &#39;MADERAS NEXO - COMPLETAR EL EJERCICIO 3&#39;
+        Write-Host &#39;1. Captura 7: completar OU y usuarios&#39;
+        Write-Host &#39;2. Captura 8: completar grupos y pertenencias&#39;
+        Write-Host &#39;3. Captura 9: completar objetos de equipo y mover el cliente real&#39;
+        Write-Host &#39;4. Captura 10: verificacion general, sin crear ni modificar objetos&#39;
+        $choice=Read-Host &#39;Elegir 1, 2, 3 o 4&#39;
+        $Fase=switch($choice){&#39;1&#39;{&#39;Usuarios&#39;} &#39;2&#39;{&#39;Grupos&#39;} &#39;3&#39;{&#39;Equipos&#39;} &#39;4&#39;{&#39;Verificar&#39;} default{throw &#39;Opcion no valida.&#39;}}
+    }
+    $stamp=Get-Date -Format &#39;yyyyMMdd-HHmmss&#39;
+    $report=Join-Path $env:USERPROFILE &quot;Documents\MaderasNexo-Ej3\$stamp-$Fase&quot;
+    New-Item -ItemType Directory -Path $report -Force | Out-Null
+    Get-ADObject -SearchBase $base -Filter * -Properties Description | Export-Clixml -LiteralPath (Join-Path $report &#39;inventario-antes.xml&#39;)
+    function EnsureOU([string]$name,[string]$path){
+        $found=Get-ADOrganizationalUnit -Filter {Name -eq $name} -SearchBase $path -SearchScope OneLevel
+        if(-not $found){New-ADOrganizationalUnit -Name $name -Path $path -ProtectedFromAccidentalDeletion $true}
+    }
+    if($Fase -eq &#39;Usuarios&#39;){
+        $departments=@(&#39;Direccion&#39;,&#39;Administracion&#39;,&#39;Comercial&#39;,&#39;Compras&#39;,&#39;Almacen&#39;,&#39;Logistica&#39;)
+        foreach($d in $departments){
+            EnsureOU $d $base
+            EnsureOU &#39;Usuarios&#39; &quot;OU=$d,$base&quot;
+            EnsureOU &#39;Equipos&#39; &quot;OU=$d,$base&quot;
+        }
+        EnsureOU &#39;Grupos&#39; $base
+        EnsureOU &#39;Globales&#39; &quot;OU=Grupos,$base&quot;
+        EnsureOU &#39;DominioLocal&#39; &quot;OU=Grupos,$base&quot;
+        $newUsers=@($users|Where-Object {
+            $sam=$_.SamAccountName
+            -not (Get-ADUser -Filter {SamAccountName -eq $sam})
+        })
+        if($newUsers.Count){
+            Write-Host &quot;Se crearan $($newUsers.Count) cuentas nuevas. adm01 existente conserva su contrasena.&quot;
+            Write-Host &#39;Solo laboratorio: se solicita una clave inicial temporal para las nuevas cuentas.&#39;
+            $password=Read-Host &#39;Contrasena temporal: sera obligatorio cambiarla en el primer acceso&#39; -AsSecureString
+            foreach($row in $newUsers){
+                $params=@{
+                    Name=$row.Name; DisplayName=$row.Name; SamAccountName=$row.SamAccountName
+                    UserPrincipalName=$row.UserPrincipalName; Department=$row.Department
+                    Path=$row.Path; AccountPassword=$password; Enabled=$true
+                    ChangePasswordAtLogon=$true; Description=&#39;Empleado ficticio de Maderas Nexo&#39;
+                }
+                New-ADUser @params
+            }
+            $password=$null
+        }
+        # Completar la ficha del usuario del ejemplo, sin alterar su clave ni pertenencias.
+        foreach($row in $users){Set-ADUser -Identity $row.SamAccountName -Department $row.Department}
+        $actualUsers=@(Get-ADUser -SearchBase $base -Filter * -Properties Department,UserPrincipalName)
+        $actualOUs=@(Get-ADOrganizationalUnit -SearchBase $base -Filter *)
+        $actualUsers|Select-Object SamAccountName,Name,Department,Enabled|Sort-Object SamAccountName|Export-Csv -LiteralPath (Join-Path $report &#39;usuarios.csv&#39;) -NoTypeInformation -Encoding UTF8
+        $actualUsers|Group-Object Department|Sort-Object Name|Select-Object Name,Count|Format-Table -AutoSize
+        Write-Host &quot;TOTAL USUARIOS: $($actualUsers.Count) / 30&quot;
+        Write-Host &quot;TOTAL OU: $($actualOUs.Count) / 22&quot;
+        if($actualUsers.Count -ne 30 -or $actualOUs.Count -ne 22){throw &#39;Los recuentos no coinciden. Revisar el informe.&#39;}
+        $disabled=@($actualUsers|Where-Object Enabled -NE $true)
+        if($disabled.Count){throw &#39;Hay usuarios no habilitados; revisar la politica de contrasenas y el informe.&#39;}
+        Write-Host &#39;CAPTURA 7 COMPLETADA: OU y 30 usuarios.&#39;
+    }
+    elseif($Fase -eq &#39;Grupos&#39;){
+        if(@(Get-ADUser -SearchBase $base -Filter *).Count -ne 30){throw &#39;Completar primero la fase 1: usuarios.&#39;}
+        foreach($row in $groups){
+            $name=$row.Name
+            if(-not (Get-ADGroup -Filter {Name -eq $name})){
+                New-ADGroup -Name $name -SamAccountName $name -GroupScope $row.Scope -GroupCategory Security -Path $row.Path -Description $row.Purpose
+            }
+        }
+        foreach($row in $members){
+            $member=if($row.Member -in $users.SamAccountName){Get-ADUser -Identity $row.Member}else{Get-ADGroup -Identity $row.Member}
+            $target=Get-ADGroup -Identity $row.Group -Properties member
+            if($member.DistinguishedName -notin $target.member){Add-ADGroupMember -Identity $target -Members $member}
+        }
+        $actualGroups=@(Get-ADGroup -SearchBase $base -Filter *)
+        $actualGroups|Sort-Object GroupScope,Name|Select-Object Name,GroupScope,GroupCategory|Format-Table -AutoSize
+        $actualGroups|Select-Object Name,GroupScope,GroupCategory|Export-Csv -LiteralPath (Join-Path $report &#39;grupos.csv&#39;) -NoTypeInformation -Encoding UTF8
+        foreach($example in @(&#39;GG_MN_ADM&#39;,&#39;DL_MN_ADM_M&#39;,&#39;DL_MN_ADM_L&#39;,&#39;DL_MN_COMUN_M&#39;)){
+            Write-Host &quot;MIEMBROS DE $example&quot;
+            Get-ADGroupMember -Identity $example|Select-Object Name,SamAccountName,ObjectClass|Format-Table -AutoSize
+        }
+        Write-Host &#39;CAPTURA 8: 6 globales y 12 de dominio local, con pertenencias.&#39;
+        Write-Host &#39;Los permisos de carpetas son diseno: no se han creado recursos SMB ni ACL.&#39;
+    }
+    elseif($Fase -eq &#39;Equipos&#39;){
+        $client=Get-ADComputer -Identity &#39;CLI-W11-01&#39; -Properties DNSHostName
+        if(-not $client.Enabled){throw &#39;El cliente real esta deshabilitado. Revisarlo antes de continuar.&#39;}
+        $target=&#39;OU=Equipos,OU=Administracion,&#39;+$base
+        if($client.DistinguishedName -ine &quot;CN=CLI-W11-01,$target&quot;){
+            Write-Host &quot;Cliente real: $($client.DistinguishedName)&quot;
+            Write-Host &quot;Destino: $target&quot;
+            $move=Read-Host &#39;Escribir MOVER CLIENTE para trasladar el objeto sin borrarlo ni volver a unirlo&#39;
+            if($move -cne &#39;MOVER CLIENTE&#39;){throw &#39;Traslado cancelado. No se han creado mas objetos de equipo.&#39;}
+            Move-ADObject -Identity $client.DistinguishedName -TargetPath $target
+        }
+        foreach($row in $computers|Where-Object Name -NE &#39;CLI-W11-01&#39;){
+            $name=$row.Name
+            $existing=Get-ADComputer -Filter {Name -eq $name}
+            if(-not $existing){
+                New-ADComputer -Name $name -SamAccountName ($name+&#39;$&#39;) -Path $row.Path -Enabled $false -Description (&#39;Puesto previsto de &#39;+$row.Department+&#39;; objeto precreado, sin VM adicional&#39;)
+            }
+        }
+        $actualComputers=@(Get-ADComputer -SearchBase $base -Filter * -Properties Description)
+        $actualComputers|Sort-Object Name|Select-Object Name,Enabled,DistinguishedName|Format-Table -AutoSize
+        $actualComputers|Select-Object Name,Enabled,DistinguishedName,Description|Export-Csv -LiteralPath (Join-Path $report &#39;equipos.csv&#39;) -NoTypeInformation -Encoding UTF8
+        Write-Host &quot;TOTAL EQUIPOS: $($actualComputers.Count) / 21&quot;
+        Write-Host &#39;1 cliente real y 20 objetos precreados. No se han creado otras VM.&#39;
+        if($actualComputers.Count -ne 21){throw &#39;Recuento de equipos no esperado.&#39;}
+        Write-Host &#39;CAPTURA 9 COMPLETADA.&#39;
+    }
+    elseif($Fase -eq &#39;Verificar&#39;){
+        $actualOUs=@(Get-ADOrganizationalUnit -SearchBase $base -Filter *)
+        $actualUsers=@(Get-ADUser -SearchBase $base -Filter * -Properties Department)
+        $actualGroups=@(Get-ADGroup -SearchBase $base -Filter *)
+        $actualComputers=@(Get-ADComputer -SearchBase $base -Filter *)
+        $global=@($actualGroups|Where-Object GroupScope -EQ &#39;Global&#39;)
+        $local=@($actualGroups|Where-Object GroupScope -EQ &#39;DomainLocal&#39;)
+        $checks=@(
+            [pscustomobject]@{Entidad=&#39;OU&#39;;Real=$actualOUs.Count;Esperado=22},
+            [pscustomobject]@{Entidad=&#39;Usuarios&#39;;Real=$actualUsers.Count;Esperado=30},
+            [pscustomobject]@{Entidad=&#39;Globales&#39;;Real=$global.Count;Esperado=6},
+            [pscustomobject]@{Entidad=&#39;Dominio local&#39;;Real=$local.Count;Esperado=12},
+            [pscustomobject]@{Entidad=&#39;Equipos&#39;;Real=$actualComputers.Count;Esperado=21}
+        )
+        $checks|Format-Table -AutoSize
+        $checks|Export-Csv -LiteralPath (Join-Path $report &#39;recuentos.csv&#39;) -NoTypeInformation -Encoding UTF8
+        $issues=@()
+        foreach($check in $checks){if($check.Real -ne $check.Esperado){$issues+=&quot;Recuento: $($check.Entidad)&quot;}}
+        foreach($row in $users){
+            $user=Get-ADUser -Identity $row.SamAccountName -Properties pwdLastSet
+            if(-not $user.Enabled){$issues+=&quot;Usuario no habilitado: $($row.SamAccountName)&quot;}
+            if($user.DistinguishedName -ine &quot;CN=$($row.Name),$($row.Path)&quot;){$issues+=&quot;Ubicacion usuario: $($row.SamAccountName)&quot;}
+        }
+        foreach($row in $groups){
+            $group=Get-ADGroup -Identity $row.Name
+            if([string]$group.GroupScope -ne $row.Scope -or [string]$group.GroupCategory -ne &#39;Security&#39;){$issues+=&quot;Ambito/tipo: $($row.Name)&quot;}
+        }
+        foreach($row in $members){
+            $member=if($row.Member -in $users.SamAccountName){Get-ADUser -Identity $row.Member}else{Get-ADGroup -Identity $row.Member}
+            $group=Get-ADGroup -Identity $row.Group -Properties member
+            if($member.DistinguishedName -notin $group.member){$issues+=&quot;Falta $($row.Member) en $($row.Group)&quot;}
+        }
+        foreach($row in $computers){
+            $computer=Get-ADComputer -Identity $row.Name
+            if($computer.DistinguishedName -ine &quot;CN=$($row.Name),$($row.Path)&quot;){$issues+=&quot;Ubicacion equipo: $($row.Name)&quot;}
+            if($row.Name -eq &#39;CLI-W11-01&#39; -and -not $computer.Enabled){$issues+=&#39;Cliente real deshabilitado&#39;}
+            if($row.Name -ne &#39;CLI-W11-01&#39; -and $computer.Enabled){$issues+=&quot;Objeto previsto habilitado: $($row.Name)&quot;}
+        }
+        if($issues.Count){
+            $issues|Out-File -LiteralPath (Join-Path $report &#39;incidencias.txt&#39;) -Encoding UTF8
+            $issues|ForEach-Object {Write-Warning $_}
+            throw &#39;Hay diferencias. Revisar antes de dar la practica por terminada.&#39;
+        }
+        Write-Host &#39;47 PERTENENCIAS ESPERADAS COMPROBADAS.&#39;
+        Write-Host &#39;6 GG + 12 DL DE SEGURIDAD CORRECTOS.&#39;
+        Write-Host &#39;CLI-W11-01 CONSERVADO Y ORGANIZADO EN ADMINISTRACION.&#39;
+        Write-Host &#39;CAPTURA 10: VERIFICACION CORRECTA.&#39;
+        Write-Host &#39;Esta consulta no comprueba acceso a carpetas: no se han aplicado ACL.&#39;
+    }
+    Write-Host &#39;&#39;
+    Write-Host &quot;Informes: $report&quot;
+    Write-Host &#39;Si se modifica una pertenencia y se prueba desde el cliente, cerrar e iniciar sesion de nuevo.&#39;
+}
+catch{
+    Write-Host (&#39;ERROR: &#39;+$_.Exception.Message) -ForegroundColor Red
+    if($report){Write-Host &quot;Informe: $report. Puede haber cambios parciales; no se elimina nada automaticamente.&quot;}
+}
+finally{
+    $null=Read-Host &#39;Guardar la captura del resultado. Pulsar Enter para cerrar&#39;
+}</code></pre></details></div></section>
+<section class="section" id="descargas"><div class="section-title"><span class="number">↓</span><div><small>PLAN ORGANIZATIVO</small><h2>Descargar el plan de Maderas Nexo</h2></div></div><div class="content"><p>Los documentos explican el plan de empresa con diagramas y tablas, sin tutorial ni capturas. Los pasos y el código permanecen en esta página.</p><div class="download-actions"><a href="media/u2-act2-maderas-nexo.pdf" download>↓ Descargar PDF</a><a href="media/u2-act2-maderas-nexo.pptx" download>↓ Descargar PowerPoint</a></div></div></section>
+<div class="terminal"><span class="prompt">miguel@asix:~$</span> status unidad2/ejercicio3<br>[READY] Ejemplo y ampliación por PowerShell documentados<br>[INFO] 30 usuarios · 6 GG · 12 DL · 21 equipos<br>[INFO] Permisos de carpetas definidos como diseño</div>
+</main><footer><span>ADMINISTRACIÓ DE SISTEMES · UNIDAD 2 · EJERCICIO 3</span><span>MIGUEL · ASIX 2026/2027</span></footer><script>document.querySelectorAll('.capture').forEach(function(f){var i=f.querySelector('img');function check(){f.classList.toggle('missing',!i.naturalWidth);}i.addEventListener('load',check);i.addEventListener('error',check);if(i.complete)check();});</script></body></html>
