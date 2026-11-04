@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Unidad 4 · Tarea 2 | Despliegue, PHP y monitorización · MCS Cloud Command Center</title>
+
+<style>
+:root{
+    --bg:#040914;
+    --panel:#091321;
+    --panel2:#0d1a2b;
+    --aws:#ff9900;
+    --cyan:#00e5ff;
+    --green:#39ff88;
+    --purple:#b77cff;
+    --red:#ff5570;
+    --yellow:#ffd166;
+    --text:#eaf6ff;
+    --muted:#8fa9bd;
+    --border:#19364d;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:
+        radial-gradient(circle at 15% 10%,rgba(0,229,255,.08),transparent 30%),
+        radial-gradient(circle at 85% 20%,rgba(255,153,0,.07),transparent 30%),
+        radial-gradient(circle at 50% 80%,rgba(183,124,255,.05),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    line-height:1.65;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(0,229,255,.022) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,229,255,.022) 1px,transparent 1px);
+    background-size:35px 35px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+}
+
+/* HERO */
+
+header{
+    min-height:90vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:60px 20px;
+    border-bottom:1px solid var(--border);
+}
+
+.hero{
+    max-width:1050px;
+}
+
+.badge{
+    display:inline-block;
+    border:1px solid var(--aws);
+    color:var(--aws);
+    padding:7px 18px;
+    border-radius:50px;
+    font-family:Consolas,monospace;
+    font-size:.82rem;
+    letter-spacing:2px;
+    margin-bottom:22px;
+    box-shadow:0 0 22px rgba(255,153,0,.12);
+}
+
+h1{
+    font-size:clamp(2.8rem,7vw,5.8rem);
+    line-height:.95;
+    letter-spacing:-4px;
+    margin:0;
+}
+
+h1 span{
+    color:var(--aws);
+}
+
+.subtitle{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    margin-top:22px;
+    font-size:1.1rem;
+    letter-spacing:1px;
+}
+
+.hero p{
+    max-width:800px;
+    margin:25px auto;
+    color:var(--muted);
+    font-size:1.08rem;
+}
+
+.status{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-top:30px;
+}
+
+.status span{
+    background:rgba(9,19,33,.75);
+    border:1px solid var(--border);
+    padding:8px 14px;
+    border-radius:8px;
+    font-family:Consolas,monospace;
+    font-size:.82rem;
+}
+
+/* GENERAL */
+
+main{
+    max-width:1180px;
+    margin:auto;
+    padding:75px 20px 120px;
+}
+
+section{
+    margin-bottom:95px;
+}
+
+.section-tag{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    letter-spacing:2px;
+    font-size:.78rem;
+}
+
+h2{
+    font-size:2rem;
+    margin:6px 0 25px;
+}
+
+h3{
+    color:var(--aws);
+}
+
+p{
+    color:#c4d5e2;
+}
+
+code{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+}
+
+/* CARDS */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;
+}
+
+.card{
+    background:linear-gradient(
+        145deg,
+        rgba(14,26,44,.95),
+        rgba(6,13,24,.96)
+    );
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:var(--cyan);
+    box-shadow:0 15px 40px rgba(0,229,255,.06);
+}
+
+.card .number{
+    color:var(--cyan);
+    font-family:Consolas,monospace;
+    font-size:.78rem;
+}
+
+.card strong{
+    display:block;
+    margin:7px 0;
+    font-size:1.08rem;
+}
+
+.card p{
+    color:var(--muted);
+    margin:0;
+}
+
+/* ARCHITECTURE */
+
+.architecture{
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:30px;
+    background:rgba(5,12,22,.75);
+}
+
+.region{
+    border:1px solid var(--aws);
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+    position:relative;
+}
+
+.region-title{
+    color:var(--aws);
+    font-family:Consolas,monospace;
+    font-size:1.2rem;
+    font-weight:bold;
+}
+
+.az-container{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:20px;
+    margin-top:25px;
+}
+
+.az{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:25px 15px;
+}
+
+.az strong{
+    display:block;
+    color:var(--cyan);
+    font-size:1.15rem;
+}
+
+.az .ip{
+    color:var(--green);
+    font-family:Consolas,monospace;
+    margin-top:8px;
+}
+
+.connection{
+    color:var(--green);
+    font-size:2.2rem;
+    animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{opacity:.4;}
+    50%{opacity:1;}
+}
+
+/* EVIDENCE */
+
+.evidence{
+    margin:30px 0 55px;
+    background:#060d17;
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.evidence img{
+    display:block;
+    width:100%;
+    height:auto;
+    border-bottom:1px solid var(--border);
+}
+
+.evidence-text{
+    padding:20px 24px;
+}
+
+.evidence-text strong{
+    color:var(--cyan);
+}
+
+.evidence-text p{
+    margin:6px 0 0;
+    color:var(--muted);
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--panel);
+    border-radius:14px;
+    overflow:hidden;
+    margin:25px 0;
+}
+
+th,td{
+    padding:15px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+}
+
+th{
+    background:#08111e;
+    color:var(--aws);
+}
+
+tr:last-child td{
+    border-bottom:none;
+}
+
+/* INFO BOXES */
+
+.info,
+.warning,
+.success,
+.exam{
+    padding:21px 23px;
+    border-radius:14px;
+    margin:25px 0;
+}
+
+.info{
+    border:1px solid rgba(0,229,255,.4);
+    background:rgba(0,229,255,.045);
+}
+
+.warning{
+    border:1px solid rgba(255,85,112,.5);
+    background:rgba(255,85,112,.055);
+}
+
+.success{
+    border:1px solid rgba(57,255,136,.45);
+    background:rgba(57,255,136,.05);
+}
+
+.exam{
+    border:1px solid rgba(183,124,255,.55);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(183,124,255,.08),
+            rgba(0,229,255,.035)
+        );
+}
+
+.exam h3{
+    margin-top:0;
+    color:var(--purple);
+}
+
+/* TERMINAL */
+
+.terminal{
+    background:#010407;
+    border:1px solid #18384e;
+    border-radius:14px;
+    overflow:hidden;
+    font-family:Consolas,monospace;
+    margin:25px 0;
+}
+
+.terminal-top{
+    background:#0c1721;
+    padding:10px 15px;
+    color:var(--muted);
+}
+
+.terminal-body{
+    padding:20px;
+    color:#8dffb5;
+    white-space:pre-wrap;
+    overflow-x:auto;
+}
+
+/* CODE */
+
+.code{
+    background:#02060b;
+    border:1px solid #16364c;
+    border-left:4px solid var(--cyan);
+    border-radius:10px;
+    padding:18px;
+    font-family:Consolas,monospace;
+    color:#bdf7ff;
+    overflow-x:auto;
+    margin:18px 0;
+}
+
+/* COMPARE */
+
+.compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.compare-box{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:25px;
+}
+
+.compare-box h3{
+    margin-top:0;
+}
+
+.highlight{
+    color:var(--green);
+    font-weight:bold;
+}
+
+.bad{
+    color:var(--red);
+    font-weight:bold;
+}
+
+/* FLOW */
+
+.flow{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin:30px 0;
+}
+
+.flow-node{
+    padding:15px 20px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    border-radius:12px;
+    text-align:center;
+}
+
+.flow-arrow{
+    color:var(--aws);
+    font-size:1.8rem;
+}
+
+/* TIMELINE */
+
+.timeline{
+    margin-left:15px;
+    border-left:1px solid var(--border);
+    padding-left:30px;
+}
+
+.timeline-item{
+    position:relative;
+    margin-bottom:30px;
+}
+
+.timeline-item::before{
+    content:"";
+    position:absolute;
+    left:-36px;
+    top:8px;
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);
+}
+
+/* FOOTER */
+
+footer{
+    border-top:1px solid var(--border);
+    padding:40px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-family:Consolas,monospace;
+}
+
+@media(max-width:800px){
+
+    .az-container{
+        grid-template-columns:1fr;
+    }
+
+    .connection{
+        transform:rotate(90deg);
+    }
+
+    .compare{
+        grid-template-columns:1fr;
+    }
+
+    h1{
+        letter-spacing:-1px;
+    }
+}
+</style>
+<style>header{min-height:55vh}.pending-shot{padding:36px 22px;border:1px dashed var(--cyan);border-radius:12px;background:var(--panel2);text-align:center}.pending-shot img{display:none;width:100%;height:auto}.pending-shot:has(img.loaded) .placeholder{display:none}.pending-shot img.loaded{display:block}nav{display:flex;gap:16px;flex-wrap:wrap}a{color:var(--cyan)}.shot{scroll-margin-top:20px}.filename{overflow-wrap:anywhere}table{width:100%}@media print{header{min-height:0}body{background:white;color:black}.pending-shot{break-inside:avoid}a{color:inherit}}</style></head>
+
+<body><header><div class="hero"><div class="badge">MCS CLOUD COMMAND CENTER // UNIDAD 4</div><h1>TAREA <span>02</span></h1><div class="subtitle">DESPLIEGUE · WEB PHP · MONITORIZACIÓN · AWS CLI</div><p>Memoria de despliegue en dos regiones, publicación PHP, monitorización y automatización.</p><div class="status"><span>PRÁCTICA REALIZADA</span><span>32 PASOS DOCUMENTADOS</span><span>90–120 MINUTOS</span></div></div></header><main>
+<section><div class="section-tag">01 // ESCENARIO</div><h2>Despliegue en Virginia y Oregón</h2><p>Ubuntu en us-east-1a, Amazon Linux en us-east-1d y un servidor PHP en us-west-2b. Una instancia adicional se despliega desde CloudShell mediante AWS CLI.</p><table><tr><th>Instancia</th><th>Región / zona</th><th>IP pública de la sesión</th></tr><tr><td>MCS-U4-Ubuntu</td><td>us-east-1 / us-east-1a</td><td>100.61.126.130</td></tr><tr><td>MCS-U4-AmazonLinux</td><td>us-east-1 / us-east-1d</td><td>Consultar captura del resumen</td></tr><tr><td>MCS-U4-PHP</td><td>us-west-2 / us-west-2b</td><td>16.145.93.84</td></tr><tr><td>MCS-U4-CLI</td><td>us-west-2</td><td>Consultar resultado CLI y consola</td></tr></table><p>Las direcciones corresponden a esta sesión y dejan de servir tras terminar las instancias. No se inventan identificadores ni valores de métricas que no constan en el texto de la sesión.</p><p><a href="nube.html">Volver a Nube</a> · <a href="unidad4-tarea1-iam.html">Tarea 1 · IAM</a></p></section><section><div class="section-tag">02 // EVIDENCIAS</div><h2>Evidencias de la práctica</h2><article class='shot' id='captura-01'><h3>Captura 1 de 32 — Regi&#243;n Norte de Virginia</h3><p><strong>Virginia</strong></p><p>Regi&#243;n Norte de Virginia, us-east-1, utilizada para las dos primeras instancias.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-01-region-virginia.PNG' alt='Regi&#243;n Norte de Virginia' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-01-region-virginia</figcaption></figure></article>
+<article class='shot' id='captura-02'><h3>Captura 2 de 32 — Ubuntu y tipo de instancia</h3><p><strong>Virginia</strong></p><p>Instancia MCS-U4-Ubuntu con Ubuntu y tipo t3.micro.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-02-ubuntu-ami-tipo.PNG' alt='Ubuntu y tipo de instancia' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-02-ubuntu-ami-tipo</figcaption></figure></article>
+<article class='shot' id='captura-03'><h3>Captura 3 de 32 — Clave y red Ubuntu</h3><p><strong>Virginia</strong></p><p>Subred subnet-044c0e3591b4dcb6d en us-east-1a, IP p&#250;blica habilitada y grupo MCS-U4-Ubuntu-SG con SSH desde Mi IP.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-03-ubuntu-clave-red.PNG' alt='Clave y red Ubuntu' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-03-ubuntu-clave-red</figcaption></figure></article>
+<article class='shot' id='captura-04'><h3>Captura 4 de 32 — Disco y revisi&#243;n Ubuntu</h3><p><strong>Virginia</strong></p><p>Configuraci&#243;n del disco de 8 GiB y revisi&#243;n de los par&#225;metros de lanzamiento.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-04-ubuntu-disco-resumen.PNG' alt='Disco y revisi&#243;n Ubuntu' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-04-ubuntu-disco-resumen</figcaption></figure></article>
+<article class='shot' id='captura-05'><h3>Captura 5 de 32 — Resumen Ubuntu desplegado</h3><p><strong>Virginia</strong></p><p>Instancia Ubuntu i-09bc5fcea0cd1b1b6. IP p&#250;blica de esta sesi&#243;n: 100.61.126.130; privada: 172.31.11.197; zona: us-east-1a.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-05-ubuntu-resumen.PNG' alt='Resumen Ubuntu desplegado' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-05-ubuntu-resumen</figcaption></figure></article>
+<article class='shot' id='captura-06'><h3>Captura 6 de 32 — Preparaci&#243;n de la clave PEM</h3><p><strong>Virginia</strong></p><p>Localizaci&#243;n de la clave labsuser(1).pem en Downloads de Windows. No se muestra el contenido privado.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-06-ubuntu-pem.PNG' alt='Preparaci&#243;n de la clave PEM' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-06-ubuntu-pem</figcaption></figure></article>
+<article class='shot' id='captura-07'><h3>Captura 7 de 32 — SSH Ubuntu</h3><p><strong>Virginia</strong></p><p>Conexi&#243;n SSH desde PowerShell con el usuario ubuntu a 100.61.126.130 y la clave PEM de Academy.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-07-ubuntu-ssh.PNG' alt='SSH Ubuntu' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-07-ubuntu-ssh</figcaption></figure></article>
+<article class='shot' id='captura-08'><h3>Captura 8 de 32 — Amazon Linux en Virginia</h3><p><strong>Segunda zona</strong></p><p>Segunda instancia MCS-U4-AmazonLinux con Amazon Linux y tipo t3.micro en Virginia.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-08-amazonlinux-ami-tipo.PNG' alt='Amazon Linux en Virginia' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-08-amazonlinux-ami-tipo</figcaption></figure></article>
+<article class='shot' id='captura-09'><h3>Captura 9 de 32 — Zona de disponibilidad distinta</h3><p><strong>Segunda zona</strong></p><p>Selecci&#243;n de la subred subnet-03d6e587b3c00cdc2 en us-east-1d, distinta de us-east-1a, reutilizando la regla SSH del grupo existente.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-09-amazonlinux-red-az.PNG' alt='Zona de disponibilidad distinta' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-09-amazonlinux-red-az</figcaption></figure></article>
+<article class='shot' id='captura-10'><h3>Captura 10 de 32 — Disco y revisi&#243;n Amazon Linux</h3><p><strong>Segunda zona</strong></p><p>Almacenamiento de 8 GiB y revisi&#243;n de la segunda instancia antes del lanzamiento.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-10-amazonlinux-disco-resumen.PNG' alt='Disco y revisi&#243;n Amazon Linux' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-10-amazonlinux-disco-resumen</figcaption></figure></article>
+<article class='shot' id='captura-11'><h3>Captura 11 de 32 — Resumen de la segunda instancia</h3><p><strong>Segunda zona</strong></p><p>Resumen de MCS-U4-AmazonLinux y comprobaci&#243;n de la zona us-east-1d.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-11-amazonlinux-resumen.PNG' alt='Resumen de la segunda instancia' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-11-amazonlinux-resumen</figcaption></figure></article>
+<article class='shot' id='captura-12'><h3>Captura 12 de 32 — Regi&#243;n Oreg&#243;n</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Cambio a Oreg&#243;n, us-west-2, para desplegar el servidor PHP.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-12-region-oregon.PNG' alt='Regi&#243;n Oreg&#243;n' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-12-region-oregon</figcaption></figure></article>
+<article class='shot' id='captura-13'><h3>Captura 13 de 32 — Amazon Linux para PHP</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Instancia MCS-U4-PHP con Amazon Linux 2023 y tipo t3.micro.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-13-php-ami-tipo.PNG' alt='Amazon Linux para PHP' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-13-php-ami-tipo</figcaption></figure></article>
+<article class='shot' id='captura-14'><h3>Captura 14 de 32 — Nuevo par de claves PEM</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Creaci&#243;n de un nuevo par RSA llamado mcs-u4-oregon y descarga de su PEM, como solicita el enunciado.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-14-php-clave-nueva.PNG' alt='Nuevo par de claves PEM' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-14-php-clave-nueva</figcaption></figure></article>
+<article class='shot' id='captura-15'><h3>Captura 15 de 32 — Red y disco del servidor PHP</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Subred de Oreg&#243;n, IP p&#250;blica habilitada, grupo MCS-U4-PHP-SG y disco de 8 GiB.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-15-php-red-disco.PNG' alt='Red y disco del servidor PHP' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-15-php-red-disco</figcaption></figure></article>
+<article class='shot' id='captura-16'><h3>Captura 16 de 32 — Reglas de entrada</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Reglas de entrada: SSH TCP 22 desde Mi IP y HTTP TCP 80 desde 0.0.0.0/0 para publicar la web.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-16-php-reglas.PNG' alt='Reglas de entrada' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-16-php-reglas</figcaption></figure></article>
+<article class='shot' id='captura-17'><h3>Captura 17 de 32 — Resumen de la instancia en Oreg&#243;n</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Instancia i-06be1d5d68f86f7cf en us-west-2b. IP p&#250;blica de esta sesi&#243;n: 16.145.93.84; privada: 172.31.46.207.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-17-php-resumen.PNG' alt='Resumen de la instancia en Oreg&#243;n' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-17-php-resumen</figcaption></figure></article>
+<article class='shot' id='captura-18'><h3>Captura 18 de 32 — Conexi&#243;n SSH al servidor PHP</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Conexi&#243;n SSH con ec2-user y mcs-u4-oregon.pem. Se corrigieron los permisos locales del PEM para que OpenSSH aceptara la clave.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-18-php-ssh.PNG' alt='Conexi&#243;n SSH al servidor PHP' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-18-php-ssh</figcaption></figure></article>
+<article class='shot' id='captura-19'><h3>Captura 19 de 32 — Instalar Apache y PHP</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Instalaci&#243;n de Apache y PHP mediante dnf y activaci&#243;n de php-fpm y httpd. La comprobaci&#243;n mostr&#243; ambos servicios active y PHP 8.5.12.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-19-php-instalacion.PNG' alt='Instalar Apache y PHP' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-19-php-instalacion</figcaption></figure></article>
+<article class='shot' id='captura-20'><h3>Captura 20 de 32 — Crear index.php en el equipo local</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Creaci&#243;n de index.php en Downloads de Windows con comillas rectas y codificaci&#243;n ASCII. Contenido: &lt;?php echo &quot;Hola mundo&quot;; ?&gt;.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-20-index-local.PNG' alt='Crear index.php en el equipo local' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-20-index-local</figcaption></figure></article>
+<article class='shot' id='captura-21'><h3>Captura 21 de 32 — Copiar index.php mediante SCP</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Transferencia SCP desde PowerShell local al directorio /home/ec2-user/ del servidor en Oreg&#243;n.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-21-scp-index.PNG' alt='Copiar index.php mediante SCP' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-21-scp-index</figcaption></figure></article>
+<article class='shot' id='captura-22'><h3>Captura 22 de 32 — Publicar index.php</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Movimiento del archivo a /var/www/html/, comprobaci&#243;n de su ubicaci&#243;n y petici&#243;n local de prueba con curl.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-22-publicacion-index.PNG' alt='Publicar index.php' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-22-publicacion-index</figcaption></figure></article>
+<article class='shot' id='captura-23'><h3>Captura 23 de 32 — Web PHP funcionando</h3><p><strong>Oreg&#243;n PHP</strong></p><p>Comprobaci&#243;n de la p&#225;gina PHP desde el navegador mediante http://16.145.93.84. El contenido de la p&#225;gina es Hola mundo.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-23-web-hola-mundo.PNG' alt='Web PHP funcionando' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-23-web-hola-mundo</figcaption></figure></article>
+<article class='shot' id='captura-24'><h3>Captura 24 de 32 — Gr&#225;ficas generales</h3><p><strong>Monitorizaci&#243;n</strong></p><p>Vista general de las gr&#225;ficas de la pesta&#241;a Monitoreo de la instancia PHP.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-24-monitor-general.PNG' alt='Gr&#225;ficas generales' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-24-monitor-general</figcaption></figure></article>
+<article class='shot' id='captura-25'><h3>Captura 25 de 32 — CPU durante la &#250;ltima hora</h3><p><strong>Monitorizaci&#243;n</strong></p><p>Gr&#225;fica ampliada de utilizaci&#243;n de CPU, con intervalo de &#250;ltima hora y periodo de cinco minutos. Los valores concretos se consultan en la evidencia.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-25-cpu-hora.PNG' alt='CPU durante la &#250;ltima hora' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-25-cpu-hora</figcaption></figure></article>
+<article class='shot' id='captura-26'><h3>Captura 26 de 32 — Visitas a la web</h3><p><strong>Monitorizaci&#243;n</strong></p><p>Visitas y recargas de la p&#225;gina PHP para generar tr&#225;fico de respuesta desde el servidor.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-26-trafico-web.PNG' alt='Visitas a la web' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-26-trafico-web</figcaption></figure></article>
+<article class='shot' id='captura-27'><h3>Captura 27 de 32 — Tr&#225;fico de salida NetworkOut</h3><p><strong>Monitorizaci&#243;n</strong></p><p>Gr&#225;fica ampliada de tr&#225;fico de salida NetworkOut despu&#233;s de las visitas. El efecto puede ser peque&#241;o y las m&#233;tricas se publican con retraso; la evidencia recoge los valores reales.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-27-network-out.PNG' alt='Tr&#225;fico de salida NetworkOut' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-27-network-out</figcaption></figure></article>
+<article class='shot' id='captura-28'><h3>Captura 28 de 32 — Archivo de despliegue .sh</h3><p><strong>AWS CLI</strong></p><p>Contenido del archivo despliegue-u4.sh. Se obtienen AMI, subred, grupo, clave y dispositivo ra&#237;z de MCS-U4-PHP y se prepara una nueva instancia con nombre MCS-U4-CLI.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-28-script-contenido.PNG' alt='Archivo de despliegue .sh' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-28-script-contenido</figcaption></figure></article>
+<article class='shot' id='captura-29'><h3>Captura 29 de 32 — Ejecuci&#243;n del script</h3><p><strong>AWS CLI</strong></p><p>Ejecuci&#243;n de bash despliegue-u4.sh y tabla de resultado con el identificador y el estado inicial de la instancia.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-29-script-ejecucion.PNG' alt='Ejecuci&#243;n del script' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-29-script-ejecucion</figcaption></figure></article>
+<article class='shot' id='captura-30'><h3>Captura 30 de 32 — Instancia creada con CLI</h3><p><strong>AWS CLI</strong></p><p>Listado de instancias de Oreg&#243;n con MCS-U4-CLI, su identificador, estado y tipo t3.micro.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-30-instancia-cli.PNG' alt='Instancia creada con CLI' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-30-instancia-cli</figcaption></figure></article>
+<article class='shot' id='captura-31'><h3>Captura 31 de 32 — Limpieza en ambas regiones</h3><p><strong>Cierre</strong></p><p>Terminaci&#243;n de MCS-U4-PHP y MCS-U4-CLI en Oreg&#243;n, y de MCS-U4-Ubuntu y MCS-U4-AmazonLinux en Virginia. Se conservan evidencias separadas de ambas regiones.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-31-recursos-eliminados.PNG' alt='Limpieza en ambas regiones' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-31-recursos-eliminados</figcaption></figure></article>
+<figure class="pending-shot"><img src="media/u4-t2-31-recursos-eliminados-b.PNG" alt="Instancias terminadas en Virginia" onload="this.classList.add('loaded')"><figcaption>u4-t2-31-recursos-eliminados-b · Virginia</figcaption></figure><article class='shot' id='captura-32'><h3>Captura 32 de 32 — Laboratorio finalizado</h3><p><strong>Cierre</strong></p><p>Finalizaci&#243;n del laboratorio en AWS Academy despu&#233;s de guardar las evidencias y terminar las instancias.</p><figure class='pending-shot'><div class='placeholder'><strong>CAPTURA DOCUMENTADA</strong><p>La imagen se carga desde media/ al guardar los archivos juntos.</p></div><img src='media/u4-t2-32-laboratorio-finalizado.PNG' alt='Laboratorio finalizado' onload='this.classList.add(&quot;loaded&quot;)'><figcaption class='filename'>u4-t2-32-laboratorio-finalizado</figcaption></figure></article>
+</section><section><div class="section-tag">03 // COMANDOS DEL ENUNCIADO</div><h2>Servidor Amazon Linux</h2><pre class="code">sudo dnf install -y httpd php-fpm php
+sudo systemctl enable --now php-fpm
+sudo systemctl enable --now httpd</pre><h3>Contenido de index.php</h3><pre class="code">&lt;?php echo "Hola mundo"; ?&gt;</pre><h3>Transferencia desde el equipo local</h3><pre class="code">scp -i CLAVE.pem index.php ec2-user@IP_PUBLICA:/home/ec2-user/</pre><h3>Publicación desde la instancia</h3><pre class="code">sudo mv index.php /var/www/html/</pre><p>CLAVE.pem e IP_PUBLICA son marcadores; se sustituirán por los datos reales y las rutas correctas. Abrir después <code>http://IP_PUBLICA</code>.</p></section><section><div class="section-tag">04 // AWS CLI</div><h2>Despliegue mediante despliegue-u4.sh</h2><p>CloudShell se utilizó en Oregón con las credenciales de la sesión. El script obtiene la configuración del servidor PHP y crea una nueva instancia con nombre propio.</p><pre class="code">#!/bin/bash
+set -euo pipefail
+REGION=&quot;us-west-2&quot;
+read -r AMI SUBRED GRUPO CLAVE RAIZ &lt; &lt;(
+  aws ec2 describe-instances \
+    --region &quot;$REGION&quot; \
+    --filters &quot;Name=tag:Name,Values=MCS-U4-PHP&quot; \
+              &quot;Name=instance-state-name,Values=running&quot; \
+    --query &#39;Reservations[].Instances[].[ImageId,SubnetId,SecurityGroups[0].GroupId,KeyName,RootDeviceName]&#39; \
+    --output text
+)
+aws ec2 run-instances \
+  --region &quot;$REGION&quot; \
+  --image-id &quot;$AMI&quot; \
+  --instance-type t3.micro \
+  --count 1 \
+  --key-name &quot;$CLAVE&quot; \
+  --security-group-ids &quot;$GRUPO&quot; \
+  --subnet-id &quot;$SUBRED&quot; \
+  --associate-public-ip-address \
+  --block-device-mappings \
+    &quot;[{\&quot;DeviceName\&quot;:\&quot;$RAIZ\&quot;,\&quot;Ebs\&quot;:{\&quot;VolumeSize\&quot;:8,\&quot;VolumeType\&quot;:\&quot;gp3\&quot;,\&quot;DeleteOnTermination\&quot;:true}}]&quot; \
+  --tag-specifications \
+    &#39;ResourceType=instance,Tags=[{Key=Name,Value=MCS-U4-CLI}]&#39; \
+  --query &#39;Instances[].{ID:InstanceId,Estado:State.Name}&#39; \
+  --output table</pre><table><tr><th>Parámetro o instrucción</th><th>Función</th></tr><tr><td>set -euo pipefail</td><td>Detiene el script ante errores, variables sin definir o fallos en tuberías.</td></tr><tr><td>read / describe-instances / --filters</td><td>Obtiene los datos de la instancia MCS-U4-PHP que está en ejecución.</td></tr><tr><td>--region</td><td>Selecciona us-west-2 (Oregón).</td></tr><tr><td>--image-id</td><td>Selecciona la AMI obtenida del servidor PHP.</td></tr><tr><td>--instance-type / --count</td><td>Crea una instancia t3.micro.</td></tr><tr><td>--key-name</td><td>Asocia el par mcs-u4-oregon, sin incluir su clave privada.</td></tr><tr><td>--security-group-ids / --subnet-id</td><td>Reutiliza el grupo y la subred del servidor PHP de esta práctica.</td></tr><tr><td>--associate-public-ip-address</td><td>Solicita IP pública para la nueva instancia.</td></tr><tr><td>--block-device-mappings</td><td>Define el disco raíz gp3 de 8 GiB y su eliminación al terminar la instancia.</td></tr><tr><td>--tag-specifications</td><td>Asigna la etiqueta Name=MCS-U4-CLI.</td></tr><tr><td>--query / --output</td><td>Selecciona campos de respuesta y los presenta como texto o tabla.</td></tr></table><p>AMI de esta sesión: <code>ami-09f02015912e773f7</code>; subred: <code>subnet-046ff236322c559e7</code>; grupo: <code>sg-0e9683fbc23437c70</code>. Son datos de este laboratorio, no una configuración reutilizable tras su eliminación.</p></section><section><div class="section-tag">05 // CIERRE</div><h2>Recapitulación</h2><p>Se ha recorrido el despliegue en dos zonas de Virginia, la publicación de una web PHP en Oregón, la consulta de CPU y NetworkOut, y la creación de una instancia mediante AWS CLI. El cierre incluye terminar las cuatro instancias y finalizar el laboratorio.</p><p>Las métricas concretas y los estados finales se documentan en las capturas. La evidencia 31 tiene dos imágenes, una por región.</p><a href="nube.html">Volver a Nube</a></section></main><footer>MCS CLOUD COMMAND CENTER · UNIDAD 4 · TAREA 2 · MEMORIA DE PRÁCTICA</footer></body></html>
