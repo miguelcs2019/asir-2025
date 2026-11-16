@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Kali Linux y nueve herramientas para estudiar redes, aplicaciones web, contraseñas, Wi-Fi, análisis forense e ingeniería inversa.">
+    <title>Kali Linux y herramientas | MCS Security · Unitat 03</title>
+    <style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}:root{--gold:#f5b942;--cyan:#00eaff;--green:#00ff9d;--muted:#a1b0bd;--line:#ffffff18}body{margin:0;background:#030609;color:#edf5fa;font:16px/1.75 'Segoe UI',Arial,sans-serif;overflow-x:hidden}a{color:var(--cyan);text-underline-offset:4px}a:hover{color:var(--gold)}a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:4px}#network{position:fixed;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 15% 8%,#00eaff0d,transparent 45%),radial-gradient(ellipse at 85% 50%,#f5b94209,transparent 40%),linear-gradient(#03060970,#030609ed)}header,main,footer{width:92%;max-width:1160px;margin:auto}.topbar{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:30px 0;font:12px Consolas,monospace;letter-spacing:1px}.back{text-decoration:none;color:var(--muted)}.online{color:var(--green)}.online:before{content:'●';margin-right:8px;text-shadow:0 0 12px var(--green)}.hero{padding:32px 0 28px;border-bottom:1px solid var(--line)}.eyebrow{font:11px/1.5 Consolas,monospace;letter-spacing:2px;color:var(--cyan);margin:0 0 10px}.hero h1{font-size:clamp(38px,7vw,72px);line-height:1.05;letter-spacing:-2px;margin:18px 0 24px;background:linear-gradient(100deg,#fff,#ffe0a0,var(--gold));background-clip:text;-webkit-background-clip:text;color:transparent}.hero p{max-width:760px;color:var(--muted)}.hero-tag{font:12px Consolas,monospace;color:var(--gold);border:1px solid #f5b94255;padding:8px 12px;border-radius:6px;display:inline-block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}.stat{background:#080d12cf;border:1px solid #ffffff14;border-radius:10px;padding:18px}.stat strong{display:block;color:var(--gold);font:25px Consolas,monospace}.stat span{font-size:12px;color:var(--muted)}nav{position:sticky;top:0;z-index:10;background:#030609f5;backdrop-filter:blur(12px);border-bottom:1px solid #00eaff30;margin:0 auto 30px;padding:12px 0;display:flex;gap:8px;overflow:auto}nav a{font:12px Consolas,monospace;white-space:nowrap;padding:9px 12px;border:1px solid #ffffff20;border-radius:6px;text-decoration:none}nav a:hover{border-color:var(--gold)}.activity,.exam,.references{border:1px solid #00eaff2e;border-radius:14px;background:linear-gradient(135deg,#00eaff04,#080d12ec);padding:32px;margin:26px 0}.section-head{display:flex;align-items:center;gap:18px;border-bottom:1px solid var(--line);padding-bottom:21px}.number{font:29px Consolas,monospace;color:var(--cyan);width:62px;height:62px;border:1px solid #00eaff50;border-radius:10px;display:grid;place-items:center;flex-shrink:0;box-shadow:inset 0 0 25px #00eaff08}.section-head h2{margin:0;font-size:clamp(23px,3vw,31px);line-height:1.25}.section-intro{color:var(--muted)}.activity h3,.exam h3{color:var(--gold);font-size:21px;margin:35px 0 12px}.activity h4{font-size:17px;color:var(--cyan);margin:18px 0 8px}p{margin:14px 0}li{margin:8px 0}ul,ol{padding-left:24px}.table-wrap{overflow:auto;border:1px solid #ffffff14;border-radius:8px;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid #ffffff13;vertical-align:top}th{color:var(--gold);background:#0a1017;font-size:12px}tr:last-child td{border-bottom:0}td{min-width:65px}td:first-child{color:#dbe9f2;font-weight:600}.activity p,.activity td,.note{overflow-wrap:anywhere}code,pre,.formula{font-family:Consolas,'Courier New',monospace}code{color:#b2f9df;font-size:.92em}pre{background:#020609;border:1px solid #ffffff18;border-radius:8px;padding:18px;overflow:auto;line-height:1.7;font-size:13px;max-width:100%}pre code{font-size:inherit;white-space:pre}.note{border-left:3px solid var(--gold);padding:17px 21px;background:#f5b94208;margin:22px 0;color:#d2dce2}.answer{border:1px solid #00ff9d40;background:#00ff9d07;border-radius:10px;padding:19px 22px;margin:20px 0}.answer strong{color:var(--green)}.result-text{display:block;margin-top:12px;color:var(--green);font-size:17px;overflow-wrap:anywhere}.formula{background:#020609;border-left:3px solid var(--cyan);color:var(--green);padding:20px;font-size:17px;line-height:1.9;margin:22px 0;overflow-wrap:anywhere}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:20px 0}.cards article{padding:17px 20px;background:#050b10;border:1px solid #ffffff16;border-radius:10px}.cards article h4{margin-top:0}.cards p{font-size:14px;color:#b7c5ce}.policy-root{text-align:center;border:1px solid #f5b94260;border-radius:10px;color:var(--gold);padding:20px;font:20px Consolas,monospace}.policy-root span{display:block;color:var(--muted);font:13px/1.6 'Segoe UI',sans-serif;margin-top:10px}details{border:1px solid #ffffff20;border-radius:8px;padding:14px 18px;margin:20px 0}summary{cursor:pointer;color:var(--cyan);font-weight:600}figure{margin:24px 0;padding:14px;border:1px solid #ffffff1a;border-radius:10px;background:#04080d;text-align:center}figure img{display:block;max-width:100%;height:auto;margin:auto;border-radius:5px}figcaption{font:12px/1.6 Consolas,monospace;color:var(--muted);margin:13px 0 0;text-align:left}.sources{font-size:12px;color:var(--muted);margin-top:25px}.sources a{display:inline-block;margin:3px 0}.lab{border:1px solid #00eaff40;background:#02070b;padding:22px;border-radius:10px;margin:26px 0}.lab h3{margin-top:0}.inputs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}label{display:block;font-size:13px;color:var(--muted);margin:12px 0}input,textarea,select{display:block;width:100%;padding:12px;background:#080f16;border:1px solid #00eaff45;border-radius:6px;color:#fff;font:15px Consolas,monospace;margin-top:7px}textarea{resize:vertical}output{display:block;white-space:pre-wrap;color:var(--green);font:15px/1.8 Consolas,monospace;overflow-wrap:anywhere;margin-top:15px}.exam{border-color:#f5b94270;background:linear-gradient(130deg,#f5b94209,#080d12)}.exam h2{color:var(--gold);font:28px Consolas,monospace;margin-top:0}.quiz{margin-top:22px}.quiz details{background:#03060980}.references h2{color:var(--cyan)}.references li{font-size:14px}footer{padding:28px 0 40px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);color:#8697a4;font:11px Consolas,monospace}button{background:#0b151d;border:1px solid #00eaff60;color:var(--cyan);padding:10px 14px;border-radius:6px;cursor:pointer;font:12px Consolas,monospace}.actions{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}@media(max-width:700px){html{scroll-padding-top:80px}.hero{padding-top:16px}.hero h1{letter-spacing:-1px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}.activity,.exam,.references{padding:20px 16px}.section-head{gap:12px}.number{width:47px;height:47px;font-size:23px}.eyebrow{letter-spacing:1px}.cards,.inputs{grid-template-columns:1fr}th,td{padding:10px}nav{margin-bottom:20px}.lab{padding:15px}.formula{font-size:14px}.hero-tag{font-size:10px}.topbar{font-size:10px}pre{padding:13px}.stat span{font-size:11px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{body{background:#fff;color:#111;font-size:11px}.ambient,#network,nav,.lab,.actions,.topbar{display:none}header,main,footer{width:100%;max-width:none}.hero h1{color:#111;background:none}.activity,.exam,.references,.note,.answer,.cards article,.stat,.formula,pre,figure,details{background:#fff;border-color:#aaa;color:#111;box-shadow:none}.activity{break-before:page}.activity h3,.activity h4,h2,.exam h2,.number,.eyebrow,.answer strong,code,.formula,.stat strong,a,.hero-tag{color:#111}.section-intro,.hero p,.cards p,figcaption,.sources,footer{color:#444}.number{border-color:#777}th{background:#eee;color:#111}pre,pre code{white-space:pre-wrap}figure{break-inside:avoid}figure img{max-height:450px}table{font-size:10px}th,td{padding:7px}.table-wrap{overflow:visible}.stats{margin:14px 0}}</style>
+    <style>
+    .hero-layout {
+        display: grid;
+        grid-template-columns: 1.3fr .7fr;
+        align-items: center;
+        gap: 34px;
+    }
+    .toolkit-map {
+        width: 100%;
+        max-width: 380px;
+        margin: auto;
+        color: var(--cyan);
+    }
+    .hero-description { max-width: 670px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+    .pill-row span {
+        border: 1px solid #00eaff40;
+        color: var(--cyan);
+        padding: 5px 10px;
+        border-radius: 5px;
+        font: 11px/1.5 Consolas, monospace;
+    }
+    .tool-filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 24px 0; }
+    .tool-filters button { font-size: 12px; line-height: 1.5; }
+    .tool-filters button[aria-pressed="true"] {
+        color: #030609;
+        background: var(--cyan);
+        border-color: var(--cyan);
+    }
+    .tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .tool-card {
+        padding: 24px;
+        background: #040b10;
+        border: 1px solid #00eaff28;
+        border-radius: 12px;
+    }
+    .tool-card[hidden] { display: none; }
+    .tool-card h3 { margin: 7px 0 14px; font-size: 25px; }
+    .tool-card > p { color: #c1cdd6; }
+    .tool-card dt {
+        color: var(--cyan);
+        font: 11px/1.5 Consolas, monospace;
+        margin-top: 19px;
+    }
+    .tool-card dd { margin: 5px 0 0; font-size: 14px; color: #aebeca; }
+    .tool-source { display: inline-block; margin-top: 23px; font-size: 12px; }
+    .filter-count { font: 12px/1.5 Consolas, monospace; color: var(--muted); }
+    .workflow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 25px 0; }
+    .workflow article { border-top: 2px solid #f5b94270; padding: 16px 8px 10px; }
+    .workflow strong { color: var(--gold); font: 21px Consolas, monospace; }
+    .workflow h3 { margin-top: 10px; font-size: 18px; }
+    .workflow p { font-size: 14px; color: #aebeca; }
+    .activity h2 { line-height: 1.3; }
+    @media (max-width: 760px) {
+        .hero-layout, .tool-grid, .workflow { grid-template-columns: 1fr; }
+        .toolkit-map { max-width: 250px; }
+        .tool-card { padding: 20px; }
+    }
+    @media print {
+        .toolkit-map, .tool-filters, .filter-count { display: none; }
+        .hero-layout, .tool-grid { display: block; }
+        .tool-card { break-inside: avoid; margin-bottom: 12px; background: white; }
+        .tool-card[hidden] { display: block; }
+        .tool-card p, .tool-card dt, .tool-card dd { color: #111; }
+    }
+</style>
+</head>
+<body>
+<canvas id="network" aria-hidden="true"></canvas>
+<div class="ambient" aria-hidden="true"></div>
+<header>
+    <div class="topbar">
+        <a class="back" href="seguretat.html">← PORTAL SEGURETAT</a>
+        <span class="online">MCS SECURITY · KNOWLEDGE BASE</span>
+    </div>
+    <div class="hero hero-layout">
+        <div>
+            <span class="hero-tag">UNITAT 03 // ACTIVITAT 03 // ASIX 2026/2027</span>
+            <h1>Kali Linux.<br>Conocer para<br>proteger.</h1>
+            <p class="hero-description">Un entorno de trabajo para comprender la exposición de los sistemas, analizar evidencias y evaluar controles de seguridad.</p>
+            <div class="pill-row"><span>REDES</span><span>WEB</span><span>CONTRASEÑAS</span><span>FORENSE</span></div>
+        </div>
+        <svg class="toolkit-map" viewBox="0 0 360 360" role="img" aria-labelledby="map-title map-description">
+            <title id="map-title">Mapa de áreas de seguridad</title>
+            <desc id="map-description">Kali conecta el estudio de redes, aplicaciones web, autenticación y evidencias digitales.</desc>
+            <g fill="none" stroke="currentColor" stroke-width="1">
+                <circle cx="180" cy="180" r="143" opacity=".2"/>
+                <circle cx="180" cy="180" r="103" opacity=".15"/>
+                <path d="M180 37V125 M323 180H235 M180 323V235 M37 180H125" opacity=".6"/>
+                <path d="M180 37 323 180 180 323 37 180Z" opacity=".15"/>
+                <path d="M180 119 233 150V211L180 242 127 211V150Z" stroke="#f5b942" stroke-width="2"/>
+            </g>
+            <g fill="#030609" stroke="currentColor"><circle cx="180" cy="37" r="8"/><circle cx="323" cy="180" r="8"/><circle cx="180" cy="323" r="8"/><circle cx="37" cy="180" r="8"/></g>
+            <g text-anchor="middle" font-family="Consolas, monospace" fill="currentColor" font-size="11">
+                <text x="180" y="20">REDES</text><text x="324" y="207">WEB</text><text x="180" y="349">EVIDENCIAS</text><text x="37" y="207">CLAVES</text>
+                <text x="180" y="187" fill="#f5b942" font-size="27">KALI</text>
+            </g>
+        </svg>
+    </div>
+    <div class="stats">
+        <div class="stat"><strong>09</strong><span>HERRAMIENTAS REPRESENTATIVAS</span></div>
+        <div class="stat"><strong>06</strong><span>ÁREAS PARA EXPLORAR</span></div>
+        <div class="stat"><strong>EXAM</strong><span>CONCEPTOS PARA REPASAR</span></div>
+    </div>
+</header>
+<main>
+    <nav aria-label="Contenido">
+        <a href="#introduccion">Qué es Kali</a>
+        <a href="#herramientas">Herramientas</a>
+        <a href="#comparativa">Comparativa</a>
+        <a href="#metodo">Método de trabajo</a>
+        <a href="#exam">EXAM MODE</a>
+    </nav>
+
+    <section class="activity" id="introduccion">
+        <p class="eyebrow">01 // ENTORNO DE SEGURIDAD</p>
+        <h2>¿Qué es Kali Linux?</h2>
+        <p>Kali Linux es una distribución de código abierto basada en Debian, especializada en auditorías de seguridad y pruebas de penetración. Agrupa herramientas, documentación y configuraciones que facilitan el trabajo técnico en distintos campos de la ciberseguridad.</p>
+        <p>Se utiliza para descubrir servicios expuestos, estudiar comunicaciones, evaluar aplicaciones, analizar software y examinar evidencias digitales. Cada tarea requiere interpretar resultados y conocer los sistemas que se están evaluando.</p>
+        <div class="cards">
+            <article><h4>Distribución</h4><p>Proporciona el sistema operativo y un ecosistema de paquetes especializados.</p></article>
+            <article><h4>Herramienta</h4><p>Resuelve una tarea concreta, como inventariar servicios o interpretar una captura de red.</p></article>
+            <article><h4>Metodología</h4><p>Organiza el alcance, la obtención de evidencias, la interpretación y la comunicación de hallazgos.</p></article>
+            <article><h4>Aprendizaje ASIX</h4><p>Conecta administración de sistemas, redes, autenticación y protección de la información.</p></article>
+        </div>
+        <p>Las actividades de auditoría se desarrollan sobre sistemas propios o con autorización y un alcance definido.</p>
+        <p class="sources"><a href="https://www.kali.org/docs/introduction/what-is-kali-linux/" target="_blank" rel="noopener noreferrer">Documentación oficial de Kali Linux</a></p>
+    </section>
+
+    <section class="activity" id="herramientas">
+        <p class="eyebrow">02 // MAPA DE HERRAMIENTAS</p>
+        <h2>Una herramienta para cada pregunta</h2>
+        <p>Esta selección reúne nueve herramientas representativas. Elige un área para comparar su objetivo, el tipo de evidencia que aporta y el concepto que conviene estudiar.</p>
+        <div class="tool-filters" role="group" aria-label="Filtrar herramientas por área">
+            <button type="button" data-filter="all" aria-pressed="true">Todas</button>
+            <button type="button" data-filter="red" aria-pressed="false">Redes</button>
+            <button type="button" data-filter="web" aria-pressed="false">Web</button>
+            <button type="button" data-filter="validacion" aria-pressed="false">Validación</button>
+            <button type="button" data-filter="credenciales" aria-pressed="false">Contraseñas</button>
+            <button type="button" data-filter="wireless" aria-pressed="false">Wi-Fi</button>
+            <button type="button" data-filter="analisis" aria-pressed="false">Forense e ingeniería inversa</button>
+        </div>
+        <p class="filter-count" id="filter-count" role="status">9 herramientas visibles</p>
+        <div class="tool-grid">
+            <article class="tool-card" data-category="red">
+    <p class="eyebrow">NET / 01 · Redes</p>
+    <h3>Nmap</h3>
+    <p>Descubre equipos y servicios de una red y ayuda a identificar los puertos expuestos.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué servicios están accesibles en los equipos que administro?</dd>
+        <dt>Qué aporta</dt><dd>Inventario de equipos, puertos y servicios observados.</dd>
+        <dt>Qué estudiar</dt><dd>Relacionar la exposición de servicios con la superficie de ataque y la segmentación de red.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/nmap/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="red">
+    <p class="eyebrow">NET / 02 · Redes</p>
+    <h3>Wireshark</h3>
+    <p>Captura y analiza paquetes para estudiar protocolos y diagnosticar comunicaciones.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué está ocurriendo durante una comunicación?</dd>
+        <dt>Qué aporta</dt><dd>Paquetes y conversaciones organizados por protocolo, dirección y tiempo.</dd>
+        <dt>Qué estudiar</dt><dd>Interpretar DNS, TCP y otros protocolos y distinguir problemas de conectividad de fallos de aplicación.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/wireshark/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="web">
+    <p class="eyebrow">WEB / 01 · Aplicaciones web</p>
+    <h3>Burp Suite</h3>
+    <p>Integra herramientas para examinar el intercambio HTTP y evaluar la seguridad de aplicaciones web.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Cómo gestiona una aplicación sus peticiones, respuestas y sesiones?</dd>
+        <dt>Qué aporta</dt><dd>Historial HTTP, mensajes y observaciones sobre el comportamiento de la aplicación.</dd>
+        <dt>Qué estudiar</dt><dd>Comprender la relación entre navegador, servidor, cookies y controles de acceso. Las capacidades varían según la edición.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/burpsuite/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="validacion">
+    <p class="eyebrow">LAB / 01 · Validación</p>
+    <h3>Metasploit Framework</h3>
+    <p>Framework modular para desarrollar y realizar pruebas de seguridad y validar vulnerabilidades en laboratorios autorizados.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué impacto puede tener una vulnerabilidad bajo condiciones controladas?</dd>
+        <dt>Qué aporta</dt><dd>Registro de los módulos empleados y del comportamiento observado durante una validación.</dd>
+        <dt>Qué estudiar</dt><dd>Relacionar una vulnerabilidad conocida con sus requisitos, su impacto y la mitigación correspondiente.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/metasploit-framework/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="credenciales">
+    <p class="eyebrow">AUTH / 01 · Contraseñas</p>
+    <h3>John the Ripper</h3>
+    <p>Herramienta de auditoría que evalúa contraseñas mediante candidatos y su comparación con valores almacenados.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué patrones de contraseña resultan predecibles en una auditoría?</dd>
+        <dt>Qué aporta</dt><dd>Resumen de los resultados y condiciones de la evaluación.</dd>
+        <dt>Qué estudiar</dt><dd>Comprender la influencia de los patrones, el método de prueba, el algoritmo y el tiempo disponible.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/john/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="credenciales">
+    <p class="eyebrow">AUTH / 02 · Contraseñas</p>
+    <h3>Hashcat</h3>
+    <p>Plataforma de recuperación y auditoría de contraseñas con soporte para diferentes algoritmos y dispositivos de cálculo.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Cómo influye el hardware en el coste de una auditoría de contraseñas?</dd>
+        <dt>Qué aporta</dt><dd>Medidas de rendimiento y resultados de evaluaciones con parámetros definidos.</dd>
+        <dt>Qué estudiar</dt><dd>Estudiar por qué la resistencia depende del esquema de almacenamiento y de los recursos de cálculo.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/hashcat/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="wireless">
+    <p class="eyebrow">WIFI / 01 · Redes inalámbricas</p>
+    <h3>Aircrack-ng</h3>
+    <p>Conjunto de herramientas para analizar y evaluar la seguridad de redes Wi-Fi.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué propiedades de una red inalámbrica afectan a su seguridad?</dd>
+        <dt>Qué aporta</dt><dd>Observaciones sobre redes, estaciones y tráfico del entorno de prueba.</dd>
+        <dt>Qué estudiar</dt><dd>Distinguir seguridad del protocolo, configuración del punto de acceso y protección de las credenciales.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/aircrack-ng/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="analisis">
+    <p class="eyebrow">DFIR / 01 · Análisis forense</p>
+    <h3>Autopsy</h3>
+    <p>Interfaz de análisis forense asociada a The Sleuth Kit para examinar sistemas de archivos y evidencias digitales.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué información puede reconstruirse a partir de una imagen de disco?</dd>
+        <dt>Qué aporta</dt><dd>Archivos, metadatos y observaciones organizados durante la investigación.</dd>
+        <dt>Qué estudiar</dt><dd>Trabajar con evidencias, interpretar metadatos y justificar los hallazgos de forma reproducible.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/autopsy/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article><article class="tool-card" data-category="analisis">
+    <p class="eyebrow">RE / 01 · Ingeniería inversa</p>
+    <h3>Ghidra</h3>
+    <p>Entorno para analizar software compilado mediante desensamblado, decompilación y estudio de su estructura.</p>
+    <dl>
+        <dt>Pregunta que ayuda a responder</dt><dd>¿Qué comportamiento puede deducirse de un programa compilado?</dd>
+        <dt>Qué aporta</dt><dd>Funciones, referencias, flujo de control y anotaciones del análisis.</dd>
+        <dt>Qué estudiar</dt><dd>Conectar el código de bajo nivel con el comportamiento del programa y sus posibles problemas de seguridad.</dd>
+    </dl>
+    <a class="tool-source" href="https://www.kali.org/tools/ghidra/" target="_blank" rel="noopener noreferrer">Ficha oficial en Kali ↗</a>
+</article>
+        </div>
+    </section>
+
+    <section class="activity" id="comparativa">
+        <p class="eyebrow">03 // COMPARAR PARA ELEGIR</p>
+        <h2>Objetivo y evidencias</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Herramienta</th><th>Área</th><th>Qué aporta al análisis</th></tr></thead>
+                <tbody><tr><td>Nmap</td><td>Redes</td><td>Inventario de equipos, puertos y servicios observados.</td></tr><tr><td>Wireshark</td><td>Redes</td><td>Paquetes y conversaciones organizados por protocolo, dirección y tiempo.</td></tr><tr><td>Burp Suite</td><td>Aplicaciones web</td><td>Historial HTTP, mensajes y observaciones sobre el comportamiento de la aplicación.</td></tr><tr><td>Metasploit Framework</td><td>Validación</td><td>Registro de los módulos empleados y del comportamiento observado durante una validación.</td></tr><tr><td>John the Ripper</td><td>Contraseñas</td><td>Resumen de los resultados y condiciones de la evaluación.</td></tr><tr><td>Hashcat</td><td>Contraseñas</td><td>Medidas de rendimiento y resultados de evaluaciones con parámetros definidos.</td></tr><tr><td>Aircrack-ng</td><td>Redes inalámbricas</td><td>Observaciones sobre redes, estaciones y tráfico del entorno de prueba.</td></tr><tr><td>Autopsy</td><td>Análisis forense</td><td>Archivos, metadatos y observaciones organizados durante la investigación.</td></tr><tr><td>Ghidra</td><td>Ingeniería inversa</td><td>Funciones, referencias, flujo de control y anotaciones del análisis.</td></tr></tbody>
+            </table>
+        </div>
+        <h3>Nmap y Wireshark</h3>
+        <p>Nmap ayuda a inventariar los servicios accesibles. Wireshark permite examinar los paquetes de una comunicación. Combinan una visión de la exposición de la red con otra de su funcionamiento.</p>
+        <h3>John the Ripper y Hashcat</h3>
+        <p>Ambas herramientas se emplean en auditoría de contraseñas. La elección depende del formato que deba evaluarse, del hardware disponible y de las funciones de la versión utilizada.</p>
+        <h3>Autopsy y Ghidra</h3>
+        <p>Autopsy centra el análisis en sistemas de archivos y evidencias. Ghidra permite estudiar la estructura y el comportamiento de programas compilados.</p>
+    </section>
+
+    <section class="activity" id="metodo">
+        <p class="eyebrow">04 // DE LOS DATOS A UNA CONCLUSIÓN</p>
+        <h2>Cómo se construye una auditoría</h2>
+        <div class="workflow">
+            <article><strong>01</strong><h3>Definir la pregunta</h3><p>Precisar el objetivo, el entorno y los sistemas que forman parte del alcance.</p></article>
+            <article><strong>02</strong><h3>Recoger evidencias</h3><p>Seleccionar la herramienta y registrar la configuración y las observaciones necesarias.</p></article>
+            <article><strong>03</strong><h3>Interpretar y mejorar</h3><p>Relacionar los resultados con su contexto, expresar las limitaciones y proponer medidas de protección.</p></article>
+        </div>
+        <p>La documentación permite que otra persona entienda qué se evaluó y cómo se obtuvo la conclusión. Un resultado debe poder relacionarse con su método, su contexto y sus límites.</p>
+    </section>
+
+    <section class="exam" id="exam">
+        <p class="eyebrow">05 // REPASO DE LA UNIDAD</p>
+        <h2>EXAM MODE</h2>
+        <ul>
+            <li><strong>Kali Linux</strong> es una distribución basada en Debian especializada en seguridad.</li>
+            <li><strong>Nmap</strong> se relaciona con descubrimiento de equipos, puertos y servicios.</li>
+            <li><strong>Wireshark</strong> se relaciona con captura y análisis de paquetes.</li>
+            <li><strong>Burp Suite</strong> se relaciona con la evaluación de aplicaciones web.</li>
+            <li><strong>Metasploit</strong> organiza pruebas modulares de validación de vulnerabilidades.</li>
+            <li><strong>John y Hashcat</strong> se relacionan con auditoría de contraseñas.</li>
+            <li><strong>Aircrack-ng</strong> se relaciona con la evaluación de redes inalámbricas.</li>
+            <li><strong>Autopsy</strong> se relaciona con análisis forense y <strong>Ghidra</strong> con ingeniería inversa.</li>
+        </ul>
+        <details><summary>¿Qué herramienta elegirías para estudiar una conversación DNS?</summary><p>Wireshark permite analizar los paquetes y los campos del protocolo.</p></details>
+        <details><summary>¿Qué herramienta permite revisar la estructura de un ejecutable?</summary><p>Ghidra facilita el análisis de funciones, instrucciones y referencias de un programa compilado.</p></details>
+        <details><summary>¿Qué debe acompañar a una conclusión de auditoría?</summary><p>El alcance, el método y las evidencias que permiten entenderla, junto con sus limitaciones.</p></details>
+    </section>
+
+    <section class="references">
+        <h2>Fuentes para seguir estudiando</h2>
+        <p>Cada herramienta incluye un enlace a su ficha en Kali Linux. Estas fichas enlazan la documentación y los proyectos de origen. El catálogo permite explorar otras aplicaciones según su función.</p>
+        <p><a href="https://www.kali.org/tools/" target="_blank" rel="noopener noreferrer">Catálogo oficial de herramientas de Kali Linux ↗</a></p>
+        <p class="sources">Documentación consultada el 16 de noviembre de 2026.</p>
+    </section>
+</main>
+<footer>
+    <span>MCS SECURITY · SEGURETAT I ALTA DISPONIBILITAT</span>
+    <span>ASIX 2026/2027 · UNITAT 03</span>
+    <a href="seguretat.html">VOLVER AL PORTAL ↑</a>
+</footer>
+<script>
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const toolCards = document.querySelectorAll('.tool-card');
+    const filterCount = document.getElementById('filter-count');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const selected = button.dataset.filter;
+            let visibleCount = 0;
+
+            filterButtons.forEach(item => {
+                item.setAttribute('aria-pressed', String(item === button));
+            });
+
+            toolCards.forEach(card => {
+                const visible = selected === 'all' || card.dataset.category === selected;
+                card.hidden = !visible;
+                if (visible) visibleCount += 1;
+            });
+
+            filterCount.textContent = visibleCount === 1
+                ? '1 herramienta visible'
+                : visibleCount + ' herramientas visibles';
+        });
+    });
+
+    const canvas = document.getElementById('network');
+    const context = canvas.getContext('2d');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let points = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        points = Array.from({ length: 32 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2
+        }));
+    }
+
+    function drawNetwork() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        points.forEach((point, index) => {
+            if (!reducedMotion) {
+                point.x += point.vx;
+                point.y += point.vy;
+                if (point.x < 0 || point.x > canvas.width) point.vx *= -1;
+                if (point.y < 0 || point.y > canvas.height) point.vy *= -1;
+            }
+            context.fillStyle = 'rgba(245,185,66,.35)';
+            context.beginPath();
+            context.arc(point.x, point.y, 1.3, 0, Math.PI * 2);
+            context.fill();
+
+            points.slice(index + 1).forEach(other => {
+                const distance = Math.hypot(point.x - other.x, point.y - other.y);
+                if (distance < 140) {
+                    context.strokeStyle = 'rgba(0,234,255,' + (0.08 * (1 - distance / 140)) + ')';
+                    context.beginPath();
+                    context.moveTo(point.x, point.y);
+                    context.lineTo(other.x, other.y);
+                    context.stroke();
+                }
+            });
+        });
+        if (!reducedMotion) requestAnimationFrame(drawNetwork);
+    }
+
+    resizeCanvas();
+    drawNetwork();
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        if (reducedMotion) drawNetwork();
+    });
+</script>
+</body>
+</html>
