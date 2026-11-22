@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHCP en VirtualBox | Servicios en Red</title>
+    <style>
+
+        * {
+            box-sizing:border-box
+        }
+        html {
+            scroll-behavior:smooth
+        }
+        body {
+            margin:0;
+            color:#eaf1f9;
+            background:radial-gradient(ellipse at 90% 0,#123552,transparent 40%),#070d19;
+            font-family:'Segoe UI',Arial,sans-serif;
+            line-height:1.7
+        }
+        a {
+            color:#83dfff
+        }
+        header,main,footer {
+            width:92%;
+            max-width:1120px;
+            margin:auto
+        }
+        header {
+            padding:35px 0 30px
+        }
+        .topbar {
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-bottom:38px
+        }
+        .back {
+            text-decoration:none;
+            font-size:12px;
+            letter-spacing:1px
+        }
+        .brand {
+            color:#ffb96c;
+            font:12px Consolas,monospace;
+            letter-spacing:2px
+        }
+        .hero {
+            display:grid;
+            grid-template-columns:1fr 140px;
+            align-items:center;
+            gap:25px
+        }
+        .eyebrow {
+            color:#86dfff;
+            font:12px Consolas,monospace;
+            letter-spacing:2px
+        }
+        h1 {
+            font-size:clamp(34px,5vw,56px);
+            line-height:1.13;
+            letter-spacing:-1px;
+            margin:18px 0
+        }
+        h2 {
+            font-size:26px;
+            line-height:1.3;
+            margin:0 0 20px
+        }
+        h3 {
+            font-size:18px;
+            margin:28px 0 10px
+        }
+        .lead {
+            max-width:800px;
+            color:#afc0d5;
+            font-size:16px
+        }
+        .ball {
+            border-radius:50%;
+            background:radial-gradient(circle at 30% 25%,#fff2bc,#ffb645 40%,#e97d22 75%,#9c4214);
+            border:3px solid #ffd083;
+            display:grid;
+            place-items:center;
+            color:#b23718;
+            box-shadow:inset -9px -10px 20px #7d300e55,0 0 35px #ff9d2422;
+            width:115px;
+            height:115px;
+            font-size:55px
+        }
+        .meta {
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin:28px 0
+        }
+        .meta span {
+            padding:7px 12px;
+            border:1px solid #2e4961;
+            border-radius:7px;
+            color:#bad3e5;
+            font-size:12px;
+            background:#122033
+        }
+        .toc {
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            border-top:1px solid #ffffff18;
+            padding-top:22px
+        }
+        .toc a {
+            padding:8px 12px;
+            background:#102035;
+            border:1px solid #25425a;
+            border-radius:6px;
+            text-decoration:none;
+            font-size:12px
+        }
+        .toc a:hover {
+            border-color:#ffa84b;
+            color:#ffc675
+        }
+        main {
+            padding-bottom:30px
+        }
+        .block {
+            border:1px solid #253a50;
+            border-radius:15px;
+            padding:32px;
+            margin:22px 0;
+            background:linear-gradient(135deg,#111e30ee,#0b1321ee);
+            scroll-margin-top:20px
+        }
+        .heading {
+            display:flex;
+            align-items:center;
+            gap:15px;
+            margin-bottom:20px
+        }
+        .heading h2 {
+            margin:0
+        }
+        .section-ball {
+            flex:none;
+            width:50px;
+            height:50px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-wrap:wrap;
+            align-content:center;
+            border-radius:50%;
+            background:radial-gradient(circle at 30% 25%,#ffdc89,#f99b30 65%,#bf5b20);
+            border:1px solid #ffd084;
+            color:#9e3018;
+            font-size:11px;
+            line-height:1.1;
+            padding:9px;
+            gap:1px
+        }
+        .section-ball span {
+            display:block
+        }
+        .block p {
+            color:#bac9dc
+        }
+        .block strong {
+            color:#fff0ce
+        }
+        .code-label {
+            color:#ffbf70;
+            font:12px Consolas,monospace;
+            margin-top:19px
+        }
+        pre {
+            margin:8px 0 20px;
+            background:#040a13;
+            border:1px solid #253f54;
+            border-radius:8px;
+            padding:18px;
+            overflow:auto;
+            color:#a2edda;
+            line-height:1.65;
+            font-size:13px
+        }
+        code {
+            font-family:Consolas,'Courier New',monospace
+        }
+        p code,li code,td code {
+            color:#95dfff;
+            overflow-wrap:anywhere
+        }
+        .table-scroll {
+            overflow:auto;
+            margin:20px 0
+        }
+        table {
+            width:100%;
+            border-collapse:collapse;
+            min-width:570px;
+            font-size:14px
+        }
+        th {
+            background:#14304a;
+            color:#e6f5ff;
+            text-align:left
+        }
+        th,td {
+            border:1px solid #32485f;
+            padding:14px;
+            vertical-align:top
+        }
+        tr:nth-child(even) td {
+            background:#142135
+        }
+        td {
+            color:#bacbdf
+        }
+        figure {
+            margin:25px 0;
+            border:1px solid #304963;
+            border-radius:10px;
+            overflow:hidden;
+            background:#080f1c
+        }
+        figure a {
+            display:block
+        }
+        figure img {
+            width:100%;
+            height:auto;
+            display:block;
+            color:#bed0e2;
+            padding:5px;
+            min-height:60px
+        }
+        figcaption {
+            padding:12px 16px;
+            color:#a4bdd2;
+            font-size:13px;
+            border-top:1px solid #233950
+        }
+        .simulated {
+            border-left:3px solid #ffae55;
+            padding-left:18px
+        }
+        .simulated h3 {
+            color:#ffc47c
+        }
+        .questions {
+            counter-reset:questions
+        }
+        .question {
+            padding:18px 0;
+            border-bottom:1px solid #263b51
+        }
+        .question:last-child {
+            border:0
+        }
+        .question h3 {
+            margin:0 0 9px;
+            font-size:17px
+        }
+        .question p {
+            margin:0;
+            color:#d4dfec
+        }
+        .sources li {
+            margin:10px 0
+        }
+        .result {
+            font-size:16px;
+            color:#f8d296!important
+        }
+        .footer-nav {
+            display:flex;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:15px;
+            padding:25px 0
+        }
+        footer {
+            border-top:1px solid #24394e;
+            padding:22px 0 35px;
+            color:#91a8c1;
+            font-size:12px;
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            flex-wrap:wrap
+        }
+        .network-strip {
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            color:#96dfff;
+            font:12px Consolas,monospace;
+            letter-spacing:1px;
+            margin:20px 0
+        }
+        .network-strip span {
+            border:1px solid #2d4e68;
+            padding:8px 12px;
+            border-radius:7px
+        }
+        a:focus-visible {
+            outline:3px solid #ffb450;
+            outline-offset:5px
+        }
+        @media(max-width:650px) {
+            .block {
+                padding:22px 18px
+            }
+            .hero {
+                grid-template-columns:1fr 70px;
+                gap:12px
+            }
+            .ball {
+                width:70px;
+                height:70px;
+                font-size:36px
+            }
+            .brand {
+                font-size:10px
+            }
+            .heading h2 {
+                font-size:22px
+            }
+            pre {
+                font-size:12px;
+                padding:14px
+            }
+            .section-ball {
+                width:43px;
+                height:43px;
+                padding:7px
+            }
+            .lead {
+                font-size:14px
+            }
+        }
+        @media(prefers-reduced-motion:reduce) {
+            html {
+                scroll-behavior:auto
+            }
+        }
+        @media print {
+            body {
+                background:white;
+                color:black
+            }
+            header,main,footer {
+                width:100%;
+                max-width:none
+            }
+            .block {
+                background:white;
+                border-color:#ccc;
+                break-inside:auto
+            }
+            .block p,td,.question p {
+                color:#222
+            }
+            .block strong {
+                color:black
+            }
+            .toc,.footer-nav,.ball,.brand {
+                display:none
+            }
+            pre {
+                background:#f3f6f8;
+                color:#15372d;
+                border-color:#ccc;
+                white-space:pre-wrap;
+                overflow-wrap:anywhere
+            }
+            th {
+                background:#e7eff6;
+                color:black
+            }
+            td,th {
+                border-color:#aaa
+            }
+            tr:nth-child(even) td {
+                background:#f5f7fa
+            }
+            figure {
+                background:white;
+                break-inside:avoid
+            }
+            a {
+                color:#174e74
+            }
+            h2,h3 {
+                break-after:avoid
+            }
+        }
+    
+    .hero .ball {font-size:24px; letter-spacing:2px}
+    .download {display:inline-block;padding:10px 16px;border:1px solid #ffb450;border-radius:7px;color:#ffd18c;text-decoration:none}
+    .summary {border-left:3px solid #ffb450;padding-left:18px}
+    @media print {.meta span,.eyebrow,.code-label,.lead,footer,figcaption {color:#222} .download {display:none} .hero {display:block} figure img {max-height:230mm;object-fit:contain}}
+    </style>
+</head>
+<body id="inicio">
+<header>
+    <div class="topbar">
+        <a class="back" href="servicios-en-red.html">← SERVICIOS EN RED</a>
+        <span class="brand">CAPSULE CORP · NETWORK LAB</span>
+    </div>
+    <div class="hero">
+        <div>
+            <div class="eyebrow">PRÁCTICA 03 · SERVICIOS EN RED</div>
+            <h1>DHCP en<br>VirtualBox</h1>
+            <p class="lead">He configurado un servidor ISC DHCP y un cliente Kali: concesión dinámica, captura DORA, reserva por MAC y diagnóstico con registros reales.</p>
+        </div>
+        <div class="ball" aria-label="Esfera de tres estrellas">★★★</div>
+    </div>
+    <div class="meta">
+        <span>Miguel Castillo</span>
+        <span>ASIX · 2026/2027</span>
+        <span>Ubuntu · Kali · VirtualBox</span>
+        <span>22 de noviembre de 2026</span>
+        <span>5 misiones · 15 capturas</span>
+    </div>
+    <div class="network-strip"><span>⇄ DHCP</span><span>▤ RED INTERNA</span><span>◉ DORA</span><span>★ RESERVA .25</span></div>
+    <p><a class="download" href="Memoria_Practica_3_DHCP_Miguel_Castillo.pdf" download>Descargar memoria técnica PDF</a></p>
+    <nav class="toc" aria-label="Misiones de la práctica">
+<a href="#mision1">Misión 1</a>
+<a href="#mision2">Misión 2</a>
+<a href="#mision3">Misión 3</a>
+<a href="#mision4">Misión 4</a>
+<a href="#mision5">Misión 5</a>
+        <a href="#repaso">Repaso breve</a>
+        <a href="#resultado">Resultado</a>
+    </nav>
+</header>
+<main>
+<section class="block" id="mision1">
+    <div class="heading">
+        <div class="section-ball" aria-hidden="true"><span>★</span></div>
+        <h2>Misión 1. Preparar servidor y cliente Linux</h2>
+    </div>
+<p>He preparado un servidor Ubuntu y un cliente Kali en VirtualBox. El servidor conserva un adaptador NAT para instalar paquetes y acceder por SSH; el segundo adaptador se dedica al laboratorio. Kali utiliza su interfaz <code>eth0</code> en la misma red interna.</p><div class="table-scroll">
+<table>
+<thead><tr><th scope="col">Elemento</th><th scope="col">Configuración</th></tr></thead>
+<tbody>
+<tr><td>Red de laboratorio</td><td>192.168.10.0/24 · red interna MCS-DHCP</td></tr>
+<tr><td>Ubuntu · enp0s3</td><td>NAT · 10.0.2.15/24</td></tr>
+<tr><td>Ubuntu · enp0s8</td><td>IP fija · 192.168.10.1/24</td></tr>
+<tr><td>Kali · eth0</td><td>Cliente DHCP · MAC 08:00:27:32:4d:1d</td></tr>
+</tbody>
+</table>
+</div><figure>
+    <a href="media/01_DHCP_RED_SERVIDOR.PNG" target="_blank" rel="noopener">
+        <img src="media/01_DHCP_RED_SERVIDOR.PNG" alt="Segundo adaptador del servidor conectado a una red interna." loading="lazy">
+    </a>
+    <figcaption>Captura 1 de 15. Segundo adaptador del servidor conectado a una red interna.</figcaption>
+</figure><figure>
+    <a href="media/06_DHCP_RED_CLIENTE.PNG" target="_blank" rel="noopener">
+        <img src="media/06_DHCP_RED_CLIENTE.PNG" alt="Adaptador del cliente Kali en la red interna del laboratorio." loading="lazy">
+    </a>
+    <figcaption>Captura 6 de 15. Adaptador del cliente Kali en la red interna del laboratorio.</figcaption>
+</figure><h3>IP fija del servidor</h3><p>He conservado la configuración DHCP de enp0s3 y creado un archivo separado para la interfaz interna.</p><div class="code-label">Bloque completo para crear el archivo Netplan</div>
+<pre><code>sudo tee /etc/netplan/60-dhcp-interna.yaml &gt; /dev/null &lt;&lt;&#x27;EOF&#x27;
+network:
+  version: 2
+  ethernets:
+    enp0s8:
+      dhcp4: false
+      addresses:
+        - 192.168.10.1/24
+      optional: true
+EOF</code></pre><pre><code>sudo chmod 600 /etc/netplan/60-dhcp-interna.yaml</code></pre><pre><code>sudo netplan generate</code></pre><pre><code>sudo netplan apply</code></pre><pre><code>ip -br addr show enp0s3</code></pre><pre><code>ip -br addr show enp0s8</code></pre><figure>
+    <a href="media/02_DHCP_IP_SERVIDOR.PNG" target="_blank" rel="noopener">
+        <img src="media/02_DHCP_IP_SERVIDOR.PNG" alt="Servidor con acceso NAT e IP interna 192.168.10.1/24." loading="lazy">
+    </a>
+    <figcaption>Captura 2 de 15. Servidor con acceso NAT e IP interna 192.168.10.1/24.</figcaption>
+</figure>
+</section>
+<section class="block" id="mision2">
+    <div class="heading">
+        <div class="section-ball" aria-hidden="true"><span>★</span><span>★</span></div>
+        <h2>Misión 2. Configurar ISC DHCP</h2>
+    </div>
+<p>He instalado ISC DHCP y configurado su interfaz de escucha, rango de direcciones y opciones de red. El servicio DHCPv4 atiende únicamente en <code>enp0s8</code>.</p><pre><code>sudo apt update</code></pre><pre><code>sudo apt install isc-dhcp-server -y</code></pre><h3>Interfaz de escucha</h3><pre><code>sudo sed -i &#x27;s/^INTERFACESv4=.*/INTERFACESv4=&quot;enp0s8&quot;/; s/^INTERFACESv6=.*/INTERFACESv6=&quot;&quot;/&#x27; /etc/default/isc-dhcp-server</code></pre><pre><code>grep &#x27;^INTERFACES&#x27; /etc/default/isc-dhcp-server</code></pre><div class="code-label">Resultado comprobado</div>
+<pre><code>INTERFACESv4=&quot;enp0s8&quot;
+INTERFACESv6=&quot;&quot;</code></pre><figure>
+    <a href="media/03_DHCP_INTERFAZ_ESCUCHA.PNG" target="_blank" rel="noopener">
+        <img src="media/03_DHCP_INTERFAZ_ESCUCHA.PNG" alt="Interfaz de escucha IPv4 configurada en enp0s8." loading="lazy">
+    </a>
+    <figcaption>Captura 3 de 15. Interfaz de escucha IPv4 configurada en enp0s8.</figcaption>
+</figure><div class="table-scroll">
+<table>
+<thead><tr><th scope="col">Parámetro</th><th scope="col">Valor</th></tr></thead>
+<tbody>
+<tr><td>Rango dinámico</td><td>192.168.10.100 - 192.168.10.150</td></tr>
+<tr><td>Máscara y broadcast</td><td>255.255.255.0 · 192.168.10.255</td></tr>
+<tr><td>Concesión por defecto</td><td>600 segundos · 10 minutos</td></tr>
+<tr><td>Concesión máxima</td><td>7200 segundos · 2 horas</td></tr>
+<tr><td>Puerta de enlace y DNS</td><td>No anunciados en esta red interna aislada</td></tr>
+</tbody>
+</table>
+</div><h3>Archivo final completo y comentado</h3><p>La versión final de <code>/etc/dhcp/dhcpd.conf</code> incorpora la reserva comprobada en la misión 5. Las capturas muestran primero el rango inicial y después la incorporación de la reserva.</p><div class="code-label">/etc/dhcp/dhcpd.conf · configuración final</div>
+<pre><code># Servidor DHCP de la practica 3 de Servicios en Red.
+# Escucha en enp0s8, conectada a la red interna MCS-DHCP.
+
+# Este servidor es autoritativo para la red del laboratorio.
+authoritative;
+
+# Duracion habitual de una concesion: 10 minutos.
+default-lease-time 600;
+
+# Duracion maxima de una concesion: 2 horas.
+max-lease-time 7200;
+
+# Desactiva las actualizaciones DNS dinamicas.
+ddns-update-style none;
+
+# Red interna y rango de direcciones dinamicas.
+subnet 192.168.10.0 netmask 255.255.255.0 {
+    range 192.168.10.100 192.168.10.150;
+    option subnet-mask 255.255.255.0;
+    option broadcast-address 192.168.10.255;
+
+    # No anunciamos puerta de enlace ni DNS:
+    # esta red interna no dispone de esos servicios.
+}
+
+# Reserva para Kali por su direccion MAC.
+# Fuera del rango dinamico para evitar solapamientos.
+host kali-reservado {
+    hardware ethernet 08:00:27:32:4d:1d;
+    fixed-address 192.168.10.25;
+}</code></pre><pre><code>sudo dhcpd -t -cf /etc/dhcp/dhcpd.conf</code></pre><figure>
+    <a href="media/04_DHCP_CONFIGURACION.PNG" target="_blank" rel="noopener">
+        <img src="media/04_DHCP_CONFIGURACION.PNG" alt="Configuración inicial del rango y validación de sintaxis." loading="lazy">
+    </a>
+    <figcaption>Captura 4 de 15. Configuración inicial del rango y validación de sintaxis.</figcaption>
+</figure><pre><code>sudo systemctl restart isc-dhcp-server</code></pre><pre><code>sudo systemctl status isc-dhcp-server --no-pager -l</code></pre><p>He comprobado <strong>active (running)</strong> y la línea <code>Listening on LPF/enp0s8</code> para la red interna.</p><figure>
+    <a href="media/05_DHCP_SERVICIO_ACTIVO.PNG" target="_blank" rel="noopener">
+        <img src="media/05_DHCP_SERVICIO_ACTIVO.PNG" alt="Servicio DHCP activo y escuchando en enp0s8." loading="lazy">
+    </a>
+    <figcaption>Captura 5 de 15. Servicio DHCP activo y escuchando en enp0s8.</figcaption>
+</figure>
+</section>
+<section class="block" id="mision3">
+    <div class="heading">
+        <div class="section-ball" aria-hidden="true"><span>★</span><span>★</span><span>★</span></div>
+        <h2>Misión 3. Obtener y comprobar una concesión</h2>
+    </div>
+<p>Al conectar Kali, el servidor le ha entregado <strong>192.168.10.100/24</strong>, dentro del rango definido. He revisado la dirección, la MAC y la configuración DNS del cliente.</p><pre><code>ip addr show eth0</code></pre><pre><code>cat /etc/resolv.conf</code></pre><pre><code>nmcli device show eth0</code></pre><p>La dirección aparece como <code>dynamic</code> y tiene un tiempo de validez. La consulta a <code>/etc/resolv.conf</code> indica que el archivo no existe. No he anunciado DNS ni puerta de enlace en DHCP: la comprobación se realiza dentro de la red local.</p><figure>
+    <a href="media/07_DHCP_IP_DNS_CLIENTE.PNG" target="_blank" rel="noopener">
+        <img src="media/07_DHCP_IP_DNS_CLIENTE.PNG" alt="Concesión dinámica .100 y consulta del archivo resolv.conf." loading="lazy">
+    </a>
+    <figcaption>Captura 7 de 15. Concesión dinámica .100 y consulta del archivo resolv.conf.</figcaption>
+</figure><pre><code>ping -c 3 192.168.10.1</code></pre><p>He recibido <strong>tres respuestas y 0 % de pérdidas</strong>. El cliente puede comunicarse con el servidor por su IP interna.</p><figure>
+    <a href="media/08_DHCP_PING_SERVIDOR.PNG" target="_blank" rel="noopener">
+        <img src="media/08_DHCP_PING_SERVIDOR.PNG" alt="Ping desde Kali al servidor 192.168.10.1." loading="lazy">
+    </a>
+    <figcaption>Captura 8 de 15. Ping desde Kali al servidor 192.168.10.1.</figcaption>
+</figure>
+</section>
+<section class="block" id="mision4">
+    <div class="heading">
+        <div class="section-ball" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <h2>Misión 4. Capturar DORA con Wireshark</h2>
+    </div>
+<p>He abierto Wireshark en Kali y empezado a capturar en <code>eth0</code>. Para provocar una negociación nueva he utilizado el perfil temporal <code>DORA-PRUEBA</code>.</p><pre><code>wireshark</code></pre><p>El enunciado indica el filtro <code>bootp</code>. En esta versión he utilizado el nombre <code>dhcp</code>, equivalente para analizar los mensajes DHCP. DHCP se desarrolló a partir de BOOTP; el nombre del filtro depende del analizador de Wireshark.</p><div class="code-label">Filtro de visualización</div>
+<pre><code>dhcp</code></pre><pre><code>sudo nmcli connection down &quot;Wired connection 1&quot;</code></pre><pre><code>sudo nmcli connection add type ethernet ifname eth0 con-name DORA-PRUEBA ipv4.method auto ipv6.method disabled connection.autoconnect no</code></pre><pre><code>sudo nmcli connection up DORA-PRUEBA</code></pre><div class="table-scroll">
+<table>
+<thead><tr><th scope="col">Mensaje</th><th scope="col">Qué he observado</th></tr></thead>
+<tbody>
+<tr><td>Discover</td><td>El cliente busca un servidor DHCP desde 0.0.0.0.</td></tr>
+<tr><td>Offer</td><td>192.168.10.1 ofrece 192.168.10.100.</td></tr>
+<tr><td>Request</td><td>El cliente solicita la dirección ofrecida.</td></tr>
+<tr><td>ACK</td><td>El servidor confirma la concesión.</td></tr>
+</tbody>
+</table>
+</div><p>Los paquetes <strong>21, 22, 23 y 24</strong> muestran los cuatro mensajes con el mismo identificador de transacción: <code>0xe2459c15</code>. Una renovación puede mostrar solo Request y ACK; por eso he generado una negociación nueva.</p><figure>
+    <a href="media/09_DHCP_DORA.PNG" target="_blank" rel="noopener">
+        <img src="media/09_DHCP_DORA.PNG" alt="Intercambio Discover, Offer, Request y ACK capturado en eth0." loading="lazy">
+    </a>
+    <figcaption>Captura 9 de 15. Intercambio Discover, Offer, Request y ACK capturado en eth0.</figcaption>
+</figure>
+</section>
+<section class="block" id="mision5">
+    <div class="heading">
+        <div class="section-ball" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <h2>Misión 5. Registros, reserva y diagnóstico</h2>
+    </div>
+<h3>Consulta de registros</h3><pre><code>sudo journalctl -u isc-dhcp-server --no-pager -n 60</code></pre><p>He localizado solicitudes y respuestas asociadas a la MAC de Kali. Los registros relacionan cada negociación con la interfaz y la dirección asignada.</p><figure>
+    <a href="media/10_DHCP_REGISTROS.PNG" target="_blank" rel="noopener">
+        <img src="media/10_DHCP_REGISTROS.PNG" alt="Registros del servicio DHCP y mensajes del cliente Kali." loading="lazy">
+    </a>
+    <figcaption>Captura 10 de 15. Registros del servicio DHCP y mensajes del cliente Kali.</figcaption>
+</figure><h3>Archivo de concesiones</h3><pre><code>sudo cat /var/lib/dhcp/dhcpd.leases</code></pre><p>He comprobado la dirección <code>192.168.10.100</code>, la MAC y el nombre del cliente. Los campos <code>starts</code> y <code>ends</code> indican los tiempos registrados. El archivo conserva entradas sucesivas; para una misma IP se interpreta la última declaración.</p><figure>
+    <a href="media/11_DHCP_CONCESIONES.PNG" target="_blank" rel="noopener">
+        <img src="media/11_DHCP_CONCESIONES.PNG" alt="Concesiones dinámicas registradas para Kali." loading="lazy">
+    </a>
+    <figcaption>Captura 11 de 15. Concesiones dinámicas registradas para Kali.</figcaption>
+</figure><h3>Reserva por MAC</h3><p>He añadido una reserva para entregar exactamente <strong>192.168.10.25</strong> a <code>08:00:27:32:4d:1d</code>. La dirección está fuera del rango dinámico.</p><div class="code-label">Bloque añadido a dhcpd.conf</div>
+<pre><code># Reserva para Kali por su direccion MAC.
+host kali-reservado {
+    hardware ethernet 08:00:27:32:4d:1d;
+    fixed-address 192.168.10.25;
+}</code></pre><pre><code>sudo dhcpd -t -cf /etc/dhcp/dhcpd.conf</code></pre><pre><code>sudo systemctl restart isc-dhcp-server</code></pre><figure>
+    <a href="media/12_DHCP_RESERVA_MAC.PNG" target="_blank" rel="noopener">
+        <img src="media/12_DHCP_RESERVA_MAC.PNG" alt="Reserva por MAC configurada, validada y aplicada." loading="lazy">
+    </a>
+    <figcaption>Captura 12 de 15. Reserva por MAC configurada, validada y aplicada.</figcaption>
+</figure><p>En Kali he reactivado el perfil para solicitar de nuevo su configuración.</p><pre><code>sudo nmcli connection down DORA-PRUEBA</code></pre><pre><code>sudo nmcli connection up DORA-PRUEBA</code></pre><pre><code>ip addr show eth0</code></pre><p>El cliente muestra <strong>192.168.10.25/24</strong> junto a la MAC reservada. La dirección sigue obteniéndose por DHCP.</p><figure>
+    <a href="media/13_DHCP_CLIENTE_RESERVA.PNG" target="_blank" rel="noopener">
+        <img src="media/13_DHCP_CLIENTE_RESERVA.PNG" alt="Kali recibe exactamente la dirección reservada 192.168.10.25." loading="lazy">
+    </a>
+    <figcaption>Captura 13 de 15. Kali recibe exactamente la dirección reservada 192.168.10.25.</figcaption>
+</figure><pre><code>sudo journalctl -u isc-dhcp-server --no-pager -n 30</code></pre><p>He confirmado <code>DHCPACK on 192.168.10.25</code> para la MAC de Kali. La reserva se comprueba mediante la configuración, la IP del cliente y el ACK del servidor.</p><figure>
+    <a href="media/14_DHCP_ACK_RESERVA.PNG" target="_blank" rel="noopener">
+        <img src="media/14_DHCP_ACK_RESERVA.PNG" alt="Confirmación DHCPACK de la dirección reservada .25." loading="lazy">
+    </a>
+    <figcaption>Captura 14 de 15. Confirmación DHCPACK de la dirección reservada .25.</figcaption>
+</figure><h3>Diagnóstico: el cliente intenta reutilizar la .100</h3><p>Después de añadir la reserva, Kali solicitó su antigua dirección <code>192.168.10.100</code>. El servidor respondió con <strong>DHCPNAK</strong>. A continuación apareció una negociación nueva y se confirmó la <code>192.168.10.25</code>. He comprobado el resultado al reactivar la conexión.</p><pre><code>sudo journalctl -u isc-dhcp-server --no-pager --since &quot;2026-11-22 22:02:00&quot; --until &quot;2026-11-22 22:04:00&quot; | grep -E &#x27;DHCPREQUEST|DHCPNAK|DHCPDISCOVER|DHCPOFFER|DHCPACK&#x27;</code></pre><figure>
+    <a href="media/15_DHCP_DIAGNOSTICO.PNG" target="_blank" rel="noopener">
+        <img src="media/15_DHCP_DIAGNOSTICO.PNG" alt="Diagnóstico de la solicitud antigua y negociación correcta de la reserva." loading="lazy">
+    </a>
+    <figcaption>Captura 15 de 15. Diagnóstico de la solicitud antigua y negociación correcta de la reserva.</figcaption>
+</figure>
+</section>
+<section class="block questions" id="repaso">
+    <h2>Repaso breve para explicar la práctica</h2>
+<article class="question"><h3>1. ¿Qué significa DORA?</h3><p>Discover, Offer, Request y ACK: búsqueda, oferta, solicitud y confirmación.</p></article>
+<article class="question"><h3>2. ¿Por qué escucha solo en enp0s8?</h3><p>Para atender al laboratorio interno sin repartir direcciones por el adaptador NAT.</p></article>
+<article class="question"><h3>3. ¿Reserva DHCP o IP manual?</h3><p>La reserva la decide el servidor por MAC; el cliente sigue solicitando su dirección por DHCP.</p></article>
+<article class="question"><h3>4. ¿Qué significa DHCPNAK?</h3><p>El servidor rechaza la dirección solicitada y el cliente debe volver a obtener una configuración válida.</p></article>
+<article class="question"><h3>5. ¿El ping demuestra que funciona DNS?</h3><p>No. Aquí comprueba comunicación por IP con el servidor; no se ha configurado resolución DNS.</p></article>
+</section>
+<section class="block" id="resultado">
+    <h2>Resultado de la práctica</h2>
+    <p class="result">He comprobado la concesión dinámica 192.168.10.100, el intercambio DORA y la reserva 192.168.10.25 para Kali.</p>
+    <p>He utilizado la configuración del servidor, las comprobaciones del cliente y los registros para explicar cada resultado. La memoria PDF reúne las cinco misiones y las capturas reales.</p>
+    <p><a class="download" href="Memoria_Practica_3_DHCP_Miguel_Castillo.pdf" download>Descargar memoria técnica PDF</a></p>
+</section>
+<div class="footer-nav">
+    <a href="servicios-en-red-ejercicio2.html">← Práctica 2 · EVE-NG y MikroTik CHR</a>
+    <a href="servicios-en-red.html">Volver al portal</a>
+    <a href="#inicio">Volver arriba ↑</a>
+</div>
+</main>
+<footer><span>SERVICIOS EN RED · PRÁCTICA 03</span><span>CAPSULE NETWORK LAB · ASIX 2026/2027</span></footer>
+</body>
+</html>
